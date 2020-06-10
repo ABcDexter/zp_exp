@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#B2FD00"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:textColor="#000"
+        android:textSize="18sp"
+        android:text="dfghjklp[ouytfghjklpoiuytfcbjkl;oiuyfdxvn,"/>
+
+    <LinearLayout
+        android:id="@+id/layout_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/info_text"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/reject_request"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_close"
+            android:text="NO"
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/accept_request"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableTop="@drawable/ic_check_black"
+            android:text="YES"
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</RelativeLayout>

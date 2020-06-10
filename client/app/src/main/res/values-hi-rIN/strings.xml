@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zipp-e</string>
+    <string name="Open">open</string>
+    <string name="Close">close</string>
+    <string name="vehicle_type">vehicle type:</string>
+    <string name="hi">HI!\u0020 </string>
+    <string name="select_btn">SELECT</string>
+    <string name="cancel_btn">CANCEL</string>
+</resources>

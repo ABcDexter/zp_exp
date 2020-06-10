@@ -1,0 +1,58 @@
+registerUser             |                      | register-user          | {"phone", "aadhaarFront", "aadhaarBack"}                                 | {"age", "an", "auth", "dl",  "gdr", "hs", "name","pn", "tid" }
+registerDriver           |                      | register-driver        | {"phone", "aadhaarFront", "aadhaarBack", "licenseFront", "licenseBack"}  | {"token", "an", "pn"}
+isDriverVerified         |                      | is-driver-verified     | {"token", "an","pn"}                                                     | {"mode", .. "auth"}
+
+userTripStatus           | userRideGetStatus    | user-ride-get-status   | {"auth"}                                                                 | {"active", .. "st", "tid", .. "otp", "van", .. "pct" }
+userGetTripEstimate      | userRideEstimate     | user-ride-estimate     | {"auth", "vtype", "npas", "dstid","pmode"}                               | {"price", "time", "dist", "speed"}
+userRequestRide          | userRideRequest      | user-ride-request      | {"auth", "srcid", "vtype", "npas", "dstid","pmode", "rtype"}             | {"price", "time", "dist", "speed", "tid"}
+userGetTripDriver        | userRideGetDriver    | user-ride-get-driver   | {"auth"}                                                                 | {"pn", "an", "name"}
+userCancelRide           | userRideCancel       | user-ride-cancel       | {"auth"}                                                                 | {}
+	                 | userRideRetire       | user-ride-retire       | {"auth"}                                                                 | {}
+
+driverGetStatus          | driverGetMode        | driver-get-mode        | {"auth"}                                                                 | {"mode"}
+driverSetStatus          | driverSetMode        | driver-set-mode        | {"auth", "mode"}                                                         | {"mode"}
+driverTripStatus         | driverRideGetStatus  | driver-ride-get-status | {"auth"}                                                                 | {"tid", .. "uan", "van", .. "pct", .. "active", "st"}
+driverCheckTrips         | driverRideCheck      | driver-ride-check      | {"auth"}                                                                 | {} or {"tid"}
+driverAcceptRide         | driverRideAccept     | driver-ride-accept     | {"auth", "tid", "van"}                                                   | {"dstid", "name", "phone", "srcname", "dstname"}}
+driverCancelRide         | driverRideCancel     | driver-ride-cancel     | {"auth"}                                                                 | {}
+driverStartTrip          | driverRideStart      | driver-ride-start      | {"auth", "otp"}                                                          | {}
+driverEndTrip            | driverRideEnd        | driver-ride-end        | {"auth"}                                                                 | {"price", "time", "dist", "speed"}
+driverConfirmPayment     | driverPaymentConfirm | driver-payment-confirm | {"auth"}                                                                 | {}
+	                 | driverRideRetire     | driver-ride-retire     | {"auth"}                                                                 | {}
+
+authGetAvailVehicles     | authVehicleGetAvail  | auth-vehicle-get-avail | {"auth"}                                                                 | {"vehicles": [ {"an", "regn", "pid", "pid", "dist", "hrs", "vtype"}, ]]
+authGetTripInfo          | authRideGetInfo      | auth-ride-get-info     | {"auth", "tid"}                                                          | {"st", ... "price", "time", "dist", "speed"}
+authGetPlaces            | authPlaceGet         | auth-place-get         | {"auth"}                                                                 | {"hublist": [{"id", "pn"...}, ... ]}
+authFailTrip             | authRideFail         | auth-ride-fail         | {"auth"}                                                                 | {}
+authUpdateLocation       | authLocationUpdate   | auth-location-update   | {"auth", "an", "lat", "lng"}                                             | {}
+authTripProgress         | authProgressPercent  | auth-progress-percent  | {"auth"}                                                                 | {"pct", "pid"}
+authTripRetire           | authRideRetire       | auth-ride-retire       | {"auth"}                                                                 | {}
+                         | authProfileUpdate    | auth-profile-update    | {"auth", "name", "gdr"}                                                  | {}
+
+adminAdvanceTripProgress | adminProgressAdvance | admin-progress-advance | {"auth", "pct", "tid"}                                                   | {"lat", "lng", "pct"}
+adminSetPlace            | adminPlaceSet        | admin-place-set        | {"auth", "name", "lat", "lng", "alt", "wt"}                              | {}
+adminDelPlace            | adminPlaceDel        | admin-place-del        | {"auth", "name"}                                                         | {}
+
+adminRefresh             |                      | admin-refresh            | {"auth"}                                                               | {}
+adminUpdateRoutes        | adminRouteUpdate     | admin-route-update       | {"auth", "googleMapsAuth"}                                             | [ [routes...], ... ]
+adminEntityUpdate        | authAdminEntityUpdate| auth-admin-entity-update | {"adminAuth"}                                                          | {}
+adminConfirmDriver       | adminDriverRegister  | admin-driver-register    | {"auth", "an", "mode"}                                                 | {}
+adminGetData             | adminDataGet         | admin-data-get           | {"auth", "table", "pk"}                                                | {table_attribs which are in the models.py file "",""...}
+
+                         | adminVehicleUpdate     | admin-vehicle-update      | {"auth", "van"}                                                     | {}
+                         | adminDriversGetLocked  | admin-drivers-get-locked  | {"auth"} 							    | [ {driver details such as "an", "tid"...}, ...]
+                         | adminVehiclesGetLocked | admin-vehicles-get-locked | {"auth"}                                                            | [ {"an", "regn", "pid", "pid", "dist", "hrs", "vtype"}, ... ] 
+                         | adminUsersGetFailed    | admin-users-get-failed    | {"auth"}							    | [ {"an", "auth"} , ...]
+  
+ (Temporary)             | userGiveOtp            | user-give-otp             | {"user", "otp" / "price"}                                           | {}
+                          
+
+---
+
+These APIs might need to be renamed after Ride and Rental are clubbed into :  Trip 
+
+userRideGetStatus -> userTripGetStatus
+userRideEstimate  -> userTripEstimate
+authRideGetInfo   -> authTripGetInfo
+userRideRequest   -> userTripRequest
+userRideCancel    -> userTripCancel

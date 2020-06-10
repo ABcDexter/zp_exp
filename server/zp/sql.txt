@@ -1,0 +1,105 @@
+.mode column
+.headers on
+
+delete from trip;
+delete from progress;
+delete from place;
+
+delete from sqlite_sequence where name='place';
+
+INSERT INTO place (id, pn, lat, lng, alt, wt) values (NULL, 'LAKE VILLAGE',  29.317953, 79.587319, 1400, 100);
+INSERT INTO place (id, pn, lat, lng, alt, wt) values (NULL, 'HANUMAN TEMPLE',  29.239276, 79.58613, 1328, 100);
+INSERT INTO place (id, pn, lat, lng, alt, wt) values (NULL, 'DAATH BHIMTAL',                29.348369, 79.55901, 1337, 100);
+INSERT INTO place (id, pn, lat, lng, alt, wt) values (NULL, 'POLICE STATION',       29.348567, 79.54465, 1338, 100);
+INSERT INTO place (id, pn, lat, lng, alt, wt) values (NULL, 'GOVT HOSPITAL BHIMTAL',        29.354217, 79.52201, 1520, 100);
+INSERT INTO place (id, pn, lat, lng, alt, wt) values (NULL, 'BYPASS ROAD',          29.359265, 79.55001, 1379, 100);
+INSERT INTO place (id, pn, lat, lng, alt, wt) values (NULL, 'MEHRA GAON',                   29.220449, 79.47853, 607,  100);
+
+delete from user;
+#insert into user(an, pn, auth, pid, age, gdr, name, hs, dl) values('437286428434', '9871481545', 'CcXYVOa0',1,  25, 'MALE', 'Anubhav', 'UK', 'UK-123456789012');
+
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl) values('00', '9700000000', 'auth00', -1, (select id from place order by random() limit 1),  25, 'MALE', 'John 00',  'UK', 'UK-123456789001');
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl) values('01', '9700000001', 'auth01', -1, (select id from place order by random() limit 1),  25, 'MALE', 'John 01',  'UK', 'UK-123456789001');
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl) values('02', '9700000002', 'auth02', -1, (select id from place order by random() limit 1),  25, 'MALE', 'John 02',  'UK', 'UK-123456789002');
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl) values('03', '9700000003', 'auth03', -1, (select id from place order by random() limit 1),  25, 'MALE', 'John 03',  'UK', 'UK-123456789003');
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl) values('04', '9700000004', 'auth04', -1, (select id from place order by random() limit 1),  25, 'MALE', 'John 04',  'UK', 'UK-123456789004');
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl) values('05', '9700000005', 'auth05', -1, (select id from place order by random() limit 1),  25, 'MALE', 'John 05',  'UK', 'UK-123456789005');
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl) values('06', '9700000006', 'auth06', -1, (select id from place order by random() limit 1),  25, 'MALE', 'John 06',  'UK', 'UK-123456789006');
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl) values('07', '9700000007', 'auth07', -1, (select id from place order by random() limit 1),  25, 'MALE', 'John 07',  'UK', 'UK-123456789007');
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl) values('08', '9700000008', 'auth08', -1, (select id from place order by random() limit 1),  25, 'MALE', 'John 08',  'UK', 'UK-123456789008');
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl) values('09', '9700000009', 'auth09', -1, (select id from place order by random() limit 1),  25, 'MALE', 'John 09',  'UK', 'UK-123456789009');
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl) values('10', '9700000010', 'auth10', -1, (select id from place order by random() limit 1),  25, 'MALE', 'John 10',  'UK', 'UK-123456789010');
+
+
+delete from driver;
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(1000, '9800000000', 'dauth0', 'UK0123456789124', 'OF', -1, (select id from place order by random() limit 1), 'driver000', 30, 'm', 'uk');
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(1001, '9800000001', 'dauth1', 'UK0123456789124', 'OF', -1, (select id from place order by random() limit 1), 'driver001', 30, 'm', 'uk');
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(1002, '9800000002', 'dauth2', 'UK0123456789125', 'OF', -1, (select id from place order by random() limit 1), 'driver002', 31, 'f', 'uk');
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(1003, '9800000003', 'dauth3', 'UK0123456789126', 'OF', -1, (select id from place order by random() limit 1), 'driver003', 32, 'm', 'uk');
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(1004, '9800000004', 'dauth4', 'UK0123456780128', 'OF', -1, (select id from place order by random() limit 1), 'driver004', 33, 'm', 'uk');
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(1005, '9800000005', 'dauth5', 'UK0123456709129', 'OF', -1, (select id from place order by random() limit 1), 'driver005', 34, 'm', 'uk');
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(1006, '9800000006', 'dauth6', 'UK0123456089130', 'OF', -1, (select id from place order by random() limit 1), 'driver006', 35, 'f', 'uk');
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(1007, '9800000007', 'dauth7', 'UK0123456089131', 'OF', -1, (select id from place order by random() limit 1), 'driver007', 36, 'm', 'uk');
+
+delete from vehicle;
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg00', 0, 0, (select id from place order by random() limit 1), 0, '2000', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg01', 0, 0, (select id from place order by random() limit 1), 0, '2001', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg02', 0, 0, (select id from place order by random() limit 1), 1, '2002', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg03', 0, 0, (select id from place order by random() limit 1), 2, '2003', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg04', 0, 0, (select id from place order by random() limit 1), 3, '2004', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg05', 0, 0, (select id from place order by random() limit 1), 0, '2005', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg06', 0, 0, (select id from place order by random() limit 1), 1, '2006', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg07', 0, 0, (select id from place order by random() limit 1), 2, '2007', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg08', 0, 0, (select id from place order by random() limit 1), 3, '2008', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg09', 0, 0, (select id from place order by random() limit 1), 0, '2009', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg10', 0, 0, (select id from place order by random() limit 1), 1, '2010', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg11', 0, 0, (select id from place order by random() limit 1), 2, '2011', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg12', 0, 0, (select id from place order by random() limit 1), 3, '2012', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg13', 0, 0, (select id from place order by random() limit 1), 0, '2013', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg14', 0, 0, (select id from place order by random() limit 1), 1, '2014', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg15', 0, 0, (select id from place order by random() limit 1), 2, '2015', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg16', 0, 0, (select id from place order by random() limit 1), 3, '2016', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg17', 0, 0, (select id from place order by random() limit 1), 0, '2017', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg18', 0, 0, (select id from place order by random() limit 1), 1, '2018', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg19', 0, 0, (select id from place order by random() limit 1), 2, '2019', -1);
+INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid) values('reg20', 0, 0, (select id from place order by random() limit 1), 3, '2020', -1);
+
+
+# add location for all entities
+delete from location;
+insert into location(an, lat, lng, time, kind) select an, place.lat, place.lng, DATETIME() as time, 0 as kind from user inner join place on user.pid = place.id;
+insert into location(an, lat, lng, time, kind) select an, place.lat, place.lng, DATETIME() as time, 1 as kind from driver inner join place on driver.pid = place.id;
+insert into location(an, lat, lng, time, kind) select an, place.lat, place.lng, DATETIME() as time, 2 as kind from vehicle inner join place on vehicle.pid = place.id;
+
+
+# Add routes
+delete from route;
+insert into route(idx, idy, dist) values(1, 2, 2000);
+insert into route(idx, idy, dist) values(1, 3, 5200);
+insert into route(idx, idy, dist) values(1, 4, 6400);
+insert into route(idx, idy, dist) values(1, 5, 8400);
+insert into route(idx, idy, dist) values(1, 6, 7400);
+insert into route(idx, idy, dist) values(1, 7, 11100);
+insert into route(idx, idy, dist) values(2, 3, 3200 );
+insert into route(idx, idy, dist) values(2, 4, 4400);
+insert into route(idx, idy, dist) values(2, 5, 6400 );
+insert into route(idx, idy, dist) values(2, 6, 5400);
+insert into route(idx, idy, dist) values(2, 7, 9100);
+insert into route(idx, idy, dist) values(3, 4, 1200);
+insert into route(idx, idy, dist) values(3, 5, 3200 );
+insert into route(idx, idy, dist) values(3, 6, 2200);
+insert into route(idx, idy, dist) values(3, 7, 5900);
+insert into route(idx, idy, dist) values(4, 5, 2000);
+insert into route(idx, idy, dist) values(4, 6, 1000);
+insert into route(idx, idy, dist) values(4, 7, 4700);
+insert into route(idx, idy, dist) values(5, 6, 3000);
+insert into route(idx, idy, dist) values(5, 7, 6700);
+insert into route(idx, idy, dist) values(6, 7, 3700);
+
+select * from driver;
+select * from user;
+select * from vehicle;
+select * from location;
+select * from place;
+select * from route;
+

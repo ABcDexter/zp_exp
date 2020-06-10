@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "687165529057",
+    "firebase_url": "https://zpdriver-c52f6.firebaseio.com",
+    "project_id": "zpdriver-c52f6",
+    "storage_bucket": "zpdriver-c52f6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687165529057:android:a35f740037acc641e150a0",
+        "android_client_info": {
+          "package_name": "com.example.driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "687165529057-88jaqs8sa654hphcp7qmm7v74it8rdme.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.driver",
+            "certificate_hash": "d4cfbc8b3939c12527d91f01f68e73ae8ff91f15"
+          }
+        },
+        {
+          "client_id": "687165529057-olehshdl4tp6plfj9lsthtlbfhftmh77.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoQOFkhQmf_uJGYIggD8XGldQEvQs8laM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "687165529057-olehshdl4tp6plfj9lsthtlbfhftmh77.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,1 @@
+echo 'export GOOGLE_APPLICATION_CREDENTIALS="MyFirstProject.json"' >> ~/.bash_profile

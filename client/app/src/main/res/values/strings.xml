@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name">Zipp-e</string>
+    <string name="Open">OPEN</string>
+    <string name="Close">CLOSE</string>
+    <string name="vehicle_type">vehicle type:</string>
+    <string name="hi">HI!\u0020</string>
+    <string name="select_btn">SELECT</string>
+    <string name="cancel_btn">CANCEL</string>
+
+    <string-array name="language_option">
+        <item>ENGLISH</item>
+        <item>HINDI</item>
+    </string-array>
+
+    <string-array name="gender_array">
+        <item>GENDER</item>
+        <item>FEMALE</item>
+        <item>MALE</item>
+        <item>NON BINARY</item>
+    </string-array>
+    <!--<string-array name="vehicle_array">
+        <item>VEHICLE TYPE</item>
+        <item>E-CYCLE</item>
+        <item>E-SCOOTY</item>
+        <item>E-BIKE</item>
+        <item>ZBEE</item>
+    </string-array>-->
+    <string-array name="vehicle_array_sans_zbee">
+        <item>VEHICLE TYPE</item>
+        <item>E-CYCLE</item>
+        <item>E-SCOOTY</item>
+        <item>E-BIKE</item>
+    </string-array>
+    <string-array name="vehicle_array_sans_cycle">
+        <item>VEHICLE TYPE</item>
+        <item>E-SCOOTY</item>
+        <item>E-BIKE</item>
+        <item>ZBEE</item>
+    </string-array>
+    <string-array name="rent_array">
+        <item>RENT   OR   RIDE</item>
+        <item>RENT VEHICLE WITHOUT DRIVER</item>
+        <item>RIDE VEHICLE WITH DRIVER</item>
+    </string-array>
+
+    <string-array name="hours_array">
+        <item>NO OF HOURS</item>
+        <item>1 hr / 15 kms</item>
+        <item>3 hr / 40 kms</item>
+        <item>5 hr / 70 kms</item>
+        <item>7 hrs / 90 kms</item>
+    </string-array>
+
+    <string-array name="timing_array">
+        <item>TIMINGS</item>
+        <item>7:00 am</item>
+        <item>8:00 am</item>
+        <item>9:00 am</item>
+        <item>10:00 am</item>
+        <item>11:00 am</item>
+        <item>12:00 pm</item>
+        <item>1:00 pm</item>
+        <item>10:00 am</item>
+    </string-array>
+
+    <string-array name="rider_no_array">
+        <item>NO OF RIDERS ?</item>
+        <item>1</item>
+        <item>2</item>
+        <item>(1 CHILD UPTO 5 YRS RIDES FREE)</item>
+    </string-array>
+    <string-array name="payment_mode_array">
+        <item>PAYMENT MODE</item>
+        <item>CASH</item>
+        <item>UPI</item>
+    </string-array>
+</resources>
