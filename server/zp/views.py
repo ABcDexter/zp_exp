@@ -241,11 +241,11 @@ def isDriverVerified(_, dct):
 @extractParams
 @transaction.atomic
 @checkAuth()
-def userRideGetStatus(_dct, user):
+def userTripGetStatus(_dct, user):
     '''
     Gets the current trips detail for a user
     This must be polled continuously by the user app to detect any state change
-    after a ride request is made
+    after a ride request is madega
 
     Returns:
         active(bool): Whether a trip is in progress
@@ -263,7 +263,7 @@ def userRideGetStatus(_dct, user):
     if user.tid != -1:
         qsTrip = Trip.objects.filter(id=user.tid)
         trip = qsTrip[0]
-        ret = {'st': trip.st, 'tid': trip.id, 'active': trip.st in Trip.USER_ACTIVE}
+        ret = {'st': trip.st, 'tid': trip.id, 'active': trip.st in Trip.USER_ACTIVE, 'rtype': trip.rtype}
 
         # For assigned trip send OTP, and 'an' of vehicle and driver
         if trip.st == 'AS':
@@ -294,7 +294,7 @@ def userRideGetStatus(_dct, user):
 @transaction.atomic
 @checkAuth()
 @checkTripStatus(['INACTIVE'])
-def userRideRequest(dct, user, _trip):
+def userTripRequest(dct, user, _trip):
     '''
     User calls this to request a ride
 
@@ -384,7 +384,7 @@ def userRideCancel(_dct, user, trip):
 @transaction.atomic
 @checkAuth()
 @checkTripStatus(['TO', 'DN', 'PD'])
-def userRideRetire(_dct, user, _trip):
+def userTripRetire(_dct, user, _trip):
     '''
     Resets users active trip
     This is called when the user has seen the message pertaining to trip end for these states:
@@ -422,7 +422,7 @@ def authVehicleGetAvail(_dct, entity):
 @csrf_exempt
 @extractParams
 @checkAuth()
-def authRideGetInfo(dct, entity):
+def authTripGetInfo(dct, entity):
     '''
     Returns trip info for this driver or user for any past or current trip
     '''
@@ -907,7 +907,7 @@ def adminHandleFailedTrip(dct):
 @extractParams
 @checkAuth()
 @checkTripStatus(['INACTIVE'])
-def userRideEstimate(dct, user, _trip):
+def userTripEstimate(dct, user, _trip):
     '''
     Returns the estimated price for the trip
 
