@@ -14,7 +14,7 @@ def do_post(api_name, spock):
     also the auth header
     does the POST.
     """
-    #url = os.getenv('ZP_SRV', 'https://api.villagetech.in:8090/') + api_name
+    #url = os.getenv('ZP_SRV', 'https://api.villageapps.in:8090/') + api_name
     url = 'http://127.0.0.1:9999/' + api_name
 
     headers = {'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
