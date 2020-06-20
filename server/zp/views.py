@@ -341,13 +341,12 @@ def userTripRequest(dct, user, _trip):
 
     trip = Trip()
     trip.uan = user.an
-    trip.srcid = idSrc
+    trip.srcid = user.pid#idSrc #TODO fix this logic
     trip.dstid = idDst
     if dct['rtype'] == '0': # Ride
         trip.npas = dct['npas']
     else: # Rent
         trip.npas = 2
-        iHrs = int(dct['hrs'])
         iHrs = int(dct['hrs'])
         trip.hrs = iHrs
         # this is again updated then the vehicle is actually assigned.

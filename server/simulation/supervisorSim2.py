@@ -50,6 +50,9 @@ class Driver(Entity):
         st = self.sTripState
 
         if st in ['FN', 'TR']:
+
+            if
+
             t = int(ret['time']) / 60
             d = int(ret['dist']) / 1000
             self.log('Waiting for payment: Cost: %.2f, Dist %.2f km' % (ret['price'], d))
@@ -62,19 +65,24 @@ class Driver(Entity):
                     os.remove('money.%d' % self.sTID)
 
         if st == 'AS':
-            self.log('Waiting for user to wear helmet')
+            self.log('Waiting for user to give advance payment with OTP')
 
             if prob(0.0000001): # only 1 % chance of cancelling a trip
                 self.log('Canceling trip!')
                 ret = self.callAPI('driver-ride-cancel')
                 self.logIfErr(ret)
             else:
-                otp = self.tryReadFileData('otp.%d' % self.sTID, 'otp')
-                if otp is not None:
-                    self.log('Received OTP: %d, starting trip' % otp)
-                    ret = self.callAPI('driver-ride-start', {'otp': otp})
-                    if not self.logIfErr(ret):
-                        os.remove('otp.%d' % self.sTID)
+                if prob(0.001):
+                    self.log('Failing trip!')
+                    ret = self.callAPI('auth-trip-fail')
+                    self.logIfErr(ret)
+                else:
+                    otp = self.tryReadFileData('otp.%d' % self.sTID, 'otp')
+                    if otp is not None:
+                        self.log('Received OTP: %d, starting trip' % otp)
+                        ret = self.callAPI('driver-ride-start', {'otp': otp})
+                        if not self.logIfErr(ret):
+                            os.remove('otp.%d' % self.sTID)
 
         if st == 'ST':
             self.sTID = ret['tid']
@@ -87,12 +95,6 @@ class Driver(Entity):
                 ret = self.callAPI('driver-ride-end')
                 self.logIfErr(ret)
 
-            if prob(0.01):
-                self.log('Failing trip!')
-                ret = self.callAPI('auth-trip-fail')
-                self.logIfErr(ret)
-
-
 
 
     def handleInactive(self):
@@ -104,7 +106,7 @@ class Driver(Entity):
             if not self.logIfErr(ret):
                 vehicles = self.waitForVehicles()
                 if 'tid' in ret:
-                    bChoose = prob(0.9)
+                    bChoose = prob(0.999999)
                     self.log('Trip available - %s' % ('accepting...' if bChoose else 'rejecting...') )
                     if bChoose:
                         vehicle = random.choice(vehicles)
