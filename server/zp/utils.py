@@ -347,6 +347,38 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
         'speed': float('%.0f' % (fAvgSpeed * 3.6 ))
     }
 
+
+def getRentPrice(idSrc, idDst, iVType, iPayMode, iTimeHrs=0):
+    '''
+    Determines the price given the rent details and time taken
+    time is etime - stime
+    '''
+    # Get this route distance
+    recRoute = Route.getRoute(idSrc, idDst)
+    fDist = recRoute.dist
+    iVType, iPayMode, iTimeHrs = int(iVType), int(iPayMode), int(iTimeHrs)  # need explicit type conversion to int
+
+    iTimeSec = iTimeHrs * 3600
+    fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
+
+    lstPrice = [90, 80, 70, 60, 50, 50, 50] #for every 2 hours
+
+    price = lstPrice[0]
+    if iTimeHrs == 4 :
+        price += lstPrice[1]
+    elif iTimeHrs == 8:
+        price += lstPrice[1]+lstPrice[2]
+    else:
+        price += lstPrice[1] + lstPrice[2] + lstPrice[3]
+
+    return {
+        'price': float('%.0f' % price),
+        'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
+        'dist': float('%.0f' % (fDist / 1000)),
+        'speed': float('%.0f' % (fAvgSpeed * 3.6))
+    }
+
+
 ###########################################
 
 

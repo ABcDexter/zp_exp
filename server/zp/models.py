@@ -189,7 +189,7 @@ class Trip(models.Model):
     npas      Number of passengers
     rtype ; rent or ride
     pmode : payment mode (cash / upi)
-
+    hrs : for RENTAL, number of hours
     '''
     STATUSES = [
         ('RQ', 'requested'),  # requested from the user via app
@@ -233,6 +233,7 @@ class Trip(models.Model):
     npas  = models.IntegerField()
     rtype = models.CharField(db_index=True, choices=TYPE,  max_length=10, default=2)
     pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)
+    hrs = models.IntegerField(db_index=True, default=0)
 
     class Meta:
         db_table = 'trip'

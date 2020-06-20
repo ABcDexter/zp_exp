@@ -5,7 +5,7 @@ import json
 import logging
 import os
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import getcontext
 from functools import wraps
 from json import JSONDecodeError
@@ -25,7 +25,7 @@ from .models import Place, Trip, Progress, Location, Route
 
 from .utils import HttpJSONError, ZPException, DummyException, HttpJSONResponse, HttpRecordsResponse, log
 from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renameTmpImgFiles, getOTP
-from .utils import getRoutePrice, getTripPrice
+from .utils import getRoutePrice, getTripPrice, getRentPrice
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 
 from url_magic import makeView
@@ -268,17 +268,35 @@ def userTripGetStatus(_dct, user):
         # For assigned trip send OTP, and 'an' of vehicle and driver
         if trip.st == 'AS':
             ret['otp'] = getOTP(trip.uan, trip.dan, trip.atime)
-            ret['van'] = trip.van
-
+            vehicle = Vehicle.objects.filter(an=trip.van)[0]
+            ret['vno'] = vehicle.regn
+            if trip.rtype == 1:
+                ret['price'] = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
+            
         # For started trips send trip progress percent
         # this is redundant, this functionality is provided by authProgressPercent()
         if trip.st == 'ST':
             progress = Progress.objects.filter(tid=trip.id)[0]
             ret['pct'] = progress.pct
+            if trip.rtype == 1:
+                currTime = datetime.now(timezone.utc)
+                diffTime = (currTime - trip.stime).total_seconds() / 60 # minutes 
+                remHrs = diffTime - trip.hrs 
+                ret['time'] = remHrs
+                
+            # TODO In case of rental make the rental send the number of minutes remaining .
 
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
-            price = getTripPrice(trip)
+            if trip.rtype == 0:
+                price = getTripPrice(trip)
+            else : #renta
+                vehicle = Vehicle.objects.filter(an=trip.van)[0]
+                currTime = datetime.now(timezone.utc)
+                diffTime = (currTime - trip.stime).total_seconds() / 60 # minutes 
+                remHrs = diffTime - trip.hrs 
+                price = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, remHrs)
+
             ret.update(price)
     else:
         ret = {'active': False}
@@ -299,14 +317,23 @@ def userTripRequest(dct, user, _trip):
     User calls this to request a ride
 
     HTTP args:
+    Ride :
         npas - number of passengers
         srcid - id of the selected start place
         dstid - id of the selected destination
         rtype - rent or ride
         vtype - vehicle type
         pmode - payment mode (cash / upi)
+
+     Rent :
+        srcid - id of the selected start place
+        dstid - id of the selected destination
+        rtype - rent or ride
+        vtype - vehicle type
+        pmode - payment mode (cash / upi)
+        hrs   - number of hours
     '''
-    print("Ride Request param : ", dct)
+    print("Trip Request param : ", dct)
 
     # Even though we can use IDs directly, look them up in the DB to prevent bogus IDs
     idSrc = Place.objects.filter(id=dct['srcid'])[0].id
@@ -316,7 +343,15 @@ def userTripRequest(dct, user, _trip):
     trip.uan = user.an
     trip.srcid = idSrc
     trip.dstid = idDst
-    trip.npas = dct['npas']
+    if dct['rtype'] == '0': # Ride
+        trip.npas = dct['npas']
+    else: # Rent
+        trip.npas = 2
+        iHrs = int(dct['hrs'])
+        iHrs = int(dct['hrs'])
+        trip.hrs = iHrs
+        # this is again updated then the vehicle is actually assigned.
+
     trip.rtype = dct['rtype']
     trip.pmode = dct['pmode']
     trip.rtime = datetime.now(timezone.utc)
@@ -458,7 +493,7 @@ def authPlaceGet(_dct, _entity):
 @transaction.atomic
 @checkAuth()
 @checkTripStatus(['AS', 'ST'])
-def authRideFail(dct, entity, trip):
+def authTripFail(dct, entity, trip):
     '''
     Called by driver or user in an emergency which causes the trip to end
     '''
@@ -487,7 +522,7 @@ def authRideFail(dct, entity, trip):
 @transaction.atomic
 @checkAuth()
 @checkTripStatus(['TO', 'CN', 'DN', 'PD'])
-def authRideRetire(dct, entity, trip):
+def authTripRetire(dct, entity, trip):
     '''
     Resets this entities active trip
     This is called when an entity has seen the message pertaining to trip end
@@ -912,14 +947,21 @@ def userTripEstimate(dct, user, _trip):
     Returns the estimated price for the trip
 
     HTTP args:
+        rtype
         vtype
         npas
         dstid
         pmode
+
+        hrs
     '''
     print("Ride Estimate param : ", dct)
-    ret = getRoutePrice(user.pid, dct['dstid'], dct['vtype'], dct['pmode'])
+    if dct['rtype'] == '0':
+        ret = getRoutePrice(user.pid, dct['dstid'], dct['vtype'], dct['pmode'])
     #should it not allow the prices from point A(source) to point B(destination) instead of taking the pid of user?
+    else:
+        ret = getRentPrice(user.pid,  dct['dstid'], dct['vtype'], dct['pmode'], dct['hrs'])
+
     return HttpJSONResponse(ret)
 
 
