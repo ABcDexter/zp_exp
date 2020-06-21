@@ -50,19 +50,17 @@ class Driver(Entity):
         st = self.sTripState
 
         if st in ['FN', 'TR']:
+            print ('values : ', ret)
+            if int(ret['price']) > 0 :
 
-            if
+                self.log('Waiting for payment: Cost: %.2f...' % (ret['price']))
 
-            t = int(ret['time']) / 60
-            d = int(ret['dist']) / 1000
-            self.log('Waiting for payment: Cost: %.2f, Dist %.2f km' % (ret['price'], d))
-
-            pay = self.tryReadFileData('money.%d' % self.sTID, 'payment')
-            if pay is not None:
-                self.log('Received payment: %.2f, rating user' % pay)
-                ret = self.callAPI('driver-payment-confirm')
-                if not self.logIfErr(ret):
-                    os.remove('money.%d' % self.sTID)
+                pay = self.tryReadFileData('money.%d' % self.sTID, 'payment')
+                if pay is not None:
+                    self.log('Received payment: %.2f, rating user' % pay)
+                    ret = self.callAPI('driver-payment-confirm')
+                    if not self.logIfErr(ret):
+                        os.remove('money.%d' % self.sTID)
 
         if st == 'AS':
             self.log('Waiting for user to give advance payment with OTP')

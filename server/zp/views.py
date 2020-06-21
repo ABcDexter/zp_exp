@@ -1014,7 +1014,7 @@ def userGiveOtp(dct, user, _trip):
     return HttpJSONResponse({})
 
 ############################################################
-# Extra for PWA
+# Extra
 
 @makeView()
 @csrf_exempt

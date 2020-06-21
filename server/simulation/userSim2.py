@@ -17,7 +17,7 @@ class User(Entity):
         super().__init__()
         self.arrPlaces = []
         self.sTripState = ''
-        self.lstHrs = [0, 2, 4, 6, 8, 10]
+        self.lstHrs = [1, 2, 4, 6, 8, 10]
 
 
     # log a message if its different from the last logged message
