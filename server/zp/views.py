@@ -1036,7 +1036,7 @@ def signUser(_, dct: Dict):
     '''
     print(dct)
     sPhone = str(dct['phone'])
-    sAadhaar = dct['an']
+    sAadhaar = str(dct['an'])
     sAuth = getClientAuth(sAadhaar, sPhone)
     sName = dct['name']
     iAge = int(dct['age'])
