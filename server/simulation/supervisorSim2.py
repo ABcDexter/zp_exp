@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from entity import *
 
 '''
-Script simulates a drivers behaviour
+Script simulates a superVisor behaviour
 Run multiple instances of this to simulate multiple
 '''
 
