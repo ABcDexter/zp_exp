@@ -13,11 +13,10 @@ Script simulates a superVisor behaviour
 Run multiple instances of this to simulate multiple
 '''
 
-class Driver(Entity):
+class Supervisor(Entity):
 
     def __init__(self):
         super().__init__()
-        self.sState = ''
         self.sOTP = ''
         self.sTripState = None
         self.bPollVehicle = False
@@ -28,8 +27,8 @@ class Driver(Entity):
     def log(self, sMsg):
         if sMsg != self.sLastMsg:
             t = datetime.datetime.now()
-            print('[%s] [PID: %s] [TID: %s] [TS: %s] [ST: %s]  %s' %
-                  (datetime.datetime.strftime(t, '%x %X'), self.iPID, self.sTID, self.sTripState, self.sState or '--', sMsg))
+            print('[%s] [PID: %s] [TID: %s] [TS: %s]  %s' %
+                  (datetime.datetime.strftime(t, '%x %X'), self.iPID, self.sTID, self.sTripState, sMsg))
             self.sLastMsg = sMsg
 
 
@@ -65,12 +64,12 @@ class Driver(Entity):
         if st == 'AS':
             self.log('Waiting for user to give advance payment with OTP')
 
-            if prob(0.0000001): # only 1 % chance of cancelling a trip
+            if prob(0.0001): # only 0.01 % chance of cancelling a trip
                 self.log('Canceling trip!')
-                ret = self.callAPI('driver-ride-cancel')
+                ret = self.callAPI('sup-rent-cancel')
                 self.logIfErr(ret)
             else:
-                if prob(0.001):
+                if prob(0.000000001):
                     self.log('Failing trip!')
                     ret = self.callAPI('auth-trip-fail')
                     self.logIfErr(ret)
@@ -78,7 +77,7 @@ class Driver(Entity):
                     otp = self.tryReadFileData('otp.%d' % self.sTID, 'otp')
                     if otp is not None:
                         self.log('Received OTP: %d, starting trip' % otp)
-                        ret = self.callAPI('driver-ride-start', {'otp': otp})
+                        ret = self.callAPI('sup-rent-start', {'otp': otp})
                         if not self.logIfErr(ret):
                             os.remove('otp.%d' % self.sTID)
 
@@ -90,35 +89,35 @@ class Driver(Entity):
 
             if pct == 100:
                 self.log('Trip completed - ending')
-                ret = self.callAPI('driver-ride-end')
+                ret = self.callAPI('sup-rent-end')
                 self.logIfErr(ret)
 
 
 
     def handleInactive(self):
         if self.sTID != -1: # TO, CN, DN, FL, PD
-            self.handleFinishedTrip('driver')
+            self.handleFinishedTrip('sup')
             self.bChangeStatus = True
         else: #RQ state
-            ret = self.callAPI('driver-ride-check')
+            ret = self.callAPI('sup-rent-check')
             if not self.logIfErr(ret):
                 vehicles = self.waitForVehicles()
                 if 'tid' in ret:
-                    bChoose = prob(0.999999)
-                    self.log('Trip available - %s' % ('accepting...' if bChoose else 'rejecting...') )
+                    bChoose = prob(0.999999) # high probability of accepting
+                    self.log('Trip requested - %s' % ('accepting...' if bChoose else 'rejecting...') )
                     if bChoose:
-                        vehicle = random.choice(vehicles)
+                        vehicle = random.choice(vehicles) #random vechile, and not the one
                         params = {'tid': ret['tid'], 'van': vehicle['an'] }
-                        ret = self.callAPI('driver-ride-accept', params)
+                        ret = self.callAPI('sup-rent-accept', params)
                         if not self.logIfErr(ret):
                             self.sTID = params['tid']
                             self.iDstPID = ret['dstid']
-                            self.log('Accepted trip %s to PID %d' % (json.dumps(params), self.iDstPID))
+                            self.log('Accepted trip %s to PID %d for %d hrs' % (json.dumps(params), self.iDstPID, ret['hrs']))
                             self.bChangeStatus = False
 
 
     def handleTripStatus(self):
-        ret = self.callAPI('driver-ride-get-status')
+        ret = self.callAPI('sup-rent-get-status')
         if 'active' in ret and ret['active']:
             self.handleActive(ret)
         else:
@@ -126,51 +125,36 @@ class Driver(Entity):
             self.handleInactive()
 
 
-    def handleDriverStatus(self):
-        ret = self.callAPI('driver-get-mode')
-        self.sState = ret['st']
-
-        newState = None
-        if prob(0.99):
-            if self.sState == 'OF':
-                newState = 'AV'
-        else:
-            if self.sState == 'AV':
-                newState = 'OF'
-
-        if newState is not None:
-            ret = self.callAPI('driver-set-mode', {'st': newState})
-            sSuccess = 'succeeded' if ret['st'] == newState else 'failed'
-            self.sState = ret['st']
-            self.log('Switching to state %s - %s' % (newState, sSuccess))
-
-        return self.sState != 'OF'
+    def handlerSuperStatus(self):
+        '''
+        unlike Driver, super is 24x7 AV
+        '''
+        return True # Anna, chaubees ghante chaukanna
 
 
-    def run(self, idxDriver, fDelay):
+    def run(self, idxSupervisor, fDelay):
 
         # Get list of drivers and choose the idxDriver'th one
-        arrDrivers = self.callAPI('admin-data-get', {'table': 'Driver'})
-        dctDriver = arrDrivers[idxDriver]
+        arrSupes = self.callAPI('admin-data-get', {'table': 'Supervisor'})
+        dctSuper = arrSupes[idxSupervisor]
+        #print('######################; ', dctSuper)
+        self.sAuth = dctSuper['auth']
+        self.log('Supervisor an: %d' % dctSuper['an'])
 
-        self.sAuth = dctDriver['auth']
-        self.sState = dctDriver['mode']
-        self.log('Driver an: %d' % dctDriver['an'])
-
-        # Assume driver is in some valid place get it
-        pid = dctDriver['pid']
+        # Assume Super is in some valid place get it
+        pid = dctSuper['pid']
         dctPlace = self.callAPI('admin-data-get', {'table': 'Place', 'pk': pid})[0]
-        self.log('Driver located at pid %d: %s' % (pid, dctPlace['pn']))
+        self.log('Supvervisor located at hub with pid %d: %s' % (pid, dctPlace['pn']))
         self.iPID = pid
 
-        bOnline = False
+        bOnline = True # assuming super is always online
 
         # code follows the state machine in the flowchart
         while True:
 
             # set of/av
             if self.bChangeStatus:
-                bOnline = self.handleDriverStatus()
+                bOnline = self.handlerSuperStatus()
 
             if bOnline:
                 self.handleTripStatus()
@@ -190,11 +174,11 @@ def main():
         print(USAGE)
         sys.exit(-1)
 
-    idxDriver = int(sys.argv[1])
+    idxSupervisor = int(sys.argv[1])
     fDelay = 3 if len(sys.argv) < 3 else float(sys.argv[2])
 
-    entity = Driver()
-    entity.run(idxDriver, fDelay)
+    entity = Supervisor()
+    entity.run(idxSupervisor, fDelay)
 
 if __name__ == "__main__":
     main()

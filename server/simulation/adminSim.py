@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from entity import *
 
 '''
-Script simulates a drivers behaviour
+Script simulates  admin behaviour
 Run multiple instances of this to simulate multiple
 '''
 
@@ -36,7 +36,7 @@ class Admin(Entity):
             dctRet = self.callAPI('admin-refresh')
             self.logIfErr(dctRet)
             if not self.logIfErr(dctRet) and prob(0.5):
-            # Fix failed vehicles and drivers very lazily with 50% probability
+            # Fix failed vehicles and super very lazily with 50% probability
                 self.log('Fixing trip failures')
 
                 failedList = self.callAPI('admin-handle-failed-trip')

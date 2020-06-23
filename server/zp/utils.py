@@ -20,7 +20,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
 
 from .models import Place, Trip, Progress, Route
-from .models import Vehicle, User, Driver
+from .models import Vehicle, User, Driver, Supervisor
 
 #from fuzzywuzzy import fuzz as accurate
 
@@ -464,6 +464,7 @@ class checkAuth(object):
             isUser = sFnName.startswith('user')
             isAdmin = sFnName.startswith('admin')
             isAuth = sFnName.startswith('auth')
+            isSuper = sFnName.startswith('sup')
 
             if isAdmin:
                 if dct.get('auth', '') != settings.ADMIN_AUTH:
@@ -486,6 +487,11 @@ class checkAuth(object):
                     # Ensure the driver is in the desired state if any
                     if self.driverMode is None or qsDriver[0].mode in self.driverMode:
                         return func(dct, qsDriver[0])
+            if isSuper or isAuth:
+                qsSuper = Supervisor.objects.filter(auth=auth)
+                print('query set : ', qsSuper)
+                if (qsSuper is not None) and (len(qsSuper) > 0):
+                    return func(dct, qsSuper[0])
 
             return HttpJSONError('Unauthorized', 403)
 

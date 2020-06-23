@@ -23,7 +23,7 @@ def prob(fProb):
 FINISHED_STATUS_MSGS = {
     'PD': 'Trip ended successfully',
     'CN': 'Trip was cancelled by user',
-    'DN': 'Trip was denied by driver',
+    'DN': 'Trip was denied by supervisor',
     'FL': 'Trip failed',
     'TO': 'Trip timed out',
 }
@@ -48,7 +48,7 @@ class Entity:
     #SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
 
     def callAPI(self, sAPI, dct={}, auth=None):
-        # print(sAPI, dct)
+        print(sAPI, dct, auth, self.sAuth)
         if sAPI.startswith('admin'):
             dct['auth'] = Entity.ADMIN_AUTH
         else:
@@ -63,6 +63,7 @@ class Entity:
         req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
         jsonResp = urllib.request.urlopen(req, timeout=30).read()
         ret = json.loads(jsonResp)
+        print("############## ret : ", ret)
         return ret
 
 
@@ -103,7 +104,7 @@ class Entity:
             return True
         return False
 
-    # Only AS for driver, RQ, AS, ST for user
+    # Only AS for supervisor, RQ, AS, ST for user
     def maybeCancelTrip(self, typ, fProb=0.1):  # p is the probability to cancel, 10% by default
         # once in 10 cancel the trip
         if prob(fProb):
@@ -119,8 +120,8 @@ class Entity:
         '''
         self.log('retiring %s trip for %s' % (state, entity))
         ret = {}
-        if entity == 'driver' and state in ['TO', 'CN']:
-            ret = self.callAPI('driver-rent-retire')
+        if entity == 'sup' and state in ['TO', 'CN']:
+            ret = self.callAPI('sup-rent-retire')
 
         elif entity == 'user' and state in ['TO', 'DN', 'PD']:
             ret = self.callAPI('user-trip-retire')

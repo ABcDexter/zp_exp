@@ -313,3 +313,33 @@ class Location(models.Model):
         ordering = ['lat', 'lng']
         managed = True
 
+class Supervisor(models.Model):
+    '''
+    an(int):    Aadhaar number
+    pn(str):    Phone number
+    auth(str):  Supervisor auth token
+    dl(str):    Driving licence no.
+    name(str):  Real name
+    gdr(str):   Gender
+    age(int)
+    pid(int):   Index of current place - see Place table
+    tid(int):   Index of current trip - see Trip table
+    hs(str):    Home state of the Driver
+    '''
+
+    an   = models.BigIntegerField(primary_key=True)
+    pn   = models.CharField(max_length=32, db_index=True)
+    auth = models.CharField(max_length=16, db_index=True)
+
+    pid  = models.IntegerField(null=True, db_index=True)
+    tid  = models.IntegerField(default=-1, db_index=True)
+
+    dl   = models.CharField(null=True, max_length=20)
+    name = models.CharField(null=True, max_length=64, db_index=True)
+    gdr  = models.CharField(null=True, max_length=16, db_index=True)
+    age  = models.IntegerField(null=True, db_index=True)
+    hs   = models.CharField(null=True, max_length=50)
+
+    class Meta:
+        db_table = 'super'
+        managed = True
