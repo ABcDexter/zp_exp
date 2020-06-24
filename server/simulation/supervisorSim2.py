@@ -93,7 +93,6 @@ class Supervisor(Entity):
                 self.logIfErr(ret)
 
 
-
     def handleInactive(self):
         if self.sTID != -1: # TO, CN, DN, FL, PD, ST
             self.handleFinishedTrip('sup')
