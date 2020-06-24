@@ -208,7 +208,7 @@ class Trip(models.Model):
     # Active trip states wrt users and drivers perspective
     USER_ACTIVE = ['RQ', 'AS', 'ST', 'FN', 'TR']  # not TO, CN, DN, FL, PD
     DRIVER_ACTIVE = ['AS', 'ST', 'FN', 'TR']      # not TO, CN, DN, RQ, FL, PD
-    SUPER_ACTIVE = ['AS', 'FN', 'TR']             # not TO, CN, DN, RQ, ST, PD, FL
+    SUPER_ACTIVE = ['AS', 'FN', 'TR', 'ST']             # not TO, CN, DN, RQ, ST, PD, FL
     # States requiring payment to be done
     PAYABLE = ['FN', 'TR']
 
