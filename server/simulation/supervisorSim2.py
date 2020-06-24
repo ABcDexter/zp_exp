@@ -176,7 +176,8 @@ def main():
 
     entity = Supervisor()
     entity.run(idxSupervisor, fDelay)
+    #todo work in the tid stuff for sup
 
 if __name__ == "__main__":
     main()
-#ToDo need to integrate the simpy module
+#TODO need to integrate the simpy module
