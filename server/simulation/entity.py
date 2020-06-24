@@ -136,6 +136,7 @@ class Entity:
         if not self.logIfErr(ret):
             st = ret['st']
             if st != 'FL':
+                # since supervisor doesn't affect ST state directly, machine is coming here.
                 sMsg = FINISHED_STATUS_MSGS.get(st, 'Trip in unexpected state: %s , for : %s' .format(st, entity))
                 self.log(sMsg)
                 if st in FINISHED_STATUS_MSGS.keys(): # TO, CN, DN, PD # FL is retired by adminHandleFailedTrip()
