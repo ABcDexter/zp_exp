@@ -208,7 +208,7 @@ class Trip(models.Model):
     # Active trip states wrt users and drivers perspective
     USER_ACTIVE = ['RQ', 'AS', 'ST', 'FN', 'TR']  # not TO, CN, DN, FL, PD
     DRIVER_ACTIVE = ['AS', 'ST', 'FN', 'TR']      # not TO, CN, DN, RQ, FL, PD
-
+    SUPER_ACTIVE = ['AS', 'FN', 'TR']             # not TO, CN, DN, RQ, ST, PD, FL
     # States requiring payment to be done
     PAYABLE = ['FN', 'TR']
 
@@ -332,7 +332,6 @@ class Supervisor(models.Model):
     auth = models.CharField(max_length=16, db_index=True)
 
     pid  = models.IntegerField(null=True, db_index=True)
-    tid  = models.IntegerField(default=-1, db_index=True)
 
     dl   = models.CharField(null=True, max_length=20)
     name = models.CharField(null=True, max_length=64, db_index=True)

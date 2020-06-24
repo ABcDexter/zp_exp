@@ -48,7 +48,7 @@ class Entity:
     #SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
 
     def callAPI(self, sAPI, dct={}, auth=None):
-        print(sAPI, dct, auth, self.sAuth)
+        #print(sAPI, dct, auth, self.sAuth)
         if sAPI.startswith('admin'):
             dct['auth'] = Entity.ADMIN_AUTH
         else:
@@ -56,14 +56,14 @@ class Entity:
             #print(sAPI.startswith('auth-admin'))
             if sAPI.startswith('auth-admin'): # needed for authAdminEntityUpdate
                 dct['adminAuth'] = Entity.ADMIN_AUTH
-        #print("### new  :::", sAPI, dct)
+        #print(" new  :::", sAPI, dct)
         sUrl = Entity.SERVER_URL + sAPI
         dctHdrs = {'Content-Type': 'application/json'}
         jsonData = json.dumps(dct).encode()
         req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
         jsonResp = urllib.request.urlopen(req, timeout=30).read()
         ret = json.loads(jsonResp)
-        print("############## ret : ", ret)
+        #print("############## ret : ", ret)
         return ret
 
 

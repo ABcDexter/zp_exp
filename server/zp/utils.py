@@ -489,7 +489,7 @@ class checkAuth(object):
                         return func(dct, qsDriver[0])
             if isSuper or isAuth:
                 qsSuper = Supervisor.objects.filter(auth=auth)
-                print('query set : ', qsSuper)
+                #print('query set : ', qsSuper)
                 if (qsSuper is not None) and (len(qsSuper) > 0):
                     return func(dct, qsSuper[0])
 

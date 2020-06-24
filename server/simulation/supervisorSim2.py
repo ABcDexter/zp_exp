@@ -95,9 +95,8 @@ class Supervisor(Entity):
 
 
     def handleInactive(self):
-        if self.sTID != -1: # TO, CN, DN, FL, PD
+        if self.sTID != -1: # TO, CN, DN, FL, PD, ST
             self.handleFinishedTrip('sup')
-            self.bChangeStatus = True
         else: #RQ state
             ret = self.callAPI('sup-rent-check')
             if not self.logIfErr(ret):
@@ -111,9 +110,8 @@ class Supervisor(Entity):
                         ret = self.callAPI('sup-rent-accept', params)
                         if not self.logIfErr(ret):
                             self.sTID = params['tid']
-                            self.iDstPID = ret['dstid']
-                            self.log('Accepted trip %s to PID %d for %d hrs' % (json.dumps(params), self.iDstPID, ret['hrs']))
-                            self.bChangeStatus = False
+                            self.iDstPID = ret['dstname']
+                            self.log('Assigned trip %s , expected drop PID %d for %d hrs' % (json.dumps(params), self.iDstPID, ret['hrs']))
 
 
     def handleTripStatus(self):
@@ -121,7 +119,7 @@ class Supervisor(Entity):
         if 'active' in ret and ret['active']:
             self.handleActive(ret)
         else:
-            # TO, CN, DN, RQ, FL, PD
+            # TO, CN, DN, RQ, FL, PD, ST
             self.handleInactive()
 
 

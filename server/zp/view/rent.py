@@ -116,7 +116,8 @@ def authTimeRemaining(_dct, entity, trip):
 
 @makeView()
 @csrf_exempt
-@handleException()
+@handleException(IndexError, 'Trip not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
 def supRentCheck(_dct, sup):
@@ -126,11 +127,11 @@ def supRentCheck(_dct, sup):
     No trips are returned if there are no vehicles there
     '''
     # Get available vehicles at this hub, if none return empty
-    qsVehicles = Vehicle.objects.filter(pid=driver.pid, tid=-1)
+    qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
     if len(qsVehicles) == 0:
         return HttpJSONResponse({}) # making it easy for Volley to handle JSONArray and JSONObject
 
-    # Get the first requested trip from drivers place id
+    # Get the first requested trip from Supervisors place id
     qsTrip = Trip.objects.filter(srcid=sup.pid, st='RQ').order_by('-rtime')
     ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id}
     return HttpJSONResponse(ret)
@@ -138,6 +139,7 @@ def supRentCheck(_dct, sup):
 
 @makeView()
 @csrf_exempt
+@handleException(IndexError, 'Trip not found', 404)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
@@ -160,7 +162,7 @@ def supRentAccept(dct, sup):
 
         # Make the trip
         trip.st = 'AS'
-        trip.dan = sup.an #supervisor can be taken as driver
+        trip.dan = sup.an # supervisor can be taken as driver
         trip.van = vehicle.an
         trip.atime = datetime.now(timezone.utc)
         trip.save()
@@ -182,16 +184,19 @@ def supRentAccept(dct, sup):
         src = Place.objects.filter(id=trip.srcid)[0]
         dst = Place.objects.filter(id=trip.dstid)[0]
         ret.update({'srcname': src.pn, 'dstname': dst.pn, 'hrs': trip.hrs})
-        print("Accepting trip : ", ret)
+        #print("Accepting trip : ", ret)
     else:
         raise ZPException(400, 'Trip already assigned')
 
     return HttpJSONResponse(ret)
 
 @makeView()
+@csrf_exempt
+@handleException(IndexError, 'Trip not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def supRentGetStatus(_dct, sup):
+def supRentGetStatus(dct, _sup):
     '''
     Driver calls this to get the status of the current active trip if any
     It must be polled continuously to detect state changes
@@ -204,11 +209,9 @@ def supRentGetStatus(_dct, sup):
             TR, FN: price, time (seconds), dist (meters), speed (m/s average)
     '''
 
-    # Get the last trip with this driver if any
-
     ret = {'active': False}
 
-    qsTrip = Trip.objects.filter(id=sup.tid)
+    qsTrip = Trip.objects.filter(id=dct['tid'])
     if len(qsTrip):
         trip = qsTrip[0]
 
@@ -225,7 +228,7 @@ def supRentGetStatus(_dct, sup):
         if trip.st in Trip.PAYABLE:
             ret = getTripPrice(trip)
 
-        ret['active'] = trip.st in Trip.DRIVER_ACTIVE
+        ret['active'] = trip.st in Trip.SUPER_ACTIVE
         ret['st'] = trip.st
         ret['tid'] = trip.id
 
@@ -234,17 +237,23 @@ def supRentGetStatus(_dct, sup):
 
 @makeView()
 @csrf_exempt
-@handleException()
+@handleException(IndexError, 'Trip not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkTripStatus(['AS'])
-def supRentCancel(_dct, _sup, trip):
+def supRentCancel(dct, _sup):
     '''
     Called by supervisor to deny a trip that was assigned (AS)
+    HTTP args :
+    tid
     '''
     # Change trip status from assigned to  denied
     # Set the state for the trip and driver - driver is set to OF on failure
+    qsTrip = Trip.objects.filter(id=dct['tid'])
+    if len(qsTrip):
+        trip = qsTrip[0]
+
     if trip.st == 'AS':
         trip.st = 'DN'
 
@@ -261,17 +270,22 @@ def supRentCancel(_dct, _sup, trip):
 
 @makeView()
 @csrf_exempt
+@handleException(IndexError, 'Trip not found', 404)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkTripStatus(['AS'])
-def superRentStart(dct, _driver, trip):
+def superRentStart(dct, _sup):
     '''
     Supervisor calls this to start the trip providing the OTP that the user shared
     HTTP Args:
-        OTP
+        OTP,
+        tid
     '''
+    qsTrip = Trip.objects.filter(id=dct['tid'])
+    if len(qsTrip):
+        trip = qsTrip[0]
+
     if str(dct['otp']) == str(getOTP(trip.uan, trip.dan, trip.atime)):
         trip.st = 'ST'
         trip.stime = datetime.now(timezone.utc)
@@ -284,14 +298,21 @@ def superRentStart(dct, _driver, trip):
 
 @makeView()
 @csrf_exempt
+@handleException(IndexError, 'Trip not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkTripStatus(['ST'])
-def supRentEnd(_dct, _sup, trip):
+def supRentEnd(dct, _sup):
     '''
     Supervisor calls this to end ride
+    HTTP args:
+    tid
     '''
+    qsTrip = Trip.objects.filter(id=dct['tid'])
+    if len(qsTrip):
+        trip = qsTrip[0]
+
     trip.st = 'FN'
     trip.etime = datetime.now(timezone.utc)
     trip.save()
@@ -306,14 +327,19 @@ def supRentEnd(_dct, _sup, trip):
 
 @makeView()
 @csrf_exempt
+@handleException(IndexError, 'Trip not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkTripStatus(['FN', 'TR'])
-def supPaymentConfirm(_dct, _sup, trip):
+def supPaymentConfirm(dct, _sup):
     '''
     Supervisor calls this to confirm money received
     '''
+    qsTrip = Trip.objects.filter(id=dct['tid'])
+    if len(qsTrip):
+        trip = qsTrip[0]
+
     trip.st = 'PD'
     trip.save()
 
@@ -326,17 +352,21 @@ def supPaymentConfirm(_dct, _sup, trip):
 
 @makeView()
 @csrf_exempt
+@handleException(IndexError, 'Trip not found', 404)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkTripStatus(['CN', 'TO'])
-def supRentRetire(_dct, _sup, trip):
+def supRentRetire(dct, _sup):
     '''
     Resets vehicles active trip
     '''
     # made the driver AV and reset the tid to -1
     # Reset the vehicle tid to available
+    qsTrip = Trip.objects.filter(id=dct['tid'])
+    if len(qsTrip):
+        trip = qsTrip[0]
+
     vehicle = Vehicle.objects.filter(tid=trip.id)[0]
     vehicle.tid = Vehicle.AVAILABLE
     vehicle.save()
