@@ -355,64 +355,9 @@ class Supervisor(models.Model):
 """
 class Delivery(models.Model):
     '''
-    id (int): Autoincrement primary key
-    st(str):  Current delivery status see Delivery.STATUSES
-    uan(int): User aadhaar
-    dan(int): Driver aadhaar
-    van(int): Vehicle assigned number
-    rtime:    Trip request timestamp
-    atime:    Trip assign timestamp
-    stime:    Trip start timestamp
-    etime:    Trip end time (regardless of completion or failure)
-    srcid:    Source place id
-    dstid     Destination place id
-    npas      Number of passengers
-    rtype ; rent or ride
-    pmode : payment mode (cash / upi)
-    hrs : for RENTAL, number of hours
+    tabula rasa
     '''
-    STATUSES = [
-        ('RQ', 'requested'),  # requested from the user via app
-        ('AS', 'assigned'),   # accepted by the delivery-partner(d-p), waiting for the d-p to receive or user to CN
-        ('ST', 'started'),  # started by the d-p
-        ('FN', 'finished'),  # completed delivery
-        ('PD', 'paid'),  # payment completed
-
-        ('CN', 'cancelled'),  # cancelled by the user
-        ('DN', 'denied'),     # refused by driver, this happens only after AS state
-        ('TO', 'timeout'),  # request timed out
-        ('FL', 'failed'),  # failed due to any reason other than cancellation
-    ]
-
-    # Active trip states wrt users and drivers perspective
-    USER_ACTIVE = ['RQ', 'AS', 'ST', 'FN', 'TR']  # not TO, CN, DN, FL, PD
-    DRIVER_ACTIVE = ['AS', 'ST', 'FN', 'TR']      # not TO, CN, DN, RQ, FL, PD
-    SUPER_ACTIVE = ['AS', 'FN', 'TR', 'ST']             # not TO, CN, DN, RQ, ST, PD, FL
-    # States requiring payment to be done
-    PAYABLE = ['FN', 'TR']
-
-    CASH = 0
-    UPI = 1
-    PAYMENT = [('CASH', CASH),('UPI', UPI)]
-
-    RIDE = 0
-    RENT = 1
-    TYPE =[ ('RIDE', RIDE),('RENT', RENT)]
-
-    st    = models.CharField( max_length=2, choices=STATUSES, default='RQ', db_index=True)
-    uan   = models.BigIntegerField (db_index=True)
-    dan   = models.BigIntegerField(db_index=True, default=0)
-    van   = models.BigIntegerField(db_index=True, default=0)
-    rtime = models.DateTimeField(auto_now_add=True, db_index=True)
-    atime = models.DateTimeField(db_index=True, null=True)
-    stime = models.DateTimeField(db_index=True, null=True)
-    etime = models.DateTimeField(db_index=True, null=True)
-    srcid = models.IntegerField(db_index=True)
-    dstid = models.IntegerField(db_index=True)
-    npas  = models.IntegerField()
-    rtype = models.CharField(db_index=True, choices=TYPE,  max_length=10, default=2)
-    pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)
-    hrs = models.IntegerField(db_index=True, default=0)
+    blank slate
     class Meta:
         db_table = 'delivery'
         managed = True
