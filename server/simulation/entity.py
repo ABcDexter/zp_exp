@@ -45,7 +45,7 @@ class Entity:
 
     ADMIN_AUTH = '437468756c68752066687461676e'
     SERVER_URL = os.environ.get('ZP_URL', 'http://127.0.0.1:9999/')           # localhost
-    #SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
+    #SERVER_URL = os.environ.get('ZP_URL', 'https://api.villagetech.in:8090/')  # server
 
     def callAPI(self, sAPI, dct={}, auth=None):
         #print(sAPI, dct, auth, self.sAuth)
@@ -90,7 +90,7 @@ class Entity:
     def showTripProgress(self):
         ret = self.callAPI('auth-progress-percent')
         if not self.logIfErr(ret):
-            self.log('Trip progress %s%%' % ret['pct'])
+            self.log('Trip progress %s hours' % ret['pct'])
             self.iPID = ret['pid']
             return ret['pct']
 

@@ -7,11 +7,11 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from url_magic import makeView
-from ..models import Place, Trip, Progress, Driver
+from ..models import Place, Trip, Progress, Supervisor
 from ..models import User, Vehicle
-from ..utils import ZPException, HttpJSONResponse, getRentPrice
+from ..utils import ZPException, HttpJSONResponse
 from ..utils import getOTP
-from ..utils import getRoutePrice, getTripPrice
+from ..utils import getTripPrice, getRentPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 
 ###########################################
@@ -73,7 +73,8 @@ def userRentGetVehicle(_dct, entity, trip):
     Returns aadhaar, name and phone of current assigned vehicle,
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    ret = {'vno': vehicle.regn, 'otp': 1243} #TODO complete this
+    ret = {'vno': vehicle.regn, 'otp': str(getOTP(trip.uan, trip.dan, trip.atime)),
+           'price': getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)}
     return HttpJSONResponse(ret)
 
 
@@ -83,13 +84,36 @@ def userRentGetVehicle(_dct, entity, trip):
 @extractParams
 @checkAuth()
 @checkTripStatus('AS')
-def userRentGetSup(_dct, entity, trip):
+def userRentGetSup(_dct, _user, trip):
     '''
     Returns aadhaar, name and phone of hub supervisor
     '''
-    driver = Driver.objects.filter(an=trip.dan)[0]
-    ret = {'pn': driver.pn, 'name': driver.name}
+    sup = Supervisor.objects.filter(an=trip.dan)[0]
+    ret = {'pn': sup.pn, 'name': sup.name}
     return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+@checkTripStatus('ST')
+def userRentEnd(_dct, _user, trip):
+    '''
+    Returns aadhaar, name and phone of hub supervisor
+    '''
+    trip.st = 'FN'
+    trip.etime = datetime.now(timezone.utc)
+    trip.save()
+
+    # Get the vehicle
+    # recVehicle = Vehicle.objects.filter(an=trip.van)[0]
+    #
+    # Calculate price
+    # dctPrice = getRentPrice(trip.srcid, trip.dstid,recVehicle.vtype,trip.pmode, trip.etime-trip.stime).seconds//3600)
+    return HttpJSONResponse({}) # dctPrice)
+
 
 
 @makeView()
@@ -132,8 +156,8 @@ def supRentCheck(_dct, sup):
         return HttpJSONResponse({}) # making it easy for Volley to handle JSONArray and JSONObject
 
     # Get the first requested trip from Supervisors place id
-    qsTrip = Trip.objects.filter(srcid=sup.pid, st='RQ').order_by('-rtime')
-    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id}
+    qsTrip = Trip.objects.filter(srcid=sup.pid, st__in=['RQ', 'AS', 'TR', 'FN']).order_by('-rtime')
+    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'st': qsTrip[0].st}
     return HttpJSONResponse(ret)
 
 
@@ -144,7 +168,7 @@ def supRentCheck(_dct, sup):
 @extractParams
 @transaction.atomic
 @checkAuth()
-def supRentAccept(dct, sup):
+def supRentVehicleAssign(dct, sup):
     '''
     Accept requested rent
     HTTP args:
@@ -162,7 +186,7 @@ def supRentAccept(dct, sup):
 
         # Make the trip
         trip.st = 'AS'
-        trip.dan = sup.an # supervisor can be taken as driver
+        trip.dan = sup.an #dan is sup.an
         trip.van = vehicle.an
         trip.atime = datetime.now(timezone.utc)
         trip.save()
@@ -184,7 +208,7 @@ def supRentAccept(dct, sup):
         src = Place.objects.filter(id=trip.srcid)[0]
         dst = Place.objects.filter(id=trip.dstid)[0]
         ret.update({'srcname': src.pn, 'dstname': dst.pn, 'hrs': trip.hrs})
-        #print("Accepting trip : ", ret)
+        # print("Accepting trip : ", ret)
     else:
         raise ZPException(400, 'Trip already assigned')
 
@@ -198,8 +222,9 @@ def supRentAccept(dct, sup):
 @checkAuth()
 def supRentGetStatus(dct, _sup):
     '''
-    Driver calls this to get the status of the current active trip if any
-    It must be polled continuously to detect state changes
+    Supervisor calls this to get the status of the trip with tid
+    HTTPS args
+    tid
     Returns:
         active: boolean - means trip is in AS, ST, FN/TR
         status(str): Trip status
@@ -249,7 +274,7 @@ def supRentCancel(dct, _sup):
     tid
     '''
     # Change trip status from assigned to  denied
-    # Set the state for the trip and driver - driver is set to OF on failure
+    # Set the state for the trip
     qsTrip = Trip.objects.filter(id=dct['tid'])
     if len(qsTrip):
         trip = qsTrip[0]
@@ -275,7 +300,7 @@ def supRentCancel(dct, _sup):
 @extractParams
 @transaction.atomic
 @checkAuth()
-def superRentStart(dct, _sup):
+def supRentStart(dct, _sup):
     '''
     Supervisor calls this to start the trip providing the OTP that the user shared
     HTTP Args:

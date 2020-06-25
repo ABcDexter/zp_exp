@@ -394,7 +394,7 @@ def userRideGetDriver(_dct, entity, trip):
 @transaction.atomic
 @checkAuth()
 @checkTripStatus(['RQ', 'AS', 'ST'])
-def userRideCancel(_dct, user, trip):
+def userTripCancel(_dct, user, trip):
     '''
     Cancel the ride for a user if requested, assigned or started
     A Terminated trip will still require payment confirmation to end
@@ -506,10 +506,11 @@ def authTripFail(dct, entity, trip):
     vehicle.tid = Vehicle.FAILED
     vehicle.save()
 
-    # lock the driver
-    driver = entity if type(entity) is Driver else Driver.objects.filter(an=trip.dan)[0]
-    driver.mode = 'LK'
-    driver.save()
+    if trip.rtype == 0:
+        # lock the driver
+        driver = entity if type(entity) is Driver else Driver.objects.filter(an=trip.dan)[0]
+        driver.mode = 'LK'
+        driver.save()
 
     return HttpJSONResponse({})
 
@@ -657,11 +658,12 @@ def adminProgressAdvance(dct):
         recLoc.save()
 
     vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    driver = Driver.objects.filter(an=trip.dan)[0]
     user = User.objects.filter(an=trip.uan)[0]
     updateLoc(vehicle, y, x)
-    updateLoc(driver, y, x)
     updateLoc(user, y, x)
+    if trip.rtype == 0:
+        driver = Driver.objects.filter(an=trip.dan)[0]
+        updateLoc(driver, y, x)
 
     prog.pct = currPct
     prog.save()

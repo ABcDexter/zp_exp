@@ -302,13 +302,6 @@ def getClientAuth(an: str, pn: str) -> str:
     return base64.b64encode(m.digest()).decode()[:8]
 
 
-def getTripPrice(trip):
-    '''
-    Gets price info for non active trips
-    '''
-    vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    return getRoutePrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
-
 
 def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
     '''
@@ -378,6 +371,15 @@ def getRentPrice(idSrc, idDst, iVType, iPayMode, iTimeHrs=0):
         'speed': float('%.0f' % (fAvgSpeed * 3.6))
     }
 
+def getTripPrice(trip):
+    '''
+    Gets price info for non active trips
+    '''
+    vehicle = Vehicle.objects.filter(an=trip.van)[0]
+    if trip.rtype == 0:
+        return getRoutePrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
+    else :
+        return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
 
 ###########################################
 

@@ -18,6 +18,7 @@ class User(Entity):
         self.arrPlaces = []
         self.sTripState = ''
         self.lstHrs = [1, 2, 4, 6, 8, 10]
+        self.iRentHr = 1 # default 1 hour
 
 
     # log a message if its different from the last logged message
@@ -53,8 +54,11 @@ class User(Entity):
     def doExtendtrip(self, p):
         if prob(p):
             hrs = random.choice(self.lstHrs)
-            self.log('Extending trip!... for %d hours ' % (hrs))
-            self.callAPI('user-rental-update', {'hrs': hrs})
+            self.iRentHr = hrs
+            self.log('Extending trip!... for %d hours ' % (self.iRentHr))
+            self.callAPI('user-rental-update', {'hrs': self.iRentHr})
+            return hrs
+        return 0
 
     def handleActive(self, dct):
         self.sTID = dct['tid']
@@ -69,7 +73,7 @@ class User(Entity):
         elif st in ['TO', 'CN', 'DN', 'PD', 'FL']:
             self.handleFinishedTrip()
         else:
-            if not self.maybeCancelTrip('user', 0.00):
+            if not self.maybeCancelTrip('user', 0.001):
                 if st == 'AS':
                     ret = self.callAPI('user-rent-get-vehicle')
                     if not self.logIfErr(ret):
@@ -79,11 +83,29 @@ class User(Entity):
 
                         if prob(0.95):
                             self.writeJSON('otp.%d' % self.sTID, {'otp': dct['otp']})
+                            self.log('Initial payment for trip: '
+                                     'Cost: %.2f, ' % (ret['price']))
+                            self.writeJSON('money.%d' % self.sTID, {'payment': ret['price']})
                             self.log(sMsg + ': OTP shared with Supervisor')
                 elif st == 'ST':
-                    self.showTripProgress()
-                    self.doExtendtrip(0.33)
-                    self.maybeFailTrip('user', 0.01) # Try to fail the trip.
+                    self.sTID = dct['tid']
+
+                    pct = self.showTripProgress()
+                    self.callAPI('admin-progress-advance', {'tid': self.sTID, 'pct': 1}) # number of hours
+
+                    if pct == self.iRentHr:
+                        self.log('Trip completed - ending...')
+                        self.callAPI('user-rent-end')
+                        self.writeJSON('tid.%d' % self.sTID, {'tid': dct['tid']})
+                        # TODO how do I physically end the trip.... :hmm think
+
+                    else:
+                        extend = self.doExtendtrip(0.01)  # 1 % probability
+                        if extend > 0:
+                            self.iRentHr += extend
+
+                        self.maybeFailTrip('user', 0.01)  # Try to fail the trip.
+
 
                 elif st == 'RQ':
                     self.log('Waiting for granting Vehicle...')
