@@ -352,13 +352,94 @@ class Supervisor(models.Model):
 #Delivery module
 ########################
 
-"""
+
 class Delivery(models.Model):
     '''
     tabula rasa
     '''
-    blank slate
+    STATUSES = [
+        ('RQ', 'requested'),  # requested from the user via app
+        ('AS', 'assigned'),  # assigned a delivery agent to this, waiting for the agent to come to user location
+        ('ST', 'started'),  # agent started delivery
+        ('FN', 'finished'),  # delivered successfully
+
+        ('CN', 'cancelled'),  # cancelled by the user
+        ('DN', 'denied'),  # refused by agent, this happens only after AS state
+        ('TO', 'timeout'),  # request timed out
+        ('FL', 'failed'),  # failed due to any reason other than cancellation
+    ]
+
+    # Active delivery states wrt user's and agent's perspective
+    USER_ACTIVE = ['RQ', 'AS', 'ST']  # not TO, CN, DN, FL, FN
+    AGENT_ACTIVE = ['AS', 'ST', 'FN']  # not TO, CN, DN, FL, RQ
+
+    # States requiring payment to be done
+    PAYABLE = ['RQ']
+
+    CASH = 0
+    UPI = 1
+    PAYMENT = [('CASH', CASH), ('UPI', UPI)]
+
+    st = models.CharField(max_length=2, choices=STATUSES, default='RQ', db_index=True)
+    uan = models.BigIntegerField(db_index=True)
+    dan = models.BigIntegerField(db_index=True, default=0)
+    van = models.BigIntegerField(db_index=True, default=0)
+    rtime = models.DateTimeField(auto_now_add=True, db_index=True)
+    atime = models.DateTimeField(db_index=True, null=True)
+    stime = models.DateTimeField(db_index=True, null=True)
+    etime = models.DateTimeField(db_index=True, null=True)
+    srcpin = models.IntegerField(db_index=True)
+    dstpin = models.IntegerField(db_index=True)
+    #nitem = models.IntegerField() #TODO categories
+    #we TODO weights
+    #rtype = models.CharField(db_index=True, choices=TYPE, max_length=10, default=2)
+    pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)
+    #hrs = models.IntegerField(db_index=True, default=0)
+
     class Meta:
         db_table = 'delivery'
         managed = True
-"""
+
+
+
+class Agent(models.Model):
+    '''
+    Delivery agent
+    an(int):    Aadhaar number
+    pn(str):    Phone number
+    auth(str):  Client auth token
+    dl(str):    Agent licence no.
+    name(str):  Real name
+    gdr(str):   Gender
+    age(int)
+    mode(str):   Driver mode registering(RG), available(AV), booked(BK), offline(OF), locked(LK)
+    pid(int):   Index of current place - see Place table
+    tid(int):   Index of current trip - see Trip table
+    hs(str):    Home state of the Agent
+    '''
+    MODES = [
+        ('RG', 'registering'),  # Agent is under registration process
+        ('AV', 'available'),  # Agent is online, waiting for deliveries
+        ('BK', 'booked'),     # Agent booked by user
+        ('OF', 'offline'),    # Agent is offline
+        ('LK', 'locked'),      # Agent is locked
+    ]
+
+    an   = models.BigIntegerField(primary_key=True)
+    pn   = models.CharField(max_length=32, db_index=True)
+    auth = models.CharField(max_length=16, db_index=True)
+    mode = models.CharField(max_length=2, choices=MODES, default='OF', db_index=True)
+
+    pid  = models.IntegerField(null=True, db_index=True)
+    tid  = models.IntegerField(default=-1, db_index=True)
+
+    dl   = models.CharField(null=True, max_length=20)
+    name = models.CharField(null=True, max_length=64, db_index=True)
+    gdr  = models.CharField(null=True, max_length=16, db_index=True)
+    age  = models.IntegerField(null=True, db_index=True)
+    hs   = models.CharField(null=True, max_length=50)
+
+    class Meta:
+        db_table = 'agent'
+        managed = True
+
