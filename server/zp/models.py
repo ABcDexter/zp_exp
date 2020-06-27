@@ -347,18 +347,3 @@ class Supervisor(models.Model):
     class Meta:
         db_table = 'super'
         managed = True
-
-########################
-#Delivery module
-########################
-
-"""
-class Delivery(models.Model):
-    '''
-    tabula rasa
-    '''
-    blank slate
-    class Meta:
-        db_table = 'delivery'
-        managed = True
-"""
