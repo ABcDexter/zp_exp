@@ -112,7 +112,8 @@ class Supervisor(Entity):
     def handleHub(self):
         """
         look for RQ rental trips,
-        this is because the supervisor is sitting at the particular hub and is always waiting for requests
+        this is because the supervisor is sitting at the particular hub
+        and is always waiting for requests
         """
         ret = self.callAPI('sup-rent-check')
         if not self.logIfErr(ret):
