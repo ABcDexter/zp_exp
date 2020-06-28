@@ -21,6 +21,7 @@ from django.http import HttpResponse
 
 from .models import Place, Trip, Progress, Route
 from .models import Vehicle, User, Driver, Supervisor
+from .models import Delivery
 
 #from fuzzywuzzy import fuzz as accurate
 
@@ -574,3 +575,75 @@ def retireEntity(entity: [User, Driver, Vehicle]) -> None :
     '''
     entity.tid = -1
     entity.save()
+
+
+###########################################
+
+# Delivery module
+
+
+def getDeliveryPrice(idSrc, idDst, iVType, iPayMode, fTimeHrs=0):
+    '''
+    Determines the price given the rent details and time taken
+    time is etime - stime
+    '''
+    # Get this route distance
+    recRoute = Route.getRoute(idSrc, idDst)
+    fDist = recRoute.dist
+    iVType, iPayMode, iTimeHrs = int(iVType), int(iPayMode), int(fTimeHrs)  # need explicit type conversion to int
+
+    iTimeSec = fTimeHrs * 3600
+    fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
+
+    lstPrice = [90, 80, 70, 60, 50, 50, 50] #for every 2 hours
+
+    price = lstPrice[0]
+    if iTimeHrs == 4 :
+        price += lstPrice[1]
+    elif iTimeHrs == 8:
+        price += lstPrice[1]+lstPrice[2]
+    else:
+        price += lstPrice[1] + lstPrice[2] + lstPrice[3]
+
+    return {
+        'price': float('%.0f' % price),
+        'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
+        'dist': float('%.0f' % (fDist / 1000)),
+        'speed': float('%.0f' % (fAvgSpeed * 3.6))
+    }
+
+
+class checkDeliveryStatus(object):
+    '''
+    Decorator which ensures that the given entity has a Delivery and the latest Delivery status is
+    one of the values specified in the decorators parameter (as an array)
+    if arrValid == None all statuses are valid
+    This MUST be used only after the checkAuth decorator
+    '''
+    def __init__(self, arrValid=None):
+        self.arrValid = arrValid
+
+    def __call__(self, func):
+        @wraps(func)
+        def decorated_func(dct, entity):
+            #log('checkTripStatus:' + func.__name__)
+
+            # Get any trip assigned to this entity
+            qsDel = Delivery.objects.filter(id=entity.tid)
+
+            # If there is a delivery, ensure its status is within allowed
+            if len(qsDel) > 0:
+                # arrValid == ['INACTIVE'] means "No trip should be active for this entity"
+                if self.arrValid and len(self.arrValid) > 0 and self.arrValid[0] == 'INACTIVE':
+                    return HttpJSONError('Delivery already active', 400)
+
+                # Ensure the trip has an allowed status
+                bAllowAll = self.arrValid is None
+                if bAllowAll or qsDel[0].st in self.arrValid:
+                    return func(dct, entity, qsDel[0])
+                else:
+                    return HttpJSONError('Invalid trip or trip status', 404)
+
+            return func(dct, entity, None)
+
+        return decorated_func

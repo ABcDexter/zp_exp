@@ -97,7 +97,7 @@ class Place(models.Model):
 
     class Meta:
         db_table = 'place'
-        managed = True  
+        managed = True
 
 
 class Route(models.Model):
@@ -121,7 +121,7 @@ class Route(models.Model):
 
     class Meta:
         db_table = 'route'
-        managed = True  
+        managed = True
         indexes = [models.Index(fields=['idx', 'idy'])]
 
 
@@ -380,6 +380,23 @@ class Delivery(models.Model):
     UPI = 1
     PAYMENT = [('CASH', CASH), ('UPI', UPI)]
 
+    DOCUMENT = 0
+    CLOTHES = 1
+    FOOD = 2
+    HOUSEHOLD = 3
+    ELETRONIC = 4
+    OTHER = 5
+
+    CATEGORIES = [('DOC',DOCUMENT) , ('CLO', CLOTHES), ('FOOD', FOOD),
+                  ('HOUSE', HOUSEHOLD),('ELECT', ELETRONIC), ('OTHER', OTHER ) ]
+
+    DIMENSIONS = [('S', 'SMALL'),
+                  ('M', 'MEDIUM'),
+                  ('L', 'LARGE'),
+                  ('XL', 'EXTRALARGE'),
+                  ('XXL', 'EXTRAALARGE')
+                ]
+
     st = models.CharField(max_length=2, choices=STATUSES, default='RQ', db_index=True)
     uan = models.BigIntegerField(db_index=True)
     dan = models.BigIntegerField(db_index=True, default=0)
@@ -390,11 +407,11 @@ class Delivery(models.Model):
     etime = models.DateTimeField(db_index=True, null=True)
     srcpin = models.IntegerField(db_index=True)
     dstpin = models.IntegerField(db_index=True)
-    #nitem = models.IntegerField() #TODO categories
+    itype = models.CharField(db_index=True, choices=CATEGORIES, max_length=6, default='OTHER')
+    idim = models.CharField(db_index=True, choices=DIMENSIONS, max_length=6, default='M')
+
     #we TODO weights
-    #rtype = models.CharField(db_index=True, choices=TYPE, max_length=10, default=2)
     pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)
-    #hrs = models.IntegerField(db_index=True, default=0)
 
     class Meta:
         db_table = 'delivery'
