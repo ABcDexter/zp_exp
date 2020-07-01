@@ -362,7 +362,7 @@ class Delivery(models.Model):
         ('AS', 'assigned'),  # assigned a delivery agent to this, waiting for the agent to come to user location
         ('ST', 'started'),  # agent started delivery
         ('FN', 'finished'),  # delivered successfully
-
+        ('PD', 'paid'),     #paid
         ('CN', 'cancelled'),  # cancelled by the user
         ('DN', 'denied'),  # refused by agent, this happens only after AS state
         ('TO', 'timeout'),  # request timed out
@@ -370,11 +370,11 @@ class Delivery(models.Model):
     ]
 
     # Active delivery states wrt user's and agent's perspective
-    USER_ACTIVE = ['RQ', 'AS', 'ST']  # not TO, CN, DN, FL, FN
-    AGENT_ACTIVE = ['AS', 'ST', 'FN']  # not TO, CN, DN, FL, RQ
+    USER_ACTIVE = ['RQ', 'AS' ]  # not PD, ST, TO, CN, DN, FL, FN
+    AGENT_ACTIVE = ['AS', 'ST' ]  # not RQ, PD, TO, CN, DN, FL, FN
 
     # States requiring payment to be done
-    PAYABLE = ['RQ']
+    PAYABLE = ['RQ', 'AS']
 
     CASH = 0
     UPI = 1
@@ -410,7 +410,7 @@ class Delivery(models.Model):
     itype = models.CharField(db_index=True, choices=CATEGORIES, max_length=6, default='OTHER')
     idim = models.CharField(db_index=True, choices=DIMENSIONS, max_length=6, default='M')
 
-    #we TODO weights
+    # we TODO weights
     pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)
 
     class Meta:
@@ -433,6 +433,7 @@ class Agent(models.Model):
     pid(int):   Index of current place - see Place table
     tid(int):   Index of current trip - see Trip table
     hs(str):    Home state of the Agent
+    veh(int): Has a vehicle or not
     '''
     MODES = [
         ('RG', 'registering'),  # Agent is under registration process
@@ -441,7 +442,10 @@ class Agent(models.Model):
         ('OF', 'offline'),    # Agent is offline
         ('LK', 'locked'),      # Agent is locked
     ]
-
+    VEH = [
+        ('0', 'false'), # agent is using our vehicle
+        ('1', 'true') # agent has his her own vehicle
+    ]
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
     auth = models.CharField(max_length=16, db_index=True)
@@ -455,8 +459,8 @@ class Agent(models.Model):
     gdr  = models.CharField(null=True, max_length=16, db_index=True)
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
+    veh  = models.CharField(max_length=1, choices=VEH, default='0', db_index=True)
 
     class Meta:
         db_table = 'agent'
         managed = True
-

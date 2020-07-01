@@ -21,7 +21,7 @@ from django.http import HttpResponse
 
 from .models import Place, Trip, Progress, Route
 from .models import Vehicle, User, Driver, Supervisor
-from .models import Delivery
+from .models import Delivery, Agent
 
 #from fuzzywuzzy import fuzz as accurate
 
@@ -468,6 +468,7 @@ class checkAuth(object):
             isAdmin = sFnName.startswith('admin')
             isAuth = sFnName.startswith('auth')
             isSuper = sFnName.startswith('sup')
+            isAgent = sFnName.startswith('agent')
 
             if isAdmin:
                 if dct.get('auth', '') != settings.ADMIN_AUTH:
@@ -490,9 +491,18 @@ class checkAuth(object):
                     # Ensure the driver is in the desired state if any
                     if self.driverMode is None or qsDriver[0].mode in self.driverMode:
                         return func(dct, qsDriver[0])
+
+            if isAgent or isAuth:
+                qsAgent = Agent.objects.filter(auth=auth)
+
+                # Ensure we have a confirmed Agent
+                if (qsAgent is not None) and (len(qsAgent) > 0) and qsAgent[0].mode != 'RG':
+                    # Ensure the agent is in the desired state if any
+                    if self.driverMode is None or qsAgent[0].mode in self.driverMode: #agent is basically driver
+                        return func(dct, qsAgent[0])
+
             if isSuper or isAuth:
                 qsSuper = Supervisor.objects.filter(auth=auth)
-                #print('query set : ', qsSuper)
                 if (qsSuper is not None) and (len(qsSuper) > 0):
                     return func(dct, qsSuper[0])
 
@@ -581,7 +591,6 @@ def retireEntity(entity: [User, Driver, Vehicle]) -> None :
 
 # Delivery module
 
-
 def getDeliveryPrice(idSrc, idDst, iVType, iPayMode, fTimeHrs=0):
     '''
     Determines the price given the rent details and time taken
@@ -620,7 +629,7 @@ class checkDeliveryStatus(object):
     if arrValid == None all statuses are valid
     This MUST be used only after the checkAuth decorator
     '''
-    def __init__(self, arrValid=None):
+    def __init__(self, arrValid = None):
         self.arrValid = arrValid
 
     def __call__(self, func):
@@ -633,16 +642,16 @@ class checkDeliveryStatus(object):
 
             # If there is a delivery, ensure its status is within allowed
             if len(qsDel) > 0:
-                # arrValid == ['INACTIVE'] means "No trip should be active for this entity"
+                # arrValid == ['INACTIVE'] means "No delivery    should be active for this entity"
                 if self.arrValid and len(self.arrValid) > 0 and self.arrValid[0] == 'INACTIVE':
                     return HttpJSONError('Delivery already active', 400)
 
-                # Ensure the trip has an allowed status
+                # Ensure the delivery has an allowed status
                 bAllowAll = self.arrValid is None
                 if bAllowAll or qsDel[0].st in self.arrValid:
                     return func(dct, entity, qsDel[0])
                 else:
-                    return HttpJSONError('Invalid trip or trip status', 404)
+                    return HttpJSONError('Invalid delivery or delivery status', 404)
 
             return func(dct, entity, None)
 
