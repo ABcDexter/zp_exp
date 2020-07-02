@@ -14,6 +14,7 @@ from ..utils import getOTP
 from ..utils import getDeliveryPrice
 from ..utils import handleException, extractParams, checkAuth, retireEntity, getClientAuth
 from ..utils import checkDeliveryStatus
+import googlemaps
 
 ###########################################
 # Types
@@ -57,6 +58,7 @@ def isAgentVerified(_, dct):
 
 @makeView()
 @csrf_exempt
+@handleException(googlemaps.exceptions.TransportError, 'Internet Connectivity Problem', 503)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
@@ -66,16 +68,14 @@ def userDeliveryEstimate(dct, user, _trip):
     Returns the estimated price for the delivery
 
     HTTP args:
-        rtype
-        vtype
-        npas
-        dstid
+        auth, srcpin, dstpin,
+        srclat, srclng,
+        dstlat, dstlng
+        self or not
         pmode
-
-        hrs
     '''
-    print("Ride Estimate param : ", dct)
-    ret = getDeliveryPrice(dct['src'], dct['dst'], 1, dct['pmode'], fTimeHrs=0)
+    print("Delivery Estimate param : ", dct)
+    ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], 1, dct['pmode'])
     return HttpJSONResponse(ret)
 
 

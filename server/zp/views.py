@@ -29,7 +29,7 @@ from .utils import getRoutePrice, getTripPrice, getRentPrice
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 
 from url_magic import makeView
-from zp.view import rent, ride
+from zp.view import rent, ride, deliver
 
 ###########################################
 # Types

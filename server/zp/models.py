@@ -405,8 +405,14 @@ class Delivery(models.Model):
     atime = models.DateTimeField(db_index=True, null=True)
     stime = models.DateTimeField(db_index=True, null=True)
     etime = models.DateTimeField(db_index=True, null=True)
+
     srcpin = models.IntegerField(db_index=True)
+    srclat = models.FloatField(null=False, db_index=True, default=0)
+    srclng = models.FloatField(null=False, db_index=True, default=0)
     dstpin = models.IntegerField(db_index=True)
+    dstlat = models.FloatField(null=False, db_index=True, default=0)
+    dstlng = models.FloatField(null=False, db_index=True, default=0)
+
     itype = models.CharField(db_index=True, choices=CATEGORIES, max_length=6, default='OTHER')
     idim = models.CharField(db_index=True, choices=DIMENSIONS, max_length=6, default='M')
 

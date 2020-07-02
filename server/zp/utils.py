@@ -23,6 +23,7 @@ from .models import Place, Trip, Progress, Route
 from .models import Vehicle, User, Driver, Supervisor
 from .models import Delivery, Agent
 
+from django.conf import settings
 #from fuzzywuzzy import fuzz as accurate
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = settings.GOOGLE_APPLICATION_CREDENTIALS
@@ -591,28 +592,60 @@ def retireEntity(entity: [User, Driver, Vehicle]) -> None :
 
 # Delivery module
 
-def getDeliveryPrice(idSrc, idDst, iVType, iPayMode, fTimeHrs=0):
+def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
     '''
     Determines the price given the rent details and time taken
     time is etime - stime
     '''
     # Get this route distance
-    recRoute = Route.getRoute(idSrc, idDst)
-    fDist = recRoute.dist
-    iVType, iPayMode, iTimeHrs = int(iVType), int(iPayMode), int(fTimeHrs)  # need explicit type conversion to int
 
-    iTimeSec = fTimeHrs * 3600
+    qsPlaces = Place.objects.all().values()
+    arrLocs = [recPlace for recPlace in qsPlaces]
+    srcCoOrds = ['%s,%s' % (srclat,srclng)]
+    dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
+
+    #log(arrLocCoOrds)
+
+    import googlemaps
+    gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
+    dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
+    #log(dctDist)
+    print( '############# DST : ', dctDist)
+    if dctDist['status'] != 'OK':
+        raise ZPException(501, 'Error fetching distance matrix')
+
+    dctElem = dctDist['rows'][0]['elements'][0]
+    nDist = 0
+    nTime = 0
+    if dctElem['status'] == 'OK':
+        # Update route table
+        nDist = dctElem['distance']['value']
+        nTime = dctElem['duration']['value']
+    print('distance: ', nDist)
+    print('time: ', nTime)
+
+    fDist = nDist
+    iVType, iPayMode, iTimeSec = 2, 1, nTime #int(iVType), int(iPayMode), int(iTimeSec)  # need explicit type conversion to int
+
+    # Calculate the speed if time is known or else use average speed for estimates
     fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
 
-    lstPrice = [90, 80, 70, 60, 50, 50, 50] #for every 2 hours
+    # Get base fare for vehicle
+    fBaseFare = Vehicle.BASE_FARE[iVType]
 
-    price = lstPrice[0]
-    if iTimeHrs == 4 :
-        price += lstPrice[1]
-    elif iTimeHrs == 8:
-        price += lstPrice[1]+lstPrice[2]
-    else:
-        price += lstPrice[1] + lstPrice[2] + lstPrice[3]
+    # Get average economic weight
+    idSrcWt = 100 # Place.objects.filter(id=idSrc)[0].wt
+    idDstWt = 100 # Place.objects.filter(id=idDst)[0].wt
+    avgWt = (idSrcWt + idDstWt) / 200
+
+    # get per km price for vehicle
+    maxPricePerKM = 15
+    vehiclePricePerKM = (iVType / 4) * maxPricePerKM
+
+    # Calculate price
+    price = fBaseFare + (fDist / 1000) * vehiclePricePerKM * avgWt
+    if iPayMode == Trip.UPI:
+        price *= 0.9
 
     return {
         'price': float('%.0f' % price),
