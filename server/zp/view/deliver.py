@@ -75,7 +75,7 @@ def userDeliveryEstimate(dct, user, _trip):
         pmode
     '''
     print("Delivery Estimate param : ", dct)
-    ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], 1, dct['pmode'])
+    ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], 1, 1)
     return HttpJSONResponse(ret)
 
 
