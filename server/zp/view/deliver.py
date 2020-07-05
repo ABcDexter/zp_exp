@@ -1,13 +1,15 @@
 # imports
 import datetime
 from datetime import datetime, timedelta
+from decimal import getcontext
 
 from django.db import transaction
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 from url_magic import makeView
-from ..models import Place, Delivery, Progress
+from ..models import Place, Delivery, Progress, Location
 from ..models import User, Vehicle, Agent
 from ..utils import ZPException, HttpJSONResponse
 from ..utils import getOTP
@@ -34,6 +36,167 @@ makeView.APP_NAME = 'zp'
 
 @makeView()
 @csrf_exempt
+@handleException(googlemaps.exceptions.TransportError, 'Internet Connectivity Problem', 503)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def userIsAgentAv(dct, user):
+    '''
+    Returns the Agents count around 5 km radius of a particular lat and lng
+
+    HTTP args:
+        auth : auth of user
+        srclat : latitude
+        srclng : longitude
+    '''
+
+    srcCoOrds = ['%s,%s' % (dct['srclat'], dct['srclng'])]
+
+    getcontext().prec = 50
+    qsAgents = Agent.objects.filter(mode='AV').values()#Agent.objects.raw('''SELECT * FROM  location INNER JOIN agent WHERE location.an = agent.an AND agent.mode='AV';''');
+
+    ret = []
+    # print("$$$$$$$$$$$$$$$$: " ,qsAgents, qsAgents[0]['an'])
+    for agent in qsAgents:
+
+        qsLocs = Location.objects.filter(an=agent['an']).values()
+        # print('##############',qsLocs)
+        arrLocs = [recPlace for recPlace in qsAgents]
+        dstCoOrds = ['%s,%s' % (recPlace['lat'], recPlace['lng']) for recPlace in qsLocs]
+        # print('################',dstCoOrds)
+
+        print(srcCoOrds, dstCoOrds)
+
+        import googlemaps
+        gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
+        dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
+        # log(dctDist)
+        # print('############# DST : ', dctDist)
+        if dctDist['status'] != 'OK':
+            raise ZPException(501, 'Error fetching distance matrix')
+
+        dctElem = dctDist['rows'][0]['elements'][0]
+        nDist = 0
+        nTime = 0
+        if dctElem['status'] == 'OK':
+            nDist = dctElem['distance']['value']
+            nTime = int(dctElem['duration']['value'])//60
+        elif dctElem['status'] == 'NOT_FOUND':
+            nDist , nTime = 2048, 60  # dummy distance, time in mins
+        elif dctElem['status'] == 'ZERO_RESULTS':
+            nDist , nTime = 4096, 120
+
+        print('distance: ', nDist)
+        print('time: ', nTime)
+
+        ret.append({'an': agent['an'], 'name': agent['name'], 'dist': nDist, 'time': nTime})
+
+    return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(googlemaps.exceptions.TransportError, 'Internet Connectivity Problem', 503)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def userDeliveryEstimate(dct, _user):
+    '''
+    Returns the estimated price for the delivery
+
+    HTTP args:
+        auth, srcpin, dstpin,
+        srclat, srclng,
+        dstlat, dstlng
+        self or not
+        pmode
+    '''
+    print("Delivery Estimate param : ", dct)
+    ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], 1, 1)
+    return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkDeliveryStatus(['INACTIVE'])
+def userDeliveryRequest(dct, user, _delivery):
+    '''
+    Returns the estimated price for the delivery
+
+    HTTP args:
+        rtype
+        vtype
+        npas
+        dstid
+        pmode
+
+        hrs
+    '''
+    print("Delivery request param : ", dct)
+
+
+    delivery = Delivery()
+    delivery.st = 'RQ'
+    delivery.srclat, delivery.srclng, delivery.dstlat, delivery.dstlng = dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng']
+    delivery.uan = user.an
+    delivery.srcpin = 263136  #TODO fix this logic
+    delivery.dstpin = 246149
+    delivery.idim = dct['idim']
+    delivery.itype = dct['itype']
+    delivery.pmode = 1 # online for now , later one can be edited to dct['pmode']
+    delivery.rtime = datetime.now(timezone.utc)
+    delivery.save()
+
+    return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkDeliveryStatus(['AS'])
+def userDeliveryPay(_dct, _user, delivery):
+    '''
+        Cancel the Delivery for a user if requested, assigned or started
+        Should PD delivery also be allowed to Cancel? What about refund?
+    '''
+    delivery.st = 'PD'
+    delivery.save()
+
+    return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkDeliveryStatus(['RQ', 'AS'])
+def userDeliveryCancel(_dct, _user, delivery):
+    '''
+        Cancel the Delivery for a user if requested, assigned or started
+        Should PD delivery also be allowed to Cancel? What about refund?
+    '''
+    delivery.st = 'CN'
+    delivery.etime = datetime.now(timezone.utc)
+    delivery.save()
+
+    return HttpJSONResponse({})
+
+
+# ============================================================================
+# Agent views
+# ============================================================================
+
+@makeView()
+@csrf_exempt
 @handleException(IndexError, 'Agent not found', 404)
 @extractParams
 def isAgentVerified(_, dct):
@@ -54,59 +217,6 @@ def isAgentVerified(_, dct):
         ret = {'status': True, 'auth': agent.auth}
 
     return HttpJSONResponse(ret)
-
-
-@makeView()
-@csrf_exempt
-@handleException(googlemaps.exceptions.TransportError, 'Internet Connectivity Problem', 503)
-@handleException(KeyError, 'Invalid parameters', 501)
-@extractParams
-@checkAuth()
-@checkDeliveryStatus(['INACTIVE'])
-def userDeliveryEstimate(dct, user, _trip):
-    '''
-    Returns the estimated price for the delivery
-
-    HTTP args:
-        auth, srcpin, dstpin,
-        srclat, srclng,
-        dstlat, dstlng
-        self or not
-        pmode
-    '''
-    print("Delivery Estimate param : ", dct)
-    ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], 1, 1)
-    return HttpJSONResponse(ret)
-
-
-
-@makeView()
-@csrf_exempt
-@handleException(KeyError, 'Invalid parameters', 501)
-@extractParams
-@checkAuth()
-@checkDeliveryStatus(['RQ'])
-def userDeliveryCost(dct, user, _trip):
-    '''
-    Returns the estimated price for the delivery
-
-    HTTP args:
-        rtype
-        vtype
-        npas
-        dstid
-        pmode
-
-        hrs
-    '''
-    print("Ride Estimate param : ", dct)
-    ret = getDeliveryPrice(dct['src'], dct['dst'], 1, dct['pmode'], fTimeHrs=0)
-    return HttpJSONResponse(ret)
-
-
-# ============================================================================
-# Agent views
-# ============================================================================
 
 
 @makeView()

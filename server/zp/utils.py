@@ -604,7 +604,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
     srcCoOrds = ['%s,%s' % (srclat,srclng)]
     dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
 
-    #log(arrLocCoOrds)
+    print(srcCoOrds,dstCoOrds)
 
     import googlemaps
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
@@ -618,7 +618,6 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
     nDist = 0
     nTime = 0
     if dctElem['status'] == 'OK':
-        # Update route table
         nDist = dctElem['distance']['value']
         nTime = dctElem['duration']['value']
     print('distance: ', nDist)
@@ -668,10 +667,11 @@ class checkDeliveryStatus(object):
     def __call__(self, func):
         @wraps(func)
         def decorated_func(dct, entity):
-            #log('checkTripStatus:' + func.__name__)
+            log('checkTripStatus:' + func.__name__)
 
             # Get any trip assigned to this entity
-            qsDel = Delivery.objects.filter(id=entity.tid)
+            an = entity.an
+            qsDel = Delivery.objects.filter(uan=an) if type(entity) is User else Delivery.objects.filter(dan=an)
 
             # If there is a delivery, ensure its status is within allowed
             if len(qsDel) > 0:
