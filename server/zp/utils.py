@@ -594,6 +594,12 @@ def retireEntity(entity: [User, Driver, Vehicle]) -> None :
     entity.tid = -1
     entity.save()
 
+def retireDelEntity(entity: [User, Agent, Vehicle]) -> None :
+    '''
+    retired this entity by setting tid = -1
+    '''
+    entity.did = -1
+    entity.save()
 
 ###########################################
 

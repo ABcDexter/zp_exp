@@ -16,15 +16,15 @@ class User(Entity):
     def __init__(self):
         super().__init__()
         self.arrPlaces = []
-        self.sTripState = ''
+        self.sDeliveryState = ''
 
 
     # log a message if its different from the last logged message
     def log(self, sMsg):
         if sMsg != self.sLastMsg:
             t = datetime.datetime.now()
-            print('[%s] [PID: %s] [TID: %s] [TS: %s] %s' %
-                  (datetime.datetime.strftime(t, '%x %X'), self.iPID, self.sTID, self.sTripState, sMsg))
+            print('[%s] [PID: %s] [DID: %s] [TS: %s] %s' %
+                  (datetime.datetime.strftime(t, '%x %X'), self.iPID, self.sDID, self.sDeliveryState, sMsg))
             self.sLastMsg = sMsg
 
 
@@ -33,67 +33,71 @@ class User(Entity):
             json.dump(dct, f)
 
 
-    def doRequestRide(self):
+    def doRequestDelivery(self):
         if prob(0.8):
             iDstPID = self.iPID
             while iDstPID == self.iPID:
                 dctPlace = random.choice(self.arrPlaces)
                 iDstPID = dctPlace['id']
 
-            self.log('Requesting trip to %d: %s' % (iDstPID, dctPlace['pn']))
+            self.log('Requesting delivery to %d: %s' % (iDstPID, dctPlace['pn']))
 
-            ret = self.callAPI('user-ride-request', {'srcid': self.iPID, 'dstid': iDstPID, 'rtype': 0, 'vtype': 3, 'npas': 1, 'pmode': 0 })
+            ret = self.callAPI('user-delivery-request', {'srcpin': self.iPID, 'dstpin': iDstPID, \
+                "srclat": "29.317953","srclng": "79.587319","dstlat": "29.339276","dstlng": "79.58613",  'pmode': 1 ,
+                                                   'itype':1,      'idim': 1})
+
+            
             if not self.logIfErr(ret):
-                self.log('Trip estimate: %s, ' % json.dumps(ret))
+                self.log('Delivery estimate: %s, ' % json.dumps(ret))
                 self.iDstPID = iDstPID
-                self.sTID = ret['tid']
+                self.sDID = ret['did']
 
 
     def handleActive(self, dct):
-        self.sTID = dct['tid']
-        self.bPollRide = True
-        self.sTripState = dct['st']
-        st = self.sTripState
+        self.sDID = dct['did']
+        self.bPollDelivery= True
+        self.sDeliveryState = dct['st']
+        st = self.sDeliveryState
 
-        if st in ['FN', 'TR']:
-            self.log('Made payment for trip: '
+        if st in  ['TO', 'CN', 'DN', 'PD', 'FL']:
+            self.log('Made payment for Delivery: '
                      'Cost: %.2f, '
                      'Dist %.2f km' % (dct['price'], dct['dist']))
-            self.writeJSON('money.%d' % self.sTID, {'payment': dct['price']})
-        elif st in ['TO', 'CN', 'DN', 'PD', 'FL']:
-            self.handleFinishedTrip()
+            self.writeJSON('money.%d' % self.sDID, {'payment': dct['price']})
+        elif st in ['FN']:
+            self.handleFinishedDelivery()
         else:
-            if not self.maybeCancelTrip('user', 0.00):
+            if not self.maybeCancelDelivery('user', 0.00):
                 if st == 'AS':
-                    ret = self.callAPI('user-ride-get-driver')
+                    ret = self.callAPI('user-ride-get-driver') #TODO something else
                     if not self.logIfErr(ret):
                         ret['otp'] = dct['otp']
                         ret['van'] = dct['van']
-                        sMsg = 'Trip confirmed: %s, ' % json.dumps(ret)
+                        sMsg = 'Delivery confirmed: %s, ' % json.dumps(ret)
 
                         if prob(0.95):
-                            self.writeJSON('otp.%d' % self.sTID, {'otp': dct['otp']})
+                            self.writeJSON('otp.%d' % self.sDID, {'otp': dct['otp']})
                             self.log(sMsg + ': OTP shared with driver')
                 elif st == 'ST':
-                    self.showTripProgress()
-                    self.maybeFailTrip('user', 0.01) # Try to fail the trip.
+                    self.showDeliveryProgress()
 
                 elif st == 'RQ':
                     self.log('Waiting for driver')
 
 
 
-    def handleTripStatus(self):
-        ret = self.callAPI('user-ride-get-status')
-        self.sTID = ret.get('tid', -1)
-        if self.sTID == -1:
-            self.waitForVehicles()
-            self.doRequestRide()
+    def handleDeliveryStatus(self):
+        ret = self.callAPI('user-delivery-get-status')
+        self.sDID = ret.get('did', -1)
+        if self.sDID == -1: # no current delivery
+            if prob(0.9):
+                self.doRequestDelivery()
         else:
-            if ret['active']:  # 'RQ', 'AS', 'ST', 'FN', 'TR'
+            # # thisd mean that the User has some delivery request pending in
+            if ret['active']:  # 'RQ', 'AS',
                 self.handleActive(ret)
-            else: #  TO, CN, DN, FL, PD
-                self.handleFinishedTrip('user')
+            else: #  TO, CN, DN, FL, PD  'ST', 'FN',
+                self.handleFinishedDelivery('user')
 
 
     def run(self, idxUser, fDelay, iPID=None):
@@ -121,7 +125,7 @@ class User(Entity):
         self.log('User located at pid %d: %s' % (self.iPID, dctPlace['pn']))
 
         while True:
-            self.handleTripStatus()
+            self.handleDeliveryStatus()
             time.sleep(self.delay)
 
 

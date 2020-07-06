@@ -25,6 +25,8 @@ class User(models.Model):
 
     pid  = models.IntegerField(null=True, db_index=True)
     tid  = models.IntegerField(default=-1, db_index=True)
+    did  = models.IntegerField(default=-1, db_index=True)
+
 
     name = models.CharField(null=True, max_length=64, db_index=True)
     gdr  = models.CharField(null=True, max_length=16, db_index=True)
@@ -401,7 +403,7 @@ class Agent(models.Model):
     mode = models.CharField(max_length=2, choices=MODES, default='OF', db_index=True)
 
     pid  = models.IntegerField(null=True, db_index=True)
-    tid  = models.IntegerField(default=-1, db_index=True)
+    did  = models.IntegerField(default=-1, db_index=True)
 
     dl   = models.CharField(null=True, max_length=20)
     name = models.CharField(null=True, max_length=64, db_index=True)

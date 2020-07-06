@@ -33,7 +33,7 @@ class Entity:
     def __init__(self):
         self.sLastMsg = ''
         self.sAuth = ''
-        self.sTID = -1
+        self.sDID = -1
         self.iPID = -1
         self.iDstPID = -1
         self.delay = 3
