@@ -21,11 +21,11 @@ def prob(fProb):
     return r < fProb
 
 FINISHED_STATUS_MSGS = {
-    'PD': 'Trip ended successfully',
-    'CN': 'Trip was cancelled by user',
-    'DN': 'Trip was denied by driver',
-    'FL': 'Trip failed',
-    'TO': 'Trip timed out',
+    'PD': 'Delivery paid for',
+    'CN': 'Delivery was cancelled by user',
+    'DN': 'Delivery was denied by driver',
+    'FL': 'Delivery failed',
+    'TO': 'Delivery timed out',
 }
 
 
@@ -85,16 +85,16 @@ class Entity:
 
         return y, x
 
-    def showTripProgress(self):
+    def showDeliveryProgress(self):
         ret = self.callAPI('auth-progress-percent')
         if not self.logIfErr(ret):
-            self.log('Trip progress %s%%' % ret['pct'])
+            self.log('Delivery progress %s%%' % ret['pct'])
             self.iPID = ret['pid']
             return ret['pct']
 
     # Only on ST
-    def maybeFailTrip(self, typ, fProb=0.01):  # p is the probability to cancel, 1% by default
-        # once in 100 fail the trip
+    def maybeFailDelivery(self, typ, fProb=0.0001):  # p is the probability to cancel, 1% by default
+        # once in 10000 fail the delivery
         if prob(fProb):
             self.log(str(typ) + ' Failing trip!')
             ret = self.callAPI('auth-ride-fail')
@@ -103,7 +103,7 @@ class Entity:
         return False
 
     # Only AS for driver, RQ, AS, ST for user
-    def maybeCancelTrip(self, typ, fProb=0.1):  # p is the probability to cancel, 10% by default
+    def maybeCancelDelivery(self, typ, fProb=0.1):  # p is the probability to cancel, 10% by default
         # once in 10 cancel the trip
         if prob(fProb):
             self.log('Canceling trip!')
@@ -129,14 +129,14 @@ class Entity:
             self.sTID = -1
 
 
-    def handleFinishedTrip(self, entity=None):
+    def handleFinishedDelivery(self, entity=None):
         ret = self.callAPI('auth-ride-get-info', {'tid': self.sTID})
         if not self.logIfErr(ret):
             st = ret['st']
             if st != 'FL':
-                sMsg = FINISHED_STATUS_MSGS.get(st, 'Trip in unexpected state: %s , for : %s' .format(st, entity))
+                sMsg = FINISHED_STATUS_MSGS.get(st, 'Delivery in unexpected state: %s , for : %s' .format(st, entity))
                 self.log(sMsg)
-                if st in FINISHED_STATUS_MSGS.keys(): # TO, CN, DN, PD # FL is retired by adminHandleFailedTrip()
+                if st in FINISHED_STATUS_MSGS.keys(): # TO, CN, DN, PD # FL is retired by adminHandleFailedDelivery()
                     self.rideRetire(entity, st)
             else:
                 self.log('Please wait for admin to run!!!')

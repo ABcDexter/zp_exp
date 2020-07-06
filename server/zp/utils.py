@@ -383,6 +383,13 @@ def getTripPrice(trip):
     else :
         return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
 
+def getDelPrice(deli):
+    '''
+    Gets price info for non active deliveries
+    '''
+    vehicle = Vehicle.objects.filter(an=deli.van)[0]
+    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.size, 1)
+
 ###########################################
 
 

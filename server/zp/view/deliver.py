@@ -13,7 +13,7 @@ from ..models import Place, Delivery, Progress, Location
 from ..models import User, Vehicle, Agent
 from ..utils import ZPException, HttpJSONResponse
 from ..utils import getOTP
-from ..utils import getDeliveryPrice
+from ..utils import getDeliveryPrice, getDelPrice
 from ..utils import handleException, extractParams, checkAuth, retireEntity, getClientAuth
 from ..utils import checkDeliveryStatus
 import googlemaps
@@ -27,6 +27,34 @@ Filename = str
 # Constants
 
 makeView.APP_NAME = 'zp'
+
+
+# ============================================================================
+# Delivery auth views
+# ============================================================================
+
+
+@makeView()
+@csrf_exempt
+@extractParams
+@checkAuth()
+def authDeliveryGetInfo(dct, entity):
+    '''
+    https args :
+        did : delivery id
+    Returns deli info for this agent or user for any past or current deli
+    '''
+    # get the delivery and ensure entity was in it
+    deli = Delivery.objects.filter(id=dct['did'])[0]
+    if not (deli.uan == entity.an or deli.dan == entity.an):
+        raise ZPException('Invalid deli ID', 400)
+
+    # get the deli and append pricing info if complete
+    ret = {'st': deli.st}
+    if deli.st in ['AS']:
+        ret.update(getDelPrice(deli))
+    return HttpJSONResponse(ret)
+
 
 
 # ============================================================================
@@ -131,7 +159,7 @@ def userDeliveryRequest(dct, user, _delivery):
         rtype
         vtype
         npas
-        dstid
+        dstpin
         pmode
 
         hrs
@@ -178,7 +206,7 @@ def userDeliveryPay(_dct, _user, delivery):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkDeliveryStatus(['RQ', 'AS'])
+@checkDeliveryStatus(['RQ', 'AS']) #TODO should this have PD or not?
 def userDeliveryCancel(_dct, _user, delivery):
     '''
         Cancel the Delivery for a user if requested, assigned or started
@@ -231,7 +259,7 @@ def agentGetMode(dct, agent):
         status(str): The current status
 
     Note:
-        Status changes externally due to trip failure or admin intervention
+        Status changes externally due to deli failure or admin intervention
     '''
     ret = {'st': agent.mode}
     return HttpJSONResponse(ret)
@@ -269,10 +297,10 @@ def agentSetMode(dct, agent):
 @checkAuth(['AV', 'BK'])
 def agentDeliveryGetStatus(_dct, agent):
     '''
-    Agent calls this to get the status of the current active trip if any
+    Agent calls this to get the status of the current active deli if any
     It must be polled continuously to detect state changes
     Returns:
-        active: boolean - means trip is in AS, ST, FN
+        active: boolean - means deli is in AS, ST, FN
         status(str): Delivery status
         For each of the following statuses, additional data is returned:
             AS: uan, van, id
@@ -280,30 +308,30 @@ def agentDeliveryGetStatus(_dct, agent):
             TR, FN: price, time (seconds), dist (meters), speed (m/s average)
     '''
 
-    # Get the last trip with this agent if any
+    # Get the last deli with this agent if any
 
     ret = {'active': False}
 
     qsDelivery = Delivery.objects.filter(id=agent.tid)
     if len(qsDelivery):
-        trip = qsDelivery[0]
+        deli = qsDelivery[0]
 
-        # For assigned trip return user and vehicle an
-        if trip.st == 'AS':
-            ret = {'uan': trip.uan, 'van': trip.van}
+        # For assigned deli return user and vehicle an
+        if deli.st == 'AS':
+            ret = {'uan': deli.uan, 'van': deli.van}
 
-        # For started trip send progress
-        if trip.st == 'ST':
-            pct = Progress.objects.filter(tid=trip.id)[0].pct
+        # For started deli send progress
+        if deli.st == 'ST':
+            pct = Progress.objects.filter(tid=deli.id)[0].pct
             ret = {'pct': pct}
 
-        # For ended trips that need payment send the price data
-        if trip.st in Delivery.PAYABLE:
-            ret = getDeliveryPrice(trip)
+        # For ended delis that need payment send the price data
+        if deli.st in Delivery.PAYABLE:
+            ret = getDelPrice(deli)
 
-        ret['active'] = trip.st in Delivery.DRIVER_ACTIVE
-        ret['st'] = trip.st
-        ret['tid'] = trip.id
+        ret['active'] = deli.st in Delivery.DRIVER_ACTIVE
+        ret['st'] = deli.st
+        ret['tid'] = deli.id
 
     return HttpJSONResponse(ret)
 
@@ -315,9 +343,9 @@ def agentDeliveryGetStatus(_dct, agent):
 @checkAuth(['AV'])
 def agentDeliveryCheck(_dct, agent):
     '''
-    Returns a list of requested trips
-    Only trips which start from this agents PID are returned
-    No trips are returned if there are no vehicles there
+    Returns a list of requested delis
+    Only delis which start from this agents PID are returned
+    No delis are returned if there are no vehicles there
     '''
     # Get available vehicles at this hub, if none return empty
     # qsVehicles = Vehicle.objects.filter(pid=agent.pid, tid=-1)
@@ -325,7 +353,7 @@ def agentDeliveryCheck(_dct, agent):
     #    return HttpJSONResponse({}) # making it easy for Volley to handle JSONArray and JSONObject
 
     # Get the first requested delivery from agents place id
-    qsDelivery = Delivery.objects.filter(srcid=agent.pid, st='RQ').order_by('-rtime') #TODO how to do this :?
+    qsDelivery = Delivery.objects.filter(srcpin=agent.pid, st='RQ').order_by('-rtime') #TODO how to do this :?
     ret = {} if len(qsDelivery) == 0 else {'tid': qsDelivery[0].id}
     return HttpJSONResponse(ret)
 
@@ -337,57 +365,57 @@ def agentDeliveryCheck(_dct, agent):
 @extractParams
 @transaction.atomic
 @checkAuth(['AV'])
-def agentRideAccept(dct, agent):
+def agentDeliveryAccept(dct, agent):
     '''
-    Accept requested ride by agent
+    Accept requested delivery
     HTTP args:
         tid : Delivery id
         van : an of the Vehicle chosen by agent
     '''
-    # Ensure that this agent is not in another active trip (for safety)
+    # Ensure that this agent is not in another active deli (for safety)
     qsActiveDelivery = Delivery.objects.filter(dan=agent.an, st__in=Delivery.DRIVER_ACTIVE)
     if len(qsActiveDelivery):
-        raise ZPException(400, 'Agent already in trip')
+        raise ZPException(400, 'Agent already in deli')
 
     ret = {}
-    # Assign agent to trip and create a trip progress entry
-    trip = Delivery.objects.filter(id=dct['tid'])[0]
-    if trip.st == 'RQ':
-        # Ensure that the chosen vehicle is here and not assigned to a trip
-        vehicle = Vehicle.objects.filter(an=dct['van'], pid=trip.srcid)[0] #????? how
+    # Assign agent to deli and create a deli progress entry
+    deli = Delivery.objects.filter(id=dct['did'])[0]
+    if deli.st == 'RQ':
+        # Ensure that the chosen vehicle is here and not assigned to a deli
+        vehicle = Vehicle.objects.filter(an=dct['van'], pid=deli.srcpin)[0] #????? how
         if vehicle.tid != -1:
-            raise ZPException(400, 'Vehicle already in trip')
+            raise ZPException(400, 'Vehicle already in deli')
 
-        # Make the trip
-        trip.st = 'AS'
-        trip.dan = agent.an
-        trip.van = vehicle.an
-        trip.atime = datetime.now(timezone.utc)
-        trip.save()
+        # Make the deli
+        deli.st = 'AS'
+        deli.dan = agent.an
+        deli.van = vehicle.an
+        deli.atime = datetime.now(timezone.utc)
+        deli.save()
 
         # Make the progress
         progress = Progress()
-        progress.tid = trip.id
+        progress.tid = deli.id
         progress.pct = 0
         progress.save()
 
         # Set the agent to booked, set tid
         agent.mode = 'BK'
-        agent.tid = trip.id
+        agent.tid = deli.id
         agent.save()
 
         # set the vehicles tid
-        vehicle.tid = trip.id
+        vehicle.tid = deli.id
         vehicle.save()
 
-        ret.update({'dstid': trip.dstid})
+        ret.update({'dstpin': deli.dst})
 
-        user = User.objects.filter(an=trip.uan)[0]
+        user = User.objects.filter(an=deli.uan)[0]
         ret.update({'name': user.name, 'phone': user.pn})
-        src = Place.objects.filter(id=trip.srcid)[0]
-        dst = Place.objects.filter(id=trip.dstid)[0]
+        src = Place.objects.filter(id=deli.srcpin)[0]
+        dst = Place.objects.filter(id=deli.dstpin)[0]
         ret.update({'srcname': src.pn, 'dstname': dst.pn})
-        print("Accepting trip : ", ret)
+        print("Accepting deli : ", ret)
     else:
         raise ZPException(400, 'Delivery already assigned')
 
@@ -400,26 +428,26 @@ def agentRideAccept(dct, agent):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkDeliveryStatus(['AS'])
-def agentRideCancel(_dct, agent, trip):
+@checkDeliveryStatus(['PD'])
+def agentDeliveryCancel(_dct, agent, deli):
     '''
-    Called by agent to deny a trip that was assigned (AS)
+    Called by agent to deny a delivery that was assigned (AS)
     '''
-    # Change trip status from assigned to  denied
-    # Set the state for the trip and agent - agent is set to OF on failure
-    if trip.st == 'AS':
+    # Change deli status from assigned to  denied
+    # Set the state for the deli and agent - agent is set to OF on failure
+    if deli.st == 'AS':
         agent.mode = 'AV'
-        trip.st = 'DN'
+        deli.st = 'DN'
 
     # Reset agent tid, but not users since they need to see the DN state
     retireEntity(agent)
 
-    # Note the time of trip cancel/fail and save
-    trip.etime = datetime.now(timezone.utc)
-    trip.save()
+    # Note the time of deli cancel/fail and save
+    deli.etime = datetime.now(timezone.utc)
+    deli.save()
 
     # Reset the vehicle tid
-    vehicle = Vehicle.objects.filter(tid=trip.id)[0]
+    vehicle = Vehicle.objects.filter(tid=deli.id)[0]
     retireEntity(vehicle)
 
     return HttpJSONResponse({})
@@ -431,17 +459,17 @@ def agentRideCancel(_dct, agent, trip):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkDeliveryStatus(['AS'])
-def agentRideStart(dct, _agent, trip):
+@checkDeliveryStatus(['PD'])
+def agentDeliveryStart(dct, _agent, deli):
     '''
-    Agent calls this to start the trip providing the OTP that the user shared
+    Agent calls this to start the deli providing the OTP that the user shared
     HTTP Args:
         OTP
     '''
-    if str(dct['otp']) == str(getOTP(trip.uan, trip.dan, trip.atime)):
-        trip.st = 'ST'
-        trip.stime = datetime.now(timezone.utc)
-        trip.save()
+    if str(dct['otp']) == str(getOTP(deli.uan, deli.dan, deli.atime)):
+        deli.st = 'ST'
+        deli.stime = datetime.now(timezone.utc)
+        deli.save()
     else:
         raise ZPException(403, 'Invalid OTP')
 
@@ -454,21 +482,22 @@ def agentRideStart(dct, _agent, trip):
 @transaction.atomic
 @checkAuth(['BK'])
 @checkDeliveryStatus(['ST'])
-def agentRideEnd(_dct, agent, trip):
+def agentDeliveryDone(_dct, agent, deli):
     '''
-    Agent calls this to end ride
-    TODO: Verify via vehicle/agent/user location that the trip actually happened
+    Agent calls this to complete the Delivery
+    TODO: Verify via vehicle/agent/user location that the deli actually happened
     '''
-    trip.st = 'FN'
-    trip.etime = datetime.now(timezone.utc)
-    trip.save()
+    deli.st = 'FN'
+    deli.etime = datetime.now(timezone.utc)
+    deli.save()
 
     # Get the vehicle
-    recVehicle = Vehicle.objects.filter(an=trip.van)[0]
+    recVehicle = Vehicle.objects.filter(an=deli.van)[0]
 
     # Calculate price
-    dctPrice = getRoutePrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
-    return HttpJSONResponse(dctPrice)
+    #dctPrice = getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.size, 1)
+    # TODO share how much money agent earned on this delivery
+    return HttpJSONResponse({})
 
 
 @makeView()
@@ -476,27 +505,20 @@ def agentRideEnd(_dct, agent, trip):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkDeliveryStatus(['FN', 'TR'])
-def agentPaymentConfirm(_dct, agent, trip):
+@checkDeliveryStatus(['FN'])
+def agentUserRate(_dct, agent, deli):
     '''
     Agent calls this to confirm money received
 
     Note:
-        Since state goes to PD, the trip retiring is done here
+        Since state goes to PD, the deli retiring is done here
     '''
-    trip.st = 'PD'
-    trip.save()
 
     agent.mode = 'AV'
     retireEntity(agent)
 
-    # user = User.objects.filter(an=trip.uan)[0]
-    # user.tid = -1
-    # user.save()
-    # User retires via userRideRetire
-
     # Get the vehicle
-    vehicle = Vehicle.objects.filter(an=trip.van)[0]
+    vehicle = Vehicle.objects.filter(an=deli.van)[0]
     retireEntity(vehicle)
 
     return HttpJSONResponse({})
@@ -510,16 +532,16 @@ def agentPaymentConfirm(_dct, agent, trip):
 @transaction.atomic
 @checkAuth(['BK'])
 @checkDeliveryStatus(['CN', 'TO'])
-def agentRideRetire(dct, agent, trip):
+def agentDeliveryRetire(dct, agent, deli):
     '''
-    Resets agent's and vehicles active trip
-    This is called when the agent has seen the message pertaining to trip end states:
+    Resets agent's and vehicles active deli
+    This is called when the agent has seen the message pertaining to deli end states:
     'TO', 'CN'
 
     These states occur by admin refresh or user cancel
 
     Following states when reached, have already retired the agent and vehicle
-    DN : agent already retired from agentRideCancel()
+    DN : agent already retired from agentDeliveryCancel()
     PD : agent already retired from agentPaymentConfirm
     FL : admin already retired from adminHandleFailedDelivery()
 
@@ -530,8 +552,35 @@ def agentRideRetire(dct, agent, trip):
     retireEntity(agent)
 
     # Reset the vehicle tid to available
-    vehicle = Vehicle.objects.filter(tid=trip.id)[0]
+    vehicle = Vehicle.objects.filter(tid=deli.id)[0]
     vehicle.tid = Vehicle.AVAILABLE
     vehicle.save()
     return HttpJSONResponse({})
 
+
+
+@makeView()
+@csrf_exempt
+@handleException()
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkDeliveryStatus(['ST'])
+def authDeliveryFail(dct, agent, deli):
+    '''
+    Called by driverin an emergency which causes the delivery to end
+    '''
+    # Note the time of delivery cancel/fail and set state to failed
+    deli.st = 'FL'
+    deli.etime = datetime.now(timezone.utc)
+    deli.save()
+
+    # Reset the vehicle tid to failed so it wont be able to be selected
+    vehicle = Vehicle.objects.filter(tid=deli.id)[0]
+    vehicle.tid = Vehicle.FAILED
+    vehicle.save()
+
+    agent.mode = 'LK'
+    agent.save()
+
+    return HttpJSONResponse({})
