@@ -2,15 +2,8 @@
     <string name="app_name">Zipp-e</string>
     <string name="Open">OPEN</string>
     <string name="Close">CLOSE</string>
-    <string name="vehicle_type">vehicle type:</string>
     <string name="hi">HI!\u0020</string>
-    <string name="select_btn">SELECT</string>
-    <string name="cancel_btn">CANCEL</string>
-
-    <string-array name="language_option">
-        <item>ENGLISH</item>
-        <item>HINDI</item>
-    </string-array>
+    <string name="disclaimer">By confirming I accept this order does not contain illegal / restricted items (as per Indian Court of Law). ZIPP-E partner may ask to verify the contents of the package and could choose to refuse the task if the items are not verified.</string>
 
     <string-array name="gender_array">
         <item>GENDER</item>
@@ -27,7 +20,6 @@
     </string-array>-->
     <string-array name="vehicle_array_sans_zbee">
         <item>VEHICLE TYPE</item>
-        <item>E-CYCLE</item>
         <item>E-SCOOTY</item>
         <item>E-BIKE</item>
     </string-array>
@@ -37,41 +29,35 @@
         <item>E-BIKE</item>
         <item>ZBEE</item>
     </string-array>
-    <string-array name="rent_array">
-        <item>RENT   OR   RIDE</item>
-        <item>RENT VEHICLE WITHOUT DRIVER</item>
-        <item>RIDE VEHICLE WITH DRIVER</item>
-    </string-array>
 
     <string-array name="hours_array">
         <item>NO OF HOURS</item>
-        <item>1 hr / 15 kms</item>
-        <item>3 hr / 40 kms</item>
-        <item>5 hr / 70 kms</item>
-        <item>7 hrs / 90 kms</item>
+        <item>2 hr / 15 kms</item>
+        <item>4 hr / 40 kms</item>
+        <item>8 hr / 70 kms</item>
+        <item>12 hrs / 90 kms</item>
     </string-array>
-
-    <string-array name="timing_array">
-        <item>TIMINGS</item>
-        <item>7:00 am</item>
-        <item>8:00 am</item>
-        <item>9:00 am</item>
-        <item>10:00 am</item>
-        <item>11:00 am</item>
-        <item>12:00 pm</item>
-        <item>1:00 pm</item>
-        <item>10:00 am</item>
+    <string-array name="content_array">
+        <item>PACKAGE CONTENTS</item>
+        <item>DOCUMENTS / BOOKS</item>
+        <item>CLOTHES / ACCESSORIES</item>
+        <item>FOOD</item>
+        <item>HOUSEHOLD</item>
+        <item>ELECTRONICS / ELECTRICAL ITEMS</item>
     </string-array>
-
+    <string-array name="size_array">
+        <item>PACKAGE SIZE</item>
+        <item>S (35 x 25 x 13 cm)</item>
+        <item>M (70 x 50 x 26 cm)</item>
+        <item>L (105 x 75 x 39 cm)</item>
+        <item>XL (104 x 100 x 52 cm)</item>
+        <item>XXL (175 x 125 x 65 cm)</item>
+    </string-array>
     <string-array name="rider_no_array">
         <item>NO OF RIDERS ?</item>
         <item>1</item>
         <item>2</item>
         <item>(1 CHILD UPTO 5 YRS RIDES FREE)</item>
     </string-array>
-    <string-array name="payment_mode_array">
-        <item>PAYMENT MODE</item>
-        <item>CASH</item>
-        <item>UPI</item>
-    </string-array>
+    <string name="title_activity_maps2">Map</string>
 </resources>

@@ -7,7 +7,6 @@
 
 
     <RelativeLayout
-        android:id="@+id/containerPhnNo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -46,19 +45,20 @@
             android:padding="5dp"
             android:textAllCaps="true"
             android:textColor="@color/txtColor"
-            android:textSize="23sp"/>
+            android:textSize="23sp" />
 
         <RelativeLayout
+            android:id="@+id/rl_saveName"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_below="@+id/zippe_logo"
             android:layout_marginTop="20dp"
             android:background="@drawable/rect_box_outline"
             android:padding="5dp"
-            android:layout_below="@+id/zippe_logo"
-            android:id="@+id/rl_saveName"
             android:visibility="invisible">
 
             <EditText
+                android:id="@+id/edt_name"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_centerHorizontal="true"
@@ -69,8 +69,7 @@
                 android:padding="5dp"
                 android:textAllCaps="true"
                 android:textColor="@color/txtColor"
-                android:textSize="23sp"
-                android:id="@+id/edt_name"/>
+                android:textSize="23sp" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/saveName"
@@ -81,7 +80,6 @@
                 android:layout_marginEnd="5dp"
                 android:background="@drawable/ic_check" />
         </RelativeLayout>
-
 
 
         <TextView

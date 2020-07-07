@@ -3,8 +3,6 @@
     <string name="app_name">Zipp-e</string>
     <string name="Open">open</string>
     <string name="Close">close</string>
-    <string name="vehicle_type">vehicle type:</string>
     <string name="hi">HI!\u0020</string>
-    <string name="select_btn">SELECT</string>
-    <string name="cancel_btn">CANCEL</string>
+    <string name="disclaimer">By confirming I accept this order does not contain illegal / restricted items (as per Indian Court of Law). ZIPP-E partner may ask to verify the contents of the package and could choose to refuse the task if the items are not verified.</string>
 </resources>

@@ -31,8 +31,6 @@ public class ActivityDrawer extends AppCompatActivity {
     Toolbar toolbar;
     ImageView menuBtn, backBtn;
     TextView nameText;
-
-
     public static final String NAME_KEY = "NameKey";
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
 
@@ -117,7 +115,7 @@ public class ActivityDrawer extends AppCompatActivity {
                         startActivity(lang);
                         break;
                     case R.id.nav_home:
-                        Intent home = new Intent(ActivityDrawer.this, ActivityRideHome.class);
+                        Intent home = new Intent(ActivityDrawer.this, ActivityWelcome.class);
                         home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(home);
                         break;

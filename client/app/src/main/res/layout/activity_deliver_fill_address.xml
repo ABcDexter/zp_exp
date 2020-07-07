@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollViewRentRide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Address"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/rect_box_outline"
+                android:gravity="center"
+                android:hint="FLAT, FLOOR, BUILDING NAME"
+                android:inputType="text"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAllCaps="true"
+                android:textColor="@color/txtColor"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/pin_code"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/rect_box_outline"
+                android:gravity="center"
+                android:hint="PIN CODE"
+                android:inputType="number"
+                android:maxLength="6"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAllCaps="true"
+                android:textColor="@color/txtColor"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/landmark"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/rect_box_outline"
+                android:gravity="center"
+                android:hint="LANDMARK"
+                android:inputType="text"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAllCaps="true"
+                android:textColor="@color/txtColor"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/mobile"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/rect_box_outline"
+                android:gravity="center"
+                android:hint="MOBILE"
+                android:inputType="phone"
+                android:maxLength="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAllCaps="true"
+                android:textColor="@color/txtColor"
+                android:textSize="20sp" />
+
+            <ImageButton
+                android:id="@+id/confirm_address"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/btn_bkg"
+                android:padding="15dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/confirm" />
+        </LinearLayout>
+
+    </ScrollView>
+</RelativeLayout>

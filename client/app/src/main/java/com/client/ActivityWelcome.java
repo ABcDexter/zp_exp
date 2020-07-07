@@ -8,14 +8,25 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.VolleyError;
-import com.client.rental.RentalHome;
+import com.client.deliver.ActivityDeliverHome;
+import com.client.rent.ActivityRentEnded;
+import com.client.rent.ActivityRentHome;
+import com.client.rent.ActivityRentInProgress;
+import com.client.rent.ActivityRentOTP;
+import com.client.rent.ActivityRentRequest;
+import com.client.ride.ActivityRideEnded;
+import com.client.ride.ActivityRideHome;
+import com.client.ride.ActivityRideInProgress;
+import com.client.ride.ActivityRideOTP;
+import com.client.ride.ActivityRideRequest;
+import com.client.ride.MapsActivity2;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +45,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public static final String LOCATION_DROP = "DropLocation";
     public static final String OTP_PICK = "OTPPick";
     public static final String VAN_PICK = "VanPick";
+    public static final String PRICE_RENT = "PriceRent";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
 
@@ -43,12 +55,13 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     SharedPreferences prefAuth;
     String stringAuth;
-    Button btnRent, btnRide;
+    ImageButton btnRent, btnRide, btnDeliver;
+    ActivityWelcome a = ActivityWelcome.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start_page_anim);
+        setContentView(R.layout.activity_welcome);
 
         prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuth = prefAuth.getString(AUTH_KEY, "");
@@ -57,7 +70,8 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         btnRent.setOnClickListener(this);
         btnRide = findViewById(R.id.btn_ride);
         btnRide.setOnClickListener(this);
-
+        btnDeliver = findViewById(R.id.btn_deliver);
+        btnDeliver.setOnClickListener(this);
         String auth = stringAuth;
         if (auth.equals("")) {
             Intent registerUser = new Intent(ActivityWelcome.this, ActivityMain.class);
@@ -87,10 +101,9 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        ActivityWelcome a = ActivityWelcome.this;
         Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-ride-get-status");
-        UtilityApiRequestPost.doPOST(a, "user-ride-get-status", parameters, 20000, 0, response -> {
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
+        UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
             } catch (Exception e) {
@@ -102,17 +115,19 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         //SuccessMethod onSuccess = SuccessMethod.getInstance();
-
+        Log.d(TAG, "RESPONSE:" + response);
+//response on hitting user-trip-get-status API
         if (id == 1) {
-            Log.d(TAG, "RESPONSE:" + response);
             try {
                 String active = response.getString("active");
                 if (active.equals("true")) {
+                    String rtype = response.getString("rtype");
                     String status = response.getString("st");
                     String tid = response.getString("tid");
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
-                    if (status.equals("RQ")) {
+                    if (rtype.equals("0")) {
+                        if (status.equals("RQ")) {
                         /*Snackbar snackbar = Snackbar
                                 .make(scrollView, "WAITING FOR DRIVER", Snackbar.LENGTH_INDEFINITE)
                                 .setAction("CANCEL", new View.OnClickListener() {
@@ -122,42 +137,78 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
                                     }
                                 });*/
-                        Intent rq = new Intent(ActivityWelcome.this, ActivityRideRequest.class);
-                        rq.putExtra("st", "RQ");
-                        startActivity(rq);
-                    }
-                    if (status.equals("AS")) {
-                        String otp = response.getString("otp");
-                        String van = response.getString("van");
-                        SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                        sp_otp.edit().putString(OTP_PICK, otp).apply();
-                        sp_otp.edit().putString(VAN_PICK, van).apply();
-                        Intent as = new Intent(ActivityWelcome.this, ActivityRideOTP.class);
-                        as.putExtra("OTP", otp);
-                        as.putExtra("VAN", van);
-                        startActivity(as);
-                    }
-                    if (status.equals("ST")) {
+                            Intent rq = new Intent(ActivityWelcome.this, ActivityRideRequest.class);
+                            rq.putExtra("st", "RQ");
+                            startActivity(rq);
+                        }
+                        if (status.equals("AS")) {
+                            String otp = response.getString("otp");
+                            String van = response.getString("vno");
+                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                            sp_otp.edit().putString(OTP_PICK, otp).apply();
+                            sp_otp.edit().putString(VAN_PICK, van).apply();
+                            Intent as = new Intent(ActivityWelcome.this, ActivityRideOTP.class);
+                            as.putExtra("OTP", otp);
+                            as.putExtra("VAN", van);
+                            startActivity(as);
+                        }
+                        if (status.equals("ST")) {
 
-                        Intent as = new Intent(ActivityWelcome.this, ActivityRideInProgress.class);
-                        startActivity(as);
+                            Intent as = new Intent(ActivityWelcome.this, ActivityRideInProgress.class);
+                            startActivity(as);
+                        }
+                        if (status.equals("FN") || status.equals("TR")) {
+                            Intent fntr = new Intent(ActivityWelcome.this, ActivityRideEnded.class);
+                            startActivity(fntr);
+                        }
                     }
-                    if (status.equals("FN") || status.equals("TR")) {
-                        Intent fntr = new Intent(ActivityWelcome.this, ActivityRideEnded.class);
-                        startActivity(fntr);
+                    if (rtype.equals("1")) {
+                        if (status.equals("RQ")) {
+                        /*Snackbar snackbar = Snackbar
+                                .make(scrollView, "WAITING FOR DRIVER", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("CANCEL", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        cancelRequest();
+
+                                    }
+                                });*/
+                            Intent rq = new Intent(ActivityWelcome.this, ActivityRentRequest.class);
+                            /*rq.putExtra("st", "RQ");*/
+                            startActivity(rq);
+                        }
+                        if (status.equals("AS")) {
+                            String otp = response.getString("otp");
+                            String van = response.getString("vno");
+                            //String price = response.getString("price");
+                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                            sp_otp.edit().putString(OTP_PICK, otp).apply();
+                            sp_otp.edit().putString(VAN_PICK, van).apply();
+                            //sp_otp.edit().putString(PRICE_RENT,price).apply();
+                            Intent as = new Intent(ActivityWelcome.this, ActivityRentOTP.class);
+                            startActivity(as);
+                        }
+                        if (status.equals("ST")) {
+                            Intent as = new Intent(ActivityWelcome.this, ActivityRentInProgress.class);
+                            startActivity(as);
+                        }
+                        if (status.equals("FN") || status.equals("TR")) {
+                            Intent fntr = new Intent(ActivityWelcome.this, ActivityRentEnded.class);
+                            startActivity(fntr);
+                        }
+
                     }
                 } else {
                     Log.d(TAG, "active=" + active);
 
                     SharedPreferences prefTripDetails = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     String tripIDExists = prefTripDetails.getString(TRIP_ID, "");
-                    if (tripIDExists.equals("")) {
-                        Intent homePage = new Intent(ActivityWelcome.this, ActivityRideHome.class);
+                    if (!tripIDExists.equals("")) {
+                        /*Intent homePage = new Intent(ActivityWelcome.this, ActivityRideHome.class);
                         homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(homePage);
-                        finish();
-                    } else {
-                        rideInfo(tripIDExists);
+                        finish();*/
+                        tripInfo(tripIDExists);
                     }
                 }
 
@@ -206,6 +257,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             retireTrip();
 
         }
+        //response on hitting user-trip-retire API
         if (id == 3) {
             SharedPreferences preferences = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
@@ -222,10 +274,9 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        ActivityWelcome a = ActivityWelcome.this;
         Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-ride-retire");
-        UtilityApiRequestPost.doPOST(a, "auth-ride-retire", parameters, 20000, 0, response -> {
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-retire");
+        UtilityApiRequestPost.doPOST(a, "user-trip-retire", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
             } catch (Exception e) {
@@ -235,16 +286,15 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         }, a::onFailure);
     }
 
-    private void rideInfo(String tripID) {
+    private void tripInfo(String tripID) {
         String auth = stringAuth;
         Map<String, String> params = new HashMap();
         params.put("auth", auth);
         params.put("tid", tripID);
         JSONObject parameters = new JSONObject(params);
-        ActivityWelcome a = ActivityWelcome.this;
         Log.d(TAG, "Values: auth=" + auth + " tid=" + tripID);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-ride-get-info");
-        UtilityApiRequestPost.doPOST(a, "auth-ride-get-info", parameters, 20000, 0, response -> {
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");
+        UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
             } catch (Exception e) {
@@ -263,13 +313,22 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_rent:
-                Intent rentIntent = new Intent(ActivityWelcome.this, RentalHome.class);
+                Intent rentIntent = new Intent(ActivityWelcome.this, ActivityRentHome.class);
                 startActivity(rentIntent);
                 break;
             case R.id.btn_ride:
                 Intent rideIntent = new Intent(ActivityWelcome.this, ActivityRideHome.class);
                 startActivity(rideIntent);
                 break;
+            case R.id.btn_deliver:
+                Intent deliverIntent = new Intent(ActivityWelcome.this, ActivityDeliverHome.class);
+                startActivity(deliverIntent);
         }
+    }
+
+    public void nextActivity(View view) {
+        Intent intent = new Intent(ActivityWelcome.this, MapsActivity2.class);
+        startActivity(intent);
+
     }
 }

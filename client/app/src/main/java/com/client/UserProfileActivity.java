@@ -21,6 +21,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.client.ride.ActivityRideHome;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
