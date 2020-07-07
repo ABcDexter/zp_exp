@@ -56,7 +56,6 @@ def authDeliveryGetInfo(dct, entity):
     return HttpJSONResponse(ret)
 
 
-
 # ============================================================================
 # Delivery user views
 # ============================================================================
@@ -96,8 +95,8 @@ def userDeliveryGetStatus(_dct, user):
         # For paid Delivery request send OTP, and 'an' of vehicle and driver
         if deli.st == 'PD':
             ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
-            vehicle = Vehicle.objects.filter(an=deli.van)[0]
-            ret['vno'] = vehicle.regn
+            #vehicle = Vehicle.objects.filter(an=deli.van)[0]
+            #ret['vno'] = vehicle.regn
 
         # For started delis send deli progress percent
         # this is redundant, this functionality is provided by authProgressPercent()
@@ -233,14 +232,16 @@ def userDeliveryRequest(dct, user, _delivery):
     delivery.st = 'RQ'
     delivery.srclat, delivery.srclng, delivery.dstlat, delivery.dstlng = dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng']
     delivery.uan = user.an
-    delivery.srcpin = 263136  #TODO fix this logic
-    delivery.dstpin = 246149
+    delivery.srcpin = dct['srcpin']
+    delivery.dstpin = dct['dstpin']
     delivery.idim = dct['idim']
     delivery.itype = dct['itype']
     delivery.pmode = 1 # online for now , later one can be edited to dct['pmode']
     delivery.rtime = datetime.now(timezone.utc)
     delivery.save()
 
+    user.did = delivery.id
+    user.save()
     return HttpJSONResponse({'did': delivery.id})
 
 
@@ -391,7 +392,7 @@ def agentDeliveryGetStatus(_dct, agent):
         if deli.st in Delivery.PAYABLE:
             ret = getDelPrice(deli)
 
-        ret['active'] = deli.st in Delivery.DRIVER_ACTIVE
+        ret['active'] = deli.st in Delivery.AGENT_ACTIVE
         ret['st'] = deli.st
         ret['did'] = deli.id
 
@@ -435,7 +436,7 @@ def agentDeliveryAccept(dct, agent):
         van : an of the Vehicle chosen by agent
     '''
     # Ensure that this agent is not in another active deli (for safety)
-    qsActiveDelivery = Delivery.objects.filter(dan=agent.an, st__in=Delivery.DRIVER_ACTIVE)
+    qsActiveDelivery = Delivery.objects.filter(dan=agent.an, st__in=Delivery.AGENT_ACTIVE)
     if len(qsActiveDelivery):
         raise ZPException(400, 'Agent already in deli')
 
@@ -444,9 +445,9 @@ def agentDeliveryAccept(dct, agent):
     deli = Delivery.objects.filter(id=dct['did'])[0]
     if deli.st == 'RQ':
         # Ensure that the chosen vehicle is here and not assigned to a deli
-        vehicle = Vehicle.objects.filter(an=dct['van'], pid=deli.srcpin)[0] #????? how
-        if vehicle.tid != -1:
-            raise ZPException(400, 'Vehicle already in deli')
+        #vehicle = Vehicle.objects.filter(an=dct['van'], pid=deli.srcpin)[0] #????? how
+        #if vehicle.tid != -1:
+        #    raise ZPException(400, 'Vehicle already in deli')
 
         # Make the deli
         deli.st = 'AS'
@@ -470,7 +471,7 @@ def agentDeliveryAccept(dct, agent):
         vehicle.tid = deli.id
         vehicle.save()
 
-        ret.update({'dstpin': deli.dst})
+        ret.update({'dstpin': deli.dstpin})
 
         user = User.objects.filter(an=deli.uan)[0]
         ret.update({'name': user.name, 'phone': user.pn})
@@ -509,8 +510,8 @@ def agentDeliveryCancel(_dct, agent, deli):
     deli.save()
 
     # Reset the vehicle tid
-    vehicle = Vehicle.objects.filter(tid=deli.id)[0]
-    retireDelEntity(vehicle)
+    #vehicle = Vehicle.objects.filter(tid=deli.id)[0]
+    #retireDelEntity(vehicle)
 
     return HttpJSONResponse({})
 
@@ -554,7 +555,7 @@ def agentDeliveryDone(_dct, agent, deli):
     deli.save()
 
     # Get the vehicle
-    recVehicle = Vehicle.objects.filter(an=deli.van)[0]
+    # recVehicle = Vehicle.objects.filter(an=deli.van)[0]
 
     # Calculate price
     #dctPrice = getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.size, 1)
@@ -580,8 +581,8 @@ def agentUserRate(_dct, agent, deli):
     retireDelEntity(agent)
 
     # Get the vehicle
-    vehicle = Vehicle.objects.filter(an=deli.van)[0]
-    retireDelEntity(vehicle)
+    # vehicle = Vehicle.objects.filter(an=deli.van)[0]
+    # retireDelEntity(vehicle)
 
     return HttpJSONResponse({})
 
@@ -614,9 +615,9 @@ def agentDeliveryRetire(dct, agent, deli):
     retireDelEntity(agent)
 
     # Reset the vehicle tid to available
-    vehicle = Vehicle.objects.filter(tid=deli.id)[0]
-    vehicle.tid = Vehicle.AVAILABLE
-    vehicle.save()
+    # vehicle = Vehicle.objects.filter(tid=deli.id)[0]
+    # vehicle.tid = Vehicle.AVAILABLE
+    # vehicle.save()
     return HttpJSONResponse({})
 
 
@@ -638,9 +639,9 @@ def authDeliveryFail(dct, agent, deli):
     deli.save()
 
     # Reset the vehicle tid to failed so it wont be able to be selected
-    vehicle = Vehicle.objects.filter(tid=deli.id)[0]
-    vehicle.tid = Vehicle.FAILED
-    vehicle.save()
+    # vehicle = Vehicle.objects.filter(tid=deli.id)[0]
+    # vehicle.tid = Vehicle.FAILED
+    # vehicle.save()
 
     agent.mode = 'LK'
     agent.save()

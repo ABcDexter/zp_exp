@@ -388,7 +388,7 @@ def getDelPrice(deli):
     Gets price info for non active deliveries
     '''
     vehicle = Vehicle.objects.filter(an=deli.van)[0]
-    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.size, 1)
+    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, 1, 1) #ToDO fix this for the dimensions
 
 ###########################################
 
@@ -609,6 +609,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
     '''
     Determines the price given the rent details and time taken
     time is etime - stime
+    #TODO add the variable of the size in this
     '''
     # Get this route distance
 
@@ -702,3 +703,25 @@ class checkDeliveryStatus(object):
             return func(dct, entity, None)
 
         return decorated_func
+
+
+def headers(h):
+    """Decorator adding arbitrary HTTP headers to the response.
+
+    This decorator adds HTTP headers specified in the argument (map), to the
+    HTTPResponse returned by the function being decorated.
+
+    Example:
+
+    @headers({'Refresh': '10', 'X-Bender': 'Bite my shiny, metal ass!'})
+    def index(request):
+        ....
+    """
+    def headers_wrapper(fun):
+        def wrapped_function(*args, **kwargs):
+            response = fun(*args, **kwargs)
+            for k,v in h.iteritems():
+                response[k] = v
+            return response
+        return wrapped_function
+    return headers_wrapper

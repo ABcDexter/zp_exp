@@ -107,7 +107,7 @@ class Entity:
         # once in 10 cancel the trip
         if prob(fProb):
             self.log('Canceling trip!')
-            ret = self.callAPI(typ + '-ride-cancel')
+            ret = self.callAPI(typ + '-delivery-cancel')
             self.logIfErr(ret)
             return True
         return False
@@ -143,9 +143,30 @@ class Entity:
                 time.sleep(self.delay)
 
     def waitForVehicles(self):
-        vehicles = []
+        vehicles =  [{'an': 2000, 'tid': -1, 'regn': 'reg00', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 0}, {'an': 2002, 'tid': -1, 'regn': 'reg02', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 1}, {'an': 2003, 'tid': -1, 'regn': 'reg03', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 2}, {'an': 2004, 'tid': -1, 'regn': 'reg04', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 3}, {'an': 2005, 'tid': -1, 'regn': 'reg05', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 0}, {'an': 2006, 'tid': -1, 'regn': 'reg06', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 1}, {'an': 2007, 'tid': -1, 'regn': 'reg07', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 2}, {'an': 2008, 'tid': -1, 'regn': 'reg08', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 3}, {'an': 2010, 'tid': -1, 'regn': 'reg10', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 1}, {'an': 2011, 'tid': -1, 'regn': 'reg11', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 2}, {'an': 2012, 'tid': -1, 'regn': 'reg12', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 3}, {'an': 2013, 'tid': -1, 'regn': 'reg13', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 0}, {'an': 2014, 'tid': -1, 'regn': 'reg14', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 1}, {'an': 2015, 'tid': -1, 'regn': 'reg15', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 2}, {'an': 2018, 'tid': -1, 'regn': 'reg18', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 1}, {'an': 2019, 'tid': -1, 'regn': 'reg19', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 2}, {'an': 2020, 'tid': -1, 'regn': 'reg20', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 3}]
+
+        # {'vehicles': [{'an': 2000, 'tid': -1, 'regn': 'reg00', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 0},
+        # {'an': 2002, 'tid': -1, 'regn': 'reg02', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 1},
+        # {'an': 2003, 'tid': -1, 'regn': 'reg03', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 2},
+        # {'an': 2004, 'tid': -1, 'regn': 'reg04', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 3},
+        # {'an': 2005, 'tid': -1, 'regn': 'reg05', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 0},
+        # {'an': 2006, 'tid': -1, 'regn': 'reg06', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 1},
+        # {'an': 2007, 'tid': -1, 'regn': 'reg07', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 2},
+        # {'an': 2008, 'tid': -1, 'regn': 'reg08', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 3},
+        # {'an': 2010, 'tid': -1, 'regn': 'reg10', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 1},
+        # {'an': 2011, 'tid': -1, 'regn': 'reg11', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 2},
+        # {'an': 2012, 'tid': -1, 'regn': 'reg12', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 3},
+        # {'an': 2013, 'tid': -1, 'regn': 'reg13', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 0},
+        # {'an': 2014, 'tid': -1, 'regn': 'reg14', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 1},
+        # {'an': 2015, 'tid': -1, 'regn': 'reg15', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 2},
+        # {'an': 2018, 'tid': -1, 'regn': 'reg18', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 1},
+        # {'an': 2019, 'tid': -1, 'regn': 'reg19', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 2},
+        # {'an': 2020, 'tid': -1, 'regn': 'reg20', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 3}]}
+
+        '''
         while True:
             ret = self.callAPI('auth-vehicle-get-avail')
+            print(ret)
             if not self.logIfErr(ret):
                 nVehicles = len(ret['vehicles'])
                 if nVehicles > 0:
@@ -153,11 +174,13 @@ class Entity:
                     self.bPollVehicle = False
                     vehicles = ret['vehicles']
                 else:
+
                     self.log('No vehicles at hub - waiting...')
                     self.bPollVehicle = True
             time.sleep(self.delay)
             if not self.bPollVehicle:
                 break
+        '''
         return vehicles
 
 

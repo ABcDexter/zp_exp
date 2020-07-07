@@ -23,7 +23,7 @@ class User(Entity):
     def log(self, sMsg):
         if sMsg != self.sLastMsg:
             t = datetime.datetime.now()
-            print('[%s] [PID: %s] [DID: %s] [TS: %s] %s' %
+            print('[%s] [PID: %s] [DID: %s] [DS: %s] %s' %
                   (datetime.datetime.strftime(t, '%x %X'), self.iPID, self.sDID, self.sDeliveryState, sMsg))
             self.sLastMsg = sMsg
 
@@ -52,53 +52,63 @@ class User(Entity):
                 self.iDstPID = iDstPID
                 self.sDID = ret['did']
 
+    def payForDelivery(self, price ):
+        '''
+        write momney to a file and pay for delivery
+        '''
+        self.log('Made payment for Delivery: '
+                 'Cost: %.2f, '
+                 'Dist %.2f km' % (price, random(1,10)))
+        self.writeJSON('money.%d' % self.sDID, {'payment': price})
 
     def handleActive(self, dct):
         self.sDID = dct['did']
         self.bPollDelivery= True
         self.sDeliveryState = dct['st']
         st = self.sDeliveryState
+        print("STATE IS : ", st)
+        if not self.maybeCancelDelivery('user', 0.001):
+            if st == 'AS':
+                self.payForDelivery()
 
-        if st in  ['TO', 'CN', 'DN', 'PD', 'FL']:
-            self.log('Made payment for Delivery: '
-                     'Cost: %.2f, '
-                     'Dist %.2f km' % (dct['price'], dct['dist']))
-            self.writeJSON('money.%d' % self.sDID, {'payment': dct['price']})
-        elif st in ['FN']:
-            self.handleFinishedDelivery()
-        else:
-            if not self.maybeCancelDelivery('user', 0.00):
-                if st == 'AS':
-                    ret = self.callAPI('user-ride-get-driver') #TODO something else
-                    if not self.logIfErr(ret):
-                        ret['otp'] = dct['otp']
-                        ret['van'] = dct['van']
-                        sMsg = 'Delivery confirmed: %s, ' % json.dumps(ret)
+            elif st == 'RQ':
+                self.log('Waiting for delivery agent...')
 
-                        if prob(0.95):
-                            self.writeJSON('otp.%d' % self.sDID, {'otp': dct['otp']})
-                            self.log(sMsg + ': OTP shared with driver')
-                elif st == 'ST':
-                    self.showDeliveryProgress()
+    def handleInactiveDelivery(self, ret):
 
-                elif st == 'RQ':
-                    self.log('Waiting for driver')
+        if ret['st'] == 'PD':
+            if not self.logIfErr(ret):
+                ret['otp'] = dct['otp']
+                ret['van'] = dct['van']
+                sMsg = 'Delivery confirmed: %s, ' % json.dumps(ret)
+
+                if prob(0.95):
+                    self.writeJSON('otp.%d' % self.sDID, {'otp': dct['otp']})
+                    self.log(sMsg + ': OTP shared with driver')
+        elif ret['st'] == 'ST':
+            self.showDeliveryProgress()
+        elif ret['st'] in ['FN', 'DN']:
+            self.handleFinishedDelivery('user')
+        elif ret ['st'] in ['TO', 'CN', 'CN']:
+            print(' oh no, back to the lab again......')
 
 
 
     def handleDeliveryStatus(self):
         ret = self.callAPI('user-delivery-get-status')
-        self.sDID = ret.get('did', -1)
+        print("retrurn dic is : ", ret)
+        self.sDID = ret.get('did', -1) #delivery id
         if self.sDID == -1: # no current delivery
             if prob(0.9):
                 self.doRequestDelivery()
         else:
-            # # thisd mean that the User has some delivery request pending in
             if ret['active']:  # 'RQ', 'AS',
                 self.handleActive(ret)
             else: #  TO, CN, DN, FL, PD  'ST', 'FN',
-                self.handleFinishedDelivery('user')
-
+                if prob(0.99):
+                    self.handleInactiveDelivery(ret)
+                #else: user cant cancel paid deliveries
+                    #self.maybeCancelDelivery('user',1)
 
     def run(self, idxUser, fDelay, iPID=None):
 
@@ -119,7 +129,7 @@ class User(Entity):
             self.iPID = iPID
             ret=self.callAPI('auth-admin-entity-update', {'pid': self.iPID})
             print(ret)
-
+        #print("user is at " , self.iPID)
         # Assume user is in some valid place get it
         dctPlace = self.callAPI('admin-data-get', {'table': 'Place', 'pk': self.iPID})[0]
         self.log('User located at pid %d: %s' % (self.iPID, dctPlace['pn']))

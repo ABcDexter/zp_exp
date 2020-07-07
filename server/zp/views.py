@@ -27,6 +27,7 @@ from .utils import HttpJSONError, ZPException, DummyException, HttpJSONResponse,
 from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renameTmpImgFiles, getOTP
 from .utils import getRoutePrice, getTripPrice, getRentPrice
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
+from .utils import headers
 
 from url_magic import makeView
 from zp.view import rent, ride, deliver
@@ -1018,8 +1019,10 @@ def userGiveOtp(dct, user, _trip):
 ############################################################
 # Extra
 
+@headers({'Access-Control-Allow-Origin': '*'})
 @makeView()
 @csrf_exempt
+#@headers({'Refresh': '10', 'X-Bender': 'Bite my shiny, metal ass!'})
 @handleException(KeyError, 'Invalid parameters', 501)
 @transaction.atomic
 @extractParams
@@ -1036,7 +1039,7 @@ def signUser(_, dct: Dict):
     Notes:
         Registration is done atomically since we also need to save aadhar scans after DB write
     '''
-    print(dct)
+    print("DICT is :", dct)
     sPhone = str(dct['phone'])
     sAadhaar = str(dct['an'])
     sAuth = getClientAuth(sAadhaar, sPhone)
