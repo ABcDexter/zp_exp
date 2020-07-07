@@ -2,13 +2,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.client">
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -36,17 +43,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityTrackYourProgress"/>
-        <activity android:name=".ActivityTripSummary" />
-        <activity android:name=".ActivityRideRequest" />
-        <activity android:name=".ActivityProfileReview" />
-        <activity android:name=".rental.EnjoyTrip" />
-        <activity android:name=".rental.ConfirmRental" />
-        <activity android:name=".ActivityRateZippe" />
-        <activity android:name=".ActivityRideEnded" />
-        <activity android:name=".ActivityRideInProgress" />
-        <activity android:name=".ActivityRideOTP" />
-        <activity android:name=".ride.HubList" />
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -58,12 +55,35 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".ride.MapsActivity2"
+            android:label="@string/title_activity_maps2"></activity>
+        <activity android:name=".deliver.ActivityDeliverPayment" />
+        <activity android:name=".deliver.ActivityDeliverFillAddress" />
+        <activity android:name=".deliver.ActivityDeliverHome" />
+        <activity android:name=".rent.ActivityRentEnded" />
+        <activity android:name=".rent.ActivityRentInProgress" />
+        <activity android:name=".rent.ActivityRentOTP" />
+        <activity android:name=".rent.ActivityRentRequest" />
+        <activity android:name=".rent.ActivityRentHome" />
+        <activity android:name=".UtilityBaseClass" />
+        <activity android:name=".ActivityTrackYourProgress" />
+        <activity android:name=".ActivityTripSummary" />
+        <activity android:name=".ride.ActivityRideRequest" />
+        <activity android:name=".ActivityProfileReview" />
+        <activity android:name=".rent.EnjoyTrip" />
+        <activity android:name=".ActivityRateZippe" />
+        <activity android:name=".ride.ActivityRideEnded" />
+        <activity android:name=".ride.ActivityRideInProgress" />
+        <activity android:name=".ride.ActivityRideOTP" />
+        <activity android:name=".HubList" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".UserProfileActivity" />
-        <activity android:name=".rental.RentalHome" />
         <activity
             android:name=".ActivityWelcome"
             android:theme="@style/AppThemeNoActionBar">
@@ -78,7 +98,7 @@
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".ActivityDrawer" />
         <activity
-            android:name=".ActivityRideHome"
+            android:name=".ride.ActivityRideHome"
             android:launchMode="singleTop" />
 
         <uses-library

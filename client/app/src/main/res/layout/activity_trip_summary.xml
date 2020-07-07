@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityTripSummary"
-    android:orientation="vertical">
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="THANK YOU FOR \nRIDING WITH ZIPPE"
-    android:textAlignment="center"/>
+    android:orientation="vertical"
+    tools:context=".ActivityTripSummary">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="THANK YOU FOR \nRIDING WITH ZIPPE"
+        android:textAlignment="center" />
+
+    <TextView
         android:id="@+id/price"
-        android:textSize="23sp"
-        android:textAlignment="center"
-        android:layout_marginTop="20dp"/>
-    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:textSize="23sp" />
+
+    <TextView
         android:id="@+id/time"
-        android:textSize="23sp"
-        android:textAlignment="center"
-        android:layout_marginTop="20dp"/>
-    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:textSize="23sp" />
+
+    <TextView
         android:id="@+id/dist"
-        android:textSize="23sp"
-        android:textAlignment="center"
-        android:layout_marginTop="20dp"/>
-    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/speed"
-        android:textSize="23sp"
+        android:layout_marginTop="20dp"
         android:textAlignment="center"
-        android:layout_marginTop="20dp"/>
+        android:textSize="23sp" />
+
+    <TextView
+        android:id="@+id/speed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:textSize="23sp" />
 </LinearLayout>

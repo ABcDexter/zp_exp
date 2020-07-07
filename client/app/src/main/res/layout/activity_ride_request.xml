@@ -37,7 +37,7 @@
                 android:layout_height="40dp"
                 android:layout_below="@+id/layoutZippeee"
                 android:src="@drawable/zbee_left"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
             <RelativeLayout
                 android:id="@+id/rl_cost"
@@ -47,27 +47,30 @@
                 android:layout_marginBottom="50dp"
                 android:background="@drawable/rect_box_outline"
                 android:padding="5dp">
+
                 <TextView
+                    android:id="@+id/txtc"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:gravity="center|start"
                     android:text="cost estimate :"
                     android:textAllCaps="true"
-                    android:textSize="20sp"
-                    android:id="@+id/txtc"/>
+                    android:textSize="20sp" />
+
                 <TextView
                     android:id="@+id/cost_estimate"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:gravity="center|start"
+                    android:layout_toEndOf="@+id/txtc"
                     android:drawableStart="@drawable/ic_rupee"
+                    android:gravity="center|start"
                     android:text="XX"
                     android:textAlignment="center"
-                    android:layout_toEndOf="@+id/txtc"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
+
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/infoCost"
                     android:layout_width="25dp"
@@ -86,25 +89,28 @@
                 android:layout_marginBottom="30dp"
                 android:background="@drawable/rect_box_outline"
                 android:padding="5dp">
+
                 <TextView
+                    android:id="@+id/txtt"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:gravity="center|start"
                     android:text="approx ride mins :"
                     android:textAllCaps="true"
-                    android:textSize="20sp"
-                    android:id="@+id/txtt"/>
+                    android:textSize="20sp" />
+
                 <TextView
                     android:id="@+id/time_estimate"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginEnd="20dp"
+                    android:layout_toEndOf="@+id/txtt"
                     android:gravity="center|start"
                     android:text="XX"
                     android:textAlignment="center"
-                    android:layout_toEndOf="@+id/txtt"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
+
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/infoTime"
                     android:layout_width="25dp"
@@ -157,35 +163,37 @@
                     android:textSize="20sp" />
 
             </LinearLayout>
-<LinearLayout
-    android:id="@+id/ln2"
-    android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:layout_below="@+id/ln"
-    android:layout_marginTop="30dp"
-    android:background="@drawable/rect_box_outline"
-    android:orientation="horizontal"
-    android:weightSum="2">
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:gravity="center|start"
-        android:textAlignment="center"
-        android:text="riders : "
-        android:textAllCaps="true"
-        android:textSize="20sp"
-        android:layout_weight="1"/>
-    <TextView
-        android:id="@+id/ridersInfo"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:gravity="center|start"
-        android:textAlignment="center"
-        android:text="1"
-        android:textAllCaps="true"
-        android:textSize="20sp"
-        android:layout_weight="1"/>
-</LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/ln"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/rect_box_outline"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:text="riders : "
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/ridersInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:text="1"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+            </LinearLayout>
 
 
             <ImageButton

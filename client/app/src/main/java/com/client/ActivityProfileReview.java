@@ -23,7 +23,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.VolleyError;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -39,25 +38,19 @@ public class ActivityProfileReview extends AppCompatActivity implements View.OnC
     public static final String AUTH_KEY = "AuthKey";
     public static final String AGE_KEY = "AgeKey";
     public static final String GDR_KEY = "GdrKey";
-    public static final String HS_KEY = "HsKey";
     public static final String NAME_KEY = "NameKey";
-    public static final String PHONE_KEY = "PhoneKey";
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
-    String name, gender;
+    String name;
     Button btn_gender;
     ImageButton saveName;
     PopupWindow popupWindow;
-    public static final String USER_DATA = "com.client.UserData";
-    public static final String USER_NAME = "UserName";
-    public static final String USER_PHONE = "UserPhone";
-    public static final String USER_GENDER = "UserGender";
-    public static final String USER_AGE = "UserAge";
-
     SharedPreferences prefUserDetails;
-    String strAuth, strName, strAge, strPn, strGdr;
+    String strAuth, strName, strAge, strGdr;
 
-    public void onSuccess(JSONObject response, int id) throws JSONException {
+    public void onSuccess(int id) {
         if (id == 1) {
+            prefUserDetails.edit().putString(GDR_KEY, btn_gender.getText().toString()).apply();
+            prefUserDetails.edit().putString(NAME_KEY, name).apply();
             Intent intent = new Intent(ActivityProfileReview.this, ActivityWelcome.class);
             startActivity(intent);
             finish();
@@ -65,7 +58,6 @@ public class ActivityProfileReview extends AppCompatActivity implements View.OnC
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
     }
 
@@ -73,25 +65,28 @@ public class ActivityProfileReview extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_review);
+        //initialising views
         scrollView = findViewById(R.id.mainLayout);
         txtName = findViewById(R.id.txt_name);
-        txtName.setOnClickListener(this);
         txtAge = findViewById(R.id.txt_age);
         btnConfirm = findViewById(R.id.confirmDetails);
-        btnConfirm.setOnClickListener(this);
         btn_gender = findViewById(R.id.btnGender);
-        btn_gender.setOnClickListener(this);
-
         rl = findViewById(R.id.rl_saveName);
         saveName = findViewById(R.id.saveName);
-        saveName.setOnClickListener(this);
         nameEdit = findViewById(R.id.edt_name);
+
+        btn_gender.setOnClickListener(this);
+        btnConfirm.setOnClickListener(this);
+        txtName.setOnClickListener(this);
+        saveName.setOnClickListener(this);
+
+        //retrieving locally stored data
         prefUserDetails = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         strAuth = prefUserDetails.getString(AUTH_KEY, "");
         strAge = prefUserDetails.getString(AGE_KEY, "");
-        strPn = prefUserDetails.getString(PHONE_KEY, "");
         strName = prefUserDetails.getString(NAME_KEY, "");
         strGdr = prefUserDetails.getString(GDR_KEY, "");
+
         txtName.setText(strName);
         txtAge.setText(strAge);
         btn_gender.setText(strGdr);
@@ -178,11 +173,7 @@ public class ActivityProfileReview extends AppCompatActivity implements View.OnC
         Log.d(TAG, "Values:  name=" + name + " gender=" + btn_gender.getText().toString() + " auth = " + stringAuth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME: auth-profile-update");
         UtilityApiRequestPost.doPOST(a, "auth-profile-update", parameters, 30000, 0, response -> {
-            try {
-                a.onSuccess(response, 1);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            a.onSuccess(1);
         }, a::onFailure);
     }
 }

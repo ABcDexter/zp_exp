@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp"
     android:layout_margin="10dp"
+    android:padding="10dp"
     app:cardCornerRadius="8dp">
 
     <LinearLayout
@@ -19,33 +19,33 @@
             android:layout_height="wrap_content"
             android:text="name"
             android:textAllCaps="true"
-            android:textSize="20sp"
-            android:textColor="@android:color/background_dark"/>
+            android:textColor="@android:color/background_dark"
+            android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/pidName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/pidName"
-            android:textSize="23sp"
             android:gravity="end"
             android:text="id"
             android:textColor="@android:color/background_dark"
-            android:visibility="gone"/>
-       <!-- <TextView
-            android:id="@+id/text_lat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="latitude"
-            android:textSize="20sp"
-            android:textColor="@android:color/background_dark"/>
+            android:textSize="23sp"
+            android:visibility="gone" />
+        <!-- <TextView
+             android:id="@+id/text_lat"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="latitude"
+             android:textSize="20sp"
+             android:textColor="@android:color/background_dark"/>
 
-        <TextView
-            android:id="@+id/text_lng"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="longitude"
-            android:textSize="20sp"
-            android:textColor="@android:color/background_dark"/>-->
+         <TextView
+             android:id="@+id/text_lng"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="longitude"
+             android:textSize="20sp"
+             android:textColor="@android:color/background_dark"/>-->
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

@@ -101,7 +101,6 @@
                 android:background="@drawable/aadhar_container" />
 
             <TextView
-                android:id="@+id/txt_upload_aadhar_front"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -129,7 +128,6 @@
                 android:background="@drawable/aadhar_container" />
 
             <TextView
-                android:id="@+id/txt_upload_aadhar_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -155,12 +153,13 @@
             android:src="@drawable/login"
             android:text="NEXT"
             android:textAllCaps="true" />
+
         <ProgressBar
             android:id="@+id/simpleProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
     </RelativeLayout>
 
 </ScrollView>

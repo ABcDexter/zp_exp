@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -60,7 +61,7 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
     //firebase auth object
     private FirebaseAuth mAuth;
     Bitmap bitmap;
-
+    ProgressBar simpleProgressBar;
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -99,6 +100,8 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, "Something went wrong! Please try again later.", Toast.LENGTH_LONG).show();
+        simpleProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -194,7 +197,7 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressBar simpleProgressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
+                 simpleProgressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
                 String code = etOTP.getText().toString().trim();
                 if (code.isEmpty() || code.length() < 6) {
                     Log.d(TAG, "Error in OTP");

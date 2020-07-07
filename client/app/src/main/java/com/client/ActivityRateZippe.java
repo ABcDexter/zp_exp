@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 
+import com.client.ride.ActivityRideHome;
 import com.google.android.material.snackbar.Snackbar;
 
 public class ActivityRateZippe extends ActivityDrawer implements View.OnClickListener {
