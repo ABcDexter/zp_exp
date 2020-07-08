@@ -446,7 +446,7 @@ def extractParams(func):
     POST is treated as JSON
     '''
     def _decorator(request):
-        # log('extractParams:' + func.__name__)
+        log('extractParams:' + func.__name__)
         if request.method == 'GET':
             dct = dict(request.GET.items())
         else:
