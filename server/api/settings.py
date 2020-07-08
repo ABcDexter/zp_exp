@@ -102,7 +102,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('ZP_DB_NAME'),
         'USER': os.environ.get('ZP_DB_USER'),
-        'PASSWORD': os.environ['ZP_DB_PASSWD'],
+        'PASSWORD': os.environ.get('ZP_DB_PASSWD'),
         'HOST': 'localhost', #os.environ.get('ZP_DB_HOST'),
         'PORT': '3306' #os.environ.get('ZP_DB_PORT')
     }
