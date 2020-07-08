@@ -1019,7 +1019,7 @@ def userGiveOtp(dct, user, _trip):
 ############################################################
 # Extra
 
-@headers({'Access-Control-Allow-Origin': '*'})
+#@headers({'Access-Control-Allow-Origin': '*'})
 @makeView()
 @csrf_exempt
 #@headers({'Refresh': '10', 'X-Bender': 'Bite my shiny, metal ass!'})
