@@ -144,7 +144,8 @@ def userIsAgentAv(dct, user):
     getcontext().prec = 50
     qsAgents = Agent.objects.filter(mode='AV').values()#Agent.objects.raw('''SELECT * FROM  location INNER JOIN agent WHERE location.an = agent.an AND agent.mode='AV';''');
 
-    ret = []
+    ret = {}
+    agents = []
     # print("$$$$$$$$$$$$$$$$: " ,qsAgents, qsAgents[0]['an'])
     for agent in qsAgents:
 
@@ -178,8 +179,9 @@ def userIsAgentAv(dct, user):
         print('distance: ', nDist)
         print('time: ', nTime)
 
-        ret.append({'an': agent['an'], 'name': agent['name'], 'dist': nDist, 'time': nTime})
-
+        agents.append({'an': agent['an'], 'name': agent['name'], 'dist': nDist, 'time': nTime})
+    
+    ret.update({'agents':agents})
     return HttpJSONResponse(ret)
 
 
