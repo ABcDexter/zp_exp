@@ -332,8 +332,8 @@ class Delivery(models.Model):
     ELETRONIC = 4
     OTHER = 5
 
-    CATEGORIES = [('DOC',DOCUMENT) , ('CLO', CLOTHES), ('FOOD', FOOD),
-                  ('HOUSE', HOUSEHOLD),('ELECT', ELETRONIC), ('OTHER', OTHER ) ]
+    CATEGORIES = [('DOC',DOCUMENT) , ('CLO', CLOTHES), ('FOO', FOOD),
+                  ('HOU', HOUSEHOLD),('ELE', ELETRONIC), ('OTH', OTHER ) ]
 
     DIMENSIONS = [('S', 'SMALL'),
                   ('M', 'MEDIUM'),
@@ -360,6 +360,17 @@ class Delivery(models.Model):
 
     itype = models.CharField(db_index=True, choices=CATEGORIES, max_length=6, default='OTHER')
     idim = models.CharField(db_index=True, choices=DIMENSIONS, max_length=6, default='M')
+
+    # delivery address
+    srcper = models.CharField(null=True, max_length=64, db_index=True)
+    dstper = models.CharField(null=True, max_length=64, db_index=True)
+
+    srcadd = models.CharField(db_index=False, max_length=200, default='_sadd')
+    dstadd = models.CharField(db_index=False, max_length=200, default='_dadd')
+    srcland = models.CharField(db_index=False, max_length=200, default='_sland')
+    dstland = models.CharField(db_index=False, max_length=200, default='_dland')
+    srcphone = models.CharField(max_length=15, db_index=True, default=0)
+    dstphone = models.CharField(max_length=15, db_index=True, default=0)
 
     # we TODO weights
     pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)

@@ -66,7 +66,7 @@ def authDeliveryGetInfo(dct, entity):
 @extractParams
 @transaction.atomic
 @checkAuth()
-def userDeliveryGetStatus(_dct, user):
+def userDeliveryGetStatus(dct, user):
     '''
     Gets the current delis detail for a user
     This must be polled continuously by the user app to detect any state change
@@ -84,22 +84,32 @@ def userDeliveryGetStatus(_dct, user):
 
         Note: If active is false, no other data is returned
     '''
-    print(_dct)
+    print(dct)
     # Get the users current deli if any
     if user.did != -1:
-        print("here A")
+
         qsDeli = Delivery.objects.filter(id=user.did)
         deli = qsDeli[0]
         ret = {'st': deli.st, 'did': deli.id, 'active': deli.st in Delivery.USER_ACTIVE}
 
+        if ret['active']:
+            if deli.st == 'RQ': # Delivery.PAYABLE:
+                price = getDelPrice(deli)
+                ret.update(price)
+            elif deli.st == 'AS':
+                otp = getOTP(deli.uan, deli.dan, deli.atime)
+                ret.update(otp)
+    else:
+
+        deli = Delivery.objects.filter(id=dct['did'])[0]
+        ret = {'active': False, 'st': deli.st}
+
         # For paid Delivery request send OTP, and 'an' of vehicle and driver
         if deli.st == 'PD':
             ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
-            #vehicle = Vehicle.objects.filter(an=deli.van)[0]
-            #ret['vno'] = vehicle.regn
-
-        # For started delis send deli progress percent
-        # this is redundant, this functionality is provided by authProgressPercent()
+            # For started delis send deli progress percent
+            # this is redundant, this functionality is provided by authProgressPercent()
+        '''
         if deli.st == 'ST':
             progress = Progress.objects.filter(tid=deli.id)[0]
             ret['pct'] = progress.pct
@@ -108,17 +118,7 @@ def userDeliveryGetStatus(_dct, user):
                 diffTime = (currTime - deli.stime).total_seconds() / 60  # minutes
                 remHrs = diffTime - deli.hrs
                 ret['time'] = remHrs
-
-        # For ended delis that need payment send the price data
-        if deli.st in Delivery.PAYABLE:
-            price = getDelPrice(deli)
-
-            ret.update(price)
-    else:
-
-        print("here B")
-        ret = {'active': False}
-
+        '''
     return HttpJSONResponse(ret)
 
 
@@ -213,8 +213,8 @@ def userDeliveryEstimate(dct, _user):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkDeliveryStatus(['INACTIVE'])
-def userDeliveryRequest(dct, user, _delivery):
+#@checkDeliveryStatus(['INACTIVE'])
+def userDeliveryRequest(dct, user): #, _delivery):
     '''
     Returns the estimated price for the delivery
 
@@ -229,7 +229,6 @@ def userDeliveryRequest(dct, user, _delivery):
     '''
     print("Delivery request param : ", dct)
 
-
     delivery = Delivery()
     delivery.st = 'RQ'
     delivery.srclat, delivery.srclng, delivery.dstlat, delivery.dstlng = dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng']
@@ -240,6 +239,16 @@ def userDeliveryRequest(dct, user, _delivery):
     delivery.itype = dct['itype']
     delivery.pmode = 1 # online for now , later one can be edited to dct['pmode']
     delivery.rtime = datetime.now(timezone.utc)
+
+    delivery.srcper = dct['srcper']
+    delivery.srcadd = dct['srcadd']
+    delivery.srcland = dct['srcland']
+    delivery.srcphone = int(dct['srcphone']) #NO +91
+
+    delivery.dstper = dct['dstper']
+    delivery.dstadd = dct['dstadd']
+    delivery.dstland = dct['dstland']
+    delivery.dstphone = int(dct['dstphone']) #removing +91
     delivery.save()
 
     user.did = delivery.id
@@ -254,15 +263,18 @@ def userDeliveryRequest(dct, user, _delivery):
 @transaction.atomic
 @checkAuth()
 @checkDeliveryStatus(['AS'])
-def userDeliveryPay(_dct, _user, delivery):
+def userDeliveryPay(_dct, user, delivery):
     '''
         Cancel the Delivery for a user if requested, assigned or started
         Should PD delivery also be allowed to Cancel? What about refund?
     '''
+    user.did = -1 #retire the user
+    user.save()
+
     delivery.st = 'PD'
     delivery.save()
-
-    return HttpJSONResponse({})
+    otp = getOTP(delivery.uan, delivery.dan, delivery.atime)
+    return HttpJSONResponse({'otp': otp})
 
 
 @makeView()
@@ -454,7 +466,7 @@ def agentDeliveryAccept(dct, agent):
         # Make the deli
         deli.st = 'AS'
         deli.dan = agent.an
-        deli.van = vehicle.an
+        #deli.van = vehicle.an
         deli.atime = datetime.now(timezone.utc)
         deli.save()
 

@@ -683,6 +683,7 @@ class checkDeliveryStatus(object):
         @wraps(func)
         def decorated_func(dct, entity):
             log('checkTripStatus:' + func.__name__)
+            print( "arr : " , self.arrValid)
 
             # Get any trip assigned to this entity
             an = entity.an
@@ -693,10 +694,10 @@ class checkDeliveryStatus(object):
                 # arrValid == ['INACTIVE'] means "No delivery    should be active for this entity"
                 if self.arrValid and len(self.arrValid) > 0 and self.arrValid[0] == 'INACTIVE':
                     return HttpJSONError('Delivery already active', 400)
-
+                print(qsDel)
                 # Ensure the delivery has an allowed status
                 bAllowAll = self.arrValid is None
-                if bAllowAll or qsDel[0].st in self.arrValid:
+                if bAllowAll or qsDel[len(qsDel)-1].st in self.arrValid:
                     return func(dct, entity, qsDel[0])
                 else:
                     return HttpJSONError('Invalid delivery or delivery status', 404)
