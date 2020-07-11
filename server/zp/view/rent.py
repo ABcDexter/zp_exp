@@ -127,11 +127,62 @@ def authTimeRemaining(_dct, entity, trip):
     Returns aadhaar, name and phone of current assigned supervisor
     '''
     currTime = datetime.now(timezone.utc)
-    diffTime = (currTime - trip.stime).total_seconds() / 60 # minutes 
+    diffTime = (currTime - trip.stime).total_seconds() / 60 # minutes
+    print(diffTime)
     remHrs = diffTime - trip.hrs 
     ret = {}
-    ret['time'] = remHrs
+    ret['time'] = remHrs // 1 # in minutes
     return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+@checkTripStatus('ST')
+def userTimeUpdate(dct, _user, trip):
+    '''
+    HTTPS args:
+        auth, newdrophub,
+        updatedtime
+
+    Returns price
+    '''
+    newDropHub =  dct['newdrophub'] if 'newdrophub' in dct else  trip.dstid
+    extraHrs = dct['updatedtime']
+
+    recVehicle = Vehicle.objects.filter(an=trip.van)[0]
+    oldPrice = getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
+    newPrice = getRentPrice(trip.srcid, newDropHub, recVehicle.vtype, trip.pmode, extraHrs)
+    print(oldPrice, newPrice)
+    ret = {}
+    ret['price'] = max(20, newPrice['price'] - oldPrice['price'])
+
+    return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
+@checkAuth()
+@checkTripStatus('ST')
+def authTripUpdate(dct, _entity, trip):
+    '''
+    HTTPS args:
+        auth, newdrophub,
+        updatedtime
+
+    Returns price
+    '''
+
+    trip.dstid = dct['newdrophub'] if 'newdrophub' in dct else trip.dstid
+    trip.hrs = dct['updatedtime'] if 'updatedtime' in dct else trip.hrs
+    trip.save()
+
+    return HttpJSONResponse({})
 
 # ============================================================================
 # Supervisor views
