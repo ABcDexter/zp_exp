@@ -1,6 +1,7 @@
 # imports
 import datetime
 from datetime import datetime
+from decimal import getcontext
 
 from django.db import transaction
 from django.utils import timezone
@@ -8,11 +9,15 @@ from django.views.decorators.csrf import csrf_exempt
 
 from url_magic import makeView
 from ..models import Place, Trip, Progress
-from ..models import User, Vehicle
+from ..models import User, Vehicle, Driver, Location
 from ..utils import ZPException, HttpJSONResponse
 from ..utils import getOTP
-from ..utils import getRoutePrice, getTripPrice
+from ..utils import getRoutePrice, getTripPrice, getRidePrice, getRiPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
+
+import googlemaps
+from django.conf import settings
+from django.db.utils import OperationalError, IntegrityError
 
 ###########################################
 # Types
@@ -131,12 +136,13 @@ def driverRideCheck(_dct, driver):
     No trips are returned if there are no vehicles there
     '''
     # Get available vehicles at this hub, if none return empty
-    qsVehicles = Vehicle.objects.filter(pid=driver.pid, tid=-1)
-    if len(qsVehicles) == 0:
-        return HttpJSONResponse({}) # making it easy for Volley to handle JSONArray and JSONObject
+    #qsVehicles = Vehicle.objects.filter(pid=driver.pid, tid=-1)
+
+    #if len(qsVehicles) == 0:
+    #    return HttpJSONResponse({}) # making it easy for Volley to handle JSONArray and JSONObject
 
     # Get the first requested trip from drivers place id
-    qsTrip = Trip.objects.filter(srcid=driver.pid, st='RQ').order_by('-rtime')
+    qsTrip = Trip.objects.filter(st='RQ').order_by('-rtime')
     ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id}
     return HttpJSONResponse(ret)
 
@@ -345,4 +351,163 @@ def driverRideRetire(dct, driver, trip):
     vehicle.tid = Vehicle.AVAILABLE
     vehicle.save()
     return HttpJSONResponse({})
+
+
+# ============================================================================
+# User views
+# ============================================================================
+
+@makeView()
+@csrf_exempt
+@handleException(googlemaps.exceptions.TransportError, 'Internet Connectivity Problem', 503)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def userIsDriverAv(dct, user):
+    '''
+    Returns the Driver count around 5 km radius of a particular lat and lng
+
+    HTTP args:
+        auth : auth of user
+        srclat : latitude
+        srclng : longitude
+    '''
+
+    srcCoOrds = ['%s,%s' % (dct['srclat'], dct['srclng'])]
+
+    getcontext().prec = 50
+    qsDrivers = Driver.objects.filter(mode='AV').values()
+    # Driver.objects.raw('''SELECT * FROM  location INNER JOIN driver WHERE location.an = driver.an AND driver.mode='AV';''');
+
+    ret = {}
+    drivers = []
+    # print("$$$$$$$$$$$$$$$$: " ,qsDrivers, qsDrivers[0]['an'])
+    for driver in qsDrivers:
+
+        qsLocs = Location.objects.filter(an=driver['an']).values()
+        # print('##############',qsLocs)
+        arrLocs = [recPlace for recPlace in qsDrivers]
+        dstCoOrds = ['%s,%s' % (recPlace['lat'], recPlace['lng']) for recPlace in qsLocs]
+        # print('################',dstCoOrds)
+
+        print(srcCoOrds, dstCoOrds)
+
+        import googlemaps
+        gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
+        dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
+        # log(dctDist)
+        # print('############# DST : ', dctDist)
+        if dctDist['status'] != 'OK':
+            raise ZPException(501, 'Error fetching distance matrix')
+
+        dctElem = dctDist['rows'][0]['elements'][0]
+        nDist = 0
+        nTime = 0
+        if dctElem['status'] == 'OK':
+            nDist = dctElem['distance']['value']
+            nTime = int(dctElem['duration']['value']) // 60
+        elif dctElem['status'] == 'NOT_FOUND':
+            nDist, nTime = 0,0
+        elif dctElem['status'] == 'ZERO_RESULTS':
+            nDist, nTime = 0,0
+
+        print('distance: ', nDist)
+        print('time: ', nTime)
+        if nTime and nDist:
+            if nDist < 5000 : # kms radius
+                print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
+                drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
+
+    ret.update({'count': len(drivers)}) # {'drivers': drivers})
+    return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(googlemaps.exceptions.TransportError, 'Internet Connectivity Problem', 503)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+@checkTripStatus(['INACTIVE'])
+def userRideEstimate(dct, _user, _trip):
+    '''
+    Returns the estimated price for the trip
+
+    HTTP args:
+        srclat, srclng,
+        dstlat, dstlng,
+
+        vtype
+        npas
+
+        pmode
+
+        hrs=0 for ride
+    '''
+    print("Ride Estimate param : ", dct)
+    ret = getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)
+    return HttpJSONResponse(ret)
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Null values sent', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkTripStatus(['INACTIVE'])
+def userRideRequest(dct, user):#, _trip):
+    '''
+    User calls this to request a ride
+
+    HTTP args:
+    Ride :
+        srclat, srclng,
+        dstlat, dstlng,
+        npas - number of passengers
+        #srcid - id of the selected start place
+        #dstid - id of the selected destination
+        rtype - rent or ride
+        vtype - vehicle type
+        pmode - payment mode (cash / upi)
+
+
+    '''
+    print("Ride Request param : ", dct)
+
+    trip = Trip()
+    trip.uan = user.an
+    trip.srclat, trip.srclng = dct['srclat'], dct['srclng']
+    trip.dstlat, trip.dstlng = dct['dstlat'], dct['dstlng']
+
+    if dct['rtype'] == '0': # Ride
+        trip.npas = dct['npas']
+        trip.srcid, trip.dstid = 0,0
+    else: # Rent
+        trip.npas = 2
+        iHrs = int(dct['hrs'])
+        trip.hrs = iHrs
+        # this is again updated then the vehicle is actually assigned.
+
+    trip.rtype = dct['rtype']
+    trip.pmode = dct['pmode']
+    trip.rtime = datetime.now(timezone.utc)
+    trip.save()
+
+    progress = Progress()
+    progress.tid = trip.id
+    progress.pct = 0
+    progress.save()
+
+    user.tid = trip.id
+    user.save()
+
+    # we are using only Zbees and Cash only payments right now.
+    #ret = getRoutePrice(trip.srcid, trip.dstid, Vehicle.ZBEE, Trip.CASH)
+    ret = getRiPrice(trip) #getRoutePrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
+    ret['tid'] = trip.id
+
+    return HttpJSONResponse(ret)
 

@@ -387,7 +387,7 @@ def getDelPrice(deli):
     '''
     Gets price info for non active deliveries
     '''
-    vehicle = Vehicle.objects.filter(an=deli.van)[0]
+    # vehicle = Vehicle.objects.filter(an=deli.van)[0]
     return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, 1, 1) #ToDO fix this for the dimensions
 
 ###########################################
@@ -727,3 +727,83 @@ def headers(h):
             return response
         return wrapped_function
     return headers_wrapper
+
+
+###################################
+
+# Ride with google maps
+
+
+def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
+    '''
+    Determines the price given the rent details and time taken
+    time is etime - stime
+    '''
+    # Get this route distance
+
+    #qsPlaces = Place.objects.all().values()
+    #arrLocs = [recPlace for recPlace in qsPlaces]
+    srcCoOrds = ['%s,%s' % (srclat,srclng)]
+    dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
+
+    print(srcCoOrds, dstCoOrds)
+
+    import googlemaps
+    gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
+    dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
+    #log(dctDist)
+    print( '############# DST : ', dctDist)
+    if dctDist['status'] != 'OK':
+        raise ZPException(501, 'Error fetching distance matrix')
+
+    dctElem = dctDist['rows'][0]['elements'][0]
+    nDist = 0
+    nTime = 0
+    if dctElem['status'] == 'OK':
+        print(dctElem)
+        nDist = dctElem['distance']['value']
+        nTime = dctElem['duration']['value']
+    print('distance: ', nDist)
+    print('time: ', nTime)
+
+    fDist = nDist
+    iVType, iPayMode = int(iVType), int(iPayMode)  # need explicit type conversion to int
+    iTimeSec = nTime if iTime == 0 else iTime
+    # Calculate the speed if time is known or else use average speed for estimates
+    fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
+
+    # Get base fare for vehicle
+    fBaseFare = Vehicle.BASE_FARE[iVType]
+
+    # Get average economic weight
+    # TODO how do I decide which area is hot ?
+    idSrcWt = 100 # Place.objects.filter(id=idSrc)[0].wt
+    idDstWt = 100 # Place.objects.filter(id=idDst)[0].wt
+    avgWt = (idSrcWt + idDstWt) / 200
+
+    # get per km price for vehicle
+    maxPricePerKM = 15
+    vehiclePricePerKM = (iVType / 4) * maxPricePerKM
+
+    # Calculate price
+    price = fBaseFare + (fDist / 1000) * vehiclePricePerKM * avgWt
+    if iPayMode == Trip.UPI:
+        price *= 0.9
+
+    return {
+        'price': float('%.0f' % price),
+        'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
+        'dist': float('%.0f' % (fDist / 1000)),
+        'speed': float('%.0f' % (fAvgSpeed * 3.6))
+    }
+
+
+def getRiPrice(trip):
+    '''
+    Gets price info for non active trips
+    '''
+    vehicle = Vehicle.objects.filter(an=trip.van)
+    vType = vehicle[0].vtype if len(vehicle)>0 else 1
+    print(vType)
+    return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)#, (trip.etime - trip.stime).seconds)
+

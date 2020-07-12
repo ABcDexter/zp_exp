@@ -237,6 +237,11 @@ class Trip(models.Model):
     etime = models.DateTimeField(db_index=True, null=True)
     srcid = models.IntegerField(db_index=True)
     dstid = models.IntegerField(db_index=True)
+    srclat = models.FloatField(db_index=True)
+    srclng = models.FloatField(db_index=True)
+    dstlat = models.FloatField(db_index=True)
+    dstlng = models.FloatField(db_index=True)
+
     npas  = models.IntegerField()
     rtype = models.CharField(db_index=True, choices=TYPE,  max_length=10, default=2)
     pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)
