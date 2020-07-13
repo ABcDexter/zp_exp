@@ -353,6 +353,63 @@ def driverRideRetire(dct, driver, trip):
     return HttpJSONResponse({})
 
 
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth(['AV'])
+def driverIsVehicleSet(dct, driver):
+    '''
+    checks whether Driver has a vehicle assigned or not
+    HTTP args :
+        auth
+    '''
+    ret = driver.van != 0
+    return HttpJSONResponse({'set' : ret})
+
+
+@makeView()
+@csrf_exempt
+@handleException(Vehicle.DoesNotExist, 'Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth(['AV'])
+def driverVehicleChoose(dct, driver):
+    '''
+    Driver chooses a vehicle for ride
+    HTTP args :
+        auth,
+        van
+    '''
+    driver.van = dct['van']
+    driver.save()
+    vehicle = Vehicle.objects.filter(an=dct['van'])[0]
+    vehicle.dan = driver.an
+    vehicle.save()
+    return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth(['AV'])
+def driverVehicleRetire(dct, driver):
+    '''
+    Resets driver's and vehicles active trip
+    '''
+    vehicle = Vehicle.objects.filter(an=driver.van)[0]  # testing :P
+    vehicle.dan = -1
+    vehicle.save()
+
+    driver.van = -1
+    driver.save()
+    return HttpJSONResponse({})
+
+
 # ============================================================================
 # User views
 # ============================================================================

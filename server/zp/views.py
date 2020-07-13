@@ -448,7 +448,8 @@ def authVehicleGetAvail(_dct, entity):
     '''
     Returns the available vehicles at the pid of the entity
     '''
-    qsVehicles = Vehicle.objects.filter(pid=entity.pid, tid=-1)
+    # TODO give vehicles from the nearest "hub", say 5 km radius
+    qsVehicles = Vehicle.objects.filter(tid=-1, dan=-1)
     ret = {'vehicles': [model_to_dict(vehicle) for vehicle in qsVehicles]}
     return HttpJSONResponse(ret)
 

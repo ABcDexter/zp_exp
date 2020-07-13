@@ -52,6 +52,7 @@ class Driver(models.Model):
     pid(int):   Index of current place - see Place table
     tid(int):   Index of current trip - see Trip table
     hs(str):    Home state of the Driver
+
     '''
     MODES = [
         ('RG', 'registering'),  # driver is under registration process
@@ -74,6 +75,7 @@ class Driver(models.Model):
     gdr  = models.CharField(null=True, max_length=16, db_index=True)
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
+    van =  models.BigIntegerField(db_index=True, default=-1)
 
     class Meta:
         db_table = 'driver'
@@ -169,6 +171,8 @@ class Vehicle(models.Model):
 
     an = models.BigIntegerField(primary_key=True)
     tid = models.BigIntegerField(db_index=True, default=-1)
+    dan   = models.BigIntegerField(db_index=True, default=-1)
+
     regn = models.CharField(db_index=True, max_length=16)
     dist = models.IntegerField(null=True)
     hrs = models.FloatField(null=True)
@@ -279,7 +283,7 @@ class Supervisor(models.Model):
     age(int)
     pid(int):   Index of current place - see Place table
     tid(int):   Index of current trip - see Trip table
-    hs(str):    Home state of the Driver
+    hs(str):    Home state of the Supervisor
     '''
 
     an   = models.BigIntegerField(primary_key=True)
