@@ -350,6 +350,23 @@ class Delivery(models.Model):
                   ('XL', 'EXTRALARGE'),
                   ('XXL', 'EXTRAALARGE')
                 ]
+    # 6 check
+    # fragile,flammable, liquid, keep dry, keep warm , keep cold
+    CHECKBOXES = [('NO', 'NONE'),
+                  ('FR', 'FRAGILE'),
+                  ('FL', 'FLAMMABLE'),
+                  ('LI', 'LIQUID'),
+                  ('KD', 'KEEPDRY'),
+                  ('KW', 'KEEPWARM'),
+                  ('KC', 'KEEPCOLD')
+                ]
+
+    fr = models.BooleanField(default=False, db_index=True)
+    fl = models.BooleanField(default=False, db_index=True)
+    li = models.BooleanField(default=False, db_index=True)
+    kd = models.BooleanField(default=False, db_index=True)
+    kw = models.BooleanField(default=False, db_index=True)
+    kc = models.BooleanField(default=False, db_index=True)
 
     st = models.CharField(max_length=2, choices=STATUSES, default='RQ', db_index=True)
     uan = models.BigIntegerField(db_index=True)
@@ -367,23 +384,25 @@ class Delivery(models.Model):
     dstlat = models.FloatField(null=False, db_index=True, default=0)
     dstlng = models.FloatField(null=False, db_index=True, default=0)
 
-    itype = models.CharField(db_index=True, choices=CATEGORIES, max_length=6, default='OTHER')
+    itype = models.CharField(db_index=True, choices=CATEGORIES, max_length=6, default='OTH')
     idim = models.CharField(db_index=True, choices=DIMENSIONS, max_length=6, default='M')
 
     # delivery address
     srcper = models.CharField(null=True, max_length=64, db_index=True)
     dstper = models.CharField(null=True, max_length=64, db_index=True)
 
-    srcadd = models.CharField(db_index=False, max_length=200, default='_sadd')
-    dstadd = models.CharField(db_index=False, max_length=200, default='_dadd')
-    srcland = models.CharField(db_index=False, max_length=200, default='_sland')
-    dstland = models.CharField(db_index=False, max_length=200, default='_dland')
-    srcphone = models.CharField(max_length=15, db_index=True, default=0)
-    dstphone = models.CharField(max_length=15, db_index=True, default=0)
+    srcadd = models.CharField(db_index=False, max_length=200, null=True)
+    dstadd = models.CharField(db_index=False, max_length=200, null=True)
+    srcland = models.CharField(db_index=True, max_length=200, null=True)
+    dstland = models.CharField(db_index=True, max_length=200, null=True)
+    srcphone = models.CharField(max_length=15, db_index=True, null=True)
+    dstphone = models.CharField(max_length=15, db_index=True, null=True)
 
     # we TODO weights
     pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)
 
+    details = models.CharField(db_index=False, max_length=150, null=True)
+    tip = models.IntegerField(db_index=False, default=0)
     class Meta:
         db_table = 'delivery'
         managed = True

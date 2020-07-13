@@ -93,12 +93,12 @@ def userDeliveryGetStatus(dct, user):
         ret = {'st': deli.st, 'did': deli.id, 'active': deli.st in Delivery.USER_ACTIVE}
 
         if ret['active']:
-            if deli.st == 'RQ': # Delivery.PAYABLE:
+            if deli.st == 'RQ':  # Delivery.PAYABLE:
                 price = getDelPrice(deli)
                 ret.update(price)
             elif deli.st == 'AS':
-                otp = getOTP(deli.uan, deli.dan, deli.atime)
-                ret.update(otp)
+                price = getDelPrice(deli)
+                ret.update({'price': price})
     else:
 
         deli = Delivery.objects.filter(id=dct['did'])[0]
@@ -108,7 +108,6 @@ def userDeliveryGetStatus(dct, user):
         if deli.st == 'PD':
             ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
             # For started delis send deli progress percent
-            # this is redundant, this functionality is provided by authProgressPercent()
         '''
         if deli.st == 'ST':
             progress = Progress.objects.filter(tid=deli.id)[0]
@@ -142,7 +141,8 @@ def userIsAgentAv(dct, user):
     srcCoOrds = ['%s,%s' % (dct['srclat'], dct['srclng'])]
 
     getcontext().prec = 50
-    qsAgents = Agent.objects.filter(mode='AV').values()#Agent.objects.raw('''SELECT * FROM  location INNER JOIN agent WHERE location.an = agent.an AND agent.mode='AV';''');
+    qsAgents = Agent.objects.filter(mode='AV').values()
+    #Agent.objects.raw('''SELECT * FROM  location INNER JOIN agent WHERE location.an = agent.an AND agent.mode='AV';''');
 
     ret = {}
     agents = []
@@ -172,14 +172,14 @@ def userIsAgentAv(dct, user):
             nDist = dctElem['distance']['value']
             nTime = int(dctElem['duration']['value'])//60
         elif dctElem['status'] == 'NOT_FOUND':
-            nDist , nTime = 2048, 60  # dummy distance, time in mins
+            nDist, nTime = 0,0  # 2048, 60  # dummy distance, time in mins
         elif dctElem['status'] == 'ZERO_RESULTS':
-            nDist , nTime = 4096, 120
+            nDist, nTime = 0,0  # 4096, 120
 
         print('distance: ', nDist)
         print('time: ', nTime)
-
-        agents.append({'an': agent['an'], 'name': agent['name'], 'dist': nDist, 'time': nTime})
+        if nDist and nTime:
+            agents.append({'an': agent['an'], 'name': agent['name'], 'dist': nDist, 'time': nTime})
     
     ret.update({'agents':agents})
     return HttpJSONResponse(ret)
@@ -199,10 +199,17 @@ def userDeliveryEstimate(dct, _user):
         auth, srcpin, dstpin,
         srclat, srclng,
         dstlat, dstlng
-        self or not
+        itype,
+        idim,
+        fr, fl, li, kd, kw, kc,
         pmode
     '''
     print("Delivery Estimate param : ", dct)
+    #TODO update the algorithm as the
+    # Item type
+    # IDims
+    # checks,
+    # Okay? tonight.
     ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], 1, 1)
     return HttpJSONResponse(ret)
 
@@ -219,36 +226,66 @@ def userDeliveryRequest(dct, user): #, _delivery):
     Returns the estimated price for the delivery
 
     HTTP args:
-        rtype
-        vtype
-        npas
-        dstpin
-        pmode
+        auth,
+        srclat, srclng,
+        dstlat, dstlng,
 
-        hrs
+        srcphone, dstphone,
+        srcper, dstper,
+
+        srdadd, srcpin
+        srcland,
+        dstadd, dstpin
+        dstland,
+
+        itype, idim
+
+        details,
+
+        fr, fl, li, kd, kw, kc,
+
+        tip
+
     '''
-    print("Delivery request param : ", dct)
+    print("#######  ", len(dct), "Delivery request param : ",  dct)
 
     delivery = Delivery()
     delivery.st = 'RQ'
-    delivery.srclat, delivery.srclng, delivery.dstlat, delivery.dstlng = dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng']
     delivery.uan = user.an
-    delivery.srcpin = dct['srcpin']
-    delivery.dstpin = dct['dstpin']
+
+    delivery.srclat, delivery.srclng, delivery.dstlat, delivery.dstlng = dct['srclat'], dct['srclng'], \
+                                                                         dct['dstlat'], dct['dstlng']
+
+    delivery.srcpin, delivery.dstpin = dct['srcpin'],  dct['dstpin']
+
     delivery.idim = dct['idim']
     delivery.itype = dct['itype']
     delivery.pmode = 1 # online for now , later one can be edited to dct['pmode']
     delivery.rtime = datetime.now(timezone.utc)
 
-    delivery.srcper = dct['srcper']
-    delivery.srcadd = dct['srcadd']
-    delivery.srcland = dct['srcland']
-    delivery.srcphone = int(dct['srcphone']) #NO +91
+    delivery.srcper, delivery.srcadd, delivery.srcland, delivery.srcphone = dct['srcper'], dct['srcadd'], \
+                                                                            dct['srcland'], dct['srcphone']
 
-    delivery.dstper = dct['dstper']
-    delivery.dstadd = dct['dstadd']
-    delivery.dstland = dct['dstland']
-    delivery.dstphone = int(dct['dstphone']) #removing +91
+    delivery.dstper, delivery.dstadd, delivery.dstland, delivery.dstphone = dct['dstper'], dct['dstadd'], \
+                                                                            dct['dstland'], dct['dstphone']
+
+    if 'fr' in dct:
+        delivery.fl = dct['fr']
+    if 'fl' in dct:
+        delivery.fl = dct['fl']
+    if 'li' in dct:
+        delivery.fl = dct['li']
+    if 'kd' in dct:
+        delivery.fl = dct['fl']
+    if 'kw' in dct:
+        delivery.fl = dct['kw']
+    if 'kc' in dct:
+        delivery.fl = dct['kc']
+
+    if 'details' in dct:
+        delivery.details = dct['details']
+    if 'tip' in dct:
+        delivery.tip = dct['tip']
     delivery.save()
 
     user.did = delivery.id
