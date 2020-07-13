@@ -953,6 +953,7 @@ def userTripEstimate(dct, user, _trip):
         rtype
         vtype
         npas
+        srcid
         dstid
         pmode
 
@@ -963,7 +964,8 @@ def userTripEstimate(dct, user, _trip):
         ret = getRoutePrice(user.pid, dct['dstid'], dct['vtype'], dct['pmode'])
     #should it not allow the prices from point A(source) to point B(destination) instead of taking the pid of user?
     else:
-        ret = getRentPrice(user.pid,  dct['dstid'], dct['vtype'], dct['pmode'], dct['hrs'])
+        #make this ask srcid as well
+        ret = getRentPrice(dct['srcid'],  dct['dstid'], dct['vtype'], dct['pmode'], dct['hrs'])
 
     return HttpJSONResponse(ret)
 

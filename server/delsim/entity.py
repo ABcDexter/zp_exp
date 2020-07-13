@@ -23,7 +23,7 @@ def prob(fProb):
 FINISHED_STATUS_MSGS = {
     'PD': 'Delivery paid for',
     'CN': 'Delivery was cancelled by user',
-    'DN': 'Delivery was denied by driver',
+    'DN': 'Delivery was denied by agent',
     'FL': 'Delivery failed',
     'TO': 'Delivery timed out',
 }

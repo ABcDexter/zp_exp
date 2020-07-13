@@ -362,9 +362,11 @@ def getRentPrice(idSrc, idDst, iVType, iPayMode, iTimeHrs=0):
     if iTimeHrs == 4 :
         price += lstPrice[1]
     elif iTimeHrs == 8:
-        price += lstPrice[1]+lstPrice[2]
-    else:
-        price += lstPrice[1] + lstPrice[2] + lstPrice[3]
+        price += sum(lstPrice[1:3])
+    elif iTimeHrs == 12:
+        price += sum(lstPrice[1:4])
+    else : #24c hours
+        price += sum(lstPrice[1:6])
 
     return {
         'price': float('%.0f' % price),

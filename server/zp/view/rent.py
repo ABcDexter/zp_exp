@@ -184,6 +184,25 @@ def authTripUpdate(dct, _entity, trip):
 
     return HttpJSONResponse({})
 
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Vehicle Not Found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+@checkTripStatus('AS')
+def userVehicleHold(_dct, user, trip):
+    '''
+    Returns aadhaar, name and phone of current assigned vehicle,
+    '''
+    vehicle = Vehicle.objects.filter(an=trip.van)[0]
+    #TODO think about increased pricing
+    ret = {'price': getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)['price'] + 100}
+    return HttpJSONResponse(ret)
+
+
+
 # ============================================================================
 # Supervisor views
 # ============================================================================
