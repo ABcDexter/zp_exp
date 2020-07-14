@@ -272,30 +272,35 @@ def userTripGetStatus(_dct, user):
             ret['otp'] = getOTP(trip.uan, trip.dan, trip.atime)
             vehicle = Vehicle.objects.filter(an=trip.van)[0]
             ret['vno'] = vehicle.regn
-            if trip.rtype == 1:
-                ret['price'] = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
+            if trip.rtype == '1':
+                ret['price'] = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)['price']
+                currTime = datetime.now(timezone.utc)
+                #print(currTime, trip.atime)
+                diffTime = (currTime - trip.atime).total_seconds() // 60  # minutes
+                #print(currTime - trip.atime, (currTime - trip.atime).total_seconds())
+                ret['time'] = 30-diffTime
             
         # For started trips send trip progress percent
         # this is redundant, this functionality is provided by authProgressPercent()
         if trip.st == 'ST':
             progress = Progress.objects.filter(tid=trip.id)[0]
             ret['pct'] = progress.pct
-            if trip.rtype == 1:
+            if trip.rtype == '1':
                 currTime = datetime.now(timezone.utc)
-                diffTime = (currTime - trip.stime).total_seconds() / 60 # minutes 
-                remHrs = diffTime - trip.hrs 
+                diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
+                remHrs = trip.hrs*60 - diffTime
                 ret['time'] = remHrs
                 
             # TODO In case of rental make the rental send the number of minutes remaining .
 
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
-            if trip.rtype == 0:
+            if trip.rtype == '0':
                 price = getTripPrice(trip)
             else : #renta
                 vehicle = Vehicle.objects.filter(an=trip.van)[0]
                 currTime = datetime.now(timezone.utc)
-                diffTime = (currTime - trip.stime).total_seconds() / 60 # minutes 
+                diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
                 remHrs = diffTime - trip.hrs 
                 price = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, remHrs)
 
@@ -514,7 +519,7 @@ def authTripFail(dct, entity, trip):
     vehicle.tid = Vehicle.FAILED
     vehicle.save()
 
-    if trip.rtype == 0:
+    if trip.rtype == '0':
         # lock the driver
         driver = entity if type(entity) is Driver else Driver.objects.filter(an=trip.dan)[0]
         driver.mode = 'LK'
@@ -669,7 +674,7 @@ def adminProgressAdvance(dct):
     user = User.objects.filter(an=trip.uan)[0]
     updateLoc(vehicle, y, x)
     updateLoc(user, y, x)
-    if trip.rtype == 0:
+    if trip.rtype == '0':
         driver = Driver.objects.filter(an=trip.dan)[0]
         updateLoc(driver, y, x)
 
@@ -739,18 +744,18 @@ def adminRefresh(dct):
         # For requested trips if settings.TRIP_RQ_TIMEOUT seconds passed since trip.rtime set to TO (timeout)
         if trip.st == 'RQ':
             tmDelta = datetime.now(timezone.utc) - trip.rtime
-            if trip.rtype == 'RIDE' and tmDelta.total_seconds() > settings.RIDE_RQ_TIMEOUT:
+            if trip.rtype == '0' and tmDelta.total_seconds() > settings.RIDE_RQ_TIMEOUT:
                 trip.st = 'TO'
-            if trip.rtype == 'RENT' and tmDelta.total_seconds() > settings.RENT_RQ_TIMEOUT:
+            if trip.rtype == '1' and tmDelta.total_seconds() > settings.RENT_RQ_TIMEOUT:
                 trip.st = 'TO'
 
         # For assigned trips if settings.TRIP_AS_TIMEOUT seconds passed since trip.atime set to TO (user times out)
         # this can be differentiated from above by simply looking at atime field, if not NULL, then Trip Timed Out after going into AS
         else:
             tmDelta = datetime.now(timezone.utc) - trip.atime
-            if trip.rtype == 'RIDE' and tmDelta.total_seconds() > settings.RIDE_AS_TIMEOUT:
+            if trip.rtype == '0' and tmDelta.total_seconds() > settings.RIDE_AS_TIMEOUT:
                 trip.st = 'TO'
-            if trip.rtype == 'RENT' and tmDelta.total_seconds() > settings.RENT_AS_TIMEOUT:
+            if trip.rtype == '1' and tmDelta.total_seconds() > settings.RENT_AS_TIMEOUT:
                 trip.st = 'TO'
         trip.save()
 

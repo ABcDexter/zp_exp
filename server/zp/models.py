@@ -230,6 +230,7 @@ class Trip(models.Model):
     RIDE = 0
     RENT = 1
     TYPE =[ ('RIDE', RIDE),('RENT', RENT)]
+    TYPES =[ ('0', RIDE),('1', RENT)]
 
     st    = models.CharField( max_length=2, choices=STATUSES, default='RQ', db_index=True)
     uan   = models.BigIntegerField (db_index=True)
@@ -247,7 +248,7 @@ class Trip(models.Model):
     dstlng = models.FloatField(db_index=True)
 
     npas  = models.IntegerField()
-    rtype = models.CharField(db_index=True, choices=TYPE,  max_length=10, default=2)
+    rtype = models.CharField(db_index=True, choices=TYPES,  max_length=10, default=2)
     pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)
     hrs = models.IntegerField(db_index=True, default=0)
 
