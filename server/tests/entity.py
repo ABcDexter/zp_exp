@@ -122,7 +122,7 @@ class Entity:
             ret = self.callAPI('driver-ride-retire')
 
         elif entity == 'user' and state in ['TO', 'DN', 'PD']:
-            ret = self.callAPI('user-ride-retire')
+            ret = self.callAPI('user-trip-retire')
 
         if not self.logIfErr(ret):
             self.log('Retired trip')
@@ -130,7 +130,7 @@ class Entity:
 
 
     def handleFinishedTrip(self, entity=None):
-        ret = self.callAPI('auth-ride-get-info', {'tid': self.sTID})
+        ret = self.callAPI('auth-trip-get-info', {'tid': self.sTID})
         if not self.logIfErr(ret):
             st = ret['st']
             if st != 'FL':

@@ -238,7 +238,8 @@ def isDriverVerified(_, dct):
 
 @makeView()
 @csrf_exempt
-@handleException()
+#@handleException()
+@handleException(IndexError, 'Vehicle not found', 404)
 @extractParams
 @transaction.atomic
 @checkAuth()
@@ -733,13 +734,18 @@ def adminRefresh(dct):
         # For requested trips if settings.TRIP_RQ_TIMEOUT seconds passed since trip.rtime set to TO (timeout)
         if trip.st == 'RQ':
             tmDelta = datetime.now(timezone.utc) - trip.rtime
-            if tmDelta.total_seconds() > settings.TRIP_RQ_TIMEOUT:
+            if trip.rtype == 'RIDE' and tmDelta.total_seconds() > settings.RIDE_RQ_TIMEOUT:
                 trip.st = 'TO'
+            if trip.rtype == 'RENT' and tmDelta.total_seconds() > settings.RENT_RQ_TIMEOUT:
+                trip.st = 'TO'
+
         # For assigned trips if settings.TRIP_AS_TIMEOUT seconds passed since trip.atime set to TO (user times out)
         # this can be differentiated from above by simply looking at atime field, if not NULL, then Trip Timed Out after going into AS
         else:
             tmDelta = datetime.now(timezone.utc) - trip.atime
-            if tmDelta.total_seconds() > settings.TRIP_AS_TIMEOUT:
+            if trip.rtype == 'RIDE' and tmDelta.total_seconds() > settings.RIDE_AS_TIMEOUT:
+                trip.st = 'TO'
+            if trip.rtype == 'RENT' and tmDelta.total_seconds() > settings.RENT_AS_TIMEOUT:
                 trip.st = 'TO'
         trip.save()
 

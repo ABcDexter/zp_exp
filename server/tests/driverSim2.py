@@ -23,6 +23,7 @@ class Driver(Entity):
         self.bPollVehicle = False
         self.bChangeStatus = True
         self.fDelay = 1
+        self.iVan = -1
 
     # log a message if its different from the last logged message
     def log(self, sMsg):
@@ -100,13 +101,12 @@ class Driver(Entity):
         else: #RQ state
             ret = self.callAPI('driver-ride-check')
             if not self.logIfErr(ret):
-                vehicles = self.waitForVehicles()
                 if 'tid' in ret:
                     bChoose = prob(0.9)
                     self.log('Trip available - %s' % ('accepting...' if bChoose else 'rejecting...') )
                     if bChoose:
-                        vehicle = random.choice(vehicles)
-                        params = {'tid': ret['tid'], 'van': vehicle['an'] }
+                        print("Ae hi gaddi chaahidi : ", self.iVan)
+                        params = {'tid': ret['tid'], 'van': self.iVan }
                         ret = self.callAPI('driver-ride-accept', params)
                         if not self.logIfErr(ret):
                             self.sTID = params['tid']
@@ -171,6 +171,17 @@ class Driver(Entity):
                 bOnline = self.handleDriverStatus()
 
             if bOnline:
+                if self.iVan == -1:
+                    #now select a vehicle
+                    vehicles = self.waitForVehicles()
+
+                    vehicle = random.choice(vehicles)
+                    print("OOOO gadddi : ", vehicle)
+                    self.iVan =  vehicle['an']
+
+                    params = {'van': self.iVan}
+                    ret = self.callAPI('driver-vehicle-set', params)
+
                 self.handleTripStatus()
 
             time.sleep(fDelay)

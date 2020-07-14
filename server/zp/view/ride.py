@@ -171,7 +171,7 @@ def driverRideAccept(dct, driver):
     trip = Trip.objects.filter(id=dct['tid'])[0]
     if trip.st == 'RQ':
         # Ensure that the chosen vehicle is here and not assigned to a trip
-        vehicle = Vehicle.objects.filter(an=dct['van'], pid=trip.srcid)[0]
+        vehicle = Vehicle.objects.filter(an=dct['van'])[0] #, pid=trip.srcid)[0] #think think
         if vehicle.tid != -1:
             raise ZPException(400, 'Vehicle already in trip')
 
@@ -375,7 +375,7 @@ def driverIsVehicleSet(dct, driver):
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth(['AV'])
-def driverVehicleChoose(dct, driver):
+def driverVehicleSet(dct, driver):
     '''
     Driver chooses a vehicle for ride
     HTTP args :
@@ -416,6 +416,7 @@ def driverVehicleRetire(dct, driver):
 
 @makeView()
 @csrf_exempt
+@handleException(googlemaps.exceptions.ApiError, 'INVALID_REQUEST', 503)
 @handleException(googlemaps.exceptions.TransportError, 'Internet Connectivity Problem', 503)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
@@ -538,13 +539,14 @@ def userRideRequest(dct, user):#, _trip):
     trip.uan = user.an
     trip.srclat, trip.srclng = dct['srclat'], dct['srclng']
     trip.dstlat, trip.dstlng = dct['dstlat'], dct['dstlng']
-
+    trip.srcid = user.pid
+    trip.dstid = user.pid+1
     if dct['rtype'] == '0': # Ride
         trip.npas = dct['npas']
         trip.srcid, trip.dstid = 0,0
     else: # Rent
         trip.npas = 2
-        iHrs = int(dct['hrs'])
+        iHrs = 2 #int(dct['hrs'])
         trip.hrs = iHrs
         # this is again updated then the vehicle is actually assigned.
 

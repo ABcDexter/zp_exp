@@ -2,7 +2,7 @@
 
 import os
 import sys
-
+import random
 sys.path.insert(0, os.path.dirname(__file__))
 from entity import *
 
@@ -35,14 +35,27 @@ class User(Entity):
 
     def doRequestRide(self):
         if prob(0.8):
+            srcLAT, srcLNG = 29 + random.random(), 79 + random.random() #"srclat": "29.317366", "srclng": "79.5827044",
+            print("srcLAT : ", srcLAT, " LNG : ", srcLNG)
             iDstPID = self.iPID
             while iDstPID == self.iPID:
                 dctPlace = random.choice(self.arrPlaces)
                 iDstPID = dctPlace['id']
-
+            places = {
+                "1": ("RESORT LAKE VILLAGE ","29.317953","79.587319","1400","100"),
+                "2": ("HANUMAN TEMPLE ","29.239276","79.58613","1328","100"),
+                "3": ("DAATH BHIMTAL","29.348369","79.55901","1337","100"),
+                "4": ("POLICE STATION","29.348567","79.54465","1338","100"),
+                "5": ("GOVT HOSPITAL BHIMTAL","29.354217","79.52201","1520","100"),
+                "6": ("BYPASS ROAD","29.359265","79.55001","1379","100"),
+                "7": ("MEHRA GAON ","29.220449","79.47853", "1234", "100")
+            }
+            dstLAT, dstLNG = float(places[str(iDstPID)][1]), float(places[str(iDstPID)][2])
             self.log('Requesting trip to %d: %s' % (iDstPID, dctPlace['pn']))
+            print("dstLAT : ", dstLAT, " dstLNG : ", dstLNG)
 
-            ret = self.callAPI('user-ride-request', {'srcid': self.iPID, 'dstid': iDstPID, 'rtype': 0, 'vtype': 3, 'npas': 1, 'pmode': 0 })
+            ret = self.callAPI('user-ride-request', {"srclat": srcLAT, "srclng": srcLNG, "dstlat": dstLAT ,"dstlng":dstLNG,
+                                                     'rtype': 0, 'vtype': 3, 'npas': 1, 'pmode': 0 })
             if not self.logIfErr(ret):
                 self.log('Trip estimate: %s, ' % json.dumps(ret))
                 self.iDstPID = iDstPID
@@ -68,7 +81,7 @@ class User(Entity):
                     ret = self.callAPI('user-ride-get-driver')
                     if not self.logIfErr(ret):
                         ret['otp'] = dct['otp']
-                        ret['van'] = dct['van']
+                        #ret['van'] = dct['van']
                         sMsg = 'Trip confirmed: %s, ' % json.dumps(ret)
 
                         if prob(0.95):
@@ -84,7 +97,7 @@ class User(Entity):
 
 
     def handleTripStatus(self):
-        ret = self.callAPI('user-ride-get-status')
+        ret = self.callAPI('user-trip-get-status')
         self.sTID = ret.get('tid', -1)
         if self.sTID == -1:
             self.waitForVehicles()
