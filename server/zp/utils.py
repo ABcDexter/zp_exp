@@ -452,7 +452,7 @@ def extractParams(func):
         if request.method == 'GET':
             dct = dict(request.GET.items())
         else:
-            print("REEEEEEEEEEEEEEEEEE : ", request.body)
+            #print("REEEEEEEEEEEEEEEEEE : ", request.body)
             #log(request.body.decode('utf-8'))
             dct = dict(json.loads(request.body.decode('utf-8')))
         return func(request, dct)
