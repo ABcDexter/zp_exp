@@ -201,9 +201,9 @@ def driverRideAccept(dct, driver):
 
         user = User.objects.filter(an=trip.uan)[0]
         ret.update({'name': user.name, 'phone': user.pn})
-        src = Place.objects.filter(id=trip.srcid)[0]
-        dst = Place.objects.filter(id=trip.dstid)[0]
-        ret.update({'srcname': src.pn, 'dstname': dst.pn})
+        #src = Place.objects.filter(id=trip.srcid)[0]
+        #dst = Place.objects.filter(id=trip.dstid)[0]
+        #ret.update({'srcname': src.pn, 'dstname': dst.pn})
         print("Accepting trip : ", ret)
     else:
         raise ZPException(400, 'Trip already assigned')

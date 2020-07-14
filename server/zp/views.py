@@ -338,13 +338,13 @@ def userTripRequest(dct, user, _trip):
     print("Trip Request param : ", dct)
 
     # Even though we can use IDs directly, look them up in the DB to prevent bogus IDs
-    idSrc = Place.objects.filter(id=dct['srcid'])[0].id
-    idDst = Place.objects.filter(id=dct['dstid'])[0].id
+    placeSrc = Place.objects.filter(id=dct['srcid'])[0]
+    placeDst = Place.objects.filter(id=dct['dstid'])[0]
 
     trip = Trip()
     trip.uan = user.an
-    trip.srcid = user.pid#idSrc #TODO fix this logic
-    trip.dstid = idDst
+    trip.srcid = placeSrc.id
+    trip.dstid = placeDst.id
     if dct['rtype'] == '0': # Ride
         trip.npas = dct['npas']
     else: # Rent
@@ -356,6 +356,11 @@ def userTripRequest(dct, user, _trip):
     trip.rtype = dct['rtype']
     trip.pmode = dct['pmode']
     trip.rtime = datetime.now(timezone.utc)
+    trip.srclat = placeSrc.lat
+    trip.srclng = placeSrc.lng
+    trip.dstlat = placeDst.lat
+    trip.dstlng = placeDst.lng
+
     trip.save()
 
     progress = Progress()
