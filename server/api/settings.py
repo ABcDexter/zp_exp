@@ -45,6 +45,8 @@ LOG_DIR = '/srv/data/logs/'
 RENT_RQ_TIMEOUT = 900
 RENT_AS_TIMEOUT = 1800
 
+DEL_RQ_TIMEOUT = 1800
+DEL_AS_TIMEOUT = 3600
 # Application definition
 
 INSTALLED_APPS = [

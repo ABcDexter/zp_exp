@@ -467,7 +467,7 @@ def agentDeliveryCheck(_dct, agent):
     #    return HttpJSONResponse({}) # making it easy for Volley to handle JSONArray and JSONObject
 
     # Get the first requested delivery from agents place id
-    qsDelivery = Delivery.objects.filter(srcpin=agent.pid, st='RQ').order_by('-rtime') #TODO how to do this :?
+    qsDelivery = Delivery.objects.filter(st='RQ').order_by('-rtime') #TODO 10 km radius in this
     ret = {} if len(qsDelivery) == 0 else {'did': qsDelivery[0].id}
     return HttpJSONResponse(ret)
 
@@ -527,9 +527,9 @@ def agentDeliveryAccept(dct, agent):
 
         user = User.objects.filter(an=deli.uan)[0]
         ret.update({'name': user.name, 'phone': user.pn})
-        src = Place.objects.filter(id=deli.srcpin)[0]
-        dst = Place.objects.filter(id=deli.dstpin)[0]
-        ret.update({'srcname': src.pn, 'dstname': dst.pn})
+        #src = Place.objects.filter(id=deli.srcpin)[0]
+        #dst = Place.objects.filter(id=deli.dstpin)[0]
+        ret.update({'srcname': deli.srcadd, 'dstname': deli.dstadd})
         print("Accepting deli : ", ret)
     else:
         raise ZPException(400, 'Delivery already assigned')

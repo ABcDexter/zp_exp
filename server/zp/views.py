@@ -20,7 +20,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 
-from .models import Driver, User, Vehicle
+from .models import Driver, User, Vehicle, Delivery
 from .models import Place, Trip, Progress, Location, Route
 
 from .utils import HttpJSONError, ZPException, DummyException, HttpJSONResponse, HttpRecordsResponse, log
@@ -766,6 +766,22 @@ def adminRefresh(dct):
     for trip in qsTrip:
         loc = Location.objects.filter(an=trip.dan)
         updateTrip(loc, trip)'''
+    qsDel = Delivery.objects.filter(st__in=['AS', 'RQ'])
+    for deli in qsDel:
+
+        # For requested deliveries if settings.DEL_RQ_TIMEOUT seconds passed since del.rtime set to TO (timeout)
+        if deli.st == 'RQ':
+            tmDelta = datetime.now(timezone.utc) - deli.rtime
+            if tmDelta.total_seconds() > settings.DEL_RQ_TIMEOUT:
+                deli.st = 'TO'
+
+        # For assigned deliveries if settings.DEL_AS_TIMEOUT seconds passed since deli.atime set to TO (user times out)
+        # this can be differentiated from above by simply looking at atime field, if not NULL, then Delivery Timed Out after going into AS
+        else:
+            tmDelta = datetime.now(timezone.utc) - trip.atime
+            if tmDelta.total_seconds() > settings.DEL_AS_TIMEOUT:
+                trip.st = 'TO'
+        deli.save()
 
     return HttpJSONResponse({})
 
