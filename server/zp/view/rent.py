@@ -41,22 +41,28 @@ def userRentalUpdate(dct, user, trip):
     '''
     Update the rental time for a user if requested, assigned or started
     this update the etime for the user
+    HTTP args:
+        hrs,
+        dstid
     '''
     # take time in minutes
     # oldTime = (trip.etime - trip.rtime).total_seconds() / 60
-    iHrs = int(dct['hrs'])
-    #startTime = trip.stime #datetime.now(timezone.utc)
-    #tdISTdelta = timedelta(hours=iHrs, minutes=0)
-    #endTime = startTime + tdISTdelta
-    #trip.etime = endTime
-    #dstId = trip.
-    #if trip.st == 'RQ':
+    # startTime = trip.stime #datetime.now(timezone.utc)
+    # tdISTdelta = timedelta(hours=iHrs, minutes=0)
+    # endTime = startTime + tdISTdelta
+    # trip.etime = endTime
+    # dstId = trip.
+    # if trip.st == 'RQ':
     #    trip.etime = trip.rtime + dct['hrs']
-    #else :
+    # else :
     #    trip.etime = trip.rtime + dct['hrs']
-    
-    #trip.dstid = dct['dstid']
-    trip.hrs = iHrs
+
+    # trip.dstid = dct['dstid']
+    if 'hrs' in dct:
+        iHrs = int(dct['hrs'])
+        trip.hrs = iHrs
+    if 'dstid' in dct:
+        trip.dstid = dct['dstid']
     trip.save()
 
     return HttpJSONResponse({})
