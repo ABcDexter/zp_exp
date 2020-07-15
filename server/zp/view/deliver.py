@@ -543,7 +543,7 @@ def agentDeliveryAccept(dct, agent):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkDeliveryStatus(['PD'])
+@checkDeliveryStatus(['AS', 'PD'])
 def agentDeliveryCancel(_dct, agent, deli):
     '''
     Called by agent to deny a delivery that was assigned (AS)
