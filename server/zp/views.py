@@ -778,7 +778,7 @@ def adminRefresh(dct):
         # For assigned deliveries if settings.DEL_AS_TIMEOUT seconds passed since deli.atime set to TO (user times out)
         # this can be differentiated from above by simply looking at atime field, if not NULL, then Delivery Timed Out after going into AS
         else:
-            tmDelta = datetime.now(timezone.utc) - trip.atime
+            tmDelta = datetime.now(timezone.utc) - deli.atime
             if tmDelta.total_seconds() > settings.DEL_AS_TIMEOUT:
                 trip.st = 'TO'
         deli.save()
