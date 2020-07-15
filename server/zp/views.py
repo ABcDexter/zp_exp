@@ -641,13 +641,13 @@ def adminProgressAdvance(dct):
 
     # Update all three entities location, set pid if 100%
     trip = Trip.objects.filter(id=dct['tid'])[0]
-    src = Place.objects.filter(id=trip.srcid)[0]
-    dst = Place.objects.filter(id=trip.dstid)[0]
+    #src = trip. Place.objects.filter(id=trip.srcid)[0]
+    #dst = Place.objects.filter(id=trip.dstid)[0]
 
-    x1 = src.lng
-    x2 = dst.lng
-    y1 = src.lat
-    y2 = dst.lat
+    x1 = trip.srclng #src.lng
+    x2 = trip.dstlng # dst.lng
+    y1 = trip.srclat #src.lat
+    y2 = trip.dstlat #dst.lat
 
     f = currPct / 100
     x = x1 + (x2 - x1) * f
