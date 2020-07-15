@@ -519,8 +519,9 @@ def agentDeliveryAccept(dct, agent):
         agent.save()
 
         # set the vehicles tid
-        vehicle.tid = deli.id
-        vehicle.save()
+        #todo fix this logic
+        #vehicle.tid = deli.id
+        #vehicle.save()
 
         ret.update({'dstpin': deli.dstpin})
 
