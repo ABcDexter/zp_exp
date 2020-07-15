@@ -444,9 +444,9 @@ def supPaymentConfirm(dct, _sup):
     trip.save()
 
     # Get the vehicle
-    vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    retireEntity(vehicle)
-
+    #vehicle = Vehicle.objects.filter(an=trip.van)[0]
+    #retireEntity(vehicle)
+    # DO NOT retire here, retire at supRentRetire
     return HttpJSONResponse({})
 
 

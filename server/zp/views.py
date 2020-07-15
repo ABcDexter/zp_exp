@@ -24,7 +24,7 @@ from .models import Driver, User, Vehicle, Delivery
 from .models import Place, Trip, Progress, Location, Route
 
 from .utils import HttpJSONError, ZPException, DummyException, HttpJSONResponse, HttpRecordsResponse, log
-from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renameTmpImgFiles, getOTP
+from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renameTmpImgFiles, getOTP, doOCRback
 from .utils import getRoutePrice, getTripPrice, getRentPrice
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from .utils import headers
@@ -75,11 +75,17 @@ def registerUser(_, dct: Dict):
     clientDetails = doOCR(sAadharFrontFilename)
     sAadhaar = clientDetails['an']
     log('Aadhaar number read from %s - %s' % (sAadharFrontFilename, sAadhaar))
+    clientDetails2 = doOCRback(sAadharBackFilename)
+    sAadhaar2 = clientDetails2['an']
+    log('Aadhaar number read from %s - %s' % (sAadharBackFilename, sAadhaar2))
 
     # verify aadhaar number via Verhoeff algorithm
     if not aadhaarNumVerify(sAadhaar):
         raise ZPException(501,'Aadhaar number not valid!')
     log('Aadhaar is valid')
+
+    if sAadhaar != sAadhaar2:
+        raise ZPException(501, 'Aadhaar number front doesn\'t match Aadhaar number back!')
 
     # Check if aadhaar has been registered before
     qsUser = User.objects.filter(an=int(sAadhaar))
@@ -93,6 +99,7 @@ def registerUser(_, dct: Dict):
         user.auth = sAuth
         user.an = int(sAadhaar)
         user.pn = sPhone
+        user.hs = clientDetails2['hs']
         user.save()
 
         renameTmpImgFiles(settings.AADHAAR_DIR, sAadharFrontFilename, sAadharBackFilename, sAadhaar)

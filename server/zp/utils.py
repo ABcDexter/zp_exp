@@ -190,6 +190,151 @@ def doOCR(path):
     return ret
 
 
+
+
+#################################
+#OCR v2
+
+STATES = [
+    ('Andhra Pradesh', 'andhrapradesh',  	'AP'),
+    ('Arunachal Pradesh', 'arunachalpradesh', 	'AR'),
+    ('Assam', 'assam',	'AS' ),
+    ('Bihar', 'bihar',	'BR'),
+    ('Chhattisgarh', 'chhattisgarh', 	'CG'),
+    ('Goa', 'goa', 	'GA'),
+    ('Gujarat', 'gujarat', 	'GJ'),
+    ('Haryana', 'haryana', 	'HR'),
+    ('Himachal Pradesh', 'himachalrpradesh', 	'HP'),
+    ('Jharkhand', 'jharkhand', 	'JH'),
+    ('Karnataka', 'karnataka', 	'KA'),
+    ('Kerala', 'kerala', 	'KL'),
+    ('Madhya Pradesh', 'madhyapradesh', 	'MP'),
+    ('Maharashtra', 'maharashtra', 	'MH'),
+    ('Manipur', 'manipur', 	'MN'),
+    ('Meghalaya', 'meghalaya', 	'ML'),
+    ('Mizoram', 'mizoram', 	'MZ'),
+    ('Nagaland', 'nagaland', 	'NL'),
+    ('Odisha', 'orissa', 	'OD'), # name was changed
+    ('Punjab', 'punjab', 	'PB'),
+    ('Rajasthan', 'rajasthan', 	'RJ'),
+    ('Sikkim', 'sikkim', 	'SK'),
+    ('Tamil Nadu', 	'tamilnadu', 'TN'),
+    ('Telangana', 'telangana' , 	'TS'),
+    ('Tripura', 'tripura', 	'TR'),
+    ('Uttar Pradesh', 'uttarpradesh', 	'UP'),
+    ('Uttarakhand', 'uttaranchal', 	'UK'),
+    ('West Bengal', 'westbengal', 	'WB'),
+
+    ('Andaman and Nicobar Islands' , 'andamanandnicobarislands', 	'AN'),
+    ('Chandigarh', 'chandigarh',	'CH'),
+    ('Dadra and Nagar Haveli', 'dadradandnagarhaveli', 	'DD'), #two UTs clubbed together, but we are using different
+    ('Daman and Diu', 'damananddiu', 'DD'),
+    ('Delhi' 'delhi', 	'DL'),
+    ('Jammu and Kashmir', 'jammuandkashmir', 	'JK'),
+    ('Ladakh', 'ladakh', 	'LA'),
+    ('Lakshadweep', 'lakshadweep', 	'LD'),
+    ('Puducherry', 'puducherry', 	'PY')
+ ]
+
+count = 0
+#################################
+
+from fuzzywuzzy import fuzz as fuzzY
+
+def doOCRback(path):
+    '''
+    does the OCR for backside,
+    give the Home State and AN(aadhaar number again)
+    '''
+    def fuzzMatch(s1, s2):
+        mn = min(len(s1), len(s2))
+        mx = max(len(s1), len(s2))
+        nMatch = 0
+        for i in range(mn):
+            if s1[i] == s2[i]:
+                nMatch += 1
+        fuzz = nMatch / mx
+        # print('values : ', nMatch, mx)
+        frat = fuzzY.ratio(s1.lower(), s2.lower())
+        # print('fuzz : ', fuzz, 'frat : ', frat / 100)
+        return max(fuzz, frat / 100)
+
+
+    def is_ascii(s):
+        return all(ord(c) < 128 for c in s)
+
+    def onlyAscii(s):
+        return ''.join([c for c in s if is_ascii(c)])
+
+    def noSpace(s):
+        return ''.join([c for c in s if not c.isspace()])
+
+    def getREMatch(dct, key, regex, words, bIgnoreCase=True, bNoSpace=True):
+        for word in words:
+            w = noSpace(word) if bNoSpace else word
+            m = re.search(regex, w, re.IGNORECASE) if bIgnoreCase else re.search(regex, w)
+            if m:
+                span = m.span()
+                dct[key] = w[span[0]:span[1]]
+                return
+
+    import io
+    from google.cloud import vision
+    client = vision.ImageAnnotatorClient()
+
+    with io.open(path, 'rb') as image_file:
+        content = image_file.read()
+
+    image = vision.types.Image(content=content)
+    response = client.text_detection(image=image)
+    if response.error.message:
+        print('Error!!!')
+        #raise ZPException(501, str(response.error.message))
+
+    texts = response.text_annotations
+
+    # Take only the first item
+    sAllText = ''
+    for text in texts:
+        sAllText = text.description
+        break
+
+    # Get each line of text and eliminate non ascii chars
+    arrWords = [onlyAscii(word).strip() for word in sAllText.split('\n')]
+
+    # Remove empty words
+    arrWords = [word for word in arrWords if len(word) > 0]
+    # log(arrWords)
+
+    ret = {}
+    ret['count'] = 0
+    # get AN again to see whether the front and the back are same or not
+    getREMatch(ret, 'an', r'\d{12}', arrWords)
+
+    # print(ret)
+    sArr = [ word.split()[0] for word in arrWords[1:]]
+    bFound = False
+    for sA in reversed(sArr):
+        if len(sA) > 2 : #smallest state isf Goa with len=3
+            # Look for "Home State" fuzzily
+            # len = range(STATES)
+            for tState in STATES:
+                ret['count'] = ret['count'] + 1
+                fMatch = max( fuzzMatch(noSpace(sA.lower()), tState[0]), fuzzMatch(noSpace(sA.lower()), tState[1] ))
+                print(sA, tState, fMatch, )
+
+                if fMatch > 0.90 :
+                    # print('Confidence %d%%' % (fMatch * 100))
+                    ret['hs'] = tState[2]
+                    bFound = True
+                    break
+        if bFound:
+            break
+
+    return ret
+
+
+
 def getOTP(an: int, dan: int, rtime: datetime) -> int:
     '''
     Generates a deterministic 4 digit OTP
