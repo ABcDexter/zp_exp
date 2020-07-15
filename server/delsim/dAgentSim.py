@@ -95,7 +95,7 @@ class Agent(Entity):
 
     def handleInactive(self):
         if self.sDID != -1: # TO, CN, DN, FL, PD
-            self.handleFinishedTrip('agent')
+            self.handleFinishedDelivery('agent')
             self.bChangeStatus = True
         else: #RQ state
             print("here for a request... ")

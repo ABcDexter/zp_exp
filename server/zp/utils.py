@@ -689,7 +689,7 @@ class checkDeliveryStatus(object):
 
             # Get any trip assigned to this entity
             an = entity.an
-            qsDel = Delivery.objects.filter(uan=an, st__in=self.arrValid) if type(entity) is User else Delivery.objects.filter(dan=an)
+            qsDel = Delivery.objects.filter(uan=an, st__in=self.arrValid) if type(entity) is User else Delivery.objects.filter(dan=an, st__in=self.arrValid)
 
             # If there is a delivery, ensure its status is within allowed
             if len(qsDel) > 0:

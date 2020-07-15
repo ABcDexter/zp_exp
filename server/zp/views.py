@@ -780,7 +780,7 @@ def adminRefresh(dct):
         else:
             tmDelta = datetime.now(timezone.utc) - deli.atime
             if tmDelta.total_seconds() > settings.DEL_AS_TIMEOUT:
-                trip.st = 'TO'
+                deli.st = 'TO'
         deli.save()
 
     return HttpJSONResponse({})

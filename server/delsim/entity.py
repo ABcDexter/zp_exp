@@ -96,8 +96,8 @@ class Entity:
     def maybeFailDelivery(self, typ, fProb=0.0001):  # p is the probability to cancel, 1% by default
         # once in 10000 fail the delivery
         if prob(fProb):
-            self.log(str(typ) + ' Failing trip!')
-            ret = self.callAPI('auth-ride-fail')
+            self.log(str(typ) + ' Failing delivery!')
+            ret = self.callAPI('auth-delivery-fail')
             self.logIfErr(ret)
             return True
         return False
@@ -130,7 +130,7 @@ class Entity:
 
 
     def handleFinishedDelivery(self, entity=None):
-        ret = self.callAPI('auth-ride-get-info', {'tid': self.sTID})
+        ret = self.callAPI('auth-delivery-get-info', {'tid': self.sTID})
         if not self.logIfErr(ret):
             st = ret['st']
             if st != 'FL':
