@@ -97,7 +97,7 @@ def userDeliveryGetStatus(dct, user):
                 price = getDelPrice(deli)
                 ret.update(price)
             elif deli.st == 'AS':
-                price = getDelPrice(deli)
+                price = int(getDelPrice(deli)['price'])+int(deli.tip)
                 ret.update({'price': price})
     else:
 
