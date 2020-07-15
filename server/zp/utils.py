@@ -380,8 +380,8 @@ def getTripPrice(trip):
     Gets price info for non active trips
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    if trip.rtype == 0:
-        return getRoutePrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
+    if trip.rtype == '0':
+        return getRoutePrice(1, 2, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
     else :
         return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
 
