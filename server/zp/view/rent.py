@@ -126,12 +126,11 @@ def authTimeRemaining(_dct, entity, trip):
     '''
     Returns aadhaar, name and phone of current assigned supervisor
     '''
-    currTime = datetime.now(timezone.utc)
-    diffTime = (currTime - trip.stime).total_seconds() / 60 # minutes
-    print(diffTime)
-    remHrs = diffTime - trip.hrs 
     ret = {}
-    ret['time'] = remHrs // 1 # in minutes
+    currTime = datetime.now(timezone.utc)
+    diffTime = (currTime - trip.stime).total_seconds() // 60  # minutes
+    remHrs = trip.hrs * 60 - diffTime
+    ret['time'] = remHrs
     return HttpJSONResponse(ret)
 
 
