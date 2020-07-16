@@ -23,13 +23,11 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
     private List<HubListData> hub_list_data;
     private Context context;
     private int intentValue;
-
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String LOCATION_PICK = "PickLocation";
     public static final String LOCATION_DROP = "DropLocation";
     public static final String LOCATION_PICK_ID = "PickLocationID";
     public static final String LOCATION_DROP_ID = "DropLocationID";
-
 
     public MyHubListAdapter(List<HubListData> hub_list_data, Context context, int i) {
         this.hub_list_data = hub_list_data;

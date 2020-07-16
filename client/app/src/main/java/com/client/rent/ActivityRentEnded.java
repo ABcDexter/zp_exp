@@ -1,16 +1,12 @@
 package com.client.rent;
 
-import android.os.Bundle;
-
-import com.client.ActivityDrawer;
-import com.client.ActivityWelcome;
-import com.client.R;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.client.ActivityDrawer;
+import com.client.ActivityWelcome;
+import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
 
@@ -32,16 +31,15 @@ import java.util.Map;
 
 public class ActivityRentEnded extends ActivityDrawer implements View.OnClickListener {
 
+    private static final String TAG = "ActivityRentEnded";
+
     TextView upiPayment, cost;
     final int UPI_PAYMENT = 0;
     String stringAuthCookie;
+    private static ActivityRentEnded instance;
     public static final String AUTH_KEY = "AuthKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
-    private static final String TAG = "ActivityRentEnded";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    private static ActivityRentEnded instance;
-
     Button done;
     ActivityRentEnded a = ActivityRentEnded.this;
 
@@ -64,7 +62,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
         getPrice();
         upiPayment.setOnClickListener(this);
         checkStatus();
-        done = findViewById(R.id.done_btn);
+        done = findViewById(R.id.confirm_btn);
         done.setOnClickListener(this);
 
     }
@@ -82,7 +80,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
         params.put("tid", tid);
         JSONObject parameters = new JSONObject(params);
 
-        Log.d(TAG, "Values: auth=" + auth + " tid="+tid);
+        Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");
         UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 30000, 0, response -> {
             try {
@@ -117,7 +115,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
                         intent.setAction("15");
                         startService(intent);
                     }
-                }else{
+                } else {
                     Intent homePage = new Intent(ActivityRentEnded.this, ActivityWelcome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
@@ -129,7 +127,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
             }
         }
         //response on hitting user-give-otp API
-        if (id == 3){
+        if (id == 3) {
             //TODO remove later
             Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         }
@@ -151,7 +149,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
                 payUsingUpi(amount, upiId, name, note);
                 break;
 
-            case R.id.done_btn:
+            case R.id.confirm_btn:
                 paymentMade();
 
         }

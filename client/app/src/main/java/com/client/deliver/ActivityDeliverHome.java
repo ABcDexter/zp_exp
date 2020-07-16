@@ -3,8 +3,15 @@ package com.client.deliver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +19,43 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+
+import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
 import com.client.R;
+import com.client.UtilityApiRequestPost;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ActivityDeliverHome extends ActivityDrawer implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     TextView pickAddress, dropAddress;
     ImageButton confirm;
     Spinner content, size;
-String ContentType, ContentSize;
+    String ContentType, ContentSize;
+    private static final String TAG = "ActivityDeliverHome";
     public static final String PREFS_ADDRESS = "com.client.ride.Address";
     public static final String ADDRESS_PICK = "com.client.ride.AddressPick";
+    public static final String PICK_LAT = "com.client.delivery.PickLatitude";
+    public static final String PICK_LNG = "com.client.delivery.PickLongitude";
+    public static final String DROP_LAT = "com.client.delivery.PickLatitude";
+    public static final String DROP_LNG = "com.client.delivery.DropLongitude";
     public static final String ADDRESS_DROP = "com.client.ride.AddressDrop";
     public static final String PICK_LANDMARK = "com.client.ride.PickLandmark";
     public static final String DROP_LANDMARK = "com.client.ride.DropLandmark";
@@ -32,7 +63,24 @@ String ContentType, ContentSize;
     public static final String DROP_PIN = "com.client.ride.DropPin";
     public static final String PICK_MOBILE = "com.client.ride.PickMobile";
     public static final String DROP_MOBILE = "com.client.ride.DropMobile";
+    public static final String CONTENT_TYPE = "com.delivery.ride.ContentType";
+    public static final String CONTENT_DIM = "com.delivery.ride.ContentDimensions";
+    public static final String AUTH_KEY = "AuthKey";
+    public static final String AN_KEY = "AadharKey";
+    public static final String PICK_NAME = "com.client.ride.PickName";
+    public static final String DROP_NAME = "com.client.ride.DropName";
+    Vibrator vibrator;
 
+    FusedLocationProviderClient mFusedLocationClient;
+    int PERMISSION_ALL = 1;
+    String[] PERMISSIONS = {
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.CALL_PHONE};
+    String lat, lng, stringAuth, stringAN,addPick,addDrop,pickLat,pickLng,
+            dropLat,dropLng,pickLand,dropLand,pickPin,dropPin,pickMobile,dropMobile;
+    SharedPreferences prefAuth;
+    ScrollView scrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,31 +93,53 @@ String ContentType, ContentSize;
         //initializing vies
         pickAddress = findViewById(R.id.txt_pick_address);
         dropAddress = findViewById(R.id.txt_drop_address);
-        confirm = findViewById(R.id.confirm_deliver);
+        confirm = findViewById(R.id.next_deliver);
         content = findViewById(R.id.content_type);
         size = findViewById(R.id.content_size);
         confirm.setOnClickListener(this);
         pickAddress.setOnClickListener(this);
         dropAddress.setOnClickListener(this);
+        scrollView = findViewById(R.id.scrollViewRentRide);
+
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         //retrieving locally stored data
-//retrieving locally stored data
         SharedPreferences pref = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
-        String addPick = pref.getString(ADDRESS_PICK, "");
-        String addDrop = pref.getString(ADDRESS_DROP, "");
-        String pickLand = pref.getString(PICK_LANDMARK, "");
-        String dropLand = pref.getString(DROP_LANDMARK, "");
-        String pickPin = pref.getString(PICK_PIN, "");
-        String dropPin = pref.getString(DROP_PIN, "");
-        String pickMobile = pref.getString(PICK_MOBILE, "");
-        String dropMobile = pref.getString(DROP_MOBILE, "");
+         addPick = pref.getString(ADDRESS_PICK, "");
+         pickLat = pref.getString(PICK_LAT, "");
+         pickLng = pref.getString(PICK_LNG, "");
+         addDrop = pref.getString(ADDRESS_DROP, "");
+         dropLat = pref.getString(DROP_LAT, "");
+         dropLng = pref.getString(DROP_LNG, "");
+         pickLand = pref.getString(PICK_LANDMARK, "");
+         dropLand = pref.getString(DROP_LANDMARK, "");
+         pickPin = pref.getString(PICK_PIN, "");
+         dropPin = pref.getString(DROP_PIN, "");
+         pickMobile = pref.getString(PICK_MOBILE, "");
+         dropMobile = pref.getString(DROP_MOBILE, "");
+
+        prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
+        stringAuth = prefAuth.getString(AUTH_KEY, "");
+        stringAN = prefAuth.getString(AN_KEY, "");
 
         if (!addPick.equals("")) {
-            pickAddress.setText(addPick + ", " + pickLand);
+            //String nameLandmarkPick = addPick+pickLand;
+            //String displayPickAdd = nameLandmarkPick.substring(0, Math.min(nameLandmarkPick.length(), 13));
+            int pickSpace = (addPick.contains(" ")) ? addPick.indexOf(",") : addPick.length() - 1;
+            String pickCutName = addPick.substring(0, pickSpace);
+            pickAddress.setText(pickCutName);
+
         }
         if (!addDrop.equals("")) {
-            dropAddress.setText(addDrop + ", " + dropLand);
+            //dropAddress.setText(addDrop + ", " + dropLand);
+            String nameLandmark = addDrop+dropLand;
+            String displayAdd = nameLandmark.substring(0, Math.min(nameLandmark.length(), 13));
+            dropAddress.setText(displayAdd);
         }
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityDeliverHome.this);
+        getLastLocation();
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 R.layout.custom_spinner, getResources().getStringArray(R.array.content_array)) {
             @Override
@@ -135,11 +205,31 @@ String ContentType, ContentSize;
                 dropIntent.putExtra("FillPick", "drop");
                 startActivity(dropIntent);
                 break;
-            case R.id.confirm_deliver:
-                Intent confirmIntent = new Intent(ActivityDeliverHome.this, ActivityDeliverPayment.class);
-                startActivity(confirmIntent);
+            case R.id.next_deliver:
+                if (ContentType.equals("PACKAGE CONTENTS") || ContentSize.equals("PACKAGE SIZE") ||
+                        dropAddress.getText().equals("DROP POINT") || pickAddress.getText().equals("PICK UP POINT")) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        vibrator.vibrate(1000);
+                    }
+                    Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+
+                }else {
+                storeData();
+                Intent confirmIntent = new Intent(ActivityDeliverHome.this, ActivityDeliverItemDetails.class);
+                startActivity(confirmIntent);}
                 break;
         }
+    }
+
+    private void storeData() {
+        SharedPreferences sharedPreferences = this.getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(CONTENT_TYPE, ContentType);
+        editor.putString(CONTENT_DIM, ContentSize);
+        editor.apply();
     }
 
     @Override
@@ -149,19 +239,22 @@ String ContentType, ContentSize;
                 ContentType = content.getItemAtPosition(position).toString();
                 switch (ContentType) {
                     case "DOCUMENTS / BOOKS":
-                        ContentType = "0";
+                        ContentType = "DOC";
                         break;
                     case "CLOTHES / ACCESSORIES":
-                        ContentType = "1";
+                        ContentType = "CLO";
                         break;
                     case "FOOD":
-                        ContentType = "2";
+                        ContentType = "FOO";
                         break;
                     case "HOUSEHOLD":
-                        ContentType = "2";
+                        ContentType = "HOU";
                         break;
                     case "ELECTRONICS / ELECTRICAL ITEMS":
-                        ContentType = "2";
+                        ContentType = "ELE";
+                        break;
+                    case "OTHER":
+                        ContentType = "OTH";
                         break;
 
                 }
@@ -170,19 +263,19 @@ String ContentType, ContentSize;
                 ContentSize = size.getItemAtPosition(position).toString();
                 switch (ContentSize) {
                     case "S (35 x 25 x 13 cm)":
-                        ContentSize = "1";
+                        ContentSize = "S";
                         break;
                     case "M (70 x 50 x 26 cm)":
-                        ContentSize = "2";
+                        ContentSize = "M";
                         break;
                     case "L (105 x 75 x 39 cm)":
-                        ContentSize = "3";
+                        ContentSize = "L";
                         break;
                     case "XL (104 x 100 x 52 cm)":
-                        ContentSize = "4";
+                        ContentSize = "XL";
                         break;
                     case "XXL (175 x 125 x 65 cm)":
-                        ContentSize = "5";
+                        ContentSize = "XXL";
                         break;
                 }
                 break;
@@ -193,4 +286,100 @@ String ContentType, ContentSize;
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    public void getLastLocation() {
+        Log.d(TAG, "Inside getLastLocation()");
+        if (hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        } else {
+            Log.d(TAG, "inside else of getLastLocation()");
+            mFusedLocationClient.getLastLocation().addOnCompleteListener(
+                    new OnCompleteListener<Location>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Location> task) {
+                            Location location = task.getResult();
+                            if (location == null) {
+                                requestNewLocationData();
+                            } else {
+                                Log.d(TAG, "inside else of addOnCompleteListener()");
+                                lat = location.getLatitude() + "";
+                                lng = location.getLongitude() + "";
+                                Log.d(TAG, "lat = " + lat + " lng = " + lng);
+                                sendLocation();
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void sendLocation() {
+
+        Log.d(TAG, "inside sendLocation()");
+        Map<String, String> params = new HashMap();
+        params.put("an", stringAN);
+        params.put("auth", stringAuth);
+        params.put("lat", lat);
+        params.put("lng", lng);
+        JSONObject parameters = new JSONObject(params);
+        ActivityDeliverHome a = ActivityDeliverHome.this;
+
+        Log.d(TAG, "auth = " + stringAuth + " lat =" + lat + " lng = " + lng + " an=" + stringAN);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST auth-location-update");
+        UtilityApiRequestPost.doPOST(a, "auth-location-update", parameters, 30000, 0, response -> {
+            try {
+                a.onSuccess(response, 1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        Log.d(TAG, "inside hasPermission()");
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void requestNewLocationData() {
+        Log.d(TAG, "inside requestNewLocationData()");
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(0);
+        mLocationRequest.setFastestInterval(0);
+        mLocationRequest.setNumUpdates(1);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.requestLocationUpdates(
+                mLocationRequest, mLocationCallback,
+                Looper.myLooper());
+    }
+
+    private LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Log.d(TAG, "inside LocationResult() call");
+            Location mLastLocation = locationResult.getLastLocation();
+            lat = mLastLocation.getLatitude() + "";
+            lng = mLastLocation.getLongitude() + "";
+        }
+    };
+
+    public void onSuccess(JSONObject response, int id) {
+        if (id == 1) {
+            Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        }
+    }
+
+    public void onFailure(VolleyError error) {
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+    }
+
 }

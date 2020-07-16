@@ -1,50 +1,113 @@
 package com.deliverpartner;
 
-import android.app.Notification;
-import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.RemoteViews;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+import com.android.volley.VolleyError;
 
-import static com.deliverpartner.App.CHANNEL_ID;
+import org.json.JSONObject;
 
-public class ActivityNewOrders extends AppCompatActivity {
-    private NotificationManagerCompat notificationManager;
+import java.util.HashMap;
+import java.util.Map;
+
+public class ActivityNewOrders extends ActivityDrawer implements View.OnClickListener {
+    private static final String TAG = "ActivityNewOrders";
+
+    public static final String DELIVERY_DETAILS = "com.agent.DeliveryDetails";
+    public static final String DID = "DeliveryID";
+    public static final String SRCLND = "DeliverySrcLand";
+    public static final String DSTLND = "DeliveryDstLand";
+    public static final String AUTH_COOKIE = "com.agent.cookie";
+    public static final String AUTH_KEY = "Auth";
+
+    String strAuth, strDid, strSrcLnd, strDstLnd;
+    ActivityNewOrders a = ActivityNewOrders.this;
+    Map<String, String> params = new HashMap();
+
+    TextView src, dst, yes, no, info;
+    RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_orders);
-        notificationManager = NotificationManagerCompat.from(this);
 
+        SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
+        strAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
+
+        SharedPreferences delPref = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
+        strDid = delPref.getString(DID, ""); // retrieve auth value stored locally and assign it to String auth
+        strSrcLnd = delPref.getString(SRCLND, ""); // retrieve auth value stored locally and assign it to String auth
+        strDstLnd = delPref.getString(DSTLND, ""); // retrieve auth value stored locally and assign it to String auth
+
+        info = findViewById(R.id.info_text);
+        src = findViewById(R.id.srcLnd);
+        dst = findViewById(R.id.dstLnd);
+        yes = findViewById(R.id.accept_request);
+        no = findViewById(R.id.reject_request);
+        relativeLayout = findViewById(R.id.rl_request);
+        src.setText(strSrcLnd);
+        dst.setText(strDstLnd);
+
+        yes.setOnClickListener(this);
+        no.setOnClickListener(this);
+        if (strDid.isEmpty()) {
+            info.setText("NO new delivery");
+        } else {
+            relativeLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void delvyAccept() {
+        String auth = strAuth;
+        params.put("auth", auth);
+        params.put("did", strDid);
+        JSONObject parameters = new JSONObject(params);
+
+        Log.d(TAG, "auth= " + auth + " did= " + strDid);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST agent-delivery-accept");
+        UtilityApiRequestPost.doPOST(a, "agent-delivery-accept", parameters, 30000, 0, response -> {
+            try {
+                a.onSuccess(response, 1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, a::onFailure);
 
     }
 
-    public void showNotification(View v) {
-        Log.d("dfghj", "inside showNotification()");
-        RemoteViews collapsedView = new RemoteViews(getPackageName(),
-                R.layout.notification_collapsed);
-        RemoteViews expandedView = new RemoteViews(getPackageName(),
-                R.layout.notification_expanded);
-        Intent clickIntent = new Intent(this, NotificationReceiver.class);
-        PendingIntent clickPendingIntent = PendingIntent.getBroadcast(this,
-                0, clickIntent, 0);
-        collapsedView.setTextViewText(R.id.text_view_collapsed_1, "Hello World!");
-        expandedView.setImageViewResource(R.id.image_view_expanded, R.drawable.ic_home_black);
-        expandedView.setOnClickPendingIntent(R.id.image_view_expanded, clickPendingIntent);
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_check)
-                .setCustomContentView(collapsedView)
-                .setCustomBigContentView(expandedView)
-                //.setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .build();
-        notificationManager.notify(1, notification);
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.accept_request:
+                delvyAccept();
+                break;
+            case R.id.reject_request:
+                Intent home = new Intent(ActivityNewOrders.this, ActivityHome.class);
+                startActivity(home);
+                finish();
+                break;
+        }
     }
 
+    public void onSuccess(JSONObject response, int id) throws NegativeArraySizeException {
+//response on hitting agent-set-mode API
+        if (id == 1) {
+            Log.d(TAG, "RESPONSE:" + response);
+            Intent home = new Intent(ActivityNewOrders.this, ActivityHome.class);
+            startActivity(home);
+            finish();
+        }
+    }
+
+    public void onFailure(VolleyError error) {
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+    }
 }

@@ -22,6 +22,7 @@
         <item>VEHICLE TYPE</item>
         <item>E-SCOOTY</item>
         <item>E-BIKE</item>
+        <item>E-CYCLE</item>
     </string-array>
     <string-array name="vehicle_array_sans_cycle">
         <item>VEHICLE TYPE</item>
@@ -44,6 +45,7 @@
         <item>FOOD</item>
         <item>HOUSEHOLD</item>
         <item>ELECTRONICS / ELECTRICAL ITEMS</item>
+        <item>OTHER</item>
     </string-array>
     <string-array name="size_array">
         <item>PACKAGE SIZE</item>
@@ -59,5 +61,5 @@
         <item>2</item>
         <item>(1 CHILD UPTO 5 YRS RIDES FREE)</item>
     </string-array>
-    <string name="title_activity_maps2">Map</string>
+    <string name="title_activity_maps2" translatable="false">Map</string>
 </resources>

@@ -20,7 +20,7 @@
                 android:layout_height="50dp"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="Origin Information"
+                android:text="Delivery En route"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
             <Button
@@ -32,7 +32,7 @@
                 android:layout_below="@id/txt"
                 android:layout_marginTop="20dp"/>
             <TextView
-                android:id="@+id/src_per"
+                android:id="@+id/dst_per"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/map"
@@ -42,76 +42,48 @@
                 android:text="Person"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:textSize="18sp" />
+                android:textSize="23sp" />
 
             <TextView
-                android:id="@+id/src_add"
+                android:id="@+id/dst_add"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/src_per"
+                android:layout_below="@id/dst_per"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/rect_box_outline"
                 android:padding="5dp"
                 android:text="Address"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:textSize="18sp" />
+                android:textSize="23sp" />
 
             <TextView
-                android:id="@+id/src_land"
+                android:id="@+id/dst_land"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/src_add"
+                android:layout_below="@id/dst_add"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/rect_box_outline"
                 android:padding="5dp"
                 android:text="Landmark"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:textSize="18sp" />
+                android:textSize="23sp" />
 
             <TextView
-                android:id="@+id/src_phone"
+                android:id="@+id/dst_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/src_land"
+                android:layout_below="@id/dst_land"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/rect_box_outline"
                 android:padding="5dp"
                 android:text="Phone"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:textSize="18sp" />
+                android:textSize="23sp" />
 
-            <TextView
 
-                android:id="@+id/txt1"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_below="@id/src_phone"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="enter otp provided by user"
-                android:textAllCaps="true"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/enter_otp"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_below="@id/txt1"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/rect_box_outline"
-                android:hint="enter otp"
-                android:inputType="number"
-                android:maxLength="4"
-                android:padding="5dp"
-                android:textColor="@color/txtColor"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="20sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -124,17 +96,17 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Accept"
+                    android:text="Done"
                     android:textColor="#000"
-                    android:id="@+id/yes"/>
+                    android:id="@+id/completed"/>
 
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Reject"
+                    android:text="Fail"
                     android:textColor="#000"
-                    android:id="@+id/no"/>
+                    android:id="@+id/failed"/>
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>

@@ -4,13 +4,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -26,89 +23,70 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
-import com.client.HubList;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 
 public class ActivityRideHome extends ActivityDrawer implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "ActivityRideHome";
     Spinner vehicle, riders;
-    String VehicleType, RentRide, RiderNo , PaymentMode;
+    String VehicleType, RiderNo;
     ImageButton next;
     ScrollView scrollView;
-    TextView reject_rq;
-    TextView accept_rq;
-    TextView dialog_txt;
-    TextView pick;
-    TextView drop;
-    public static final String AUTH_KEY = "AuthKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
-    public static final String AN_KEY = "AadharKey";
+    TextView reject_rq, accept_rq, dialog_txt;
 
     public static final String BUSS = "Buss";
     public static final String BUSS_FLAG = "com.client.ride.BussFlag";
-    public static final String LOCATION_PICK_ID = "PickLocationID";
-    public static final String LOCATION_DROP_ID = "DropLocationID";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
-    public static final String LOCATION_PICK = "PickLocation";
-    public static final String LOCATION_DROP = "DropLocation";
+    public static final String SRC_LNG = "SrcLng";
+    public static final String SRC_LAT = "SrcLat";
+    public static final String DST_LAT = "DropLat";
+    public static final String DST_LNG = "DropLng";
+    public static final String SRC_NAME = "PICK UP POINT";
+    public static final String DST_NAME = "DROP POINT";
     public static final String RENT_RIDE = "RentRide";
     public static final String PAYMENT_MODE = "PaymentMode";
+    public static final String OTP_PICK = "OTPPick";
+    public static final String AUTH_KEY = "AuthKey";
+    public static final String AN_KEY = "AadharKey";
     SharedPreferences prefAuth, prefBuss;
     String stringAuth, stringBuss, bussFlag, stringAN;
     Dialog myDialog;
     private static ActivityRideHome instance;
-    String lat, lng;
     Vibrator vibrator;
-    FusedLocationProviderClient mFusedLocationClient;
-    int PERMISSION_ALL = 1;
-    String[] PERMISSIONS = {
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.CALL_PHONE};
-    String Rent, pMode, pickID, dropID, pickPoint, dropPoint;
     ActivityRideHome a = ActivityRideHome.this;
+    Map<String, String> params = new HashMap();
+
+    String srcName, srcLat, srcLng, dstName, dstLat, dstLng;
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
-        //response on hitting auth-location-update API
-        if (id == 1) {
-            Intent i = new Intent(this, UtilityPollingService.class);
-            i.setAction("00");
-            startService(i);
-            //getAvailableVehicle();
-        }
 
-        //response on hitting auth-vehicle-get-avail API
+        //response on hitting user-is-driver-av API
         if (id == 2) {
             prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
             stringBuss = prefBuss.getString(BUSS, "");
-            String responseS = response.toString();
-            JSONObject jsonObject = new JSONObject(responseS);
-            JSONArray array = jsonObject.getJSONArray("vehicles");
-            if (array.length() == 0) {
+            String count = response.getString("count");
+
+            if (count.equals("0")) {
                 next.setEnabled(false);//the user cannot go to the next activity if vehicle not available at the hub
                 if (stringBuss.equals("BussMeNot")) {
                     Log.d(TAG, "user not interested in notifications");
@@ -122,18 +100,17 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                     startService(intent);
                 } else
                     ShowPopup(1);
-            } else if(array.length() > 0) {
+            } else {
+                next.setEnabled(true);
                 ShowPopup(2);
                 SharedPreferences pref = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
                 editor.remove(BUSS);
                 editor.apply();
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject vehicle = array.getJSONObject(i);
-                    String an = vehicle.getString("an");
-                }
             }
         }
+
+
     }
 
     public void onFailure(VolleyError error) {
@@ -158,49 +135,15 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         vehicle = findViewById(R.id.vehicle_type);
         riders = findViewById(R.id.no_riders);
         next = findViewById(R.id.letsGo_ride);
-        pick = findViewById(R.id.txt_pick_point);
-        drop = findViewById(R.id.txt_drop_point);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
+
         next.setOnClickListener(this);
-        pick.setOnClickListener(this);
-        drop.setOnClickListener(this);
-//retrieving locally stored data
-        SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-        String stringPick = pref.getString(LOCATION_PICK, "");
-        String stringDrop = pref.getString(LOCATION_DROP, "");
-        String stringDropID = pref.getString(LOCATION_DROP_ID, "");
-        String stringPickID = pref.getString(LOCATION_PICK_ID, "");
 
         prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuth = prefAuth.getString(AUTH_KEY, "");
         stringAN = prefAuth.getString(AN_KEY, "");
         prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
-        Rent = pref.getString(RENT_RIDE, "");
-        pMode = pref.getString(PAYMENT_MODE, "");
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityRideHome.this);
-        getLastLocation();
-
-
-        if (stringPick.isEmpty()) {
-            pick.setText("PICK UP POINT");
-            Log.d(TAG, "Pick Location  is " + stringPick);
-        } else {
-            pick.setText(stringPick);
-            pickPoint = pick.getText().toString();
-            pickID = stringPickID;
-            Log.d(TAG, "Pick Location  is " + stringPick + " ID is " + stringPickID);
-        }
-        if (stringDrop.isEmpty()) {
-            drop.setText("DROP POINT");
-            Log.d(TAG, "Drop Location  is " + stringDrop);
-        } else {
-            drop.setText(stringDrop);
-            dropPoint = drop.getText().toString();
-            dropID = stringDropID;
-            Log.d(TAG, "Drop Location  is " + stringDrop + " ID is " + stringDropID);
-        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 R.layout.custom_spinner, getResources().getStringArray(R.array.vehicle_array_sans_cycle)) {
@@ -231,7 +174,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 R.layout.custom_spinner, getResources().getStringArray(R.array.rider_no_array)) {
             @Override
             public boolean isEnabled(int position) {
-                return position != 0 && position!=3;
+                return position != 0 && position != 3;
             }
 
             @Override
@@ -253,91 +196,84 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         riders.setOnItemSelectedListener(this);
 
         myDialog = new Dialog(this);
-        getAvailableVehicle();
-    }
 
-    public void getLastLocation() {
-        Log.d(TAG, "Inside getLastLocation()");
-        if (hasPermissions(this, PERMISSIONS)) {
-            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        } else {
-            Log.d(TAG, "inside else of getLastLocation()");
-            mFusedLocationClient.getLastLocation().addOnCompleteListener(
-                    new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            Location location = task.getResult();
-                            if (location == null) {
-                                requestNewLocationData();
-                            } else {
-                                Log.d(TAG, "inside else of addOnCompleteListener()");
-                                lat = location.getLatitude() + "";
-                                lng = location.getLongitude() + "";
-                                Log.d(TAG, "lat = " + lat + " lng = " + lng);
-                                sendLocation();
-                            }
-                        }
-                    });
-        }
-    }
+        // Initialize Places.
+        Places.initialize(getApplicationContext(), "AIzaSyD61UBJv3DR1fcTzHg3U7FgSYFz9vBX3fk");
 
-    public void sendLocation() {
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment srcAutocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment_pick);
+        srcAutocompleteFragment.setHint("PICK UP POINT");
 
-        Log.d(TAG, "inside sendLocation()");
-        Map<String, String> params = new HashMap();
-        params.put("an", stringAN);
-        params.put("auth", stringAuth);
-        params.put("lat", lat);
-        params.put("lng", lng);
-        JSONObject parameters = new JSONObject(params);
+        AutocompleteSupportFragment dstAutocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment_drop);
+        dstAutocompleteFragment.setHint("DROP POINT");
 
-        Log.d(TAG, "auth = " + stringAuth + " lat =" + lat + " lng = " + lng + " an=" + stringAN);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST auth-location-update");
-        UtilityApiRequestPost.doPOST(a, "auth-location-update", parameters, 30000, 0, response -> {
-            try {
-                a.onSuccess(response, 1);
-            } catch (Exception e) {
-                e.printStackTrace();
+        // Specify the types of place data to return.
+        srcAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
+        dstAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
+
+        // Set up a PlaceSelectionListener to handle the response.
+        srcAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place srcPlace) {
+                srcName = srcPlace.getName();
+
+                Log.i(TAG, "SRC Place: " + srcPlace.getName() + ", " + srcPlace.getLatLng());
+
+                String srcLatLng = Objects.requireNonNull(srcPlace.getLatLng()).toString();
+                srcLat = srcLatLng.substring(0, srcLatLng.indexOf(",")).replaceAll("[^0-9.]", "");
+                srcLng = srcLatLng.substring(srcLatLng.indexOf(",") + 1).replaceAll("[^0-9.]", "");
+
+                Log.d(TAG, "src lat: " + srcLat);
+                Log.d(TAG, "src lng: " + srcLng);
+
+                isDriverAv();
+                SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString(SRC_NAME, srcName);
+                editor.putString(SRC_LAT, srcLat);
+                editor.putString(SRC_LNG, srcLng);
+                editor.apply();
+
+                //storeData();
             }
-        }, a::onFailure);
 
-    }
-
-    public static boolean hasPermissions(Context context, String... permissions) {
-        Log.d(TAG, "inside hasPermission()");
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return true;
-                }
+            @Override
+            public void onError(Status status) {
+                Log.i(TAG, "An error occurred: " + status);
             }
-        }
-        return false;
+        });
+
+        dstAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place dstPlace) {
+                dstName = dstPlace.getName();
+                Log.i(TAG, "DST Place: " + dstPlace.getName() + ", " + dstPlace.getLatLng());
+
+                String dstLatLng = Objects.requireNonNull(dstPlace.getLatLng()).toString();
+                dstLat = dstLatLng.substring(0, dstLatLng.indexOf(",")).replaceAll("[^0-9.]", "");
+                dstLng = dstLatLng.substring(dstLatLng.indexOf(",") + 1).replaceAll("[^0-9.]", "");
+
+                Log.d(TAG, "dst lat: " + dstLat);
+                Log.d(TAG, "dst lng: " + dstLng);
+                //storeData();
+                SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString(DST_NAME, dstName);
+                editor.putString(DST_LAT, dstLat);
+                editor.putString(DST_LNG, dstLng);
+                editor.apply();
+                Log.d(TAG, dstName + dstLat + dstLng);
+
+            }
+
+            @Override
+            public void onError(Status status) {
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
     }
-
-    private void requestNewLocationData() {
-        Log.d(TAG, "inside requestNewLocationData()");
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(0);
-        mLocationRequest.setFastestInterval(0);
-        mLocationRequest.setNumUpdates(1);
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.requestLocationUpdates(
-                mLocationRequest, mLocationCallback,
-                Looper.myLooper());
-    }
-
-    private LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Log.d(TAG, "inside LocationResult() call");
-            Location mLastLocation = locationResult.getLastLocation();
-            lat = mLastLocation.getLatitude() + "";
-            lng = mLastLocation.getLongitude() + "";
-        }
-    };
 
     private void ShowPopup(int id) {
 
@@ -356,27 +292,30 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
             dialog_txt.setText("no ride available currently.\nNotify me when available.");
             reject_rq.setOnClickListener(this);
             accept_rq.setOnClickListener(this);
-            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            myDialog.show();
             myDialog.setCanceledOnTouchOutside(false);
         }
         if (id == 2) {
+            ln.setVisibility(View.GONE);
+            next.setEnabled(true);
             //TODO send push notification
-            dialog_txt.setText("Rides are available.");
+            dialog_txt.setText("Drivers are available.");
             myDialog.setCanceledOnTouchOutside(true);
-
         }
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
     }
 
-    public void getAvailableVehicle() {
-        Map<String, String> params = new HashMap();
-        String auth = (stringAuth);
+    public void isDriverAv() {
+
+        String auth = stringAuth;
         params.put("auth", auth);
+        params.put("srclat", srcLat);
+        params.put("srclng", srcLng);
         JSONObject parameters = new JSONObject(params);
 
-        Log.d(TAG, "Values: auth=" + params);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-vehicle-get-avail");
-        UtilityApiRequestPost.doPOST(a, "auth-vehicle-get-avail", parameters, 30000, 0, response -> {
+        Log.d(TAG, "Values: auth=" + auth + " srclat" + srcLat + " srclng" + srcLng);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-is-driver-av");
+        UtilityApiRequestPost.doPOST(a, "user-is-driver-av", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
             } catch (JSONException e) {
@@ -390,8 +329,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         switch (v.getId()) {
             case R.id.letsGo_ride:
                 Log.d(TAG, "button clicked!");
-                if (/*RentRide == null ||*/ VehicleType.equals("VEHICLE TYPE")|| RiderNo.equals("NO OF RIDERS ?")|| pick.getText().equals("PICK UP POINT")
-                        || drop.getText().equals("DROP POINT")/*|| PaymentMode == null*/) {
+                if (VehicleType.equals("VEHICLE TYPE") || RiderNo.equals("NO OF RIDERS ?") || srcName.equals("PICK UP POINT")
+                        || dstName.equals("DROP POINT")) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                     } else {
@@ -399,25 +338,12 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                     }
                     Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
                     snackbar.show();
-
-                    Log.d(TAG, "empty field: vehicle:" + VehicleType + " " + "rent ride: " +
-                            RentRide + " " + "No of riders: " + RiderNo + " " + "payment Mode: " +
-                            PaymentMode);
                 } else {
                     storeData();
-                    Intent rideIntent = new Intent(ActivityRideHome.this, ActivityRideRequest.class);
-                    rideIntent.putExtra("rtype", "0");
-                    rideIntent.putExtra("npas", RiderNo);
-                    rideIntent.putExtra("srcid", pickID);
-                    rideIntent.putExtra("dstid", dropID);
-                    rideIntent.putExtra("vtype", VehicleType);
-                    rideIntent.putExtra("pmode", "1");
-                    rideIntent.putExtra("pick", pick.getText().toString());
-                    rideIntent.putExtra("drop", drop.getText().toString());
 
-                    Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
-                            RentRide + " " + "No of riders: " + RiderNo + " " + "payment Mode: " +
-                            PaymentMode + "srcid:" + pickID + "dstid:" + dropID);
+                    Intent rideIntent = new Intent(ActivityRideHome.this, ActivityRideRequest.class);
+                    rideIntent.putExtra("npas", RiderNo);
+                    rideIntent.putExtra("vtype", VehicleType);
                     startActivity(rideIntent);
                 }
                 break;
@@ -431,24 +357,9 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
             case R.id.accept_request:
                 bussFlag = "BussMe";
                 prefBuss.edit().putString(BUSS, bussFlag).apply();
-                getAvailableVehicle();
+                isDriverAv();
                 myDialog.dismiss();
                 break;
-
-            case R.id.txt_pick_point:
-                Intent pick = new Intent(ActivityRideHome.this, HubList.class);
-                pick.putExtra("Request", "origin");
-                Log.d(TAG, "control moved to HUBLIST activity with key origin");
-                startActivity(pick);
-                break;
-            case R.id.txt_drop_point:
-                Intent drop = new Intent(ActivityRideHome.this, HubList.class);
-                drop.putExtra("Request", "destination");
-                Log.d(TAG, "control moved to HUBLIST activity with key destination");
-
-                startActivity(drop);
-                break;
-
         }
     }
 
@@ -490,9 +401,9 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 break;
         }
     }
-//auto generated method for AdapterView.OnItemSelectedListener
+
+    //auto generated method for AdapterView.OnItemSelectedListener
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
     }
-
 }

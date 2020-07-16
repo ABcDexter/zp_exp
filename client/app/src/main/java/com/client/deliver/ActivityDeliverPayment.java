@@ -4,8 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -14,34 +12,44 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
+import com.client.ActivityWelcome;
 import com.client.R;
+import com.client.UtilityApiRequestPost;
+import com.client.UtilityPollingService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ActivityDeliverPayment extends ActivityDrawer implements View.OnClickListener {
 
     TextView upiPayment, cost;
-    EditText edTip;
-    ImageButton infoTip, infoPayment;
     final int UPI_PAYMENT = 0;
-    String stringAuthCookie;
-    public static final String AUTH_KEY = "AuthKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
+    String strAuth, DID;
+
     private static final String TAG = "ActivityDeliverPayment";
-    public static final String TRIP_ID = "TripID";
-    public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
+    private static final String DELIVERY_OTP = "DeliveryOtp";
+    public static final String AUTH_KEY = "AuthKey";
+    public static final String PREFS_ADDRESS = "com.client.ride.Address";
+
+    public static final String DELIVERY_DETAILS = "com.client.delivery.details";
+    public static final String DELIVERY_ID = "DeliveryID";
+
     private static ActivityDeliverPayment instance;
     Dialog myDialog;
 
     Button done;
     ActivityDeliverPayment a = ActivityDeliverPayment.this;
+    Map<String, String> params = new HashMap();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,147 +62,102 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
         instance = this;
 
         SharedPreferences prefCookie = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
-        stringAuthCookie = prefCookie.getString(AUTH_KEY, "");
+        strAuth = prefCookie.getString(AUTH_KEY, "");
+
+        SharedPreferences deliveryPref = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
+        DID = deliveryPref.getString(DELIVERY_ID, "");
 
         upiPayment = findViewById(R.id.upi);
         cost = findViewById(R.id.payment);
-        edTip = findViewById(R.id.tip);
-        infoTip = findViewById(R.id.infoTip);
-        infoPayment = findViewById(R.id.infoPayment);
-        done = findViewById(R.id.done_btn);
+        done = findViewById(R.id.confirm_btn);
 
-        //getPrice();
         upiPayment.setOnClickListener(this);
-        //checkStatus();
         done.setOnClickListener(this);
-        infoTip.setOnClickListener(this);
-        infoPayment.setOnClickListener(this);
-        myDialog = new Dialog(this);
-
-
+        checkStatus();
     }
 
     public static ActivityDeliverPayment getInstance() {
         return instance;
     }
 
-    /*private void getPrice() {
-        SharedPreferences prefTripDetails = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
-        String tid = prefTripDetails.getString(TRIP_ID, "");
-        String auth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
-        params.put("auth", auth);
-        params.put("tid", tid);
-        JSONObject parameters = new JSONObject(params);
-
-        Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");
-        UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 30000, 0, response -> {
-            try {
-                a.onSuccess(response, 1);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }, a::onFailure);
-    }
-
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
 
-        //response on hitting auth-trip-get-info API
+        //response on hitting user-delivery-pay API
         if (id == 1) {
-            String actualPrice = response.getString("price");
-            cost.setText(actualPrice);
+            String otp = response.getString("otp");
+            SharedPreferences sp_price = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+            sp_price.edit().putString(DELIVERY_OTP, otp).apply();
+            checkStatus();
         }
         //response on hitting user-trip-get-status API
         if (id == 2) {
             try {
                 String active = response.getString("active");
                 if (active.equals("false")) {
-                    Intent home = new Intent(ActivityRideEnded.this, ActivityWelcome.class);
+
+                    Intent home = new Intent(ActivityDeliverPayment.this, ActivityDeliverThankYou.class);
                     startActivity(home);
                     finish();
 
                 } else if (active.equals("true")) {
                     String status = response.getString("st");
+                    if (status.equals("AS")) {
+                        String price = response.getString("price");
+                        cost.setText(price);
+                    }
                     if (status.equals("TR") || status.equals("FN")) {
                         Intent intent = new Intent(this, UtilityPollingService.class);
-                        intent.setAction("05");
+                        intent.setAction("32");
                         startService(intent);
                     }
                 } else {
-                    Intent homePage = new Intent(ActivityRideEnded.this, ActivityWelcome.class);
+                    Intent homePage = new Intent(ActivityDeliverPayment.this, ActivityWelcome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                // Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
 
-        if (id == 3) {
-            Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
-        }
+
     }
 
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
     }
-*/
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.upi:
                 String amount = cost.getText().toString();
-                String note = "Payment for delivery service";
+                String note = "Payment for rental service";
                 String name = "Zipp-E";
                 String upiId = "9084083967@ybl";
                 payUsingUpi(amount, upiId, name, note);
-                Log.d(TAG, "amount: " + amount);
                 break;
 
-            case R.id.done_btn:
-                //paymentMade();
-                break;
-            case R.id.infoTip:
-                ShowPopup(1);
-                break;
-            case R.id.infoPayment:
-                ShowPopup(2);
-                break;
+            case R.id.confirm_btn:
+                paymentMade();
 
         }
     }
 
-    private void ShowPopup(int id) {
-
-        myDialog.setContentView(R.layout.popup_new_request);
-        TextView infoText = myDialog.findViewById(R.id.info_text);
-        if (id == 1) {
-            infoText.setText("THIS AMOUNT IS CREDITED TO PARTNER'S ACCOUNT");
-        }
-        if (id == 2) {
-            infoText.setText("BASE PRICE: " + "Rs. 30" + "\nDISTANCE: " + "15 km");
-        }
-        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        myDialog.show();
-        myDialog.setCanceledOnTouchOutside(true);
-    }
-
-    /*private void paymentMade() {
-        String auth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
+    private void paymentMade() {
+        String auth = strAuth;
+        String did =DID;
         params.put("auth", auth);
-        params.put("price", cost.getText().toString());
+        params.put("did", did);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth + " price=" + cost.getText().toString());
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-ride-get-status");
-        UtilityApiRequestPost.doPOST(a, "user-give-otp", parameters, 20000, 0, response -> {
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-delivery-pay");
+        UtilityApiRequestPost.doPOST(a, "user-delivery-pay", parameters, 20000, 0, response -> {
             try {
-                a.onSuccess(response, 3);
+                a.onSuccess(response, 1);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
@@ -202,14 +165,17 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
         }, a::onFailure);
     }
 
+
     public void checkStatus() {
-        String auth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
+        String auth = strAuth;
+        String did =DID;
         params.put("auth", auth);
+        params.put("did", did);
         JSONObject parameters = new JSONObject(params);
+
         Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-ride-get-status");
-        UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-delivery-get-status");
+        UtilityApiRequestPost.doPOST(a, "user-delivery-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
             } catch (Exception e) {
@@ -217,7 +183,7 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
                 e.printStackTrace();
             }
         }, a::onFailure);
-    }*/
+    }
 
     void payUsingUpi(String amount, String upiId, String name, String note) {
 
@@ -244,26 +210,28 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == UPI_PAYMENT) {
-            if ((RESULT_OK == resultCode) || (resultCode == 11)) {
-                if (data != null) {
-                    String trxt = data.getStringExtra("response");
-                    Log.d("UPI", "onActivityResult: " + trxt);
-                    ArrayList<String> dataList = new ArrayList<>();
-                    dataList.add(trxt);
-                    upiPaymentDataOperation(dataList);
+        switch (requestCode) {
+            case UPI_PAYMENT:
+                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                    if (data != null) {
+                        String trxt = data.getStringExtra("response");
+                        Log.d("UPI", "onActivityResult: " + trxt);
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add(trxt);
+                        upiPaymentDataOperation(dataList);
+                    } else {
+                        Log.d("UPI", "onActivityResult: " + "Return data is null");
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add("nothing");
+                        upiPaymentDataOperation(dataList);
+                    }
                 } else {
-                    Log.d("UPI", "onActivityResult: " + "Return data is null");
+                    Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add("nothing");
                     upiPaymentDataOperation(dataList);
                 }
-            } else {
-                Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
-                ArrayList<String> dataList = new ArrayList<>();
-                dataList.add("nothing");
-                upiPaymentDataOperation(dataList);
-            }
+                break;
         }
     }
 
@@ -317,4 +285,3 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
     }
 
 }
-

@@ -4,88 +4,41 @@
     android:layout_height="match_parent">
 
     <ScrollView
-        android:id="@+id/scrollViewDP"
+        android:id="@+id/scrollView_ride_OTP"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:fillViewport="true">
+        android:layout_margin="10dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp">
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txtt"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="payment details"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:text="thank you for\nchoosing"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="23sp" />
 
 
-            <RelativeLayout
-                android:id="@+id/rl_tip"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_above="@id/layoutZippeee"
-                android:layout_marginBottom="25dp"
-                android:background="@drawable/rect_box_outline"
-                android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:gravity="center|start"
-                    android:text="Thank you partner"
-                    android:textAllCaps="true"
-                    android:textSize="18sp" />
-
-                <EditText
-                    android:id="@+id/tip"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_toEndOf="@+id/txt"
-                    android:drawableStart="@drawable/ic_rupee"
-                    android:gravity="center|start"
-                    android:hint="Enter Tip"
-                    android:inputType="number"
-                    android:maxLength="3"
-                    android:padding="5dp"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="18sp"
-                    android:textColor="@color/txtColor"/>
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/infoTip"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/ic_info" />
-
-            </RelativeLayout>
-
             <include
-                android:id="@+id/layoutZippeee"
                 layout="@layout/zippe_logo"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:layout_centerInParent="true" />
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="50dp" />
 
             <RelativeLayout
                 android:id="@+id/rl_cost"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@id/layoutZippeee"
                 android:layout_marginTop="25dp"
                 android:background="@drawable/rect_box_outline"
                 android:padding="5dp">
@@ -97,7 +50,7 @@
                     android:gravity="center|start"
                     android:text="please pay -"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="23sp" />
 
                 <TextView
                     android:id="@+id/payment"
@@ -108,52 +61,35 @@
                     android:layout_toEndOf="@+id/txtc"
                     android:drawableStart="@drawable/ic_rupee"
                     android:gravity="center|start"
-                    android:text="250"
+                    android:text="250 "
                     android:textAlignment="center"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/infoPayment"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/ic_info" />
+                    android:textSize="23sp" />
 
             </RelativeLayout>
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/upi"
-                android:text="@string/disclaimer"
-                android:textSize="12sp" />
-
-            <TextView
                 android:id="@+id/upi"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/rect_box_outline"
                 android:drawableEnd="@drawable/ic_bhim"
+                android:gravity="center"
                 android:padding="5dp"
-                android:text="MAKE PAYMENT"
-                android:textAlignment="center"
+                android:text="pay using upi"
                 android:textAllCaps="true"
-                android:textSize="20sp" />
-
+                android:textSize="23sp"/>
             <Button
-                android:id="@+id/done_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_below="@+id/txtt"
-                android:layout_centerHorizontal="true"
+                android:id="@+id/confirm_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_marginTop="50dp"
                 android:background="@drawable/rect_box_solid"
                 android:text="DONE"
-                android:textSize="20sp" />
-        </RelativeLayout>
+                android:textSize="25sp" />
+        </LinearLayout>
     </ScrollView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

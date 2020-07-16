@@ -24,7 +24,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
-import com.client.ActivityTrackYourProgress;
 import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
@@ -38,28 +37,28 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class ActivityRideInProgress extends ActivityDrawer implements View.OnClickListener {
 
     TextView shareDetails, emergencyCall, trackLocation, origin, destination, nameD, phone, otp, vNum;
     ImageButton endRide;
     ScrollView scrollView;
-    public static final String AUTH_KEY = "AuthKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     private static final String TAG = "ActivityRideInProgress";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
-    public static final String LOCATION_PICK = "PickLocation";
-    public static final String LOCATION_DROP = "DropLocation";
+    public static final String SRC_NAME = "PICK UP POINT";
+    public static final String DST_NAME = "DROP POINT";
+    public static final String VAN_PICK = "com.client.Locations";
+    public static final String AUTH_KEY = "AuthKey";
+    public static final String TRIP_ID = "TripID";
+    public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     public static final String OTP_PICK = "OTPPick";
-    public static final String VAN_PICK = "VanPick";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
 
-    public static final String TRIP_ID = "TripID";
-    public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    String lat, lng;
     private static ActivityRideInProgress instance;
     FusedLocationProviderClient mFusedLocationClient;
     ActivityRideInProgress a = ActivityRideInProgress.this;
+    Map<String, String> params = new HashMap();
 
     String stringAuthCookie;
 
@@ -67,7 +66,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         return instance;
     }
 
-    public void onSuccess(JSONObject response, int id) throws Exception {
+    public void onSuccess(JSONObject response, int id) {
         Log.d(TAG, "RESPONSE:" + response);
 //response on hitting user-trip-cancel API
         if (id == 2) {
@@ -100,7 +99,6 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -130,8 +128,8 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuthCookie = prefPLoc.getString(AUTH_KEY, "");
         SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-        String stringPick = pref.getString(LOCATION_PICK, "");
-        String stringDrop = pref.getString(LOCATION_DROP, "");
+        String stringPick = pref.getString(SRC_NAME, "");
+        String stringDrop = pref.getString(DST_NAME, "");
         String stringOtp = pref.getString(OTP_PICK, "");
         String stringVan = pref.getString(VAN_PICK, "");
         String stringDName = pref.getString(DRIVER_NAME, "");
@@ -190,19 +188,19 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
                 alertDialog();
                 break;
             case R.id.track_your_location:
-                trackYourLocation();
+                trackLocation();
                 break;
         }
     }
 
-    private void trackYourLocation() {
-        Intent progress = new Intent(ActivityRideInProgress.this, ActivityTrackYourProgress.class);
-        startActivity(progress);
+    public void trackLocation() {
+        Intent intent = new Intent(ActivityRideInProgress.this, MapsActivity2.class);
+        startActivity(intent);
+
     }
 
     private void userCancelTrip() {
         String stringAuth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
         params.put("auth", stringAuth);
         JSONObject param = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + stringAuth);
@@ -245,7 +243,6 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
 
     public void checkStatus() {
         String auth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);

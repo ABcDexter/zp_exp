@@ -16,46 +16,52 @@ public class ActivityWelcome extends AppCompatActivity {
     ImageView zippe_iv, zippe_iv_below;
     SharedPreferences cookie;
     String strAuth, strToken;
-    public static final String AUTH_COOKIE = "com.driver.cookie";
-    public static final String COOKIE = "Cookie";
+    public static final String AUTH_COOKIE = "com.agent.cookie";
+    public static final String AUTH_KEY = "Auth";
     public static final String PICTURE_UPLOAD_STATUS = "com.driver.pictureUploadStatus";
     public static final String VERIFICATION_TOKEN = "Token";
 
-//When an Activity first call or launched then onCreate(Bundle savedInstanceState) method is responsible to create the activity.
+    //When an Activity first call or launched then onCreate(Bundle savedInstanceState) method is responsible to create the activity.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        zippe_iv = findViewById(R.id.iv_zippee);
-        zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
-
         cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
-        strAuth = cookie.getString(COOKIE, "");
+        strAuth = cookie.getString(AUTH_KEY, "");
+        String auth = strAuth;
         SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(VERIFICATION_TOKEN, "");
-        String auth = strAuth;
         String token = strToken;
+
         //checking if the user is registered or not.
-        /*if (auth.isEmpty()) {
-            if (token.equals("")){
+        if (auth.equals("")) {
+            if (!token.equals("")){
+                Intent verifyUser = new Intent(ActivityWelcome.this, ActivityVerifyDLDetails.class);
+                startActivity(verifyUser);
+                finish();
+            }else {
                 Intent registerUser = new Intent(ActivityWelcome.this, ActivityMain.class);
                 startActivity(registerUser);
                 finish();
-            }else {
-                Intent registerUser = new Intent(ActivityWelcome.this, ActivityVerifyDLDetails.class);
-                startActivity(registerUser);
-                finish();
             }
-        } else*/ {
+        } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(ActivityWelcome.this, ActivityVehicleNeed.class);
+                    Intent intent = new Intent(ActivityWelcome.this, ActivityHome.class);
                     startActivity(intent);
                 }
             }, 500);
         }
+
+        zippe_iv = findViewById(R.id.iv_zippee);
+        zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
+
+
+
+
+
         moveit();//animation of zbee
     }
 

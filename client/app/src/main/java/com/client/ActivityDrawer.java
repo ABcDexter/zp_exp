@@ -18,12 +18,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.client.deliver.ActivityDeliveryOrders;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
-public class ActivityDrawer extends AppCompatActivity {
+public class ActivityDrawer extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawerLayout = null;
     private ActionBarDrawerToggle mDrawerToggle = null;
@@ -58,7 +59,7 @@ public class ActivityDrawer extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         nv = findViewById(R.id.nv);
-
+nv.setNavigationItemSelectedListener(this);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
@@ -82,7 +83,7 @@ public class ActivityDrawer extends AppCompatActivity {
                 Log.d("ACTION", "menuButton clicked");
                 if (!mDrawerLayout.isDrawerOpen(Gravity.RIGHT))mDrawerLayout.openDrawer(Gravity.RIGHT);
                 else mDrawerLayout.closeDrawer(Gravity.LEFT);
-                setNavigationDrawer();
+                //setNavigationDrawer();
                 Log.d("ACTION", "setNavigationDrawer() method called");
 
             }
@@ -118,6 +119,11 @@ public class ActivityDrawer extends AppCompatActivity {
                         Intent home = new Intent(ActivityDrawer.this, ActivityWelcome.class);
                         home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(home);
+                        break;
+                    case R.id.nav_delivery_orders:
+                        Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryOrders.class);
+                        deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(deliveryOrders);
                         break;
 
                     default:
@@ -169,4 +175,37 @@ public class ActivityDrawer extends AppCompatActivity {
         super.onBackPressed();
 
     }
-}
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        switch (id) {
+            case R.id.nav_logout:
+                FirebaseAuth.getInstance().signOut();
+
+                Intent intent = new Intent(ActivityDrawer.this, ActivityMain.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+
+            case R.id.nav_profile:
+                Intent lang = new Intent(ActivityDrawer.this, UserProfileActivity.class);
+                startActivity(lang);
+                break;
+            case R.id.nav_home:
+                Intent home = new Intent(ActivityDrawer.this, ActivityWelcome.class);
+                home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(home);
+                break;
+            case R.id.nav_delivery_orders:
+                Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryOrders.class);
+                deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(deliveryOrders);
+                break;
+
+            default:
+                return true;
+        }
+        return true;
+    }
+        //return false;
+    }

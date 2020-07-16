@@ -55,7 +55,7 @@
         <activity
             android:name=".ActivityRideAccepted"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".ActivityHome"></activity>
+        <activity android:name=".ActivityHome"/>
         <activity android:name=".ActivityMain">
 
         </activity>

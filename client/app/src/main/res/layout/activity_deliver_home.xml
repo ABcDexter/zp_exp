@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <ScrollView
-        android:id="@+id/scrollViewRentRide"
+        android:id="@+id/scrollViewDelivery"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
@@ -93,12 +93,13 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/confirm_deliver"
+                android:layout_above="@+id/next_deliver"
                 android:text="@string/disclaimer"
-                android:textSize="12sp"/>
+                android:textSize="12sp"
+                android:layout_marginBottom="10dp"/>
 
             <ImageButton
-                android:id="@+id/confirm_deliver"
+                android:id="@+id/next_deliver"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
@@ -106,7 +107,7 @@
                 android:background="@drawable/btn_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/confirm"
+                android:src="@drawable/next"
                 android:textAllCaps="true" />
         </RelativeLayout>
 

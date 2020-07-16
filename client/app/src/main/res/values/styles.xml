@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">#EC7721</item>
         <item name="colorAccent">#1EB4D4</item>
         <item name="fontFamily">@font/sarpanch</item>
-        <item name="android:textColorHint">#C6BFBF</item>
+        <item name="android:textColorHint">#F3EFEF</item>
         <item name="android:textColor">#F1EAEA</item>
         <item name="android:windowBackground">@drawable/black_background1</item>
         <item name="windowActionBar">false</item>
@@ -19,7 +19,7 @@
         <item name="colorPrimaryDark">#EC7721</item>
         <item name="colorAccent">#1EB4D4</item>
         <item name="fontFamily">@font/orbitron</item>
-
+        <item name="android:textColor">#F1EAEA</item>
     </style>
 
 

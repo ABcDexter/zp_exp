@@ -8,6 +8,9 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.client.deliver.ActivityDeliverConfirm;
+import com.client.deliver.ActivityDeliverFillAddress;
+import com.client.deliver.ActivityDeliveryOrders;
 import com.client.rent.ActivityRentEnded;
 import com.client.rent.ActivityRentHome;
 import com.client.rent.ActivityRentInProgress;
@@ -20,6 +23,8 @@ import com.client.ride.ActivityRideOTP;
 import com.client.ride.ActivityRideRequest;
 
 public class UtilityPollingService extends Service {
+   // private int secondsActLocSel;
+   // private boolean stopTimerActLocSel;
 
     private int secondsActLocSel;
     private boolean stopTimerActLocSel;
@@ -43,25 +48,26 @@ public class UtilityPollingService extends Service {
 //polling for auth-location-update API in ride section
         if (intent != null && intent.getAction() != null && intent.getAction().equals("00")) {
             final int fixedTimeUpdateLoc = 30;
-
+            //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
+            //stopTimer2 = stopTimerFlag2;
             final Handler handler = new Handler();
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d(" ActivityRideHome.getInstance().sendLocation() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityWelcome.getInstance().sendLocation() in seconds < 0", "Value of seconds: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
-                        ActivityRideHome.getInstance().sendLocation();
+                        ActivityWelcome.getInstance().sendLocation();
 
                     } else {
                         stopTimerActLocSel = false;
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d(" ActivityRideHome.getInstance().sendLocation() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityWelcome.getInstance().sendLocation() in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -70,7 +76,7 @@ public class UtilityPollingService extends Service {
                 }
             });
         }
-//polling for auth-vehicle-get-avail in RIDE section
+//polling for user-is-driver-av in RIDE section
         if (intent != null && intent.getAction() != null && intent.getAction().equals("01")) {
 
             final int fixedTimeUpdateLoc = 30;
@@ -86,17 +92,17 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d("ActivityRideHome.getInstance().getAvailableVehicle() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRideHome.getInstance().isDriverAv() in seconds < 0", "Value of seconds: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
-                        ActivityRideHome.getInstance().getAvailableVehicle();
+                        ActivityRideHome.getInstance().isDriverAv();
 
                     } else {
                         stopTimerActLocSel = false;
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d("ActivityRideHome.getInstance().getAvailableVehicle() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRideHome.getInstance().isDriverAv() in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -111,6 +117,8 @@ public class UtilityPollingService extends Service {
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
+
+            //seconds = 30;
 /*
             if (stop) {
 */
@@ -154,7 +162,7 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d("ActivityRideOTP.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRideOTP.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
                         ActivityRideOTP.getInstance().checkStatus();
@@ -164,7 +172,7 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d("ActivityRideOTP.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRideOTP.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -188,7 +196,7 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d("ActivityRideInProgress.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRideInProgress.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
                         ActivityRideInProgress.getInstance().checkStatus();
@@ -198,7 +206,7 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d("ActivityRideInProgress.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRideInProgress.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -222,7 +230,7 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d("ActivityRideEnded.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRideEnded.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
                         ActivityRideEnded.getInstance().checkStatus();
@@ -232,7 +240,7 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d("ActivityRideEnded.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRideEnded.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -244,40 +252,8 @@ public class UtilityPollingService extends Service {
 
 //polling for rental section
 
-//polling for auth-location-update API in rent section
-        if (intent != null && intent.getAction() != null && intent.getAction().equals("10")) {
-            final int fixedTimeUpdateLoc = 30;
-
-            secondsActLocSel = fixedTimeUpdateLoc;
-            final Handler handler = new Handler();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    secondsActLocSel--;
-                    if (secondsActLocSel < 0) {
-                        Log.d("ActivityRentHome.getInstance().sendLocation() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
-
-                        stopTimerActLocSel = true;
-                        ActivityRentHome.getInstance().sendLocation();
-
-                    } else {
-                        stopTimerActLocSel = false;
-                    }
-
-                    if (stopTimerActLocSel == false) {
-                        Log.d("ActivityRentHome.getInstance().sendLocation() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
-
-                        handler.postDelayed(this, 1000);
-                    } else {
-                        stopSelf();
-                    }
-                }
-            });
-        }
-
 //polling for auth-vehicle-get-avail in rent section
         if (intent != null && intent.getAction() != null && intent.getAction().equals("11")) {
-
             final int fixedTimeUpdateLoc = 30;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
@@ -291,7 +267,7 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d("ActivityRentHome.getInstance().getAvailableVehicle(); in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRentHome.getInstance().getAvailableVehicle(); in seconds < 0", "Value of seconds: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
                         ActivityRentHome.getInstance().getAvailableVehicle();
@@ -301,7 +277,7 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d("ActivityRentHome.getInstance().getAvailableVehicle(); in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRentHome.getInstance().getAvailableVehicle(); in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -326,7 +302,7 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d(" ActivityRentRequest.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d(" ActivityRentRequest.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
                         ActivityRentRequest.getInstance().checkStatus();
@@ -336,7 +312,7 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d(" ActivityRentRequest.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d(" ActivityRentRequest.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -360,7 +336,7 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d("ActivityRentOTP.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRentOTP.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
                         ActivityRentOTP.getInstance().checkStatus();
@@ -370,7 +346,7 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d("ActivityRentOTP.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRentOTP.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -394,7 +370,7 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d("ActivityRentInProgress.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRentInProgress.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
                         ActivityRentInProgress.getInstance().checkStatus();
@@ -404,7 +380,7 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d("ActivityRentInProgress.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRentInProgress.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -419,16 +395,16 @@ public class UtilityPollingService extends Service {
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
-/*
+            /*
             if (stop) {
-*/
+            */
             final Handler handler = new Handler();
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d("ActivityRentEnded.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRentEnded.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
                         ActivityRentEnded.getInstance().checkStatus();
@@ -438,7 +414,112 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d("ActivityRentEnded.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("ActivityRentEnded.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+
+                        handler.postDelayed(this, 1000);
+                    } else {
+                        stopSelf();
+                    }
+                }
+            });
+        }
+
+        //polling for user-is-agent-av in DELIVERY section
+        if (intent != null && intent.getAction() != null && intent.getAction().equals("31")) {
+            final int fixedTimeUpdateLoc = 30;
+            //final boolean stopTimerFlag2 = false;
+            secondsActLocSel = fixedTimeUpdateLoc;
+            //stopTimer2 = stopTimerFlag2;
+/*
+            if (stop) {
+*/
+            final Handler handler = new Handler();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    secondsActLocSel--;
+                    if (secondsActLocSel < 0) {
+                        Log.d("ActivityDeliverFillAddress.getInstance().getAgent() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+
+                        stopTimerActLocSel = true;
+                        ActivityDeliverFillAddress.getInstance().getAgent();
+
+                    } else {
+                        stopTimerActLocSel = false;
+                    }
+
+                    if (stopTimerActLocSel == false) {
+                        Log.d("ActivityDeliverFillAddress.getInstance().getAgent() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+
+                        handler.postDelayed(this, 1000);
+                    } else {
+                        stopSelf();
+                    }
+                }
+            });
+        }
+
+        //polling for user-delivery-get-status API in DELIVERY section
+        if (intent != null && intent.getAction() != null && intent.getAction().equals("32")) {
+            final int fixedTimeUpdateLoc = 30;
+            //final boolean stopTimerFlag2 = false;
+            secondsActLocSel = fixedTimeUpdateLoc;
+            //stopTimer2 = stopTimerFlag2;
+/*
+            if (stop) {
+*/
+            final Handler handler = new Handler();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    secondsActLocSel--;
+                    if (secondsActLocSel < 0) {
+                        Log.d("ActivityDeliverConfirm.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+
+                        stopTimerActLocSel = true;
+                        ActivityDeliverConfirm.getInstance().checkStatus();
+
+                    } else {
+                        stopTimerActLocSel = false;
+                    }
+
+                    if (stopTimerActLocSel == false) {
+                        Log.d("ActivityDeliverConfirm.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+
+                        handler.postDelayed(this, 1000);
+                    } else {
+                        stopSelf();
+                    }
+                }
+            });
+        }
+
+//polling for user-delivery-get-status API in DELIVERY section
+        if (intent != null && intent.getAction() != null && intent.getAction().equals("33")) {
+            final int fixedTimeUpdateLoc = 30;
+            //final boolean stopTimerFlag2 = false;
+            secondsActLocSel = fixedTimeUpdateLoc;
+            //stopTimer2 = stopTimerFlag2;
+/*
+            if (stop) {
+*/
+            final Handler handler = new Handler();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    secondsActLocSel--;
+                    if (secondsActLocSel < 0) {
+                        Log.d("ActivityDeliveryOrders.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+
+                        stopTimerActLocSel = true;
+                        ActivityDeliveryOrders.getInstance().checkStatus();
+
+                    } else {
+                        stopTimerActLocSel = false;
+                    }
+
+                    if (stopTimerActLocSel == false) {
+                        Log.d("ActivityDeliveryOrders.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {

@@ -61,7 +61,7 @@
                 android:layout_height="70dp"
                 android:layout_centerInParent="true" />
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/txt_pick_point"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -74,9 +74,8 @@
                 android:paddingEnd="10dp"
                 android:text="PICK UP POINT"
                 android:textAllCaps="true"
-                android:textSize="20sp" />
-
-            <TextView
+                android:textSize="20sp" />-->
+            <!--<TextView
                 android:id="@+id/txt_drop_point"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -89,7 +88,45 @@
                 android:paddingEnd="10dp"
                 android:text="DROP POINT"
                 android:textAllCaps="true"
-                android:textSize="20sp" />
+                android:textSize="20sp" />-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/rect_box_outline"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:textColor="@color/txtColor"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:id="@+id/rl_pick"
+                android:layout_marginBottom="20dp"
+                android:layout_above="@id/rl_drop">
+                <fragment
+                    android:id="@+id/autocomplete_fragment_pick"
+                    android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/rect_box_outline"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:textColor="@color/txtColor"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:id="@+id/rl_drop"
+                android:layout_above="@+id/layoutZippeee"
+                android:layout_marginBottom="50dp">
+                <fragment
+                    android:id="@+id/autocomplete_fragment_drop"
+                    android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </RelativeLayout>
+
 
             <ImageButton
                 android:id="@+id/letsGo_ride"

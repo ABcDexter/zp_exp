@@ -1,11 +1,13 @@
 package com.client.rent;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -18,9 +20,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
@@ -40,9 +45,12 @@ import java.util.Map;
 
 public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListener {
 
+    private static final String TAG = "ActivityRideOTP";
+
     TextView origin, destination, dName, dPhone, vNum, OTP, costEst;
     ImageButton cancel;
     ScrollView scrollView;
+
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String LOCATION_PICK = "PickLocation";
     public static final String LOCATION_DROP = "DropLocation";
@@ -55,8 +63,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     public static final String DRIVER_NAME = "DriverName";
 
     public static final String AUTH_KEY = "AuthKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
-    private static final String TAG = "ActivityRideOTP";
+
     private static ActivityRentOTP instance;
     Dialog myDialog;
     ImageButton costInfo, priceInfo;
@@ -66,14 +73,14 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     ImageButton next;
     ActivityRentOTP a = ActivityRentOTP.this;
 
-   // int number = 0;
+    // int number = 0;
     final int UPI_PAYMENT = 0;
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
+        Log.d(TAG, "RESPONSE:" + response);
 
         //response on hitting user-trip-cancel API
         if (id == 1) {
-            Log.d(TAG, "RESPONSE:" + response);
             Intent home = new Intent(ActivityRentOTP.this, ActivityWelcome.class);
             startActivity(home);
             finish();
@@ -81,7 +88,6 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
 //response on hitting user-trip-get-status API
         if (id == 2) {
-            Log.d(TAG, "RESPONSE:" + response);
             try {
 
                 String active = response.getString("active");
@@ -91,6 +97,12 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (status.equals("AS")) {
+                        String timeRem = response.getString("time");
+                        String price = response.getString("price");
+                        costEst.setText(price);
+                       /* if (timeRem.equals("")) {
+                            //ShowPopup(3);
+                        }*/
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("13");
                         startService(intent);
@@ -108,7 +120,6 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
 
         }
@@ -119,7 +130,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             String name = response.getString("name");
             dPhone.setText(pn);
             dName.setText(name);
-            SharedPreferences sp_cookie = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+            SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
             sp_cookie.edit().putString(DRIVER_NAME, name).apply();
             sp_cookie.edit().putString(DRIVER_PHN, pn).apply();
         }
@@ -129,6 +140,12 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             Log.d(TAG, "RESPONSE:" + response);
 
         }
+        // response on hitting user-vehicle-hold API
+        if (id == 5) {
+            Log.d(TAG, "RESPONSE:" + response);
+
+        }
+
     }
 
     public void onFailure(VolleyError error) {
@@ -176,16 +193,12 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         upiRental = findViewById(R.id.upiRental);
         upiRental.setOnClickListener(this);
 
-        //priceInfo.setOnClickListener(this);
         cancel.setOnClickListener(this);
         costEst.setText(stringCost);
         costInfo.setOnClickListener(this);
 
         giveOTP.setOnClickListener(this);
-
-        //number = Integer.parseInt(costEst.getText().toString().trim());
-        /*number = Integer.parseInt(costEst.getText().toString());
-        Log.d("COST", "= " + number);*/
+        dPhone.setOnClickListener(this);
 
         myDialog = new Dialog(this);
 
@@ -209,6 +222,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             origin.setText(pickCutName);
         }
         checkStatus();
+        ShowPopup(2);
     }
 
     private void supDetails() {
@@ -232,9 +246,24 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
+        LinearLayout ll = myDialog.findViewById(R.id.layout_btn);
+        TextView reject = myDialog.findViewById(R.id.reject_request);
+        TextView accept = myDialog.findViewById(R.id.accept_request);
 
         if (id == 1) {
             infoText.setText("PAYMENT TO BE MADE BEFORE WE ALLOT YOU THE VEHICLE. BALANCE (IF ANY) WILL BE COLLECTED AT THE TIME OF DROPPING THE VEHICLE");
+        }
+        if (id == 2) {
+            infoText.setText("Make payment only after checking the condition of vehicle");
+        }
+        if (id == 3) {
+            infoText.setText("Make payment only after checking the condition of vehicle");
+        }
+        if (id == 4) {
+            infoText.setText("HOLD VEHICLE FOR 1 HOUR?");
+
+            reject.setOnClickListener(this);
+            accept.setOnClickListener(this);
         }
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -280,10 +309,8 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                userCancelTrip();
-                Intent intent = new Intent(ActivityRentOTP.this, ActivityRideHome.class);
-                startActivity(intent);
-                finish();
+                ShowPopup(4);
+
             }
         });
 
@@ -316,6 +343,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         }, a::onFailure);
     }
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -330,18 +358,40 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                 break;
             case R.id.upiRental:
 
-                    /*Intent pay = new Intent(ActivityRentConfirm.this, PaymentPage.class);
-                    pay.putExtra("PackageDetails", number);
-                    startActivity(pay);*/
                 String amount = costEst.getText().toString();
                 String note = "Payment for rental service";
                 String name = "Zipp-E";
                 String upiId = "9084083967@ybl";
                 payUsingUpi(amount, upiId, name, note);
                 break;
+
+            case R.id.reject_request:
+                userCancelTrip();
+                Intent intent = new Intent(ActivityRentOTP.this, ActivityRideHome.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.accept_request:
+                Intent hold = new Intent(ActivityRentOTP.this, ActivityHoldVehicle.class);
+                startActivity(hold);
+                finish();
+                //vehicleHold();
+                break;
+            case R.id.supervisor_phone:
+                callSuper();
+                break;
         }
     }
+    public void callSuper() {
+        String phoneSuper = dPhone.getText().toString().trim();
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:" + phoneSuper));
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        startActivity(intent);
+    }
     void payUsingUpi(String amount, String upiId, String name, String note) {
 
         Uri uri = Uri.parse("upi://pay").buildUpon()

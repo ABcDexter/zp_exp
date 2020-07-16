@@ -28,10 +28,10 @@ import androidx.core.app.ActivityCompat;
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
 import com.client.ActivityWelcome;
+import com.client.HubList;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
-import com.client.HubList;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -43,14 +43,13 @@ import java.util.Map;
 
 public class ActivityRentInProgress extends ActivityDrawer implements View.OnClickListener {
 
+    private static final String TAG = "ActivityRentInProgress";
     TextView shareDetails, emergencyCall, destination, nameD, phone, hours, vNum, remainingHours;
     Button update;
     ScrollView scrollView;
     PopupWindow popupWindow;
     String dropID;
     public static final String AUTH_KEY = "AuthKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
-    private static final String TAG = "ActivityRentInProgress";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String LOCATION_DROP = "DropLocation";
     public static final String VAN_PICK = "VanPick";
@@ -81,6 +80,10 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         //response on hitting user-rental-update API
         if (id == 2) {
             Toast.makeText(this, "Details Updated Successfully!", Toast.LENGTH_LONG).show();
+            SharedPreferences pref = this.getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString(NO_HOURS,hours.getText().toString() );
+            editor.apply();
             checkStatus();
         }
         //response on hitting user-trip-get-status API
@@ -96,6 +99,7 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("14");
                         startService(intent);
+                        timeRemaining();
                     }
                     if (status.equals("FN") || status.equals("TR")) {
                         String price = response.getString("price");
@@ -141,12 +145,13 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuthCookie = prefPLoc.getString(AUTH_KEY, "");
         SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+        String stringHrs = pref.getString(NO_HOURS, "");
         String stringDrop = pref.getString(LOCATION_DROP, "");
         String stringVan = pref.getString(VAN_PICK, "");
-        String stringDName = pref.getString(DRIVER_NAME, "");
-        String stringDPhn = pref.getString(DRIVER_PHN, "");
-        String stringHrs = pref.getString(NO_HOURS, "");
         String stringDropID = pref.getString(LOCATION_DROP_ID, "");
+        SharedPreferences tripPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+        String stringDName = tripPref.getString(DRIVER_NAME, "");
+        String stringDPhn = tripPref.getString(DRIVER_PHN, "");
 
         vNum = findViewById(R.id.v_no);
         hours = findViewById(R.id.hours);
@@ -169,6 +174,7 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         update.setOnClickListener(this);
         destination.setOnClickListener(this);
         hours.setOnClickListener(this);
+        phone.setOnClickListener(this);
 
         if (stringDrop.isEmpty()) {
             destination.setText("DROP POINT");
@@ -192,7 +198,9 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
             case R.id.share_ride_details:
                 selectAction(ActivityRentInProgress.this);
                 break;
-
+            case R.id.supervisor_phone:
+                callSuper();
+                break;
             case R.id.emergency:
                 btnSetOnEmergency();
                 break;
@@ -341,6 +349,18 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         }
         startActivity(intent);
     }
+
+    public void callSuper() {
+        String phoneSuper = phone.getText().toString().trim();
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:" + phoneSuper));
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        startActivity(intent);
+    }
+
 
     private void selectAction(Context context) {
         final CharSequence[] options = {"SEND SMS", "VIDEO CALL", "Cancel"};

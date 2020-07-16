@@ -146,7 +146,7 @@
                 android:padding="5dp"
                 android:text="track your location"
                 android:textAllCaps="true"
-                android:textSize="23sp" />
+                android:textSize="23sp"/>
 
             <ImageButton
                 android:id="@+id/end_ride"

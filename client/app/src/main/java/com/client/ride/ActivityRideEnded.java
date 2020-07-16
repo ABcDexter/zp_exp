@@ -30,19 +30,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ActivityRideEnded extends ActivityDrawer implements View.OnClickListener {
-
+    public static final String AUTH_KEY = "AuthKey";
+    public static final String TRIP_ID = "TripID";
+    public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     TextView upiPayment, cost;
     final int UPI_PAYMENT = 0;
     String stringAuthCookie;
-    public static final String AUTH_KEY = "AuthKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     private static final String TAG = "ActivityRideEnded";
-    public static final String TRIP_ID = "TripID";
-    public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     private static ActivityRideEnded instance;
 
     Button done;
     ActivityRideEnded a = ActivityRideEnded.this;
+    Map<String, String> params = new HashMap();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +62,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         getPrice();
         upiPayment.setOnClickListener(this);
         checkStatus();
-        done = findViewById(R.id.done_btn);
+        done = findViewById(R.id.confirm_btn);
         done.setOnClickListener(this);
     }
 
@@ -75,7 +74,6 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         SharedPreferences prefTripDetails = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
         String tid = prefTripDetails.getString(TRIP_ID, "");
         String auth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
         params.put("auth", auth);
         params.put("tid", tid);
         JSONObject parameters = new JSONObject(params);
@@ -123,7 +121,6 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                // Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
 
@@ -148,7 +145,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
                 payUsingUpi(amount, upiId, name, note);
                 break;
 
-            case R.id.done_btn:
+            case R.id.confirm_btn:
                 paymentMade();
 
         }
@@ -156,7 +153,6 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
 
     private void paymentMade() {
         String auth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
         params.put("auth", auth);
         params.put("price", cost.getText().toString());
         JSONObject parameters = new JSONObject(params);
@@ -175,7 +171,6 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
 
     public void checkStatus() {
         String auth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -264,12 +259,12 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
 
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
-                Toast.makeText(ActivityRideEnded.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRideEnded.this, "Transaction successful.", Toast.LENGTH_LONG).show();
                 Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
-                Toast.makeText(ActivityRideEnded.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRideEnded.this, "Payment cancelled by user.", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(ActivityRideEnded.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRideEnded.this, "Transaction failed.Please try again", Toast.LENGTH_LONG).show();
             }
         } else {
             Toast.makeText(ActivityRideEnded.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();

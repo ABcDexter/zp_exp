@@ -4,13 +4,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -27,22 +24,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
 import com.client.HubList;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
@@ -59,7 +46,6 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     TextView reject_rq, accept_rq, dialog_txt, pick, drop;
 
     public static final String AUTH_KEY = "AuthKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     public static final String AN_KEY = "AadharKey";
     public static final String BUSS = "Buss";
     public static final String BUSS_FLAG = "com.client.ride.BussFlag";
@@ -78,12 +64,6 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     ScrollView scrollView;
     private static ActivityRentHome instance;
     Vibrator vibrator;
-    FusedLocationProviderClient mFusedLocationClient;
-    int PERMISSION_ALL = 1;
-    String[] PERMISSIONS = {
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.CALL_PHONE};
 
     String VehicleType, RentRide, NoHours, PaymentMode;
     String lat, lng;
@@ -92,14 +72,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     String imgBtnConfirm = "";
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
-        if (id == 1) {
-            Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
 
-            Intent i = new Intent(this, UtilityPollingService.class);
-            i.setAction("10");
-            startService(i);
-            //getAvailableVehicle();
-        }
         if (id == 2) {
             Log.d(TAG + "jsArrayRequest", "RESPONSE:" + response.toString());
             prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
@@ -167,7 +140,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         confirmRentButton.setOnClickListener(this);
         pick.setOnClickListener(this);
         drop.setOnClickListener(this);
-//retrieving locally stored data
+        //retrieving locally stored data
         SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
         String stringPick = pref.getString(LOCATION_PICK, "");
         String stringDrop = pref.getString(LOCATION_DROP, "");
@@ -177,11 +150,8 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         stringAuth = prefAuth.getString(AUTH_KEY, "");
         stringAN = prefAuth.getString(AN_KEY, "");
         prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
-        //Rent = pref.getString(RENT_RIDE, "");
         pMode = pref.getString(PAYMENT_MODE, "");
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityRentHome.this);
-        getLastLocation();
         if (imgBtnConfirm.equals("false")) {
             Log.d(TAG, "confirmRentButton.setEnabled(false)");
         } else
@@ -259,90 +229,6 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         getAvailableVehicle();
     }
 
-    public void getLastLocation() {
-        Log.d(TAG, "Inside getLastLocation()");
-        if (hasPermissions(this, PERMISSIONS)) {
-            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        } else {
-            Log.d(TAG, "inside else of getLastLocation()");
-            mFusedLocationClient.getLastLocation().addOnCompleteListener(
-                    new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            Location location = task.getResult();
-                            if (location == null) {
-                                requestNewLocationData();
-                            } else {
-                                Log.d(TAG, "inside else of addOnCompleteListener()");
-                                lat = location.getLatitude() + "";
-                                lng = location.getLongitude() + "";
-                                Log.d(TAG, "lat = " + lat + " lng = " + lng);
-                                sendLocation();
-                            }
-                        }
-                    });
-        }
-    }
-
-    public void sendLocation() {
-
-        Log.d(TAG, "inside sendLocation()");
-        Map<String, String> params = new HashMap();
-        params.put("an", stringAN);
-        params.put("auth", stringAuth);
-        params.put("lat", lat);
-        params.put("lng", lng);
-        JSONObject parameters = new JSONObject(params);
-        ActivityRentHome a = ActivityRentHome.this;
-
-        Log.d(TAG, "auth = " + stringAuth + " lat =" + lat + " lng = " + lng + " an=" + stringAN);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST auth-location-update");
-        UtilityApiRequestPost.doPOST(a, "auth-location-update", parameters, 30000, 0, response -> {
-            try {
-                a.onSuccess(response, 1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, a::onFailure);
-
-    }
-
-    public static boolean hasPermissions(Context context, String... permissions) {
-        Log.d(TAG, "inside hasPermission()");
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void requestNewLocationData() {
-        Log.d(TAG, "inside requestNewLocationData()");
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(0);
-        mLocationRequest.setFastestInterval(0);
-        mLocationRequest.setNumUpdates(1);
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.requestLocationUpdates(
-                mLocationRequest, mLocationCallback,
-                Looper.myLooper());
-    }
-
-    private LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Log.d(TAG, "inside LocationResult() call");
-            Location mLastLocation = locationResult.getLastLocation();
-            lat = mLastLocation.getLatitude() + "";
-            lng = mLastLocation.getLongitude() + "";
-        }
-    };
-
     private void ShowPopup(int id) {
 
         myDialog.setContentView(R.layout.popup_new_request);
@@ -374,7 +260,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
 
     public void getAvailableVehicle() {
         Map<String, String> params = new HashMap();
-        String auth = (stringAuth);
+        String auth = stringAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         ActivityRentHome a = ActivityRentHome.this;
@@ -411,14 +297,6 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                 } else {
                     storeData();
                     Intent rideIntent = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
-                   /* rideIntent.putExtra("rtype", "1");
-                    rideIntent.putExtra("npas", NoHours);
-                    rideIntent.putExtra("srcid", pickID);
-                    rideIntent.putExtra("dstid", dropID);
-                    rideIntent.putExtra("vtype", VehicleType);
-                    rideIntent.putExtra("pmode", "1");
-                    rideIntent.putExtra("pick", pick.getText().toString());
-                    rideIntent.putExtra("drop", drop.getText().toString());*/
 
                     Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
                             RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
@@ -479,6 +357,9 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                         VehicleType = "1";
                         break;
                     case "E-BIKE":
+                        VehicleType = "2";
+                        break;
+                    case "E-CYCLE":
                         VehicleType = "2";
                         break;
 

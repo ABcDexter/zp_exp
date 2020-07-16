@@ -23,13 +23,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+
+
 public class HubList extends AppCompatActivity {
     private static final String TAG = "HubList.class";
-    public static final String AUTH_KEY = "AuthKey";
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
+    public static final String AUTH_KEY = "AuthKey";
+
     private RecyclerView rv;
     private List<HubListData> list_data;
     private MyHubListAdapter adapter;
+    String stringAuth;
 
     public void onSuccess(JSONObject response) throws JSONException {
         String responseS = response.toString();
@@ -61,6 +65,10 @@ public class HubList extends AppCompatActivity {
 
         Intent intent = getIntent();
         String request = intent.getStringExtra("Request");
+
+        SharedPreferences prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
+        stringAuth = prefAuth.getString(AUTH_KEY, "");
+
         Log.d(TAG, "control in HubList");
         //loading list view item with this function
 
@@ -99,15 +107,14 @@ public class HubList extends AppCompatActivity {
 
     private void getData() {
         Map<String, String> params = new HashMap();
-        SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
-        String stringAuth = prefPLoc.getString(AUTH_KEY, "");
 
-        params.put("auth", stringAuth);
+        String auth = stringAuth;
+        params.put("auth", auth);
 
         JSONObject parameters = new JSONObject(params);
         HubList a = HubList.this;
-        Log.d(TAG, "auth = " + stringAuth);
-        Log.d("CONTROL", "Control moved to to UtilityApiRequestPost.getPlace");
+        Log.d(TAG, "auth = " + auth);
+        Log.d("CONTROL", "Control moved to to UtilityApiRequestPost auth-place-get");
         UtilityApiRequestPost.doPOST(a, "auth-place-get", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response);

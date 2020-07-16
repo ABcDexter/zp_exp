@@ -53,7 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:gravity="center|start"
-                    android:text="Advance payment :"
+                    android:text="cost estimate :        "
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -62,7 +62,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginEnd="30dp"
                     android:layout_toEndOf="@+id/txtc"
                     android:drawableStart="@drawable/ic_rupee"
                     android:gravity="center|start"

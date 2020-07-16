@@ -1,5 +1,7 @@
 package com.deliverpartner;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,11 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.VolleyError;
 
@@ -21,11 +20,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivityInProgress extends AppCompatActivity implements View.OnClickListener {
-
+public class ActivityEnroute extends AppCompatActivity implements View.OnClickListener {
     public static final String AUTH_COOKIE = "com.agent.cookie";
     public static final String AUTH_KEY = "Auth";
-    private static final String TAG = "ActivityInProgress";
+    private static final String TAG = "ActivityEnroute";
 
     public static final String DELIVERY_DETAILS = "com.agent.DeliveryDetails";
     public static final String DID = "DeliveryID";
@@ -42,29 +40,25 @@ public class ActivityInProgress extends AppCompatActivity implements View.OnClic
     public static final String DST_LAT = "DSTLat";
     public static final String DST_LNG = "DSTLng";
     String strAuth;
-    ActivityInProgress a = ActivityInProgress.this;
+    ActivityEnroute a = ActivityEnroute.this;
     Map<String, String> params = new HashMap();
 
     TextView person, address, landmark, phone;
     String lat, lng;
     Button yes, no, map;
-    EditText otp;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_in_progress);
-
+        setContentView(R.layout.activity_enroute);
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
 
-        person = findViewById(R.id.src_per);
-        address = findViewById(R.id.src_add);
-        landmark = findViewById(R.id.src_land);
-        phone = findViewById(R.id.src_phone);
-        yes = findViewById(R.id.yes);
-        no = findViewById(R.id.no);
-        otp = findViewById(R.id.enter_otp);
+        person = findViewById(R.id.dst_per);
+        address = findViewById(R.id.dst_add);
+        landmark = findViewById(R.id.dst_land);
+        phone = findViewById(R.id.dst_phone);
+        yes = findViewById(R.id.completed);
+        no = findViewById(R.id.failed);
         map = findViewById(R.id.map);
 
         yes.setOnClickListener(this);
@@ -89,13 +83,13 @@ public class ActivityInProgress extends AppCompatActivity implements View.OnClic
         }, a::onFailure);
     }
 
-    public void delvyCancel() {
+    public void delvyFail() {
         String auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME agent-delivery-cancel");
-        UtilityApiRequestPost.doPOST(a, "agent-delivery-cancel", parameters, 20000, 0, response -> {
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME agent-delivery-fail");
+        UtilityApiRequestPost.doPOST(a, "agent-delivery-fail", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
             } catch (Exception e) {
@@ -105,14 +99,13 @@ public class ActivityInProgress extends AppCompatActivity implements View.OnClic
         }, a::onFailure);
     }
 
-    public void delvyStart() {
+    public void delvyEnd() {
         String auth = strAuth;
         params.put("auth", auth);
-        params.put("otp", otp.getText().toString().trim());
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth + " otp=" + otp.getText().toString().trim());
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME agent-delivery-start");
-        UtilityApiRequestPost.doPOST(a, "agent-delivery-start", parameters, 20000, 0, response -> {
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME agent-delivery-done");
+        UtilityApiRequestPost.doPOST(a, "agent-delivery-done", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
             } catch (Exception e) {
@@ -134,13 +127,13 @@ public class ActivityInProgress extends AppCompatActivity implements View.OnClic
                     SharedPreferences sp_cookie = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(DID, did).apply();
 
-                    if (status.equals("PD")) {
-                        String per = response.getString("srcper");
-                        String add = response.getString("srcadd");
-                        String land = response.getString("srcland");
-                        String phn = response.getString("srcphone");
-                        String lat = response.getString("srclat");
-                        String lng = response.getString("srclng");
+                    if (status.equals("ST")) {
+                        String per = response.getString("dstper");
+                        String add = response.getString("dstadd");
+                        String land = response.getString("dstland");
+                        String phn = response.getString("dstphone");
+                        String lat = response.getString("dstlat");
+                        String lng = response.getString("dstlng");
 
                         person.setText(per);
                         address.setText(add);
@@ -148,19 +141,16 @@ public class ActivityInProgress extends AppCompatActivity implements View.OnClic
                         phone.setText(phn);
 
                         SharedPreferences delvyPref = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
-                        delvyPref.edit().putString(SRC_PER, per).apply();
-                        delvyPref.edit().putString(SRC_ADD, add).apply();
-                        delvyPref.edit().putString(SRC_LND, land).apply();
-                        delvyPref.edit().putString(SRC_PHN, phn).apply();
-                        delvyPref.edit().putString(SRC_LAT, lat).apply();
-                        delvyPref.edit().putString(SRC_LNG, lng).apply();
-                        Intent home = new Intent(ActivityInProgress.this, ActivityHome.class);
-                        startActivity(home);
-                        finish();
+                        delvyPref.edit().putString(DST_PER, per).apply();
+                        delvyPref.edit().putString(DST_ADD, add).apply();
+                        delvyPref.edit().putString(DST_LND, land).apply();
+                        delvyPref.edit().putString(DST_PHN, phn).apply();
+                        delvyPref.edit().putString(DST_LAT, lat).apply();
+                        delvyPref.edit().putString(DST_LNG, lng).apply();
                     }
 
                 } else if (active.equals("false")) {
-                    Intent home = new Intent(ActivityInProgress.this, ActivityHome.class);
+                    Intent home = new Intent(ActivityEnroute.this, ActivityHome.class);
                     startActivity(home);
                     finish();
                 }
@@ -169,14 +159,18 @@ public class ActivityInProgress extends AppCompatActivity implements View.OnClic
             }
         }
 
-        //response on hitting agent-delivery-cancel API
+        //response on hitting agent-delivery-fail API
         if (id == 2) {
-            Intent home = new Intent(ActivityInProgress.this, ActivityHome.class);
+            Intent home = new Intent(ActivityEnroute.this, ActivityHome.class);
             startActivity(home);
             finish();
         }
+
+        //response on hitting agent-delivery-done API
         if (id == 3) {
-            getStatus();
+            Intent home = new Intent(ActivityEnroute.this, ActivityHome.class);
+            startActivity(home);
+            finish();
         }
     }
 
@@ -188,12 +182,11 @@ public class ActivityInProgress extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.yes:
-                delvyStart();
-
+            case R.id.completed:
+                delvyEnd();
                 break;
-            case R.id.no:
-                delvyCancel();
+            case R.id.failed:
+                delvyFail();
                 break;
             case R.id.map:
                 /*Intent map = new Intent(ActivityInProgress.this, ActivityMap.class);

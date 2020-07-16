@@ -21,5 +21,5 @@
     string in this file.
     -->
     <!--<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDEEo2jQtQx9YaRxQT5c2j_k0SH7P52Vck</string>--><!--villageTech-->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDquq0u8YDmOGP6bk576pEcEnLGCKdLQvE</string><!--anubhav.balodhi@gmail.com-->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyD61UBJv3DR1fcTzHg3U7FgSYFz9vBX3fk</string><!--anubhav.balodhi@gmail.com--><!--places enabled-->
 </resources>
