@@ -112,5 +112,5 @@ def signUser(_, dct: Dict):
     return HttpJSONResponse({'auth': sAuth, 'callback': dct['callback'], '_': dct['_'],
                              'redirect':True,
                              #"redirect_url":"http://localhost:5005/choice.html"})
-                             "redirect_url":"https:/webapp-zippe.web.app/choice.html"})
+                             "redirect_url": "choice.html"})
 
