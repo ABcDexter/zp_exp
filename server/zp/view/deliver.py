@@ -57,7 +57,7 @@ def authDeliveryGetInfo(dct, entity):
         ret.update({'tip': deli.tip}) #TODO return earning from delivery
 
     return HttpJSONResponse(ret)
-authDeliveryGetIn
+
 
 # ============================================================================
 # Delivery user views
@@ -475,14 +475,55 @@ def agentDeliveryCheck(_dct, agent):
     Only delis which start from this agents PID are returned
     No delis are returned if there are no vehicles there
     '''
-    # Get available vehicles at this hub, if none return empty
-    # qsVehicles = Vehicle.objects.filter(pid=agent.pid, tid=-1)
+    """
+    Get available vehicles at this hub, if none return empty
+    qsVehicles = Vehicle.objects.filter(pid=agent.pid, tid=-1)
     #if len(qsVehicles) == 0:
     #    return HttpJSONResponse({}) # making it easy for Volley to handle JSONArray and JSONObject
-
     # Get the first requested delivery from agents place id
-    qsDelivery = Delivery.objects.filter(st='RQ').order_by('-rtime') #TODO 10 km radius in this
-    ret = {} if len(qsDelivery) == 0 else {'did': qsDelivery[0].id, 'srcland':qsDelivery[0].srcland, 'dstland':qsDelivery[0].dstland}
+    #qsDelivery = Delivery.objects.filter(st='RQ').order_by('-rtime')
+    """
+    agentLoc = Location.objects.filter(an=agent.an)[0]
+    srcCoOrds = ['%s,%s' % (agentLoc.lat, agentLoc.lng)]
+
+    getcontext().prec = 50
+    qsDeli =  Delivery.objects.filter(st='RQ').values()
+    #print(qsDeli)
+    delis = []
+    for deli in qsDeli:
+        print(deli)
+        dstCoOrds = ['%s,%s' % (deli['srclat'], deli['srclng'])]
+        # print('################',dstCoOrds)
+        #print(srcCoOrds, dstCoOrds)
+
+        import googlemaps
+        gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
+        dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
+        # log(dctDist)
+        # print('############# DST : ', dctDist)
+        if dctDist['status'] != 'OK':
+            raise ZPException(501, 'Error fetching distance matrix')
+
+        dctElem = dctDist['rows'][0]['elements'][0]
+        nDist = 0
+        nTime = 0
+        if dctElem['status'] == 'OK':
+            nDist = dctElem['distance']['value']
+            nTime = int(dctElem['duration']['value']) // 60
+        elif dctElem['status'] == 'NOT_FOUND':
+            nDist, nTime = 0, 0
+        elif dctElem['status'] == 'ZERO_RESULTS':
+            nDist, nTime = 0, 0
+
+        print('distance: ', nDist)
+        print('time: ', nTime)
+        if nTime and nDist:
+            if nDist < 10_000:  # 10 kms radius
+                print({'did': deli['id'], 'srcland':deli['srcland'], 'dstland':deli['dstland']})
+                delis.append({'did': deli['id'], 'srcland':deli['srcland'], 'dstland':deli['dstland']})
+
+    ret = {} if len(delis) == 0 else {'did': delis[0]['did'], 'srcland':delis[0]['srcland'], 'dstland':delis[0]['dstland']}
+    ret.update({'count': len(delis)})
     return HttpJSONResponse(ret)
 
 

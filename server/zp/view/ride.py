@@ -142,7 +142,7 @@ def driverRideCheck(_dct, driver):
     #    return HttpJSONResponse({}) # making it easy for Volley to handle JSONArray and JSONObject
 
     # Get the first requested trip from drivers place id
-    qsTrip = Trip.objects.filter(st='RQ').order_by('-rtime')
+    qsTrip = Trip.objects.filter(st='RQ').order_by('-rtime') #10 km radius
     ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id}
     return HttpJSONResponse(ret)
 
