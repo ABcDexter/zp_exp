@@ -326,7 +326,7 @@ class Delivery(models.Model):
 
     # Active delivery states wrt user's and agent's perspective
     USER_ACTIVE = ['RQ', 'AS' ]  # not PD, ST, TO, CN, DN, FL, FN
-    AGENT_ACTIVE = ['AS', 'ST' ]  # not RQ, PD, TO, CN, DN, FL, FN
+    AGENT_ACTIVE = ['AS', 'PD', 'ST']  # not RQ, TO, CN, DN, FL, FN
 
     # States requiring payment to be done
     PAYABLE = ['RQ', 'AS']

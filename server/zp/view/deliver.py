@@ -53,8 +53,11 @@ def authDeliveryGetInfo(dct, entity):
     ret = {'st': deli.st}
     if deli.st in ['AS']:
         ret.update(getDelPrice(deli))
-    return HttpJSONResponse(ret)
+    elif deli.st in ['PD', 'FN']:
+        ret.update({'tip': deli.tip}) #TODO return earning from delivery
 
+    return HttpJSONResponse(ret)
+authDeliveryGetIn
 
 # ============================================================================
 # Delivery user views
@@ -430,15 +433,26 @@ def agentDeliveryGetStatus(_dct, agent):
     if len(qsDelivery):
         deli = qsDelivery[0]
 
-        # For assigned deli return user and vehicle an
+        # For assigned deli return srcadd, dstadd
         if deli.st == 'AS':
-            ret = {'uan': deli.uan, 'van': deli.van}
+            ret.update({'srcadd': deli.srcadd, 'dstadd': deli.dstadd})
+        elif deli.st == 'PD':
+            #ret = {'uan': deli.uan, 'van': deli.van}
+            ret.update({'srcper': deli.srcper,
+                    'srcadd': deli.srcadd,
+                    'srcland': deli.srcland,
+                    'srcphone': deli.srcphone,
+                    'srclat': deli.srclat,
+                    'srclng': deli.srclng})
 
         # For started deli send progress
-        if deli.st == 'ST':
-            pct = Progress.objects.filter(tid=deli.id)[0].pct
-            ret = {'pct': pct}
-
+        elif deli.st == 'ST':
+            ret.update({'dstper': deli.dstper,
+                        'dstadd': deli.dstadd,
+                        'dstland': deli.dstland,
+                        'dstphone': deli.dstphone,
+                        'dstlat': deli.dstlat,
+                        'dstlng': deli.dstlng})
         # For ended delis that need payment send the price data
         if deli.st in Delivery.PAYABLE:
             ret = getDelPrice(deli)
@@ -468,7 +482,7 @@ def agentDeliveryCheck(_dct, agent):
 
     # Get the first requested delivery from agents place id
     qsDelivery = Delivery.objects.filter(st='RQ').order_by('-rtime') #TODO 10 km radius in this
-    ret = {} if len(qsDelivery) == 0 else {'did': qsDelivery[0].id}
+    ret = {} if len(qsDelivery) == 0 else {'did': qsDelivery[0].id, 'srcland':qsDelivery[0].srcland, 'dstland':qsDelivery[0].dstland}
     return HttpJSONResponse(ret)
 
 
@@ -529,7 +543,7 @@ def agentDeliveryAccept(dct, agent):
         ret.update({'name': user.name, 'phone': user.pn})
         #src = Place.objects.filter(id=deli.srcpin)[0]
         #dst = Place.objects.filter(id=deli.dstpin)[0]
-        ret.update({'srcname': deli.srcadd, 'dstname': deli.dstadd})
+        ret.update({'srcadd': deli.srcadd, 'dstadd': deli.dstadd})
         print("Accepting deli : ", ret)
     else:
         raise ZPException(400, 'Delivery already assigned')
