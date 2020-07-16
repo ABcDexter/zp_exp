@@ -567,9 +567,10 @@ def agentDeliveryGetStatus(_dct, agent):
     qsDelivery = Delivery.objects.filter(id=agent.did)
     if len(qsDelivery):
         deli = qsDelivery[0]
-
+        print("STATIS : ", deli.st)
         # For assigned deli return srcadd, dstadd
         if deli.st == 'AS':
+            print('here....', deli.srcadd)
             ret.update({'srcadd': deli.srcadd, 'dstadd': deli.dstadd})
         elif deli.st == 'PD':
             #ret = {'uan': deli.uan, 'van': deli.van}
@@ -590,11 +591,12 @@ def agentDeliveryGetStatus(_dct, agent):
                         'dstlng': deli.dstlng})
         # For ended delis that need payment send the price data
         if deli.st in Delivery.PAYABLE:
-            ret = getDelPrice(deli)
+            ret.update(getDelPrice(deli))
 
         ret['active'] = deli.st in Delivery.AGENT_ACTIVE
         ret['st'] = deli.st
         ret['did'] = deli.id
+        print(ret)
 
     return HttpJSONResponse(ret)
 
@@ -629,7 +631,7 @@ def agentDeliveryCheck(_dct, agent):
         print(deli)
         dstCoOrds = ['%s,%s' % (deli['srclat'], deli['srclng'])]
         # print('################',dstCoOrds)
-        #print(srcCoOrds, dstCoOrds)
+        print(srcCoOrds, dstCoOrds)
 
         import googlemaps
         gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
