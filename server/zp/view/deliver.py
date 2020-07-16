@@ -2,12 +2,13 @@
 import datetime
 from datetime import datetime, timedelta
 from decimal import getcontext
-from random import random
+import random
 
 from django.db import transaction
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django.db.utils import OperationalError, IntegrityError
 
 from url_magic import makeView
 from ..models import Place, Delivery, Progress, Location
@@ -341,6 +342,45 @@ def userDeliveryCancel(_dct, _user, delivery):
 # Agent views
 # ============================================================================
 
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Agent not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Transaction error', 500)
+@extractParams
+@checkAuth()
+def adminAgentRegister(dct):
+    '''
+    Completes agent registration after background verification is done offline
+
+    HTTP args:
+        an: agent aadhar
+        *: Any other fields that need to be updated/corrected (except state)
+
+    Note:
+        No checking is done for fields - passing an invalid field will be silently ignored by the DB
+        Auth is generated and stored
+        Agent state is set to 'OF'
+    '''
+    # Get the agent and create an auth
+    recAgent = Agent.objects.filter(an=dct['an'])[0]
+    if recAgent.mode != 'RG':
+        raise ZPException('Agent is already registered', 501)
+
+    dct['auth'] = getClientAuth(str(recAgent.an), str(recAgent.pn))
+    dct['st'] = 'OF'
+
+    for key, val in dct.items():
+        setattr(recAgent, key, val)
+        recAgent.save()
+
+    return HttpJSONResponse({})
+
+# ============================================================================
+# Agent views
+# ============================================================================
+
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
@@ -415,16 +455,16 @@ def registerAgent(_, dct):
         log('New Agent registered: %s' % sAadhaar)
     else:
         # Only proceed if status is not 'RG' else throw error
-        Agent = qsAgent[0]
-        if Agent.mode != 'RG':
+        agent = qsAgent[0]
+        if agent.mode != 'RG':
             # Aadhaar exists, if mobile has changed, get new auth
-            if Agent.pn != sPhone:
-                Agent.pn = sPhone
-                sAuth =  getClientAuth(Agent.an, Agent.pn)
+            if agent.pn != sPhone:
+                agent.pn = sPhone
+                sAuth =  getClientAuth(agent.an, agent.pn)
                 log('Auth changed for Agent: %s' % sAadhaar)
             else:
                 # Aadhaar exists, phone unchanged, just return existing auth
-                sAuth = Agent.auth
+                sAuth = agent.auth
                 log('Auth exists for Agent: %s' % sAadhaar)
             return HttpJSONResponse({'auth': sAuth})
         else:
@@ -612,7 +652,7 @@ def agentDeliveryCheck(_dct, agent):
 
         print('distance: ', nDist)
         print('time: ', nTime)
-        if nTime and nDist:
+        if nTime or nDist:
             if nDist < 10_000:  # 10 kms radius
                 print({'did': deli['id'], 'srcland':deli['srcland'], 'dstland':deli['dstland']})
                 delis.append({'did': deli['id'], 'srcland':deli['srcland'], 'dstland':deli['dstland']})

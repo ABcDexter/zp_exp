@@ -471,7 +471,7 @@ def userIsDriverAv(dct, user):
 
         print('distance: ', nDist)
         print('time: ', nTime)
-        if nTime and nDist:
+        if nTime or nDist:
             if nDist < 5000 : # kms radius
                 print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
                 drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
