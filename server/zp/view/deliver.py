@@ -2,6 +2,7 @@
 import datetime
 from datetime import datetime, timedelta
 from decimal import getcontext
+from random import random
 
 from django.db import transaction
 from django.utils import timezone
@@ -11,7 +12,7 @@ from django.conf import settings
 from url_magic import makeView
 from ..models import Place, Delivery, Progress, Location
 from ..models import User, Vehicle, Agent
-from ..utils import ZPException, HttpJSONResponse
+from ..utils import ZPException, HttpJSONResponse, saveTmpImgFile, doOCR, log, aadhaarNumVerify, renameTmpImgFiles
 from ..utils import getOTP
 from ..utils import getDeliveryPrice, getDelPrice
 from ..utils import handleException, extractParams, checkAuth, retireDelEntity, getClientAuth
@@ -107,7 +108,7 @@ def userDeliveryGetStatus(dct, user):
         deli = Delivery.objects.filter(id=dct['did'])[0]
         ret = {'active': False, 'st': deli.st}
 
-        # For paid Delivery request send OTP, and 'an' of vehicle and driver
+        # For paid Delivery request send OTP, and 'an' of vehicle and Agent
         if deli.st == 'PD':
             ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
             # For started delis send deli progress percent
@@ -339,6 +340,100 @@ def userDeliveryCancel(_dct, _user, delivery):
 # ============================================================================
 # Agent views
 # ============================================================================
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
+def registerAgent(_, dct):
+    '''
+    Agent registration
+    Creates a Agent entry in the database, pending verification (state RG)
+    Once admins have verified offline, registration is completed successfully
+    with adminAgentRegister
+
+    HTTP Args:
+        aadhaarFront, aadhaarBack - aadhar scans
+        licenseFront, licenseBack = driving license scans
+
+    Notes:
+        A registration token is returned to the client which is to be sent to
+        isAgentVerified by the client while polling for registration status
+        Registration has to be atomic since we save files
+    '''
+
+    sPhone = dct['phone']
+    sAadharFrontFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarFront'], 'front')
+    sAadharBackFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarBack'], 'back')
+
+    sLicFrontFilename = saveTmpImgFile(settings.DL_DIR, dct['licenseFront'], 'front')
+    sLicBackFilename = saveTmpImgFile(settings.DL_DIR, dct['licenseBack'], 'back')
+
+    log('Agent Registration request - Aadhar images saved at %s, %s' % (sAadharFrontFilename, sAadharBackFilename))
+
+    # Get aadhaar as 3 groups of 4 digits at a time via google vision api
+    clientDetails = doOCR(sAadharFrontFilename)
+    sAadhaar = clientDetails['an']
+    log('Aadhaar number read from %s - %s' % (sAadharFrontFilename, sAadhaar))
+
+    # verify aadhaar number via Verhoeff algorithm
+    if not aadhaarNumVerify(sAadhaar):
+        raise ZPException(501,'Aadhaar number not valid!')
+    log('Aadhaar is valid')
+
+    # Check if this Agent exists
+    qsAgent = Agent.objects.filter(an=sAadhaar)
+    AgentExists = len(qsAgent) != 0
+    if not AgentExists:
+        agent = Agent()
+        agent.an = int(sAadhaar)
+        agent.pn = sPhone
+        agent.name = clientDetails.get('name', '')
+        agent.gdr = clientDetails.get('gender', '')
+        agent.age = clientDetails.get('age', '')
+        agent.mode = 'RG'
+
+        # Dummy values set by admin team manually
+        agent.dl = 'UK01-AB1234'
+        agent.hs = 'UK'
+
+        # No place set
+        agent.pid = -1
+        agent.did = -1
+
+        # agent has own vehicle
+        agent.veh = 1
+
+        # Set a random auth so that this Agent wont get authed
+        agent.auth = str(random.randint(0, 0xFFFFFFFF))
+        agent.save()
+
+        # licenses are also stored with the aadhar in the file name but under settings.DL_DIR
+        renameTmpImgFiles(settings.AADHAAR_DIR, sAadharFrontFilename, sAadharBackFilename, sAadhaar)
+        renameTmpImgFiles(settings.DL_DIR, sLicFrontFilename, sLicBackFilename, sAadhaar)
+        log('New Agent registered: %s' % sAadhaar)
+    else:
+        # Only proceed if status is not 'RG' else throw error
+        Agent = qsAgent[0]
+        if Agent.mode != 'RG':
+            # Aadhaar exists, if mobile has changed, get new auth
+            if Agent.pn != sPhone:
+                Agent.pn = sPhone
+                sAuth =  getClientAuth(Agent.an, Agent.pn)
+                log('Auth changed for Agent: %s' % sAadhaar)
+            else:
+                # Aadhaar exists, phone unchanged, just return existing auth
+                sAuth = Agent.auth
+                log('Auth exists for Agent: %s' % sAadhaar)
+            return HttpJSONResponse({'auth': sAuth})
+        else:
+            raise ZPException('Registration pending', 501)
+
+    # Deterministic registration token will be checked by isAgentVerified
+    ret = {'token': getClientAuth(sAadhaar, sPhone + '-register'), 'an': sAadhaar, 'pn': sPhone }
+    return HttpJSONResponse(ret)
+
 
 @makeView()
 @csrf_exempt
@@ -738,7 +833,7 @@ def agentDeliveryRetire(dct, agent, deli):
 @checkDeliveryStatus(['ST'])
 def authDeliveryFail(dct, agent, deli):
     '''
-    Called by driverin an emergency which causes the delivery to end
+    Called by Agentin an emergency which causes the delivery to end
     '''
     # Note the time of delivery cancel/fail and set state to failed
     deli.st = 'FL'
