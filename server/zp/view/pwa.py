@@ -109,5 +109,8 @@ def signUser(_, dct: Dict):
             log('Auth exists for: %s' % sAadhaar)
 
     # return the padding for CORS
-    return HttpJSONResponse({'auth': sAuth, 'callback': dct['callback'], '_': dct['_']})
+    return HttpJSONResponse({'auth': sAuth, 'callback': dct['callback'], '_': dct['_'],
+                             'redirect':True,
+                             #"redirect_url":"http://localhost:5005/choice.html"})
+                             "redirect_url":"https:/webapp-zippe.web.app/choice.html"})
 
