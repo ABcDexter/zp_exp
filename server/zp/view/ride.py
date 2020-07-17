@@ -106,12 +106,18 @@ def driverRideGetStatus(_dct, driver):
 
         # For assigned trip return user and vehicle an
         if trip.st == 'AS':
-            ret = {'uan': trip.uan, 'van': trip.van}
+            #ret = {'uan': trip.uan, 'van': trip.van}
+            ret = {'srclat': trip.srclat, 'srclng':trip.srclng, 'dstlat': trip.dstlat, 'dstlng':trip.dstlng}
+            user = User.objects.filter(an=trip.uan)[0]
+            ret.update({'uname': user.name, 'uphone': user.pn})
 
         # For started trip send progress
-        if trip.st == 'ST':
-            pct = Progress.objects.filter(tid=trip.id)[0].pct
-            ret = {'pct': pct}
+        elif trip.st == 'ST':
+            #pct = Progress.objects.filter(tid=trip.id)[0].pct
+            #ret = {'pct': pct}
+            #showing progress in Google maps
+            ret = {'dstlat': trip.dstlat, 'dstlng': trip.dstlng}
+            # maybe in future, we allow the User to update destination whilst being in Trip
 
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
@@ -143,7 +149,7 @@ def driverRideCheck(_dct, driver):
 
     # Get the first requested trip from drivers place id
     qsTrip = Trip.objects.filter(st='RQ').order_by('-rtime') #10 km radius
-    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id}
+    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'srclat': qsTrip[0].srclat, 'srclng': qsTrip[0].srclng }
     return HttpJSONResponse(ret)
 
 
@@ -197,7 +203,7 @@ def driverRideAccept(dct, driver):
         vehicle.tid = trip.id
         vehicle.save()
 
-        ret.update({'dstid': trip.dstid})
+        #ret.update({'dstid': trip.dstid})
 
         user = User.objects.filter(an=trip.uan)[0]
         ret.update({'name': user.name, 'phone': user.pn})

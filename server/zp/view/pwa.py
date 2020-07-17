@@ -32,6 +32,9 @@ from ..utils import headers
 
 from url_magic import makeView
 
+from ..utils import extract_lat_lng, getRidePrice, getRiPrice
+import googlemaps
+
 ############################################################
 # Extra
 
@@ -113,4 +116,102 @@ def signUser(_, dct: Dict):
                              'redirect':True,
                              #"redirect_url":"http://localhost:5005/choice.html"})
                              "redirect_url": "choice.html"})
+
+
+@makeView()
+@csrf_exempt
+@handleException(googlemaps.exceptions.TransportError, 'Internet Connectivity Problem', 503)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+@checkTripStatus(['INACTIVE'])
+def userGRideEstimate(dct, _user, _trip):
+    '''
+    Returns the estimated price for the trip
+
+    HTTP args:
+        srcname,
+        dstname
+        vtype
+        npas
+        pmode
+
+        hrs=0 for ride
+    '''
+    print("Google Ride Estimate param : ", dct)
+    srclat, srclng = extract_lat_lng(dct['srcname'])
+    dstlat, dstlng = extract_lat_lng(dct['dstname'])
+    print(srclat, srclng, " | ", dstlat, dstlng)
+    ret = getRidePrice(srclat, srclng, dstlat, dstlng, dct['vtype'], dct['pmode'], 0)
+    return HttpJSONResponse(ret)
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Null values sent', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkTripStatus(['INACTIVE'])
+def userGRideRequest(dct, user):#, _trip):
+    '''
+    User calls this to request a ride
+
+    HTTP args:
+    Ride :
+        srclat, srclng,
+        dstlat, dstlng,
+        npas - number of passengers
+        #srcid - id of the selected start place
+        #dstid - id of the selected destination
+        rtype - rent or ride
+        vtype - vehicle type
+        pmode - payment mode (cash / upi)
+
+
+    '''
+    print("Ride Request param : ", dct)
+
+    trip = Trip()
+    trip.uan = user.an
+    srclat, srclng = extract_lat_lng(dct['srcname'])
+    dstlat, dstlng = extract_lat_lng(dct['dstname'])
+    print(srclat, srclng, " | ", dstlat, dstlng)
+
+    trip.srclat, trip.srclng = srclat, srclng
+    trip.dstlat, trip.dstlng = dstlat, dstlng
+    trip.srcid = user.pid
+    trip.dstid = user.pid+1
+    if dct['rtype'] == '0': # Ride
+        trip.npas = dct['npas']
+        trip.srcid, trip.dstid = 0,0
+    else: # Rent
+        trip.npas = 2
+        iHrs = 2 #int(dct['hrs'])
+        trip.hrs = iHrs
+        # this is again updated then the vehicle is actually assigned.
+
+    trip.rtype = dct['rtype']
+    trip.pmode = dct['pmode']
+    trip.rtime = datetime.now(timezone.utc)
+    trip.save()
+
+    progress = Progress()
+    progress.tid = trip.id
+    progress.pct = 0
+    progress.save()
+
+    user.tid = trip.id
+    user.save()
+
+    # we are using only Zbees and Cash only payments right now.
+    #ret = getRoutePrice(trip.srcid, trip.dstid, Vehicle.ZBEE, Trip.CASH)
+    ret = getRiPrice(trip) #getRoutePrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
+    ret['tid'] = trip.id
+
+    return HttpJSONResponse(ret)
+
+
 
