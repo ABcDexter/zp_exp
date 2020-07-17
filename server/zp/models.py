@@ -112,7 +112,6 @@ class Route(models.Model):
     idy(int): second place id from places table
     dist(int): distance in meters
     '''
-    # TODO: Add a Validator that will reject a,b if b,a is already in the DB
     idx = models.IntegerField()
     idy = models.IntegerField()
     dist = models.IntegerField()

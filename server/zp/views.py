@@ -1052,8 +1052,9 @@ def authTripHistory(dct, entity):
         states = []
 
         for i in qsTrip:
-            thisOneBro = {'id':i['id'],'st':i['st'], 'price':getTripPrice(Trip.objects.filter(id=i['id'])[0])['price']}#,
 
+            thisOneBro = {'id':i['id'],'st':i['st'], 'price':getTripPrice(Trip.objects.filter(id=i['id'])[0])['price']}#,
+                          #TODO Buggy as the getTripPrice only calculates ended Trips
                           #TODO 'stime':i['stime'], 'etime':i['etime']}
             states.append(thisOneBro)
         print(states)

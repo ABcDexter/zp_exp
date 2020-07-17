@@ -202,7 +202,7 @@ def userVehicleHold(_dct, user, trip):
     Returns aadhaar, name and phone of current assigned vehicle,
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    #TODO think about increased pricing
+    #TODO rework on pricing on a per minutes basis.
     ret = {'price': getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)['price'] + 100}
     return HttpJSONResponse(ret)
 

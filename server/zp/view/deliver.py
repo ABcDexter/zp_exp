@@ -56,7 +56,7 @@ def authDeliveryGetInfo(dct, entity):
     if deli.st in ['AS']:
         ret.update(getDelPrice(deli))
     elif deli.st in ['PD', 'FN']:
-        ret.update({'tip': deli.tip}) #TODO return earning from delivery
+        ret.update({'tip': deli.tip, 'earn':getDelPrice(deli)/10}) #TODO return earning from delivery
 
     return HttpJSONResponse(ret)
 
@@ -711,7 +711,6 @@ def agentDeliveryAccept(dct, agent):
         agent.save()
 
         # set the vehicles tid
-        #todo fix this logic
         #vehicle.tid = deli.id
         #vehicle.save()
 

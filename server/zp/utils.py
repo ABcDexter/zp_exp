@@ -347,6 +347,14 @@ def getOTP(an: int, dan: int, rtime: datetime) -> int:
     m = hashlib.new('ripemd160')
     m.update(shaText)
     otp = int(m.hexdigest(), 16) % 9999
+    sOtp = str(otp)
+    if len(sOtp) ==1:
+        sOtp += "123"
+    elif len(sOtp) ==2:
+        sOtp += "42"
+    elif   len(sOtp) == 3:
+        sOtp += "0"
+    otp = int(sOtp)
     return otp
 
 
@@ -430,7 +438,7 @@ def aadhaarNumVerify(sNum: str) -> bool:
 def updateTrip(_loc, trip: Trip):
     '''
     This method calculates the trip completion %age and updates the progress table
-    TODO: add google api to do this
+    TODO: add google Places and Geocoding api to do this
     '''
     # For now just pretend progress is being made, Later set progress based on vehicle/driver location
     prog = Progress.objects.get(tid=trip.id)
