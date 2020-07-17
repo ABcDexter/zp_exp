@@ -905,13 +905,21 @@ def authDeliveryHistory(dct, entity, deli):
     '''
     returns the history of all Deliveries for a entity
     '''
-    qsDeli = Delivery.objects.filter(uan=entity.an).values() if type(entity) is User else Delivery.objects.filter(dan=entity.an).values()
+    qsDeli = Delivery.objects.filter(uan=entity.an).values() if type(entity) is User else Deli.objects.filter(
+        dan=entity.an).values()
     ret = {}
-    #print(qsDeli)
-    if len(qsDeli) :
+    # print(qsDeli)
+    # print("REEEEEEEEEEEE ",len(qsDeli))
+    if len(qsDeli):
         states = []
+
         for i in qsDeli:
-            states.append((i['id'],i['st']))
-        ret.update({'deli':states})
+            thisOneBro = {'id': i['id'], 'st': i['st'],
+                          'price': getDeliPrice(Deli.objects.filter(id=i['id'])[0])['price']}  # ,
+
+            # TODO 'stime':i['stime'], 'etime':i['etime']}
+            states.append(thisOneBro)
+        print(states)
+        ret.update({'Delis': states})
 
     return HttpJSONResponse(ret)

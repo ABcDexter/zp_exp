@@ -234,18 +234,18 @@ class Trip(models.Model):
 
     st    = models.CharField( max_length=2, choices=STATUSES, default='RQ', db_index=True)
     uan   = models.BigIntegerField (db_index=True)
-    dan   = models.BigIntegerField(db_index=True, default=0)
-    van   = models.BigIntegerField(db_index=True, default=0)
+    dan   = models.BigIntegerField(db_index=True, default=-1)
+    van   = models.BigIntegerField(db_index=True, default=-1)
     rtime = models.DateTimeField(auto_now_add=True, db_index=True)
     atime = models.DateTimeField(db_index=True, null=True)
     stime = models.DateTimeField(db_index=True, null=True)
     etime = models.DateTimeField(db_index=True, null=True)
-    srcid = models.IntegerField(db_index=True, default=0)
-    dstid = models.IntegerField(db_index=True, default=0)
-    srclat = models.FloatField(db_index=True, default=0)
-    srclng = models.FloatField(db_index=True, default=0)
-    dstlat = models.FloatField(db_index=True, default=0)
-    dstlng = models.FloatField(db_index=True, default=0)
+    srcid = models.IntegerField(db_index=True, default=1) #dummy values
+    dstid = models.IntegerField(db_index=True, default=2) #dummy values
+    srclat = models.FloatField(db_index=True, default=-1)
+    srclng = models.FloatField(db_index=True, default=-1)
+    dstlat = models.FloatField(db_index=True, default=-1)
+    dstlng = models.FloatField(db_index=True, default=-1)
 
     npas  = models.IntegerField(db_index=True, default=0)
     rtype = models.CharField(db_index=True, choices=TYPES,  max_length=10, default=2)
@@ -371,8 +371,8 @@ class Delivery(models.Model):
 
     st = models.CharField(max_length=2, choices=STATUSES, default='RQ', db_index=True)
     uan = models.BigIntegerField(db_index=True)
-    dan = models.BigIntegerField(db_index=True, default=0)
-    van = models.BigIntegerField(db_index=True, default=0)
+    dan = models.BigIntegerField(db_index=True, default=-1)
+    van = models.BigIntegerField(db_index=True, default=-1)
     rtime = models.DateTimeField(auto_now_add=True, db_index=True)
     atime = models.DateTimeField(db_index=True, null=True)
     stime = models.DateTimeField(db_index=True, null=True)

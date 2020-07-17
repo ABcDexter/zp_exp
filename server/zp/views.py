@@ -246,7 +246,7 @@ def isDriverVerified(_, dct):
 @makeView()
 @csrf_exempt
 #@handleException()
-@handleException(IndexError, 'Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
 @checkAuth()
@@ -277,8 +277,10 @@ def userTripGetStatus(_dct, user):
         # For assigned trip send OTP, and 'an' of vehicle and driver
         if trip.st == 'AS':
             ret['otp'] = getOTP(trip.uan, trip.dan, trip.atime)
+            #print(trip.van)
             vehicle = Vehicle.objects.filter(an=trip.van)[0]
             ret['vno'] = vehicle.regn
+            #print(ret['vno'])
             if trip.rtype == '1':
                 ret['price'] = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)['price']
                 currTime = datetime.now(timezone.utc)
@@ -290,8 +292,8 @@ def userTripGetStatus(_dct, user):
         # For started trips send trip progress percent
         # this is redundant, this functionality is provided by authProgressPercent()
         if trip.st == 'ST':
-            progress = Progress.objects.filter(tid=trip.id)[0]
-            ret['pct'] = progress.pct
+            #progress = Progress.objects.filter(tid=trip.id)[0]
+            #ret['pct'] = progress.pct
             if trip.rtype == '1':
                 currTime = datetime.now(timezone.utc)
                 diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
@@ -1030,6 +1032,34 @@ def authProfileUpdate(dct, entity):
     entity.save()
 
     return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException()
+@extractParams
+@transaction.atomic
+@checkAuth()
+def authTripHistory(dct, entity):
+    '''
+    returns the history of all Trips for a entity
+    '''
+    qsTrip = Trip.objects.filter(uan=entity.an).values() if type(entity) is User else Trip.objects.filter(dan=entity.an).values()
+    ret = {}
+    #print(qsTrip)
+    #print("REEEEEEEEEEEE ",len(qsTrip))
+    if len(qsTrip) :
+        states = []
+
+        for i in qsTrip:
+            thisOneBro = {'id':i['id'],'st':i['st'], 'price':getTripPrice(Trip.objects.filter(id=i['id'])[0])['price']}#,
+
+                          #TODO 'stime':i['stime'], 'etime':i['etime']}
+            states.append(thisOneBro)
+        print(states)
+        ret.update({'trips':states})
+
+    return HttpJSONResponse(ret)
 
 
 @makeView()
