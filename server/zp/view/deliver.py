@@ -891,3 +891,27 @@ def authDeliveryFail(dct, agent, deli):
     agent.save()
 
     return HttpJSONResponse({})
+
+
+
+@makeView()
+@csrf_exempt
+@handleException()
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkDeliveryStatus(['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
+def authDeliveryHistory(dct, entity, deli):
+    '''
+    returns the history of all Deliveries for a entity
+    '''
+    qsDeli = Delivery.objects.filter(uan=entity.an).values() if type(entity) is User else Delivery.objects.filter(dan=entity.an).values()
+    ret = {}
+    #print(qsDeli)
+    if len(qsDeli) :
+        states = []
+        for i in qsDeli:
+            states.append((i['id'],i['st']))
+        ret.update({'deli':states})
+
+    return HttpJSONResponse(ret)

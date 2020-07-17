@@ -371,7 +371,7 @@ def driverIsVehicleSet(dct, driver):
     HTTP args :
         auth
     '''
-    ret = driver.van != 0
+    ret = driver.van != -1
     return HttpJSONResponse({'set' : ret})
 
 
