@@ -459,7 +459,8 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
     if time taken is not provided, its estimated from vehicle type
     '''
     # Get this route distance
-    recRoute = Route.getRoute(1, 4) #TODO remove this idSrc, idDst)
+    idSrc, idDst = 1, 4  #TODO remove this
+    recRoute = Route.getRoute(idSrc, idDst)
     fDist = recRoute.dist
     iVType, iPayMode, iTimeSec = int(iVType), int(iPayMode), int(iTimeSec) #need explicit type conversion to int
     
