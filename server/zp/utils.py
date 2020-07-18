@@ -950,10 +950,10 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
         price *= 0.9
 
     return {
-        'price': float('%.00f' % price),
-        'time': float('%.00f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
-        'dist': float('%.00f' % (fDist / 1000)),
-        'speed': float('%.00f' % (fAvgSpeed * 3.6))
+        'price': float('%.2f' % price),
+        'time': int('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
+        'dist': float('%.2f' % (fDist / 1000)),
+        'speed': float('%.2f' % (fAvgSpeed * 3.6))
     }
 
 
