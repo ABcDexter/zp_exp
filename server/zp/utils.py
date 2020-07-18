@@ -538,7 +538,7 @@ def getTripPrice(trip):
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)[0]
     if trip.rtype == '0':
-        return getRidePrice(vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
+        return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
     else :
         return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
 
@@ -950,10 +950,10 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
         price *= 0.9
 
     return {
-        'price': float('%.0f' % price),
-        'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
-        'dist': float('%.0f' % (fDist / 1000)),
-        'speed': float('%.0f' % (fAvgSpeed * 3.6))
+        'price': float('%.00f' % price),
+        'time': float('%.00f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
+        'dist': float('%.00f' % (fDist / 1000)),
+        'speed': float('%.00f' % (fAvgSpeed * 3.6))
     }
 
 

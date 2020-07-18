@@ -65,7 +65,7 @@ class Driver(Entity):
         if st == 'AS':
             self.log('Waiting for user to arrive')
 
-            if prob(0.01): # only 1 % chance of cancelling a trip
+            if prob(0.001): # only 1 % chance of cancelling a trip
                 self.log('Canceling trip!')
                 ret = self.callAPI('driver-ride-cancel')
                 self.logIfErr(ret)
@@ -90,7 +90,7 @@ class Driver(Entity):
 
             if prob(0.01):
                 self.log('Failing trip!')
-                ret = self.callAPI('auth-ride-fail')
+                ret = self.callAPI('auth-trip-fail')
                 self.logIfErr(ret)
 
 
@@ -110,8 +110,12 @@ class Driver(Entity):
                         ret = self.callAPI('driver-ride-accept', params)
                         if not self.logIfErr(ret):
                             self.sTID = params['tid']
-                            self.iDstPID = ret['dstid']
-                            self.log('Accepted trip %s to PID %d' % (json.dumps(params), self.iDstPID))
+                            #self.iDstPID = ret['dstid']
+                            #self.log('Accepted trip %s to PID %d' % (json.dumps(params), self.iDstPID))
+                            self.iDstPID = 2
+                            #sUserName = params['name']
+                            self.log('Accepted trip %s to location %d for' % (json.dumps(params), self.iDstPID)) #, sUserName))
+
                             self.bChangeStatus = False
 
 

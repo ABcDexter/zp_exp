@@ -1052,16 +1052,15 @@ def authTripHistory(dct, entity):
     qsTrip = Trip.objects.filter(uan=entity.an).values() if type(entity) is User else Trip.objects.filter(dan=entity.an).values()
     ret = {}
     #print(qsTrip)
-    #print("REEEEEEEEEEEE ",len(qsTrip))
     if len(qsTrip) :
         states = []
 
         for i in qsTrip:
 
-            thisOneBro = {'id':i['id'],'st':i['st'], 'price':getTripPrice(Trip.objects.filter(id=i['id'])[0])['price']}#,
+            ithTrip = {'id':i['id'],'st':i['st'], 'price':getRiPrice(Trip.objects.filter(id=i['id'])[0])['price']}#,
                           #TODO Buggy as the getTripPrice only calculates ended Trips
                           #TODO 'stime':i['stime'], 'etime':i['etime']}
-            states.append(thisOneBro)
+            states.append(ithTrip)
         print(states)
         ret.update({'trips':states})
 

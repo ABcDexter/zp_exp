@@ -290,7 +290,7 @@ def driverRideEnd(_dct, driver, trip):
     recVehicle = Vehicle.objects.filter(an=trip.van)[0]
 
     # Calculate price
-    dctPrice = getRoutePrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
+    dctPrice = getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, recVehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
     return HttpJSONResponse(dctPrice)
 
 
