@@ -469,7 +469,7 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
     # Get this route distance
     #idSrc, idDst = 7,2  #TODO remove this
     #recRoute = Route.getRoute(idSrc, idDst)
-    fDist = iDist #recRoute.dist
+    fDist = 6000 #iDist  #recRoute.dist
     iVType, iPayMode, iTimeSec = int(iVType), int(iPayMode), int(iTimeSec) #need explicit type conversion to int
     
     # Calculate the speed if time is known or else use average speed for estimates
