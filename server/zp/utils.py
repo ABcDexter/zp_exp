@@ -538,7 +538,7 @@ def getTripPrice(trip):
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)[0]
     if trip.rtype == '0':
-        return getRoutePrice(vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
+        return getRidePrice(vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
     else :
         return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
 

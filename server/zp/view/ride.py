@@ -407,12 +407,13 @@ def driverVehicleRetire(dct, driver):
     '''
     Resets driver's and vehicles active trip
     '''
-    vehicle = Vehicle.objects.filter(an=driver.van)[0]  # testing :P
-    vehicle.dan = -1
-    vehicle.save()
+    if driver.van !=-1:
+        vehicle = Vehicle.objects.filter(an=driver.van)[0]
+        vehicle.dan = -1
+        vehicle.save()
 
-    driver.van = -1
-    driver.save()
+        driver.van = -1
+        driver.save()
     return HttpJSONResponse({})
 
 

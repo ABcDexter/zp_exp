@@ -25,7 +25,7 @@ from .models import Place, Trip, Progress, Location, Route
 
 from .utils import HttpJSONError, ZPException, DummyException, HttpJSONResponse, HttpRecordsResponse, log
 from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renameTmpImgFiles, getOTP, doOCRback
-from .utils import getRoutePrice, getTripPrice, getRentPrice
+from .utils import getRoutePrice, getTripPrice, getRentPrice, getRidePrice
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from .utils import headers
 
@@ -462,6 +462,7 @@ def userTripRetire(_dct, user, _trip):
 
 @makeView()
 @csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
 def authVehicleGetAvail(_dct, entity):
@@ -476,6 +477,7 @@ def authVehicleGetAvail(_dct, entity):
 
 @makeView()
 @csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
 def authTripGetInfo(dct, entity):
@@ -496,6 +498,7 @@ def authTripGetInfo(dct, entity):
 
 @makeView()
 @csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
 def authPlaceGet(_dct, _entity):
