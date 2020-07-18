@@ -18,6 +18,7 @@ class User(models.Model):
     age(int):
     dl(str):    Driver license in case of rent a ride
     hs (str):   Home state of the User
+    mark(float): Float field of the rating sytem, BINARY, 1 mark given for good, 0 given for bad
     '''
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
@@ -27,13 +28,12 @@ class User(models.Model):
     tid  = models.IntegerField(default=-1, db_index=True)
     did  = models.IntegerField(default=-1, db_index=True)
 
-
     name = models.CharField(null=True, max_length=64, db_index=True)
     gdr  = models.CharField(null=True, max_length=16, db_index=True)
     age  = models.SmallIntegerField(null=True, db_index=True)
     dl   = models.CharField(null=True, max_length=20)
-    hs   = models.CharField(null=True, max_length=50)
-
+    hs   = models.CharField(db_index=True,null=True, max_length=50)
+    mark = models.FloatField(db_index=True, default=0.0)
     class Meta:
         db_table = 'user'
         managed = True
@@ -52,7 +52,7 @@ class Driver(models.Model):
     pid(int):   Index of current place - see Place table
     tid(int):   Index of current trip - see Trip table
     hs(str):    Home state of the Driver
-
+    mark(float): Float field for the rating of the driver.
     '''
     MODES = [
         ('RG', 'registering'),  # driver is under registration process
@@ -76,7 +76,7 @@ class Driver(models.Model):
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
     van =  models.BigIntegerField(db_index=True, default=-1)
-
+    mark = models.FloatField(db_index=True, default=0.0)
     class Meta:
         db_table = 'driver'
         managed = True
@@ -424,6 +424,7 @@ class Agent(models.Model):
     tid(int):   Index of current trip - see Trip table
     hs(str):    Home state of the Agent
     veh(int): Has a vehicle or not
+    mark(float): float field has the rating, binary system same as that of the user/driver
     '''
     MODES = [
         ('RG', 'registering'),  # Agent is under registration process
@@ -450,6 +451,7 @@ class Agent(models.Model):
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
     veh  = models.CharField(max_length=1, choices=VEH, default='0', db_index=True)
+    mark = models.FloatField(db_index=True, default=0.0)
 
     class Meta:
         db_table = 'agent'

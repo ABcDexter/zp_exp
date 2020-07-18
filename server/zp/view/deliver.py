@@ -924,3 +924,34 @@ def authDeliveryHistory(dct, entity, deli):
         ret.update({'delis': states})
 
     return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkDeliveryStatus(['FN'])
+def authDeliveryRate(dct, entity, deli):
+    '''
+    rating system...
+    HTTP args:
+        auth,
+        rate
+    '''
+    print(dct, entity, deli)
+    bIsUser = True if type(entity) is User else False #user or driver
+    if bIsUser :
+        driver = Driver.objects.filter(an=deli.dan)[0]
+        numDeliverys = Delivery.objects.filter(dan=driver.an).count()
+        driver.mark = (driver.mark+int(dct['rate']))/(numDeliverys+1)
+        driver.save()
+    else :
+        user = User.objects.filter(an=deli.uan)[0]
+        numDeliverys = Delivery.objects.filter(uan=user.an).count()
+        user.mark = (user.mark+int(dct['rate']))/(numDeliverys+1)
+        user.save()
+    #think maybe mark the deli as RATED, do we need an extra state ...?
+
+    return HttpJSONResponse({})

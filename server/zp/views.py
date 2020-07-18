@@ -1093,3 +1093,33 @@ def userGiveOtp(dct, user, _trip):
             json.dump({'payment': price}, f)
     return HttpJSONResponse({})
 
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkTripStatus(['PD'])
+def authTripRate(dct, entity, trip):
+    '''
+    rating system...
+    HTTP args:
+        auth,
+        rate
+    '''
+    print(dct, entity, trip)
+    bIsUser = True if type(entity) is User else False #user or driver
+    if bIsUser :
+        driver = Driver.objects.filter(an=trip.dan)[0]
+        numTrips = Trip.objects.filter(dan=driver.an).count()
+        driver.mark = (driver.mark+int(dct['rate']))/(numTrips+1)
+        driver.save()
+    else :
+        user = User.objects.filter(an=trip.uan)[0]
+        numTrips = Trip.objects.filter(uan=user.an).count()
+        user.mark = (user.mark+int(dct['rate']))/(numTrips+1)
+        user.save()
+    #think maybe mark the trip as RATED, do we need an extra state ...?
+
+    return HttpJSONResponse({})
