@@ -56,7 +56,7 @@ def authDeliveryGetInfo(dct, entity):
     if deli.st in ['AS']:
         ret.update(getDelPrice(deli))
     elif deli.st in ['PD', 'FN']:
-        ret.update({'tip': deli.tip, 'earn':getDelPrice(deli)/10}) #TODO return earning from delivery
+        ret.update({'tip': deli.tip, 'earn':getDelPrice(deli)['price']/10}) #TODO return earning from delivery
 
     return HttpJSONResponse(ret)
 
@@ -904,7 +904,8 @@ def authDeliveryHistory(dct, entity, deli):
     '''
     returns the history of all Deliveries for a entity
     '''
-    qsDeli = Delivery.objects.filter(uan=entity.an).values() if type(entity) is User else Deli.objects.filter(
+
+    qsDeli = Delivery.objects.filter(uan=entity.an).values() if type(entity) is User else Delivery.objects.filter(
         dan=entity.an).values()
     ret = {}
     # print(qsDeli)
@@ -914,11 +915,12 @@ def authDeliveryHistory(dct, entity, deli):
 
         for i in qsDeli:
             thisOneBro = {'id': i['id'], 'st': i['st'],
-                          'price': getDeliPrice(Deli.objects.filter(id=i['id'])[0])['price']}  # ,
+                          'earn': getDelPrice(Delivery.objects.filter(id=i['id'])[0])['price']/10 ,
+                          'tip': i['tip']}  # ,
 
             # TODO 'stime':i['stime'], 'etime':i['etime']}
             states.append(thisOneBro)
         print(states)
-        ret.update({'Delis': states})
+        ret.update({'delis': states})
 
     return HttpJSONResponse(ret)

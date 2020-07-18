@@ -387,7 +387,7 @@ def userTripRequest(dct, user, _trip):
 
     # we are using only Zbees and Cash only payments right now.
     #ret = getRoutePrice(trip.srcid, trip.dstid, Vehicle.ZBEE, Trip.CASH)
-    ret = getRoutePrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
+    ret = getRentPrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
     ret['tid'] = trip.id
 
     return HttpJSONResponse(ret)
@@ -1002,7 +1002,9 @@ def userTripEstimate(dct, user, _trip):
     '''
     print("Ride Estimate param : ", dct)
     if dct['rtype'] == '0':
-        ret = getRoutePrice(user.pid, dct['dstid'], dct['vtype'], dct['pmode'])
+        ret =  getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)
+        #getRoutePrice(user.pid, dct['dstid'], dct['vtype'], dct['pmode'])
+
     #should it not allow the prices from point A(source) to point B(destination) instead of taking the pid of user?
     else:
         #make this ask srcid as well

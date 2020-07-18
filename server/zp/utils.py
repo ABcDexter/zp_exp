@@ -467,9 +467,9 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
     if time taken is not provided, its estimated from vehicle type
     '''
     # Get this route distance
-    idSrc, idDst = 1, 4  #TODO remove this
-    recRoute = Route.getRoute(idSrc, idDst)
-    fDist = recRoute.dist
+    #idSrc, idDst = 7,2  #TODO remove this
+    #recRoute = Route.getRoute(idSrc, idDst)
+    fDist = iDist #recRoute.dist
     iVType, iPayMode, iTimeSec = int(iVType), int(iPayMode), int(iTimeSec) #need explicit type conversion to int
     
     # Calculate the speed if time is known or else use average speed for estimates
@@ -538,7 +538,7 @@ def getTripPrice(trip):
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)[0]
     if trip.rtype == '0':
-        return getRoutePrice(1, 2, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
+        return getRoutePrice(vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
     else :
         return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
 
@@ -662,7 +662,7 @@ class checkAuth(object):
 
             if isAgent or isAuth:
                 qsAgent = Agent.objects.filter(auth=auth)
-
+                print(qsAgent)
                 # Ensure we have a confirmed Agent
                 if (qsAgent is not None) and (len(qsAgent) > 0) and qsAgent[0].mode != 'RG':
                     # Ensure the agent is in the desired state if any
