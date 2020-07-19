@@ -443,12 +443,14 @@ def userIsDriverAv(dct, user):
 
     srcCoOrds = ['%s,%s' % (dct['srclat'], dct['srclng'])]
 
-    getcontext().prec = 50
+    #getcontext().prec = 50
     qsDrivers = Driver.objects.filter(mode='AV').values()
     # Driver.objects.raw('''SELECT * FROM  location INNER JOIN driver WHERE location.an = driver.an AND driver.mode='AV';''');
 
     ret = {}
     drivers = []
+    print('drivers are here ' ,len(qsDrivers))
+    # TODO make this view API optimal
     for driver in qsDrivers:
         #print("$$$$$$$$$$$$$$$$: " ,qsDrivers, qsDrivers[0]['an'])
         #print(driver)

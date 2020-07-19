@@ -25,7 +25,7 @@ SECRET_KEY = '+8^8@0w0p1)6yr-g)!3l04&qp-ggjwz@9f_-fvpm_qta0g&36r'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "8ee0edfb6206.ngrok.io", "159.65.144.72","b1f30c97ccfb.ngrok.io" ] # ngrok http http://127.0.0.1:9999
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "8ee0edfb6206.ngrok.io", "159.65.144.72","86d9a981a121.ngrok.io" ] # ngrok http http://127.0.0.1:9999
 
 
 AADHAAR_DIR = '/srv/data/aadhaar/'
