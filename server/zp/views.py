@@ -280,7 +280,41 @@ def userTripGetStatus(_dct, user):
             #print(trip.van)
             vehicle = Vehicle.objects.filter(an=trip.van)[0]
             ret['vno'] = vehicle.regn
+
             #print(ret['vno'])
+            locDriver = Location.objects.filter(an=trip.dan)[0]
+            locUser = Location.objects.filter(an=trip.uan)[0]
+            #print(locDriver,locDriver.lat,locDriver.lng, locUser, locUser.lat, locUser.lng)
+
+            srcCoOrds = ['%s,%s' % (locDriver.lat, locDriver.lng)] #Driver ka location
+            dstCoOrds = ['%s,%s' % (locUser.lat, locUser.lng)]
+            # print('################',dstCoOrds)
+
+            # print(srcCoOrds, dstCoOrds)
+
+            import googlemaps
+            gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
+            dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
+            # log(dctDist)
+            # print('############# DST : ', dctDist)
+            if dctDist['status'] != 'OK':
+                raise ZPException(501, 'Error fetching distance matrix')
+
+            dctElem = dctDist['rows'][0]['elements'][0]
+            nDist = 0
+            nTime = 0
+            if dctElem['status'] == 'OK':
+                nDist = dctElem['distance']['value']
+                nTime = int(dctElem['duration']['value']) // 60
+            elif dctElem['status'] == 'NOT_FOUND':
+                nDist, nTime = 0, 0
+            elif dctElem['status'] == 'ZERO_RESULTS':
+                nDist, nTime = 0, 0
+
+            #print('distance: ', nDist)
+            #print('time: ', nTime)
+
+
             if trip.rtype == '1':
                 ret['price'] = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)['price']
                 currTime = datetime.now(timezone.utc)
@@ -288,6 +322,8 @@ def userTripGetStatus(_dct, user):
                 diffTime = (currTime - trip.atime).total_seconds() // 60  # minutes
                 #print(currTime - trip.atime, (currTime - trip.atime).total_seconds())
                 ret['time'] = 30-diffTime
+            else:
+                ret['time'] = nTime
             
         # For started trips send trip progress percent
         # this is redundant, this functionality is provided by authProgressPercent()
