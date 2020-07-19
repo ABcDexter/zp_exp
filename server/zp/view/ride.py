@@ -449,14 +449,14 @@ def userIsDriverAv(dct, user):
 
     ret = {}
     drivers = []
-    # print("$$$$$$$$$$$$$$$$: " ,qsDrivers, qsDrivers[0]['an'])
+    print("$$$$$$$$$$$$$$$$: " ,qsDrivers, qsDrivers[0]['an'])
     for driver in qsDrivers:
         #print(driver)
         vehicles = list(Vehicle.objects.filter(vtype=dct['vtype']).values('an','vtype'))
         #print(vehicles)
         gaddi = [veh['an'] for veh in vehicles]
-        print(gaddi)
-        print(int(driver['van']), int(driver['van']) in gaddi)
+        #print(gaddi)
+        #print(int(driver['van']), int(driver['van']) in gaddi)
         if int(driver['van']) in gaddi:
             qsLocs = Location.objects.filter(an=driver['an']).values()
             # print('##############',qsLocs)
@@ -464,7 +464,7 @@ def userIsDriverAv(dct, user):
             dstCoOrds = ['%s,%s' % (recPlace['lat'], recPlace['lng']) for recPlace in qsLocs]
             # print('################',dstCoOrds)
 
-            print(srcCoOrds, dstCoOrds)
+            #print(srcCoOrds, dstCoOrds)
 
             import googlemaps
             gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
@@ -489,7 +489,7 @@ def userIsDriverAv(dct, user):
             print('time: ', nTime)
             if nTime or nDist:
                 if nDist < 10_000 : # 10 kms
-                    print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
+                    print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
                     drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
 
     ret.update({'count': len(drivers)}) # {'drivers': drivers})
