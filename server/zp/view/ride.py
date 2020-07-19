@@ -449,7 +449,7 @@ def userIsDriverAv(dct, user):
 
     ret = {}
     drivers = []
-    print("$$$$$$$$$$$$$$$$: " ,qsDrivers, qsDrivers[0]['an'])
+    #print("$$$$$$$$$$$$$$$$: " ,qsDrivers, qsDrivers[0]['an'])
     for driver in qsDrivers:
         #print(driver)
         vehicles = list(Vehicle.objects.filter(vtype=dct['vtype']).values('an','vtype'))
