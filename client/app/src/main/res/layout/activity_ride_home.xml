@@ -21,38 +21,83 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="YOU have selected \nRIDe"
+                android:text="let's get you a \nride"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
 
-            <Spinner
-                android:id="@+id/vehicle_type"
+            <!-- <Spinner
+                 android:id="@+id/vehicle_type"
+                 android:layout_width="match_parent"
+                 android:layout_height="40dp"
+                 android:layout_below="@id/layoutZippeee"
+                 android:layout_marginTop="50dp"
+                 android:background="@drawable/rect_box_outline"
+                 android:entries="@array/vehicle_array_sans_cycle"
+                 android:spinnerMode="dropdown"
+                 android:textAlignment="center"
+                 android:textAllCaps="true"/>
+
+
+             <Spinner
+                 android:id="@+id/no_riders"
+                 android:layout_width="match_parent"
+                 android:layout_height="40dp"
+                 android:layout_below="@id/vehicle_type"
+                 android:layout_marginTop="20dp"
+                 android:background="@drawable/rect_box_outline"
+                 android:entries="@array/rider_no_array"
+                 android:spinnerMode="dropdown"
+                 android:textAlignment="center"
+                 android:textAllCaps="true" />-->
+            <RelativeLayout
+                android:id="@+id/rl_v"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_below="@id/layoutZippeee"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/rect_box_outline"
-                android:entries="@array/vehicle_array_sans_cycle"
-                android:gravity="center"
-                android:spinnerMode="dropdown"
-                android:textAlignment="center"
-                android:textAllCaps="true" />
+                android:layout_marginTop="50dp">
 
+                <Button
+                    android:id="@+id/vehicle_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rect_box_outline"
+                    android:text="VEHICLE TYPE"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
 
-            <Spinner
-                android:id="@+id/no_riders"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_arrow_up" />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@id/vehicle_type"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/rect_box_outline"
-                android:entries="@array/rider_no_array"
-                android:gravity="center"
-                android:padding="5dp"
-                android:spinnerMode="dropdown"
-                android:textAlignment="center"
-                android:textAllCaps="true" />
+                android:layout_below="@id/rl_v"
+                android:layout_marginTop="20dp">
+
+                <Button
+                    android:id="@+id/no_riders"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/rect_box_outline"
+                    android:text="NO OF RIDERS"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_arrow_up" />
+            </RelativeLayout>
 
             <include
                 android:id="@+id/layoutZippeee"
@@ -90,17 +135,16 @@
                 android:textAllCaps="true"
                 android:textSize="20sp" />-->
             <RelativeLayout
+                android:id="@+id/rl_pick"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:layout_above="@id/rl_drop"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/rect_box_outline"
-                android:gravity="center"
                 android:textAllCaps="true"
                 android:textColor="@color/txtColor"
-                android:textSize="20sp"
-                android:textAlignment="center"
-                android:id="@+id/rl_pick"
-                android:layout_marginBottom="20dp"
-                android:layout_above="@id/rl_drop">
+                android:textSize="20sp">
+
                 <fragment
                     android:id="@+id/autocomplete_fragment_pick"
                     android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
@@ -109,22 +153,21 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/rl_drop"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:layout_above="@+id/layoutZippeee"
+                android:layout_marginBottom="50dp"
                 android:background="@drawable/rect_box_outline"
-                android:gravity="center"
                 android:textAllCaps="true"
                 android:textColor="@color/txtColor"
-                android:textSize="20sp"
-                android:textAlignment="center"
-                android:id="@+id/rl_drop"
-                android:layout_above="@+id/layoutZippeee"
-                android:layout_marginBottom="50dp">
+                android:textSize="20sp">
+
                 <fragment
                     android:id="@+id/autocomplete_fragment_drop"
                     android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
             </RelativeLayout>
 
 

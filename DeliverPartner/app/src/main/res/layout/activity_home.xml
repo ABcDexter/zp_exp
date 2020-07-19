@@ -38,7 +38,13 @@
                 android:textColor="@color/txtColor"
                 android:textSize="15sp"
                 android:textStyle="bold" />
-
+            <include
+                android:id="@+id/layoutZippeee"
+                layout="@layout/zippe_logo"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_above="@id/rl_order"
+                android:layout_marginBottom="100dp"/>
             <RelativeLayout
                 android:id="@+id/rl_order"
                 android:layout_width="wrap_content"
@@ -95,7 +101,7 @@
                 android:background="@drawable/rect_box_solid"
                 android:text="COMPLETED ORDERS" />
 
-            <Button
+            <!--<Button
                 android:id="@+id/earnings"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -104,7 +110,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/rect_box_solid"
-                android:text="total earnings" />
+                android:text="total earnings" />-->
 
         </RelativeLayout>
     </ScrollView>

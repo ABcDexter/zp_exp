@@ -69,6 +69,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ActivityNewRide" />
+        <activity android:name=".ActivityInProgress" />
+        <activity android:name=".MapsReachUser" />
+        <activity android:name=".MapsActivity2" />
 
         <service android:name=".UtilityPollingService" />
     </application>

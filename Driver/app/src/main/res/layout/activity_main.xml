@@ -43,6 +43,7 @@
             android:hint="ENTER MOBILE"
             android:inputType="phone"
             android:padding="5dp"
+            android:maxLength="10"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="@color/txtColor"
@@ -73,6 +74,7 @@
             android:hint="ENTER OTP TO VERIFY"
             android:inputType="phone"
             android:padding="5dp"
+            android:maxLength="6"
             android:textAlignment="center"
             android:textColor="@color/txtColor"
             android:textSize="23sp" />

@@ -122,79 +122,72 @@
 
             </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/ln"
+            <TextView
+                android:id="@+id/pick_hub"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_below="@+id/image_zbee_below"
                 android:layout_marginTop="50dp"
                 android:background="@drawable/rect_box_outline"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:gravity="center"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="pick POINT"
+                android:textAllCaps="true"
+                android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/pick_hub"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:text="pick POINT"
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pick_hub"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp"
+                android:src="@drawable/ic_arrow_downward" />
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_arrow_forward" />
-
-                <TextView
-                    android:id="@+id/drop_hub"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:text="DROP POINT"
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/drop_hub"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@+id/ln"
+                android:layout_below="@id/pick_hub"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/rect_box_outline"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:gravity="center"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="DROP POINT"
+                android:textAllCaps="true"
+                android:textSize="20sp" />
+            <!-- <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="40dp"
+                 android:layout_below="@+id/ln"
+                 android:layout_marginTop="30dp"
+                 android:background="@drawable/rect_box_outline"
+                 android:orientation="horizontal"
+                 android:weightSum="2">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:gravity="center|start"
-                    android:text="Vehicle :"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
+                 <TextView
+                     android:layout_width="0dp"
+                     android:layout_height="40dp"
+                     android:layout_weight="1"
+                     android:gravity="center|start"
+                     android:text="Vehicle :"
+                     android:textAlignment="center"
+                     android:textAllCaps="true"
+                     android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/vehicle_chosen"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:gravity="center|start"
-                    android:text="1"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
-            </LinearLayout>
-
+                 <TextView
+                     android:id="@+id/vehicle_chosen"
+                     android:layout_width="0dp"
+                     android:layout_height="40dp"
+                     android:layout_weight="1"
+                     android:gravity="center|start"
+                     android:text="1"
+                     android:textAlignment="center"
+                     android:textAllCaps="true"
+                     android:textSize="20sp" />
+             </LinearLayout>
+ -->
 
             <ImageButton
                 android:id="@+id/confirm_rent_book"

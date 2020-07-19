@@ -1,5 +1,6 @@
 package com.client.deliver;
 
+import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -25,6 +27,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
@@ -41,8 +44,11 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 public class ActivityDeliverHome extends ActivityDrawer implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     TextView pickAddress, dropAddress;
@@ -70,6 +76,12 @@ public class ActivityDeliverHome extends ActivityDrawer implements View.OnClickL
     public static final String PICK_NAME = "com.client.ride.PickName";
     public static final String DROP_NAME = "com.client.ride.DropName";
     Vibrator vibrator;
+
+    ViewPager viewPager;
+    Adapter adapterSlider;
+    List<Model> models;
+    Integer[] colors = null;
+    ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
     FusedLocationProviderClient mFusedLocationClient;
     int PERMISSION_ALL = 1;
@@ -189,6 +201,18 @@ public class ActivityDeliverHome extends ActivityDrawer implements View.OnClickL
         adapterNoRiders.setDropDownViewResource(R.layout.spinner_item_blue);
         size.setAdapter(adapterNoRiders);
         size.setOnItemSelectedListener(this);
+
+        models = new ArrayList<>();
+        models.add(new Model(R.drawable.delivery_man, "Your safety is very important to us. We promote contactless delivery"));
+        models.add(new Model(R.drawable.logistics, "This is not express delivery. Please do not request delivery for perishable items."));
+        models.add(new Model(R.drawable.no_shopping, "No Purchases will be done by our partners."));
+        models.add(new Model(R.drawable.packed_parcel, "Please keep the items ready before the partner arrives for pickup."));
+
+        adapterSlider = new Adapter(models, this);
+
+        viewPager = findViewById(R.id.viewPager);
+        viewPager.setAdapter(adapterSlider);
+        viewPager.setPadding(30, 0, 30, 0);
 
     }
 

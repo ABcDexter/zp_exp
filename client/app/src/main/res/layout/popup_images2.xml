@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rect_box_outline"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txt_head"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="NO OF RIDERS"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="#fff"
+        android:textAllCaps="true"
+        android:background="#605D5D"/>
+    <!--<TextView
+        android:id="@+id/info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="dfghjklp[ouytfghjklpoiuytfcbjkl;oiuyfdxvn,"
+        android:textAllCaps="false"
+        android:textColor="@color/txtColor"
+        android:textSize="18sp" />-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rect_orange"
+        android:id="@+id/per_1"
+        android:layout_below="@+id/txt_head">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:id="@+id/txt1"
+            android:text="sdfghjk"
+            android:textColor="#fff"
+            android:textAllCaps="true"
+            android:layout_marginStart="60dp"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/person"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="60dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/img1"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rect_orange"
+        android:id="@+id/per_2"
+        android:layout_below="@+id/per_1">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:id="@+id/txt2"
+            android:text="sdfghjk"
+            android:textColor="#fff"
+            android:textAllCaps="true"
+            android:layout_marginStart="60dp"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/two_person"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="60dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/img2"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rect_orange"
+        android:id="@+id/per_3"
+        android:layout_below="@+id/per_2">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="sdfghjk"
+            android:id="@+id/txt3"
+            android:textColor="#fff"
+            android:textAllCaps="true"
+            android:background="#605D5D"/>
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

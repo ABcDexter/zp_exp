@@ -1,19 +1,23 @@
 package com.client;
 
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,11 +49,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class ActivityWelcome extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "ActivityWelcome";
-    ImageView zippe_iv, zippe_iv_below;
+    ImageView zippe_iv, zippe_iv_below, scooty_up, scooty_down;
     public static final String BUSS = "Buss";
     public static final String BUSS_FLAG = "com.client.ride.BussFlag";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
@@ -105,27 +108,64 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         }
         zippe_iv = findViewById(R.id.iv_zippee);
         zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
+        scooty_up = findViewById(R.id.scooty_up);
+        scooty_down = findViewById(R.id.scooty_down);
         //checkStatus();
-        moveIt();
+        moveZbee();
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityWelcome.this);
         getLastLocation();
         checkStatus();
+        myDialog = new Dialog(this);
+
     }
 
     public static ActivityWelcome getInstance() {
         return instance;
     }
 
-    private void moveIt() {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zippe_iv_below, "translationX", 1500, 0f);
-        objectAnimator.setDuration(1600);
+    private void moveZbee() {
+        scooty_up.setVisibility(View.GONE);
+        scooty_down.setVisibility(View.GONE);
+        zippe_iv_below.setVisibility(View.VISIBLE);
+        zippe_iv.setVisibility(View.VISIBLE);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zippe_iv_below, "translationX", 1800, 0f);
+        objectAnimator.setDuration(1700);
         objectAnimator.start();
-        objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        /*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*/
 
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zippe_iv, "translationX", 0f, 1500);
         objectAnimator1.setDuration(1700);
         objectAnimator1.start();
-        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
+        /*objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                moveScooty();
+            }
+        }, 1600);
+    }
+
+    private void moveScooty() {
+        scooty_up.setVisibility(View.VISIBLE);
+        scooty_down.setVisibility(View.VISIBLE);
+        zippe_iv_below.setVisibility(View.GONE);
+        zippe_iv.setVisibility(View.GONE);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scooty_down, "translationX", 1800, 0f);
+        objectAnimator.setDuration(1700);
+        objectAnimator.start();
+        /*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*/
+
+        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(scooty_up, "translationX", 0f, 1500);
+        objectAnimator1.setDuration(1700);
+        objectAnimator1.start();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                moveZbee();
+            }
+        }, 1600);
+        /* objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
     }
 
     public void sendLocation() {
@@ -162,6 +202,50 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                 e.printStackTrace();
             }
         }, a::onFailure);
+    }
+
+    Dialog myDialog;
+    TextView dialog_txt;
+
+    private void ShowPopup(int id) {
+
+        myDialog.setContentView(R.layout.popup_color);
+        dialog_txt = myDialog.findViewById(R.id.info_text);
+        LinearLayout ln = myDialog.findViewById(R.id.layout_btn);
+        if (id == 1) {
+            dialog_txt.setText("No ride available currently.\nNotify me when available.");
+        }
+        if (id == 2) {
+            dialog_txt.setText("Drivers are available.");
+        }
+        if (id == 3) {
+            dialog_txt.setText("We are sorry ! Your Ride was cancelled due to unavoidable circumstances. Please try again.");
+        }
+        if (id == 4) {
+            dialog_txt.setText("Your RIDE request has timed out. Please try again.");
+        }
+        if (id == 5) {
+            dialog_txt.setText("We were unable to complete your ride. Any inconvenience deeply regretted.");
+        }
+        if (id == 6) {
+            dialog_txt.setText("Ride canceled by you.");
+        }
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+        myDialog.setCanceledOnTouchOutside(true);
+    }
+    private void ShowPopup1(int id) {
+
+        myDialog.setContentView(R.layout.popup_new_request);
+        dialog_txt = myDialog.findViewById(R.id.info_text);
+
+        if (id == 2) {
+            dialog_txt.setText("Drivers are available.");
+        }
+
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+        myDialog.setCanceledOnTouchOutside(true);
     }
 
     public void getLastLocation() {
@@ -240,15 +324,6 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (rtype.equals("0")) {
                         if (status.equals("RQ")) {
-                        /*Snackbar snackbar = Snackbar
-                                .make(scrollView, "WAITING FOR DRIVER", Snackbar.LENGTH_INDEFINITE)
-                                .setAction("CANCEL", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        cancelRequest();
-
-                                    }
-                                });*/
                             Intent rq = new Intent(ActivityWelcome.this, ActivityRideRequest.class);
                             rq.putExtra("st", "RQ");
                             startActivity(rq);
@@ -271,6 +346,13 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                         if (status.equals("FN") || status.equals("TR")) {
                             Intent fntr = new Intent(ActivityWelcome.this, ActivityRideEnded.class);
                             startActivity(fntr);
+                        }
+                        if (status.equals("CN")) {
+                            Log.d(TAG, "trip cancelled");
+                        }
+                        if (status.equals("TO") || status.equals("DN") || status.equals("FL")) {
+
+                            Log.d(TAG, "error");
                         }
                     }
                     if (rtype.equals("1")) {
@@ -325,7 +407,6 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
         // response on hitting auth-trip-get-info API
@@ -346,17 +427,22 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                 editor1.remove(BUSS_FLAG);
                 editor1.apply();
             }
-            if (st.equals("FL")) {
-                Toast.makeText(this, "RIDE FAILED ! \nSORRY FOR THE INCONVENIENCE CAUSED !", Toast.LENGTH_LONG).show();
-            }
-            if (st.equals("CN")) {
-                Toast.makeText(this, "RIDE WAS CANCELED BY YOU !", Toast.LENGTH_LONG).show();
-            }
+
             if (st.equals("DN")) {
-                Toast.makeText(this, "DRIVER DENIED PICKUP", Toast.LENGTH_LONG).show();
+                ShowPopup(3);
+                //Toast.makeText(this, "DRIVER DENIED PICKUP", Toast.LENGTH_LONG).show();
             }
             if (st.equals("TO")) {
-                Toast.makeText(this, "RIDE TIMED OUT ", Toast.LENGTH_LONG).show();
+                ShowPopup(4);
+                //Toast.makeText(this, "RIDE TIMED OUT ", Toast.LENGTH_LONG).show();
+            }
+            if (st.equals("FL")) {
+                ShowPopup(5);
+                //Toast.makeText(this, "RIDE FAILED ! \nSORRY FOR THE INCONVENIENCE CAUSED !", Toast.LENGTH_LONG).show();
+            }
+            if (st.equals("CN")) {
+                ShowPopup(6);
+                //Toast.makeText(this, "RIDE CANCELED BY YOU !", Toast.LENGTH_LONG).show();
             }
             retireTrip();
 
@@ -383,8 +469,6 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             Intent i = new Intent(this, UtilityPollingService.class);
             i.setAction("00");
             startService(i);
-
-
         }
     }
 

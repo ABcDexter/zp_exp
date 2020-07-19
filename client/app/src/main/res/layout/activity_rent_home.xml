@@ -99,7 +99,7 @@
                 android:background="@drawable/btn_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/confirm"
+                android:src="@drawable/letsgo"
                 android:textAllCaps="true" />
         </RelativeLayout>
 

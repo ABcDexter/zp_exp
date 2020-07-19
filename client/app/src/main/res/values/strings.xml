@@ -33,10 +33,15 @@
 
     <string-array name="hours_array">
         <item>NO OF HOURS</item>
-        <item>2 hr / 15 kms</item>
-        <item>4 hr / 40 kms</item>
-        <item>8 hr / 70 kms</item>
-        <item>12 hrs / 90 kms</item>
+        <item>1 hr / Rs. 1 per min </item>
+        <item>2 hr / Rs. 0.9 per min</item>
+        <item>3 hr / Rs. 0.8 per min</item>
+        <item>4 hr / Rs. 0.7 per min</item>
+        <item>5 hr / Rs. 0.6 per min</item>
+        <item>6 hr / Rs. 0.5 per min</item>
+        <item>8 hr / Rs. 0.5 per min</item>
+        <item>12 hr / Rs. 0.5 per min</item>
+        <item>24 hr / Rs. 0.5 per min</item>
     </string-array>
     <string-array name="content_array">
         <item>PACKAGE CONTENTS</item>
@@ -56,10 +61,12 @@
         <item>XXL (175 x 125 x 65 cm)</item>
     </string-array>
     <string-array name="rider_no_array">
-        <item>NO OF RIDERS ?</item>
+        <item>NO OF RIDERS</item>
         <item>1</item>
         <item>2</item>
         <item>(1 CHILD UPTO 5 YRS RIDES FREE)</item>
     </string-array>
     <string name="title_activity_maps2" translatable="false">Map</string>
+    <string name="rupee" translatable="false">&#8377;</string>
+    <string name="qwerty">THIS IS AN APPROXIMATE COST. MAY CHANGE DEPENDING ON RIDE TIME.</string>
 </resources>

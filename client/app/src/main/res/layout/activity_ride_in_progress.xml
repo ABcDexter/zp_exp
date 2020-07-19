@@ -7,7 +7,8 @@
         android:id="@+id/scrollView_ride_OTP"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        android:layout_margin="10dp"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -17,7 +18,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Enjoy your ride\nwith"
@@ -25,134 +26,171 @@
                 android:textAllCaps="true"
                 android:textSize="23sp" />
 
-            <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_account_box" />
-
-            <TextView
-                android:id="@+id/driver_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Mr. RAM KUMAR"
-                android:textAllCaps="true"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/driver_phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:drawableStart="@drawable/ic_phone"
-                android:text="+91 7060743705"
-                android:textAllCaps="true"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/v_no"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="UK 04 B2632"
-                android:textAllCaps="true"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/otp_ride"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Ride OTP 2056"
-                android:textAllCaps="true"
-                android:textSize="18sp" />
-
-            <include layout="@layout/zippe_logo" />
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/rect_box_outline"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <TextView
-                    android:id="@+id/pick_place"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="pick POINT"
-                    android:textAllCaps="true"
-                    android:textSize="23sp" />
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/layoutZippeee"
+                android:layout_marginBottom="60dp">
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:id="@+id/photo_driver"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_arrow_forward" />
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_account_box" />
 
                 <TextView
-                    android:id="@+id/drop_place"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="DROP POINT"
+                    android:id="@+id/driver_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_toEndOf="@id/photo_driver"
+                    android:text="Mr. RAM KUMAR"
                     android:textAllCaps="true"
-                    android:textSize="23sp" />
+                    android:textSize="18sp" />
 
-            </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/driver_name"
+                    android:layout_toEndOf="@id/photo_driver"
+                    android:id="@+id/rl_p"
+                    android:layout_marginTop="5dp">
 
-            <TextView
-                android:id="@+id/share_ride_details"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/rect_box_outline"
-                android:drawableEnd="@drawable/ic_share"
-                android:gravity="center|start"
-                android:padding="5dp"
-                android:text="share ride details"
-                android:textAllCaps="true"
-                android:textSize="23sp" />
+                    <TextView
+                        android:id="@+id/driver_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="20dp"
+                        android:text="+91 7060743705"
+                        android:textAllCaps="true"
+                        android:textSize="18sp" />
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/phone"
+                        android:layout_toEndOf="@id/driver_phone"
+                        android:layout_marginStart="10dp"
+                        android:layout_centerVertical="true"/>
+                </RelativeLayout>
 
-            <TextView
-                android:id="@+id/emergency"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/rect_box_outline"
-                android:drawableEnd="@drawable/ic_emergency_call"
-                android:gravity="center|start"
-                android:padding="5dp"
-                android:text="emergency support"
-                android:textAllCaps="true"
-                android:textSize="23sp" />
+                <TextView
+                    android:id="@+id/txtv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_p"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@id/photo_driver"
+                    android:text="VEH. NO."
+                    android:textAllCaps="true"
+                    android:textSize="18sp"
+                    android:layout_marginTop="5dp"/>
+
+                <TextView
+                    android:id="@+id/v_no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_p"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@id/txtv"
+                    android:text="UK 04 B2632"
+                    android:textAllCaps="true"
+                    android:textSize="18sp"
+                    android:layout_marginTop="5dp"/>
+
+                <TextView
+                    android:id="@+id/txto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/v_no"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@id/photo_driver"
+                    android:text="Ride OTP"
+                    android:textAllCaps="true"
+                    android:textSize="18sp"
+                    android:layout_marginTop="5dp"/>
+
+                <TextView
+                    android:id="@+id/otp_ride"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/v_no"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@id/txto"
+                    android:text="Ride OTP 2056"
+                    android:textAllCaps="true"
+                    android:textSize="18sp"
+                    android:layout_marginTop="5dp"/>
+
+            </RelativeLayout>
+
+            <include
+                android:id="@+id/layoutZippeee"
+                layout="@layout/zippe_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_centerInParent="true" />
 
             <TextView
                 android:id="@+id/track_your_location"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="15dp"
+                android:layout_below="@id/layoutZippeee"
+                android:layout_marginTop="40dp"
                 android:background="@drawable/rect_box_outline"
                 android:drawableEnd="@drawable/ic_location"
                 android:gravity="center|start"
-                android:padding="5dp"
-                android:text="track your location"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="track your ride"
                 android:textAllCaps="true"
-                android:textSize="23sp"/>
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/emergency"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/track_your_location"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rect_box_outline"
+                android:drawableEnd="@drawable/ic_emergency_call"
+                android:gravity="center|start"
+                android:paddingStart="10dp"
+                android:paddingEnd="12dp"
+                android:text="emergency support"
+                android:textAllCaps="true"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/share_ride_details"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/emergency"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rect_box_outline"
+                android:drawableEnd="@drawable/ic_share"
+                android:gravity="center|start"
+                android:paddingStart="10dp"
+                android:paddingEnd="12dp"
+                android:text="share ride details"
+                android:textAllCaps="true"
+                android:textSize="20sp" />
 
             <ImageButton
                 android:id="@+id/end_ride"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_below="@id/share_ride_details"
                 android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/btn_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"

@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
@@ -32,16 +33,14 @@ import java.util.Map;
 
 public class ActivityRideAccepted extends ActivityDrawer implements View.OnClickListener {
     public static final String TRIP_DETAILS = "com.driver.tripDetails";
-    public static final String AUTH_COOKIE = "com.driver.cookie";
-    public static final String COOKIE = "Cookie";
+    public static final String AUTH_KEY = "Auth";
+    public static final String AUTH_COOKIE = "com.agent.cookie";
     private static final String TAG = "ActivityRideAccepted";
     public static final String TRIP_NAME = "TripName";
-    public static final String TRIP_SRC = "TripSrc";
-    public static final String TRIP_DST = "TripDst";
     public static final String TRIP_PHN = "TripPhn";
-    TextView origin, destination, phone, name;
+    TextView phone, name;
     EditText OTP;
-    Button startRide, cancleRideBtn;
+    Button startRide, cancleRideBtn,viewMap;
     String authCookie;
     Dialog myDialog;
     private static ActivityRideAccepted instance;
@@ -54,7 +53,9 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         if (id == 1) {
-            Log.d(TAG, "response ");
+           Intent home = new Intent(ActivityRideAccepted.this, ActivityHome.class);
+           startActivity(home);
+
         }
         if (id == 3) {
             //return to the home activity
@@ -81,13 +82,32 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
             } else if (active.equals("true")) {
                 String tid = response.getString("tid");
                 String st = response.getString("st");
+                if (st.equals("AS")) {
+                        String srcLat = response.getString("srclat");
+                        String srcLng = response.getString("srclng");
+                        String dstLat = response.getString("dstlat");
+                        String dstLng = response.getString("dstlng");
+                        String phn = response.getString("uphone");
+                        String nm = response.getString("uname");
+
+                    SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+                    sp_cookie.edit().putString(TRIP_NAME, nm).apply();
+                    sp_cookie.edit().putString(TRIP_PHN, phn).apply();
+
+                    phone.setText(phn);
+                    name.setText(nm);
+
+                }
                 if (st.equals("ST")) {
                     //go on to the next activity
-                    Intent inProgress = new Intent(ActivityRideAccepted.this, ActivityRideInProgress.class);
+                    Intent inProgress = new Intent(ActivityRideAccepted.this, ActivityHome.class);
                     startActivity(inProgress);
                     finish();
                 }
             }
+            /*Intent inProgress = new Intent(ActivityRideAccepted.this, ActivityHome.class);
+            startActivity(inProgress);
+            finish();*/
             //start polling for driver-ride-get-status
             Intent i = new Intent(this, UtilityPollingService.class);
             i.setAction("4");
@@ -114,18 +134,16 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
         instance = this;
         //retrieve data stored locally
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
-        authCookie = cookie.getString(COOKIE, "");
+        authCookie = cookie.getString(AUTH_KEY, "");
         SharedPreferences sharedPreferences = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
-        String picLoc = sharedPreferences.getString(TRIP_SRC, "");
-        String dropLoc = sharedPreferences.getString(TRIP_DST, "");
         String strPhone = sharedPreferences.getString(TRIP_PHN, "");
         String strName = sharedPreferences.getString(TRIP_NAME, "");
 
         //initializing variables
-        origin = findViewById(R.id.userSrc);
-        destination = findViewById(R.id.userDst);
+
         phone = findViewById(R.id.userPhone);
         name = findViewById(R.id.userName);
+        viewMap = findViewById(R.id.viewMap);
         OTP = findViewById(R.id.otp);
         cancleRideBtn = findViewById(R.id.btn_cancelRide);
         startRide = findViewById(R.id.btn_startRide);
@@ -133,12 +151,13 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
 
         phone.setText(strPhone);
         name.setText(strName);
-        destination.setText(dropLoc);
-        origin.setText(picLoc);
+        /*destination.setText(dropLoc);
+        origin.setText(picLoc);*/
 
         phone.setOnClickListener(this);
         cancleRideBtn.setOnClickListener(this);
         startRide.setOnClickListener(this);
+        viewMap.setOnClickListener(this);
         rideStatus();//method to check the status of current ride
 
     }
@@ -234,6 +253,9 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
                     }
                     startActivity(callIntent);
                 }
+                break;
+            case R.id.viewMap:
+                Toast.makeText(this, "Map Opens Here", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

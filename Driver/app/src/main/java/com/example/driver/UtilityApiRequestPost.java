@@ -15,7 +15,8 @@ import java.util.function.Consumer;
 
 public class UtilityApiRequestPost {
 
-    private static String BASE_URL = "https://api.villagetech.in:8090/";
+    //private static String BASE_URL = "https://api.villagetech.in:8090/";
+    private static String BASE_URL = "https://api.villageapps.in:8090/";
 
     //static void doPost(String URL, JSONObject parameters)
     public static void doPOST(Activity a, String apiName, JSONObject params, int initialTimeout, int retries, final Consumer<JSONObject> onSuccess, final Consumer<VolleyError> onFailure) {

@@ -61,10 +61,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public static final String DRIVER_STATUS = "DriverStatus";
     public static final String STATUS = "Status";
 
-    String stringBuss, bussFlag;
-    SharedPreferences prefBuss;
-    public static final String BUSS = "Buss";
-    public static final String BUSS_FLAG = "com.client.ride.BussFlag";
     Vibrator vibrator;
     TextView notify;
     private static ActivityHome instance;
@@ -98,8 +94,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
-        prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
-        stringBuss = prefBuss.getString(BUSS, ""); // retrieve buss value stored locally and assign it to String stringBuss
         SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
         aadhar = sharedPreferences.getString(AADHAR, "");// retrieve aadhaar value stored locally and assign it to String aadhar
 
@@ -116,13 +110,13 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         newOrder = findViewById(R.id.new_order);
         inProgress = findViewById(R.id.order_in_progress);
         completedOrder = findViewById(R.id.completed_orders);
-        totalEarnings = findViewById(R.id.earnings);
+        //totalEarnings = findViewById(R.id.earnings);
         notify = findViewById(R.id.notifNo);
 
         newOrder.setOnClickListener(this);
         inProgress.setOnClickListener(this);
         completedOrder.setOnClickListener(this);
-        totalEarnings.setOnClickListener(this);
+        //totalEarnings.setOnClickListener(this);
 
         myDialog = new Dialog(this);
 
@@ -282,17 +276,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.reject_request:
-                bussFlag = "BussMeNot";
-                prefBuss.edit().putString(BUSS, bussFlag).apply();
-                Log.d(TAG, "User not interested in a buss");
-                //showAlertDialog();
-                myDialog.dismiss();
                 break;
             case R.id.accept_request:
-                bussFlag = "BussMe";
-                prefBuss.edit().putString(BUSS, bussFlag).apply();
-                myDialog.dismiss();
-                //driverRideCheck();
                 break;
             case R.id.new_order:
                 Intent newOrderIntent = new Intent(ActivityHome.this, ActivityNewOrders.class);
@@ -306,10 +291,10 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                 Intent completedOrderIntent = new Intent(ActivityHome.this, ActivityCompletedOrders.class);
                 startActivity(completedOrderIntent);
                 break;*/
-            case R.id.earnings:
+            /*case R.id.earnings:
                 Intent earningsIntent = new Intent(ActivityHome.this, ActivityTotalEarnings.class);
                 startActivity(earningsIntent);
-                break;
+                break;*/
         }
     }
 
@@ -474,8 +459,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     }
 
                 } else if (active.equals("false")) {
-                    String status = response.getString("st");
                     try {
+                        String status = response.getString("st");
                         String did = response.getString("did");
                         delvyGetInfo();
 

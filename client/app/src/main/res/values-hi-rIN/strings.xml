@@ -5,4 +5,5 @@
     <string name="Close">close</string>
     <string name="hi">HI!\u0020 </string>
     <string name="disclaimer">By confirming I accept this order does not contain illegal / restricted items (as per Indian Court of Law). ZIPP-E partner may ask to verify the contents of the package and could choose to refuse the task if the items are not verified.</string>
+    <string name="qwerty">THIS IS AN APPROXIMATE COST. MAY CHANGE DEPENDING ON RIDE TIME.</string>
 </resources>

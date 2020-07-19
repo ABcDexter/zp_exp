@@ -3,7 +3,7 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
-    android:background="@android:color/transparent">
+    android:background="#1EB4D4">
 
     <ImageView
         android:id="@+id/toolbar_back"

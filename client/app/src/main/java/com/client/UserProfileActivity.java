@@ -29,7 +29,7 @@ import java.util.Locale;
 
 public class UserProfileActivity extends ActivityDrawer {
 
-    private static final String TAG = UserProfileActivity.class.getName();
+    private static final String TAG = "UserProfileActivity";
     private Spinner spLanguage;
     Locale myLocale;
     String currentLanguage = "en", currentLang;

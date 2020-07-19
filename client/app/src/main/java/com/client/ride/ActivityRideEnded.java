@@ -1,8 +1,11 @@
 package com.client.ride;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -17,7 +20,7 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
-import com.client.ActivityWelcome;
+import com.client.ActivityRateZippe;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
@@ -33,11 +36,12 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
     public static final String AUTH_KEY = "AuthKey";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    TextView upiPayment, cost;
+    TextView upiPayment, cost, cash;
     final int UPI_PAYMENT = 0;
     String stringAuthCookie;
     private static final String TAG = "ActivityRideEnded";
     private static ActivityRideEnded instance;
+    Dialog myDialog;
 
     Button done;
     ActivityRideEnded a = ActivityRideEnded.this;
@@ -58,12 +62,15 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
 
         upiPayment = findViewById(R.id.upi);
         cost = findViewById(R.id.payment);
-
+        cash = findViewById(R.id.cash);
+        cash.setOnClickListener(this);
         getPrice();
         upiPayment.setOnClickListener(this);
         checkStatus();
         done = findViewById(R.id.confirm_btn);
         done.setOnClickListener(this);
+        myDialog = new Dialog(this);
+
     }
 
     public static ActivityRideEnded getInstance() {
@@ -95,14 +102,14 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         //response on hitting auth-trip-get-info API
         if (id == 1) {
             String actualPrice = response.getString("price");
-            cost.setText(actualPrice);
+            cost.setText("₹ " + actualPrice);
         }
         //response on hitting user-trip-get-status API
         if (id == 2) {
             try {
                 String active = response.getString("active");
                 if (active.equals("false")) {
-                    Intent home = new Intent(ActivityRideEnded.this, ActivityWelcome.class);
+                    Intent home = new Intent(ActivityRideEnded.this, ActivityRateZippe.class);
                     startActivity(home);
                     finish();
 
@@ -114,7 +121,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
                         startService(intent);
                     }
                 } else {
-                    Intent homePage = new Intent(ActivityRideEnded.this, ActivityWelcome.class);
+                    Intent homePage = new Intent(ActivityRideEnded.this, ActivityRateZippe.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
@@ -147,8 +154,23 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
 
             case R.id.confirm_btn:
                 paymentMade();
+                break;
+            case R.id.cash:
+                ShowPopup();
+                break;
 
         }
+    }
+
+    private void ShowPopup() {
+
+        myDialog.setContentView(R.layout.popup_new_request);
+        TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
+
+        infoText.setText("Please pay cash " + cost.getText().toString());
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+        myDialog.setCanceledOnTouchOutside(true);
     }
 
     private void paymentMade() {
@@ -260,6 +282,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
                 Toast.makeText(ActivityRideEnded.this, "Transaction successful.", Toast.LENGTH_LONG).show();
+                paymentMade();
                 Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(ActivityRideEnded.this, "Payment cancelled by user.", Toast.LENGTH_LONG).show();

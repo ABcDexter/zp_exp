@@ -10,13 +10,14 @@
         android:layout_margin="10dp"
         android:fillViewport="true">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp">
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
 
-            <TextView
+            <!--<TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -24,7 +25,14 @@
                 android:text="YOU have selected \nDeliver"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:textSize="20sp" />
+                android:textSize="20sp" />-->
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:clipToPadding="false"
+                android:foregroundGravity="center"
+                android:overScrollMode="never" />
 
             <Spinner
                 android:id="@+id/content_type"
@@ -94,9 +102,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/next_deliver"
+                android:layout_marginBottom="10dp"
                 android:text="@string/disclaimer"
-                android:textSize="12sp"
-                android:layout_marginBottom="10dp"/>
+                android:textSize="12sp" />
 
             <ImageButton
                 android:id="@+id/next_deliver"
@@ -109,7 +117,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/next"
                 android:textAllCaps="true" />
-        </RelativeLayout>
+        </LinearLayout>
 
     </ScrollView>
 </androidx.drawerlayout.widget.DrawerLayout>

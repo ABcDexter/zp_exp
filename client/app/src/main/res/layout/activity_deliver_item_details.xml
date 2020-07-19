@@ -30,6 +30,7 @@
                 android:textSize="20sp"
                 android:inputType="textMultiLine"
                 android:maxLines="2"
+                android:textColor="@color/txtColor"
                 android:maxLength="150"
                 android:scrollHorizontally="false"
                 android:layout_above="@id/ln_1" />

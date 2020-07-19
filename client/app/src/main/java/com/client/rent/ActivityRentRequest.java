@@ -25,7 +25,6 @@ import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
-import com.client.ride.ActivityRideHome;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
@@ -56,7 +55,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     public static final String PAYMENT_MODE = "PaymentMode";
 
     ImageButton next, speedInfo, PaymentInfo;
-    TextView vSpeed, advPay, pickPlaceInfo, dropPlaceInfo, vChosen;
+    TextView vSpeed, advPay, pickPlaceInfo, dropPlaceInfo;
     ScrollView scrollView;
     String stringAuth;
     ImageView zbeeR, zbeeL;
@@ -110,12 +109,13 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                         Intent ride = new Intent(ActivityRentRequest.this, ActivityWelcome.class);
                         startActivity(ride);
                         finish();
-                    } else*/ if (rtype.equals("1")) {
+                    } else*/
+                    if (rtype.equals("1")) {
                         SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                         sp_cookie.edit().putString(TRIP_ID, tid).apply();
                         if (status.equals("RQ")) {
                             Snackbar snackbar = Snackbar
-                                    .make(scrollView, "CHECKING VEHICLE STATUS...", Snackbar.LENGTH_INDEFINITE)
+                                    .make(scrollView, "CHECKING VEHICLE Availability...", Snackbar.LENGTH_INDEFINITE)
                                     .setAction("CANCEL", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -196,7 +196,6 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         advPay = findViewById(R.id.adv_payment);
         pickPlaceInfo = findViewById(R.id.pick_hub);
         dropPlaceInfo = findViewById(R.id.drop_hub);
-        vChosen = findViewById(R.id.vehicle_chosen);
         scrollView = findViewById(R.id.scrollView_rent_request);
         next = findViewById(R.id.confirm_rent_book);
         zbeeR = findViewById(R.id.image_zbee);
@@ -206,15 +205,16 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
         a = ActivityRentRequest.this;
 
-        int pickSpace = (stringPick.contains(" ")) ? stringPick.indexOf(" ") : stringPick.length() - 1;
+        /*int pickSpace = (stringPick.contains(" ")) ? stringPick.indexOf(" ") : stringPick.length() - 1;
         String pickCutName = stringPick.substring(0, pickSpace);
-        pickPlaceInfo.setText(pickCutName);
+        pickPlaceInfo.setText(pickCutName);*/
+        /*String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 6));
+        pickPlaceInfo.setText(upToNCharacters);*/
+        pickPlaceInfo.setText(stringPick);
 
-        int dropSpace = (stringDrop.contains(" ")) ? stringDrop.indexOf(" ") : stringDrop.length() - 1;
-        String dropCutName = stringDrop.substring(0, dropSpace);
-        dropPlaceInfo.setText(dropCutName);
-
-        vChosen.setText(vTypeInfo);
+        /*int dropSpace = (stringDrop.contains(" ")) ? stringDrop.indexOf(" ") : stringDrop.length() - 1;
+        String dropCutName = stringDrop.substring(0, dropSpace);*/
+        dropPlaceInfo.setText(stringDrop);
 
         next.setOnClickListener(this);
         PaymentInfo.setOnClickListener(this);
@@ -268,9 +268,9 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
-        LinearLayout ll = myDialog.findViewById(R.id.layout_btn);
+        /*LinearLayout ll = myDialog.findViewById(R.id.layout_btn);
         TextView reject = myDialog.findViewById(R.id.reject_request);
-        TextView accept = myDialog.findViewById(R.id.accept_request);
+        TextView accept = myDialog.findViewById(R.id.accept_request);*/
         if (id == 1) {
             infoText.setText("THIS IS THE MAXIMUM SPEED OF THE VEHICLE. YOU CANNOT GO OVER THE LIMIT. IT IS FOR YOUR OWN SAFETY");
         }

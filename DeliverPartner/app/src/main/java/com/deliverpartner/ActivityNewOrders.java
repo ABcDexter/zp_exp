@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -62,6 +63,23 @@ public class ActivityNewOrders extends ActivityDrawer implements View.OnClickLis
         } else {
             relativeLayout.setVisibility(View.VISIBLE);
         }
+        //getStatus();
+    }
+
+    public void getStatus() {
+        String auth = strAuth;
+        params.put("auth", auth);
+        JSONObject parameters = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME agent-delivery-get-status");
+        UtilityApiRequestPost.doPOST(a, "agent-delivery-get-status", parameters, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 2);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
     }
 
     public void delvyAccept() {
@@ -103,6 +121,29 @@ public class ActivityNewOrders extends ActivityDrawer implements View.OnClickLis
             Intent home = new Intent(ActivityNewOrders.this, ActivityHome.class);
             startActivity(home);
             finish();
+        }
+        if (id == 2) {
+            try {
+                String active = response.getString("active");
+                if (active.equals("false")) {
+                    try {
+                        String status = response.getString("st");
+                        String did = response.getString("did");
+                        Intent home = new Intent(ActivityNewOrders.this, ActivityHome.class);
+                        startActivity(home);
+                        finish();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        info.setText("NO new delivery");
+                        relativeLayout.setVisibility(View.GONE);
+                    }
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
         }
     }
 

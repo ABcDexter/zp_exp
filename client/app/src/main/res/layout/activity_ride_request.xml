@@ -23,7 +23,13 @@
                 android:layout_height="40dp"
                 android:layout_above="@+id/layoutZippeee"
                 android:src="@drawable/zbee_right" />
-
+            <ImageView
+                android:id="@+id/scooty_up"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_above="@id/layoutZippeee"
+                android:src="@drawable/scooty_left"
+                android:visibility="gone"/>
             <include
                 android:id="@+id/layoutZippeee"
                 layout="@layout/zippe_logo"
@@ -38,38 +44,52 @@
                 android:layout_below="@+id/layoutZippeee"
                 android:src="@drawable/zbee_left"
                 android:visibility="invisible" />
-
-            <RelativeLayout
+            <ImageView
+                android:id="@+id/scooty_down"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/layoutZippeee"
+                android:src="@drawable/scooty_right"
+                android:visibility="gone"/>
+            <LinearLayout
                 android:id="@+id/rl_cost"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_above="@id/image_zbee"
                 android:layout_marginBottom="50dp"
                 android:background="@drawable/rect_box_outline"
-                android:padding="5dp">
+                android:padding="5dp"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/txtc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:gravity="center|start"
-                    android:text="cost estimate :"
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/cost_estimate"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_toEndOf="@+id/txtc"
-                    android:drawableStart="@drawable/ic_rupee"
-                    android:gravity="center|start"
-                    android:text="XX"
+                    android:text="cost estimate"
                     android:textAlignment="center"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:layout_weight="1" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center|start"
+                    android:text=":"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textSize="20sp"
+                    android:layout_marginStart="25dp"/>
+                <TextView
+                    android:id="@+id/cost_estimate"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center|start"
+                    android:text="xxx"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textSize="20sp"
+                    android:layout_weight="1"  />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/infoCost"
@@ -80,63 +100,72 @@
                     android:layout_marginEnd="5dp"
                     android:background="@drawable/ic_info" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_above="@id/rl_cost"
                 android:layout_marginBottom="30dp"
                 android:background="@drawable/rect_box_outline"
-                android:padding="5dp">
+                android:padding="5dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
                 <TextView
                     android:id="@+id/txtt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:gravity="center|start"
-                    android:text="approx ride mins :"
+                    android:text="RIDE TIME"
+                    android:textAlignment="center"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center|start"
+                    android:text=":"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textSize="20sp"
+                    android:layout_marginStart="25dp"/>
 
                 <TextView
                     android:id="@+id/time_estimate"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_toEndOf="@+id/txtt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:gravity="center|start"
                     android:text="XX"
                     android:textAlignment="center"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:layout_weight="1"/>
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/infoTime"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
                     android:layout_marginEnd="5dp"
                     android:background="@drawable/ic_info" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/ln"
+            <RelativeLayout
+                android:id="@+id/rl_pick"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/image_zbee_below"
                 android:layout_marginTop="50dp"
-                android:background="@drawable/rect_box_outline"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:background="@drawable/rect_box_outline">
 
                 <TextView
                     android:id="@+id/pick_info"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_weight="1"
+                    android:layout_toStartOf="@+id/infoPick"
                     android:gravity="center"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
@@ -144,17 +173,39 @@
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoPick"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_arrow_forward" />
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/ic_info" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rl_pick"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_arrow_downward" />
+
+
+            <RelativeLayout
+                android:id="@+id/rl_drop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/arrow"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_box_outline">
 
                 <TextView
                     android:id="@+id/drop_info"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_weight="1"
+                    android:layout_toStartOf="@id/infoDrop"
                     android:gravity="center"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
@@ -162,38 +213,16 @@
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
-            </LinearLayout>
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoDrop"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/ic_info" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_below="@+id/ln"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/rect_box_outline"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:gravity="center|start"
-                    android:text="riders : "
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/ridersInfo"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:gravity="center|start"
-                    android:text="1"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
-            </LinearLayout>
+            </RelativeLayout>
 
 
             <ImageButton

@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
-                android:text="your rent has ended\nwith"
+                android:text="your rental time is over\nwith"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="23sp" />
@@ -69,42 +69,18 @@
             </RelativeLayout>
 
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/upi"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="15dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/rect_box_outline"
-                    android:drawableEnd="@drawable/ic_rupee"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="cash"
-                    android:textAllCaps="true"
-                    android:textSize="23sp" />
-
-
-                <TextView
-                    android:id="@+id/upi"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/rect_box_outline"
-                    android:drawableEnd="@drawable/ic_bhim"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="upi"
-                    android:textAllCaps="true"
-                    android:textSize="23sp" />
-
-            </LinearLayout>
+                android:background="@drawable/rect_box_outline"
+                android:drawableEnd="@drawable/ic_bhim"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="make payment using upi"
+                android:textAllCaps="true"
+                android:textSize="23sp" />
 
             <Button
                 android:id="@+id/confirm_btn"

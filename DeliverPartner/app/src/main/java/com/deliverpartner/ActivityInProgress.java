@@ -154,6 +154,12 @@ public class ActivityInProgress extends AppCompatActivity implements View.OnClic
                         delvyPref.edit().putString(SRC_PHN, phn).apply();
                         delvyPref.edit().putString(SRC_LAT, lat).apply();
                         delvyPref.edit().putString(SRC_LNG, lng).apply();
+                        /*Intent home = new Intent(ActivityInProgress.this, ActivityHome.class);
+                        startActivity(home);
+                        finish();*/
+                    }
+
+                    if (status.equals("ST")){
                         Intent home = new Intent(ActivityInProgress.this, ActivityHome.class);
                         startActivity(home);
                         finish();

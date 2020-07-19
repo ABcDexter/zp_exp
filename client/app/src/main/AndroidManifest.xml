@@ -41,6 +41,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ride.ActivityRideHistory"></activity>
+        <activity android:name=".rent.ActivityNearestHub" />
+        <activity android:name=".rent.ActivityUpdateInfo" />
         <activity android:name=".deliver.ActivityDeliverThankYou" />
         <activity android:name=".deliver.ActivityDeliverItemDetails" />
         <activity android:name=".deliver.ActivityDeliverConfirm" />
@@ -73,12 +76,16 @@
         <activity android:name=".ActivityTripSummary" />
         <activity android:name=".ride.ActivityRideRequest" />
         <activity android:name=".ActivityProfileReview" />
-        <activity android:name=".ActivityRateZippe" />
+        <activity android:name=".ActivityRateZippe" >
+
+        </activity>
         <activity android:name=".ride.ActivityRideEnded" />
-        <activity android:name=".ride.ActivityRideInProgress" />
+        <activity android:name=".ride.ActivityRideInProgress">
+
+        </activity>
         <activity android:name=".ride.ActivityRideOTP" />
         <activity android:name=".HubList" />
-        <activity android:name=".rent.ActivityHoldVehicle"/>
+        <activity android:name=".rent.ActivityHoldVehicle" />
 
         <meta-data
             android:name="preloaded_fonts"

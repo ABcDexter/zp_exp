@@ -135,8 +135,8 @@ public class ActivityDeliverFillAddress extends AppCompatActivity implements Vie
         EditText editText = fView.findViewById(R.id.place_autocomplete_search_input);
         editText.setTextColor(Color.WHITE);*/
         EditText etPlace = (EditText) autocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
-        etPlace.setHint("place.getAddress()");
-        etPlace.setTextColor(Color.RED);
+        etPlace.setHint("FLAT, BUILDING NAME");
+        etPlace.setTextColor(Color.WHITE);
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
 

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -35,6 +36,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
     public static final String NAME_KEY = "NameKey";
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
 
+    public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +100,7 @@ nv.setNavigationItemSelectedListener(this);
 
     }
 
-    private void setNavigationDrawer() {
+    /*private void setNavigationDrawer() {
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -111,6 +113,17 @@ nv.setNavigationItemSelectedListener(this);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
 
+                        SharedPreferences preferences = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.clear();
+                        editor.apply();
+
+                        SharedPreferences authPref = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editorAuth = authPref.edit();
+                        editorAuth.clear();
+                        editorAuth.apply();
+                        break;
+
                     case R.id.nav_profile:
                         Intent lang = new Intent(ActivityDrawer.this, UserProfileActivity.class);
                         startActivity(lang);
@@ -120,12 +133,18 @@ nv.setNavigationItemSelectedListener(this);
                         home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(home);
                         break;
-                    case R.id.nav_delivery_orders:
+                    */
+    /*case R.id.nav_delivery_orders:
+                        Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryOrders.class);
+                        deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(deliveryOrders);
+                        break;*//*
+
+                    case R.id.nav_ride_history:
                         Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryOrders.class);
                         deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(deliveryOrders);
                         break;
-
                     default:
                         return true;
                 }
@@ -133,7 +152,7 @@ nv.setNavigationItemSelectedListener(this);
             }
         });
     }
-
+*/
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -173,7 +192,8 @@ nv.setNavigationItemSelectedListener(this);
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
+        startActivity(new Intent(ActivityDrawer.this, ActivityWelcome.class));
+        finish();
     }
 
     @Override
@@ -196,10 +216,11 @@ nv.setNavigationItemSelectedListener(this);
                 home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(home);
                 break;
-            case R.id.nav_delivery_orders:
-                Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryOrders.class);
+            case R.id.nav_ride_history:
+                /*Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryOrders.class);
                 deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(deliveryOrders);
+                startActivity(deliveryOrders);*/
+                Toast.makeText(this, "COMING SOON", Toast.LENGTH_LONG).show();
                 break;
 
             default:
