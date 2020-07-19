@@ -25,7 +25,7 @@ from .models import Place, Trip, Progress, Location, Route
 
 from .utils import HttpJSONError, ZPException, DummyException, HttpJSONResponse, HttpRecordsResponse, log
 from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renameTmpImgFiles, getOTP, doOCRback
-from .utils import getRoutePrice, getTripPrice, getRentPrice, getRidePrice
+from .utils import getRoutePrice, getTripPrice, getRentPrice, getRidePrice, getRiPrice
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from .utils import headers
 
