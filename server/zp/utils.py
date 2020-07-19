@@ -493,7 +493,7 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
         price *= 0.9
 
     return {
-        'price': float('%.0f' % price),
+        'price': float('%.2f' % price),
         'time' : float('%.0f' % ((fDist/fAvgSpeed)/60)), #converted seconds to minutes
         'dist': float('%.0f' % (fDist / 1000)),
         'speed': float('%.0f' % (fAvgSpeed * 3.6 ))
@@ -526,7 +526,7 @@ def getRentPrice(idSrc, idDst, iVType, iPayMode, iTimeHrs=0):
         price += sum(lstPrice[1:6])
 
     return {
-        'price': float('%.0f' % price),
+        'price': float('%.2f' % price),
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
         'dist': float('%.0f' % (fDist / 1000)),
         'speed': float('%.0f' % (fAvgSpeed * 3.6))
@@ -821,7 +821,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
         price *= 0.9
 
     return {
-        'price': float('%.0f' % price),
+        'price': float('%.2f' % price),
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
         'dist': float('%.0f' % (fDist / 1000)),
         'speed': float('%.0f' % (fAvgSpeed * 3.6))

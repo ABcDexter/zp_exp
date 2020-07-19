@@ -149,6 +149,7 @@ def driverRideCheck(_dct, driver):
 
     # Get the first requested trip from drivers place id
     qsTrip = Trip.objects.filter(st='RQ').order_by('-rtime') #10 km radius
+    #TODO give closest ride first, but how?
     ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'srclat': qsTrip[0].srclat, 'srclng': qsTrip[0].srclng }
     return HttpJSONResponse(ret)
 
@@ -436,6 +437,8 @@ def userIsDriverAv(dct, user):
         auth : auth of user
         srclat : latitude
         srclng : longitude
+        vtype: for drivers of that particualr vehicle
+
     '''
 
     srcCoOrds = ['%s,%s' % (dct['srclat'], dct['srclng'])]
@@ -448,40 +451,46 @@ def userIsDriverAv(dct, user):
     drivers = []
     # print("$$$$$$$$$$$$$$$$: " ,qsDrivers, qsDrivers[0]['an'])
     for driver in qsDrivers:
+        #print(driver)
+        vehicles = list(Vehicle.objects.filter(vtype=dct['vtype']).values('an','vtype'))
+        #print(vehicles)
+        gaddi = [veh['an'] for veh in vehicles]
+        print(gaddi)
+        print(int(driver['van']), int(driver['van']) in gaddi)
+        if int(driver['van']) in gaddi:
+            qsLocs = Location.objects.filter(an=driver['an']).values()
+            # print('##############',qsLocs)
+            arrLocs = [recPlace for recPlace in qsDrivers]
+            dstCoOrds = ['%s,%s' % (recPlace['lat'], recPlace['lng']) for recPlace in qsLocs]
+            # print('################',dstCoOrds)
 
-        qsLocs = Location.objects.filter(an=driver['an']).values()
-        # print('##############',qsLocs)
-        arrLocs = [recPlace for recPlace in qsDrivers]
-        dstCoOrds = ['%s,%s' % (recPlace['lat'], recPlace['lng']) for recPlace in qsLocs]
-        # print('################',dstCoOrds)
+            print(srcCoOrds, dstCoOrds)
 
-        print(srcCoOrds, dstCoOrds)
+            import googlemaps
+            gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
+            dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
+            # log(dctDist)
+            # print('############# DST : ', dctDist)
+            if dctDist['status'] != 'OK':
+                raise ZPException(501, 'Error fetching distance matrix')
 
-        import googlemaps
-        gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
-        dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
-        # log(dctDist)
-        # print('############# DST : ', dctDist)
-        if dctDist['status'] != 'OK':
-            raise ZPException(501, 'Error fetching distance matrix')
+            dctElem = dctDist['rows'][0]['elements'][0]
+            nDist = 0
+            nTime = 0
+            if dctElem['status'] == 'OK':
+                nDist = dctElem['distance']['value']
+                nTime = int(dctElem['duration']['value']) // 60
+            elif dctElem['status'] == 'NOT_FOUND':
+                nDist, nTime = 0,0
+            elif dctElem['status'] == 'ZERO_RESULTS':
+                nDist, nTime = 0,0
 
-        dctElem = dctDist['rows'][0]['elements'][0]
-        nDist = 0
-        nTime = 0
-        if dctElem['status'] == 'OK':
-            nDist = dctElem['distance']['value']
-            nTime = int(dctElem['duration']['value']) // 60
-        elif dctElem['status'] == 'NOT_FOUND':
-            nDist, nTime = 0,0
-        elif dctElem['status'] == 'ZERO_RESULTS':
-            nDist, nTime = 0,0
-
-        print('distance: ', nDist)
-        print('time: ', nTime)
-        if nTime or nDist:
-            if nDist < 5000 : # kms radius
-                print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
-                drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
+            print('distance: ', nDist)
+            print('time: ', nTime)
+            if nTime or nDist:
+                if nDist < 10_000 : # 10 kms
+                    print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
+                    drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
 
     ret.update({'count': len(drivers)}) # {'drivers': drivers})
     return HttpJSONResponse(ret)
