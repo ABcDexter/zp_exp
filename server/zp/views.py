@@ -348,7 +348,7 @@ def userTripGetStatus(_dct, user):
                 #diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
                 #remHrs = diffTime - trip.hrs
                 #price = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, remHrs)
-                price = getRentPrice(trip)
+                price = getTripPrice(trip)
 
             ret.update(price)
     else:
