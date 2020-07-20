@@ -316,7 +316,7 @@ def userTripGetStatus(_dct, user):
 
 
             if trip.rtype == '1':
-                ret['price'] = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)['price']
+                ret['price'] = getRentPrice(trip.hrs)['price']
                 currTime = datetime.now(timezone.utc)
                 #print(currTime, trip.atime)
                 diffTime = (currTime - trip.atime).total_seconds() // 60  # minutes
@@ -347,7 +347,8 @@ def userTripGetStatus(_dct, user):
                 currTime = datetime.now(timezone.utc)
                 diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
                 remHrs = diffTime - trip.hrs 
-                price = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, remHrs)
+                #price = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, remHrs)
+                price = getRentPrice(trip)
 
             ret.update(price)
     else:
