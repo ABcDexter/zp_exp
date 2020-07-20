@@ -138,7 +138,7 @@ def authTimeRemaining(_dct, entity, trip):
     currTime = datetime.now(timezone.utc)
     diffTime = (currTime - trip.stime).total_seconds() // 60  # minutes
     remHrs = trip.hrs * 60 - diffTime
-    ret['time'] = remHrs
+    ret['time'] = int(remHrs)
     return HttpJSONResponse(ret)
 
 
