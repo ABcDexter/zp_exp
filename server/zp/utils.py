@@ -493,7 +493,7 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
         price *= 0.9
 
     return {
-        'price': round(float('%.2f' % price),2),
+        'price': str(round(float('%.2f' % price),0)+'0', #make this round off to nearest decimal
         'time' : float('%.0f' % ((fDist/fAvgSpeed)/60)), #converted seconds to minutes
         'dist': float('%.0f' % (fDist / 1000)),
         'speed': float('%.0f' % (fAvgSpeed * 3.6 ))
@@ -526,7 +526,7 @@ def getRentPrice(idSrc, idDst, iVType, iPayMode, iTimeHrs=0):
         price += sum(lstPrice[1:6])
 
     return {
-        'price': round(float('%.2f' % price),2),
+        'price': str(round(float('%.2f' % price),0)+'0',
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
         'dist': float('%.0f' % (fDist / 1000)),
         'speed': float('%.0f' % (fAvgSpeed * 3.6))
@@ -821,7 +821,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
         price *= 0.9
 
     return {
-        'price': round(float('%.2f' % price),2),
+        'price': str(round(float('%.2f' % price),0)+'0',
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
         'dist': float('%.0f' % (fDist / 1000)),
         'speed': float('%.0f' % (fAvgSpeed * 3.6))
@@ -950,7 +950,7 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
         price *= 0.9
 
     return {
-        'price': round(float('%.2f' % price),2),
+        'price': str(round(float('%.2f' % price),0)+'0',
         'time': int('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
         'dist': float('%.2f' % (fDist / 1000)),
         'speed': float('%.2f' % (fAvgSpeed * 3.6))
