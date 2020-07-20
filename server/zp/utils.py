@@ -525,9 +525,9 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     12:00:00 pm	₹ 30.00 total	₹ 450.00
     '''
     iMaxSpeed = 25  # capped to 25 kmph
-    if iTimeActualMins == 0:
-        iTimeActualMins = iTimeHrs * 60 #hrs converted to mins
-
+    iTimeActualMins = int(iTimeHrs) * 60 if iTimeActualMins == 0 else int(iTimeActualMins)
+    #hrs converted to mins
+	
     lstPrice = [ 0, 100, 90, 80, 70, 60, 50, 50, 50, 50, 50, 50, 50, 50]  # paise per minute for every 1 hour
     idx      = [ 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13 ] # for every 1 hour, after 12th hour maybe charge extra
     idxNext  = [ 0, 70, 130, 190, 250, 310, 370, 430, 490, 550, 610, 670, 730 ] # for what should be the limit for next hours charges
