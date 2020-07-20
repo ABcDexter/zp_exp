@@ -95,6 +95,7 @@ def userRentGetSup(_dct, _user, trip):
     '''
     Returns aadhaar, name and phone of hub supervisor
     '''
+    #TODO send drop hub supervisor
     sup = Supervisor.objects.filter(an=trip.dan)[0]
     ret = {'pn': sup.pn, 'name': sup.name}
     return HttpJSONResponse(ret)

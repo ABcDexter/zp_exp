@@ -333,8 +333,8 @@ def userTripGetStatus(_dct, user):
             if trip.rtype == '1':
                 currTime = datetime.now(timezone.utc)
                 diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
-                remHrs = trip.hrs*60 - diffTime
-                ret['time'] = remHrs
+                remTimeMins = trip.hrs*60 - diffTime
+                ret['time'] = int(remTimeMins)
                 
             # TODO In case of rental make the rental send the number of minutes remaining .
 
@@ -342,11 +342,11 @@ def userTripGetStatus(_dct, user):
         if trip.st in Trip.PAYABLE:
             if trip.rtype == '0':
                 price = getTripPrice(trip)
-            else : #renta
-                vehicle = Vehicle.objects.filter(an=trip.van)[0]
-                currTime = datetime.now(timezone.utc)
-                diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
-                remHrs = diffTime - trip.hrs 
+            else : #rental
+                #vehicle = Vehicle.objects.filter(an=trip.van)[0]
+                #currTime = datetime.now(timezone.utc)
+                #diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
+                #remHrs = diffTime - trip.hrs
                 #price = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, remHrs)
                 price = getRentPrice(trip)
 
