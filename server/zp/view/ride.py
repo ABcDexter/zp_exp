@@ -583,7 +583,8 @@ def userRideRequest(dct, user):#, _trip):
 
     # we are using only Zbees and Cash only payments right now.
     #ret = getRoutePrice(trip.srcid, trip.dstid, Vehicle.ZBEE, Trip.CASH)
-    ret = getRiPrice(trip) #getRoutePrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
+    # getRoutePrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
+    ret = getRiPrice(trip)
     ret['tid'] = trip.id
 
     return HttpJSONResponse(ret)

@@ -421,7 +421,8 @@ def supRentEnd(dct, _sup):
     recVehicle = Vehicle.objects.filter(an=trip.van)[0]
 
     # Calculate price
-    dctPrice = getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
+    # dctPrice = getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
+    dctPrice = getRentPrice(trip.hrs, (trip.etime - trip.stime).seconds //60 ) 
     return HttpJSONResponse(dctPrice)
 
 

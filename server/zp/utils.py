@@ -500,37 +500,50 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
     }
 
 
-def getRentPrice(idSrc, idDst, iVType, iPayMode, iTimeHrs=0):
+def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     '''
+    #old was depending of the time as well, but other factors
+    #def getRentPrice(idSrc, idDst, iVType, iPayMode, iTimeHrs=0):
+
     Determines the price given the rent details and time taken
-    time is etime - stime
+    TIME is the only factor :
+
+    iTimeHrs is the trip.hrs, min is 1 hour
+    iTimeActualMins is etime - stime
+
+    1:00:00 am	₹ 60.00
+    2:00:00 am	₹ 54.00	total	₹ 114.00
+    3:00:00 am	₹ 48.00	total	₹ 162.00
+    4:00:00 am	₹ 42.00	total	₹ 204.00
+    5:00:00 am	₹ 36.00	total	₹ 240.00
+    6:00:00 am	₹ 30.00	total	₹ 270.00
+    7:00:00 am	₹ 30.00	total	₹ 300.00
+    8:00:00 am	₹ 30.00	total	₹ 330.00
+    9:00:00 am	₹ 30.00	total	₹ 360.00
+    10:00:00 am	₹ 30.00	total	₹ 390.00
+    11:00:00 am	₹ 30.00	total	₹ 420.00
+    12:00:00 pm	₹ 30.00 total	₹ 450.00
     '''
-    # Get this route distance
-    recRoute = Route.getRoute(idSrc, idDst)
-    fDist = recRoute.dist
-    iVType, iPayMode, iTimeHrs = int(iVType), int(iPayMode), int(iTimeHrs)  # need explicit type conversion to int
+    iMaxSpeed = 25  # capped to 25 kmph
+    if iTimeActualMins == 0:
+        iTimeActualMins = iTimeHrs * 60 #hrs converted to mins
 
-    iTimeSec = iTimeHrs * 3600
-    fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
+    lstPrice = [ 0, 100, 90, 80, 70, 60, 50, 50, 50, 50, 50, 50, 50, 50]  # paise per minute for every 1 hour
+    idx      = [ 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13 ] # for every 1 hour, after 12th hour maybe charge extra
+    idxNext  = [ 0, 70, 130, 190, 250, 310, 370, 430, 490, 550, 610, 670, 730 ] # for what should be the limit for next hours charges
+    lstActualPrice = [0, 60.00, 54.00, 48.00, 42.00, 36.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00 ] #finalPrice
 
-    lstPrice = [90, 80, 70, 60, 50, 50, 50] #for every 2 hours
-
-    price = lstPrice[0]
-    if iTimeHrs == 4 :
-        price += lstPrice[1]
-    elif iTimeHrs == 8:
-        price += sum(lstPrice[1:3])
-    elif iTimeHrs == 12:
-        price += sum(lstPrice[1:4])
-    else : #24c hours
-        price += sum(lstPrice[1:6])
-
+    try:
+        idxMul = next(x[0] for x in enumerate(idxNext) if x[1] >= iTimeActualMins) #Find the correct value from the
+    except StopIteration:
+        idxMul = 12
+    price = sum(lstActualPrice[1:idxMul+1])
+    #price = lstPrice[iTimeHrs] * iTimeSec
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
-        'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
-        'dist': float('%.0f' % (fDist / 1000)),
-        'speed': float('%.0f' % (fAvgSpeed * 3.6))
+        'speed': float('%.0f' % (iMaxSpeed)) #(fAvgSpeed * 3.6))
     }
+
 
 def getTripPrice(trip):
     '''
@@ -540,7 +553,8 @@ def getTripPrice(trip):
     if trip.rtype == '0':
         return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
     else :
-        return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
+        #return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
+        return getRentPrice(trip.hrs, (trip.etime - trip.stime).seconds//60) #convert seconds to minutes
 
 def getDelPrice(deli):
     '''
