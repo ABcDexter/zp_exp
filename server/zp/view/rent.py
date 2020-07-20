@@ -80,7 +80,8 @@ def userRentGetVehicle(_dct, entity, trip):
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)[0]
     ret = {'vno': vehicle.regn, 'otp': str(getOTP(trip.uan, trip.dan, trip.atime)),
-           'price': getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)}
+           #'price': getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)}
+           'price': getRentPrice(trip.hrs)}
     return HttpJSONResponse(ret)
 
 
@@ -155,11 +156,11 @@ def userTimeUpdate(dct, _user, trip):
     Returns price
     '''
     newDropHub =  dct['newdrophub'] if 'newdrophub' in dct else  trip.dstid
-    extraHrs = dct['updatedtime']
-
+    extraHrs = int(dct['updatedtime'])
+    #TODO look at this
     recVehicle = Vehicle.objects.filter(an=trip.van)[0]
-    oldPrice = getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
-    newPrice = getRentPrice(trip.srcid, newDropHub, recVehicle.vtype, trip.pmode, extraHrs)
+    oldPrice = getRentPrice(trip.hrs) #= getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
+    newPrice = getRentPrice(extraHrs) #= getRentPrice(trip.srcid, newDropHub, recVehicle.vtype, trip.pmode, extraHrs)
     print(oldPrice, newPrice)
     ret = {}
     ret['price'] = max(20, newPrice['price'] - oldPrice['price'])
@@ -202,8 +203,8 @@ def userVehicleHold(_dct, user, trip):
     Returns aadhaar, name and phone of current assigned vehicle,
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    #TODO rework on pricing on a per minutes basis.
-    ret = {'price': getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)['price'] + 100}
+    #ret = {'price': getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)['price'] + 100}
+    ret = {'price': getRentPrice(trip.hrs)['price'] + 100}
     return HttpJSONResponse(ret)
 
 

@@ -139,6 +139,7 @@ class Vehicle(models.Model):
     hrs(float): Total active hours
     pid(id):    Place where this vehicle is parked
     vtype : vehicle type (e-cycle/ escooty/ ebike/ zbee)
+    mark(float): float field has the rating, binary system same as that of the user/driver
 
     Note:
         hrs represents total time when the vehicle was mobile, not total trip time - this data has to come from the vehicle IoT data
@@ -166,7 +167,7 @@ class Vehicle(models.Model):
     TIME_FARE = [0.1, 0.2, 0.3, 0.5]
 
     FAILED = -2
-    AVAILABLE = -1;
+    AVAILABLE = -1
 
     an = models.BigIntegerField(primary_key=True)
     tid = models.BigIntegerField(db_index=True, default=-1)
@@ -177,6 +178,7 @@ class Vehicle(models.Model):
     hrs = models.FloatField(null=True)
     pid = models.IntegerField(null=True, db_index=True)
     vtype = models.IntegerField(null=True, default=3)
+    mark = models.FloatField(db_index=True, default=0.0)
 
     class Meta:
         db_table = 'vehicle'
