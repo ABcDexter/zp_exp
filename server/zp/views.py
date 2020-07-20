@@ -424,7 +424,7 @@ def userTripRequest(dct, user, _trip):
     # we are using only Zbees and Cash only payments right now.
     #ret = getRoutePrice(trip.srcid, trip.dstid, Vehicle.ZBEE, Trip.CASH)
     #ret = getRentPrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
-    ret = getRentPrice(dct['hrs']))
+    ret = getRentPrice(dct['hrs'])
     ret['tid'] = trip.id
 
     return HttpJSONResponse(ret)
