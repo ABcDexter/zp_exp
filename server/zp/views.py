@@ -533,7 +533,7 @@ def authTripGetInfo(dct, entity):
     # get the trip and append pricing info if complete
     ret = {'st': trip.st, 'rtype':trip.rtype}
     if trip.st in ['FN', 'TR', 'PD']:
-        ret.update(getTripPrice(trip))
+        ret.update(getTripPrice(trip)-getRentPrice(trip.hrs))
     return HttpJSONResponse(ret)
 
 
