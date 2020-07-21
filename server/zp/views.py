@@ -352,7 +352,7 @@ def userTripGetStatus(_dct, user):
                 #remHrs = diffTime - trip.hrs
                 #price = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, remHrs)
                 price = getTripPrice(trip)
-
+                #TODO get the remaining amount for the rental
             ret.update(price)
     else:
         ret = {'active': False}

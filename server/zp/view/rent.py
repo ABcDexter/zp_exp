@@ -545,11 +545,13 @@ def supRentRetire(dct, _sup):
     '''
     Resets vehicles active trip
     '''
-    # made the driver AV and reset the tid to -1
+    # set the tips state to PD
     # Reset the vehicle tid to available
     qsTrip = Trip.objects.filter(id=dct['tid'])
     if len(qsTrip):
         trip = qsTrip[0]
+        trip.st = 'PD'
+        trip.save()
 
     vehicle = Vehicle.objects.filter(tid=trip.id)[0]
     vehicle.tid = Vehicle.AVAILABLE
