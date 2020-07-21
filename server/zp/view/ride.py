@@ -557,19 +557,15 @@ def userRideRequest(dct, user):#, _trip):
     trip.uan = user.an
     trip.srclat, trip.srclng = dct['srclat'], dct['srclng']
     trip.dstlat, trip.dstlng = dct['dstlat'], dct['dstlng']
-    trip.srcid = user.pid
+    trip.srcid = user.pid  #TODO automate these two things
     trip.dstid = user.pid+1
     if dct['rtype'] == '0': # Ride
         trip.npas = dct['npas']
-        trip.srcid, trip.dstid = 0,0
-    else: # Rent
-        trip.npas = 2
-        iHrs = 2 #int(dct['hrs'])
-        trip.hrs = iHrs
-        # this is again updated then the vehicle is actually assigned.
+        # trip.srcid, trip.dstid = 0,0
 
     trip.rtype = dct['rtype']
     trip.pmode = dct['pmode']
+    trip.rvtype = dct['vtype']
     trip.rtime = datetime.now(timezone.utc)
     trip.save()
 

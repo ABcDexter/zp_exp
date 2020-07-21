@@ -209,6 +209,70 @@ def userVehicleHold(_dct, user, trip):
     return HttpJSONResponse(ret)
 
 
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkTripStatus(['INACTIVE'])
+def userRentRequest(dct, user): #, _trip):
+    '''
+    User calls this to request a rental
+
+    HTTP args:
+        auth
+     Rent :
+        srcid - id of the selected start place
+        dstid - id of the selected destination
+        rtype - rent or ride
+        vtype - vehicle type
+        hrs   - number of hours
+        pmode - 1 from the user
+    '''
+    print("Rental Request param : ", dct)
+
+    # Even though we can use IDs directly, look them up in the DB to prevent bogus IDs
+    placeSrc = Place.objects.filter(id=dct['srcid'])[0]
+    placeDst = Place.objects.filter(id=dct['dstid'])[0]
+
+    trip = Trip()
+    trip.uan = user.an
+    trip.srcid = placeSrc.id
+    trip.dstid = placeDst.id
+
+    #trip.npas = 0 #assuming 4 passengers for rental
+    iHrs = int(dct['hrs'])
+    trip.hrs = iHrs
+
+    trip.rtype = dct['rtype']
+    trip.pmode = dct['pmode']
+    trip.rvtype = dct['vtype']
+    trip.rtime = datetime.now(timezone.utc)
+    trip.srclat = placeSrc.lat
+    trip.srclng = placeSrc.lng
+    trip.dstlat = placeDst.lat
+    trip.dstlng = placeDst.lng
+
+    trip.save()
+
+    progress = Progress()
+    progress.tid = trip.id
+    progress.pct = 0
+    progress.save()
+
+    user.tid = trip.id
+    user.save()
+
+    # we are using only Zbees and Cash only payments right now.
+    #ret = getRoutePrice(trip.srcid, trip.dstid, Vehicle.ZBEE, Trip.CASH)
+    #ret = getRentPrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
+    ret = getRentPrice(dct['hrs'])
+    ret['tid'] = trip.id
+
+    return HttpJSONResponse(ret)
+
+
 
 # ============================================================================
 # Supervisor views
@@ -230,11 +294,11 @@ def supRentCheck(_dct, sup):
     # Get available vehicles at this hub, if none return empty
     qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
     if len(qsVehicles) == 0:
-        return HttpJSONResponse({}) # making it easy for Volley to handle JSONArray and JSONObject
+        return HttpJSONResponse({'count':0}) # making it easy for Volley to handle JSONArray and JSONObject
 
     # Get the first requested trip from Supervisors place id
     qsTrip = Trip.objects.filter(srcid=sup.pid, st__in=['RQ', 'AS', 'TR', 'FN']).order_by('-rtime')
-    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'st': qsTrip[0].st}
+    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'st': qsTrip[0].st, 'rvtype': qsTrip[0].rvtype}
     return HttpJSONResponse(ret)
 
 

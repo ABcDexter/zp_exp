@@ -202,6 +202,7 @@ class Trip(models.Model):
     rtype ; rent or ride
     pmode : payment mode (cash / upi)
     hrs : for RENTAL, number of hours
+    rvtype(int): requested vehicle type
     '''
     STATUSES = [
         ('RQ', 'requested'),  # requested from the user via app
@@ -248,9 +249,10 @@ class Trip(models.Model):
     dstlat = models.FloatField(db_index=True, default=-1)
     dstlng = models.FloatField(db_index=True, default=-1)
 
+    rvtype = models.IntegerField(null=True, default=3) #default is ZBEE
     npas  = models.IntegerField(db_index=True, default=0)
-    rtype = models.CharField(db_index=True, choices=TYPES,  max_length=10, default=2)
-    pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)
+    rtype = models.CharField(db_index=True, choices=TYPES,  max_length=10, default=2) #default 2, dummy value
+    pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1) #default UPI
     hrs = models.IntegerField(db_index=True, default=0)
 
     class Meta:
