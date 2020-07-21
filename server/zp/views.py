@@ -276,10 +276,6 @@ def userTripGetStatus(_dct, user):
 
         # For assigned trip send OTP, and 'an' of vehicle and driver
         if trip.st == 'AS':
-            ret['otp'] = getOTP(trip.uan, trip.dan, trip.atime)
-            #print(trip.van)
-            vehicle = Vehicle.objects.filter(an=trip.van)[0]
-            ret['vno'] = vehicle.regn
 
             #print(ret['vno'])
             locDriver = Location.objects.filter(an=trip.dan)[0]
@@ -315,16 +311,22 @@ def userTripGetStatus(_dct, user):
             #print('time: ', nTime)
 
 
-            if trip.rtype == '1':
+            if trip.rtype == '1': #RENTAL
                 ret['price'] = getRentPrice(trip.hrs)['price']
                 currTime = datetime.now(timezone.utc)
                 #print(currTime, trip.atime)
                 diffTime = (currTime - trip.atime).total_seconds() // 60  # minutes
                 #print(currTime - trip.atime, (currTime - trip.atime).total_seconds())
                 ret['time'] = 30-diffTime
+                ret['otp'] = getOTP(trip.uan, trip.dan, trip.atime)
+
             else:
                 ret['time'] = nTime
-            
+                ret['otp'] = getOTP(trip.uan, trip.dan, trip.atime)
+                # print(trip.van)
+                vehicle = Vehicle.objects.filter(an=trip.van)[0]
+                ret['vno'] = vehicle.regn  # moves to ST state
+
         # For started trips send trip progress percent
         # this is redundant, this functionality is provided by authProgressPercent()
         if trip.st == 'ST':
@@ -335,7 +337,8 @@ def userTripGetStatus(_dct, user):
                 diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
                 remTimeMins = trip.hrs*60 - diffTime
                 ret['time'] = int(remTimeMins)
-                
+                ret['vno'] = vehicle.regn  # moves to ST state
+
             # TODO In case of rental make the rental send the number of minutes remaining .
 
         # For ended trips that need payment send the price data

@@ -272,6 +272,25 @@ def userRentRequest(dct, user): #, _trip):
 
     return HttpJSONResponse(ret)
 
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkTripStatus(['AS'])
+def userRentPay(dct, _user, trip):
+    '''
+    User calls this to request a rental
+
+    HTTP args:
+        auth
+    '''
+    print("Rental payment confirm param : ", dct)
+    trip.st = 'AS'
+    #trip.
+    trip.save()
+    return HttpJSONResponse({})
 
 
 # ============================================================================
@@ -326,7 +345,7 @@ def supRentVehicleAssign(dct, sup):
             raise ZPException(400, 'Vehicle already in trip')
 
         # Make the trip
-        trip.st = 'AS'
+        trip.st = 'AS' #TODO make this 'as' state
         trip.dan = sup.an #dan is sup.an
         trip.van = vehicle.an
         trip.atime = datetime.now(timezone.utc)
@@ -506,9 +525,9 @@ def supPaymentConfirm(dct, _sup):
     qsTrip = Trip.objects.filter(id=dct['tid'])
     if len(qsTrip):
         trip = qsTrip[0]
-
-    trip.st = 'PD'
-    trip.save()
+    #TODO upgrade this to admin method
+    #trip.st = 'PD'
+    #trip.save()
 
     # Get the vehicle
     #vehicle = Vehicle.objects.filter(an=trip.van)[0]
