@@ -107,21 +107,42 @@ def userRentGetSup(_dct, _user, trip):
 @extractParams
 @checkAuth()
 @checkTripStatus('ST')
-def userRentEnd(_dct, _user, trip):
+def userRentEnd(_dct, user, _trip):
     '''
-    Returns aadhaar, name and phone of hub supervisor
+    return nearest hub name, their distance from current location and lat,lng
     '''
-    trip.st = 'FN'
-    trip.etime = datetime.now(timezone.utc)
-    trip.save()
+    qsPrevHubs = Place.objects.raw(
+        'SELECT pl.id, pl.pn, pl.lat, pl.lng FROM place pl WHERE pl.id < (SELECT plcurr.id FROM place plcurr WHERE plcurr.id= %s) ORDER BY pl.id DESC LIMIT 2;',
+        [user.pid])
+    qsCurrHub = Place.objects.raw('SELECT plcurr.id, plcurr.pn, plcurr.lat, plcurr.lng FROM place plcurr WHERE plcurr.id=%s', [user.pid])
 
-    # Get the vehicle
-    # recVehicle = Vehicle.objects.filter(an=trip.van)[0]
-    #
-    # Calculate price
-    # dctPrice = getRentPrice(trip.srcid, trip.dstid,recVehicle.vtype,trip.pmode, trip.etime-trip.stime).seconds//3600)
-    return HttpJSONResponse({}) # dctPrice)
+    qsNextHubs = Place.objects.raw(
+        'SELECT pl.id, pl.pn, pl.lat, pl.lng FROM place pl WHERE pl.id > (SELECT plcurr.id FROM place plcurr WHERE plcurr.id= %s ) ORDER BY pl.id ASC LIMIT 2;',
+        [user.pid])
 
+    #print(len(qsCurrHub), 'CURR HUB : ', qsCurrHub)
+    #print(len(qsPrevHubs), 'PREV HUBS : ', qsPrevHubs)
+    #print(len(qsNextHubs), 'NEXT HUBS : ', qsNextHubs)
+    #print('###############################')
+    #recRoute = Route.getRoute(idSrc, idDst)
+    prev1Dst = 1024
+    currDst = 512
+    next1Dst = 2048
+    if not len(qsPrevHubs):
+        prev1, prev1lat, prev1lng, prev1dst = '', '', '', ''
+    else:
+        prev1, prev1lat, prev1lng, prev1dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat,  qsPrevHubs[0].lng,  prev1Dst
+
+    if not len(qsNextHubs):
+        next1, next1lat, next1lng, next1dst = '', '', '', ''
+    else:
+        next1, next1lat, next1lng, next1dst = qsNextHubs[0].pn, qsNextHubs[0].lat,  qsNextHubs[0].lng,  next1Dst
+
+    return HttpJSONResponse({'prev1': prev1, 'prev1lat': prev1lat, 'prev1lng': prev1, 'prev1dst': prev1dst,
+                            'curr': qsCurrHub[0].pn, 'currlat': qsCurrHub[0].lat, 'currlng': qsCurrHub[0].lng,
+                             'currdst': currDst,
+                             'next1': next1,  'next1lat': next1lat, 'next1lng': next1lng, 'next1dst': next1Dst
+                             })
 
 
 @makeView()
@@ -503,7 +524,7 @@ def supRentEnd(dct, _sup):
 
     # Calculate price
     # dctPrice = getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
-    dctPrice = getRentPrice(trip.hrs, (trip.etime - trip.stime).seconds //60 ) 
+    dctPrice = getRentPrice(trip.hrs, (trip.etime - trip.stime).seconds //60 ) #TODO updaete this to geive rem amount
     return HttpJSONResponse(dctPrice)
 
 
