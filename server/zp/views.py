@@ -351,7 +351,7 @@ def userTripGetStatus(_dct, user):
                 #diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
                 #remHrs = diffTime - trip.hrs
                 #price = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, remHrs)
-                price = str(int(getTripPrice(trip)['price'])-int(getRentPrice(trip.hrs)['price'])) + '.00'
+                price = str(int(float(getTripPrice(trip)['price'])-float(getRentPrice(trip.hrs)['price']))) + '.00'
                 #TODO get the remaining amount for the rental
             ret['price'] = price
     else:
@@ -533,7 +533,7 @@ def authTripGetInfo(dct, entity):
     # get the trip and append pricing info if complete
     ret = {'st': trip.st, 'rtype':trip.rtype}
     if trip.st in ['FN', 'TR', 'PD']:
-        ret.update({'price': str(int(getTripPrice(trip)['price'])-int(getRentPrice(trip.hrs)['price'])) + '.00'})
+        ret.update({'price': str(int(float(getTripPrice(trip)['price'])-float(getRentPrice(trip.hrs)['price']))) + '.00'})
     return HttpJSONResponse(ret)
 
 
