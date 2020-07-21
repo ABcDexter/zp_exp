@@ -541,7 +541,7 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     #price = lstPrice[iTimeHrs] * iTimeSec
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
-        'speed': float('%.0f' % (iMaxSpeed)) #(fAvgSpeed * 3.6))
+        'speed': round(iMaxSpeed,0) #(fAvgSpeed * 3.6))
     }
 
 

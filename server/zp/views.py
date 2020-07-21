@@ -318,7 +318,6 @@ def userTripGetStatus(_dct, user):
                 diffTime = (currTime - trip.atime).total_seconds() // 60  # minutes
                 #print(currTime - trip.atime, (currTime - trip.atime).total_seconds())
                 ret['time'] = 30-diffTime
-                ret['otp'] = getOTP(trip.uan, trip.dan, trip.atime)
 
             else:
                 ret['time'] = nTime
@@ -333,6 +332,7 @@ def userTripGetStatus(_dct, user):
             #progress = Progress.objects.filter(tid=trip.id)[0]
             #ret['pct'] = progress.pct
             if trip.rtype == '1':
+                vehicle = Vehicle.objects.filter(an=trip.van)[0]
                 currTime = datetime.now(timezone.utc)
                 diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
                 remTimeMins = trip.hrs*60 - diffTime

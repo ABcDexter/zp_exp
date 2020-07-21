@@ -287,10 +287,8 @@ def userRentPay(dct, _user, trip):
         auth
     '''
     print("Rental payment confirm param : ", dct)
-    trip.st = 'AS'
-    #trip.
-    trip.save()
-    return HttpJSONResponse({})
+    return HttpJSONResponse({'otp': getOTP(trip.uan, trip.dan, trip.atime)})
+
 
 
 # ============================================================================
