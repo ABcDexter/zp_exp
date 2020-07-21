@@ -531,7 +531,7 @@ def authTripGetInfo(dct, entity):
         raise ZPException('Invalid trip ID', 400)
 
     # get the trip and append pricing info if complete
-    ret = {'st': trip.st}
+    ret = {'st': trip.st, 'rtype':trip.rtype}
     if trip.st in ['FN', 'TR', 'PD']:
         ret.update(getTripPrice(trip))
     return HttpJSONResponse(ret)
