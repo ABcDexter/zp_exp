@@ -156,15 +156,13 @@ def userTimeUpdate(dct, _user, trip):
 
     Returns price
     '''
-    newDropHub =  dct['newdrophub'] if 'newdrophub' in dct else  trip.dstid
+    # newDropHub =  dct['newdrophub'] if 'newdrophub' in dct else  trip.dstid
     extraHrs = int(dct['updatedtime'])
-    #TODO look at this
-    recVehicle = Vehicle.objects.filter(an=trip.van)[0]
+    # recVehicle = Vehicle.objects.filter(an=trip.van)[0]
     oldPrice = getRentPrice(trip.hrs) #= getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
     newPrice = getRentPrice(extraHrs) #= getRentPrice(trip.srcid, newDropHub, recVehicle.vtype, trip.pmode, extraHrs)
     print(oldPrice, newPrice)
-    ret = {}
-    ret['price'] = max(20, newPrice['price'] - oldPrice['price'])
+    ret = {'price': str(max(20, int(float(newPrice['price']) - float(oldPrice['price'])))) + '.00'}
 
     return HttpJSONResponse(ret)
 
