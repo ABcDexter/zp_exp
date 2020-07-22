@@ -1,6 +1,7 @@
 # imports
 import datetime
 from datetime import datetime, timedelta
+from os import truncate
 
 from django.db import transaction
 from django.utils import timezone
@@ -125,23 +126,38 @@ def userRentEnd(_dct, user, _trip):
     #print(len(qsNextHubs), 'NEXT HUBS : ', qsNextHubs)
     #print('###############################')
     #recRoute = Route.getRoute(idSrc, idDst)
-    prev1Dst = 1024
-    currDst = 512
-    next1Dst = 2048
+    prev0Dst = round( 2048 / 999, 1)
+    prev1Dst = round(1024 / 999,  1)
+    currDst = round( 512 / 999, 1)
+    next0Dst = round( 2048 / 999, 1)
+    next1Dst = round( 4096 / 999, 1)
+
+    close1 = Place()
+    close2 = Place()
+    close3 = Place()
+
     if not len(qsPrevHubs):
-        prev1, prev1lat, prev1lng, prev1dst = '', '', '', ''
-    else:
-        prev1, prev1lat, prev1lng, prev1dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat,  qsPrevHubs[0].lng,  prev1Dst
+        close1.pn, close1.lat, close1.lng, c1Dst = qsCurrHub[0].pn, qsCurrHub[0].lat,  qsCurrHub[0].lng,  currDst
+        close2.pn, close2.lat, close2.lng, c2Dst = qsNextHubs[0].pn, qsNextHubs[0].lat,  qsNextHubs[0].lng, next0Dst
+        close3.pn, close3.lat, close3.lng, c3Dst = qsNextHubs[1].pn, qsNextHubs[1].lat,  qsNextHubs[1].lng, next1Dst
 
-    if not len(qsNextHubs):
-        next1, next1lat, next1lng, next1dst = '', '', '', ''
-    else:
-        next1, next1lat, next1lng, next1dst = qsNextHubs[0].pn, qsNextHubs[0].lat,  qsNextHubs[0].lng,  next1Dst
+    elif not len(qsNextHubs):
+        close1.pn, close1.lat, close1.lng, c1Dst = qsCurrHub[0].pn, qsCurrHub[0].lat, qsCurrHub[0].lng, currDst
+        close2.pn, close2.lat, close2.lng, c2Dst = qsPrevHubs[1].pn, qsPrevHubs[1].lat, qsPrevHubs[1].lng, prev1Dst
+        close3.pn, close3.lat, close3.lng, c3Dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat, qsPrevHubs[0].lng, prev0Dst
 
-    return HttpJSONResponse({'prev1': prev1, 'prev1lat': prev1lat, 'prev1lng': prev1, 'prev1dst': prev1dst,
-                            'curr': qsCurrHub[0].pn, 'currlat': qsCurrHub[0].lat, 'currlng': qsCurrHub[0].lng,
-                             'currdst': currDst,
-                             'next1': next1,  'next1lat': next1lat, 'next1lng': next1lng, 'next1dst': next1Dst
+    else:
+        close1.pn, close1.lat, close1.lng, c1Dst = qsCurrHub[0].pn, qsCurrHub[0].lat, qsCurrHub[0].lng, currDst
+        if prev0Dst >= next0Dst:
+            close2.pn, close2.lat, close2.lng, c2Dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat, qsPrevHubs[0].lng, prev0Dst
+            close3.pn, close3.lat, close3.lng, c3Dst = qsNextHubs[0].pn, qsNextHubs[0].lat,  qsNextHubs[0].lng, next1Dst
+        else:
+            close2.pn, close2.lat, close2.lng, c2Dst = qsNextHubs[0].pn, qsNextHubs[0].lat, qsNextHubs[0].lng, next1Dst
+            close3.pn, close3.lat, close3.lng, c3Dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat, qsPrevHubs[0].lng, prev0Dst
+
+    return HttpJSONResponse({'close1pn': close1.pn, 'close1lat': close1.lat, 'close1lng': close1.lng, 'close1dst': c1Dst,
+                            'close2pn': close2.pn, 'close2lat': close2.lat, 'close2lng': close2.lng, 'close2dst': c2Dst,
+                             'close3pn': close3.pn, 'close3lat': close3.lat, 'close3lng': close3.lng, 'close3dst': c3Dst
                              })
 
 
