@@ -352,7 +352,7 @@ def userTripGetStatus(_dct, user):
                 #remHrs = diffTime - trip.hrs
                 #price = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, remHrs)
                 remPrice = int(float(getTripPrice(trip)['price'])-float(getRentPrice(trip.hrs)['price']))
-                price = str(price) + '.00' if remPrice >=0 else '0.00'
+                price = str(remPrice) + '.00' if remPrice >=0 else '0.00'
 
             ret['price'] = price
     else:
