@@ -27,4 +27,9 @@
         android:icon="@drawable/ic_time"
         android:title="RIDE HISTORY"/>
 
+    <item
+        android:id="@+id/nav_customer_support"
+        android:icon="@drawable/ic_insert_comment"
+        android:title="CUSTOMER SUPPORT"/>
+
 </menu>

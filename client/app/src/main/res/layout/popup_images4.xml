@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="20dp"
-    android:layout_marginEnd="20dp"
+    android:layout_marginStart="21dp"
+    android:layout_marginEnd="21dp"
     android:background="@drawable/rect_box_outline"
     android:orientation="vertical">
 
@@ -14,14 +14,14 @@
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/rect_orange_white"
+        android:background="#605D5D"
         android:gravity="center"
-        android:text="NO OF RIDERS"
+        android:text="VEHICLE TYPES"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="#fff"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"  />
     <!--<TextView
         android:id="@+id/info_text"
         android:layout_width="wrap_content"
@@ -33,24 +33,23 @@
         android:textColor="@color/txtColor"
         android:textSize="18sp" />-->
     <RelativeLayout
-        android:id="@+id/per_1"
+        android:id="@+id/rl_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_head"
-        android:background="@drawable/rect_grey">
+        android:background="@drawable/rect_blue">
 
         <TextView
             android:id="@+id/txt1"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="60dp"
             android:gravity="center"
-            android:text="1"
+            android:text="sdfghjk"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="#fff"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="20sp"  />
 
         <ImageView
             android:id="@+id/img1"
@@ -58,38 +57,57 @@
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/person" />
+            android:layout_marginEnd="60dp"
+            android:src="@drawable/cycle" />
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/per_2"
+        android:id="@+id/rl_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/per_1"
-        android:background="@drawable/rect_grey">
+        android:layout_below="@+id/rl_1"
+        android:background="@drawable/rect_blue">
 
         <TextView
             android:id="@+id/txt2"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="60dp"
             android:gravity="center"
-            android:text="2"
+            android:text="sdfghjk"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="#fff"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/img2"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
-            android:layout_toStartOf="@id/img3"
-            android:src="@drawable/person_child" />
+            android:layout_marginEnd="60dp"
+            android:src="@drawable/scooty_left" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_2"
+        android:background="@drawable/rect_blue">
+
+        <TextView
+            android:id="@+id/txt3"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_marginStart="60dp"
+            android:gravity="center"
+            android:text="sdfghjk"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="#fff"
+            android:textSize="20sp"  />
 
         <ImageView
             android:id="@+id/img3"
@@ -97,63 +115,8 @@
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/two_person" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/per_3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/per_2"
-        android:background="@drawable/rect_grey">
-
-        <TextView
-            android:id="@+id/txt3"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:layout_marginStart="20dp"
-            android:gravity="center"
-            android:text="2 + 1"
-            android:textAllCaps="true"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="65dp"
-            android:layout_toRightOf="@id/txt3"
-            android:gravity="center"
-            android:text=" ( child upto 5 years )"
-            android:textAllCaps="true"
-            android:textColor="#fff"
-            android:textSize="15sp" />
-
-        <ImageView
-            android:id="@+id/img4"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="5dp"
-            android:layout_toStartOf="@id/img5"
-            android:src="@drawable/person_child" />
-        <ImageView
-            android:id="@+id/img5"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="5dp"
-            android:layout_toStartOf="@id/img6"
-            android:src="@drawable/person_woman" />
-        <ImageView
-            android:id="@+id/img6"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/two_person" />
+            android:layout_marginEnd="60dp"
+            android:src="@drawable/bike_right" />
     </RelativeLayout>
 
 

@@ -1,25 +1,27 @@
 package com.client.rent;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AlertDialog;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
@@ -32,6 +34,7 @@ import com.google.android.gms.location.LocationServices;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +42,7 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
 
     private static final String TAG = "ActivityUpdateInfo";
     TextView destination, hours;
+    ImageButton infoCost;
     Button update;
     ScrollView scrollView;
     PopupWindow popupWindow;
@@ -53,8 +57,13 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     private static ActivityUpdateInfo instance;
     FusedLocationProviderClient mFusedLocationClient;
-
-    String stringAuthCookie;
+    Dialog imageDialog2;
+    String stringAuthCookie, NoHours, stringHrs, PriceOnly;
+    TextView updateCost;
+    TextView upi;
+    final int UPI_PAYMENT = 0;
+    Button dummy;
+    Dialog myDialog;
 
     public static ActivityUpdateInfo getInstance() {
         return instance;
@@ -70,6 +79,19 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
             SharedPreferences.Editor editor = pref.edit();
             editor.putString(NO_HOURS, hours.getText().toString());
             editor.apply();
+
+            Intent goBack = new Intent(ActivityUpdateInfo.this, ActivityRentInProgress.class);
+            startActivity(goBack);
+            finish();
+
+        }
+        if (id == 3) {
+            String cost = response.getString("price");
+            updateCost.setText("₹ " + cost);
+            PriceOnly = cost;
+            update.setClickable(false);
+
+
         }
     }
 
@@ -96,7 +118,7 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuthCookie = prefPLoc.getString(AUTH_KEY, "");
         SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-        String stringHrs = pref.getString(NO_HOURS, "");
+        stringHrs = pref.getString(NO_HOURS, "");
         String stringDrop = pref.getString(LOCATION_DROP, "");
         String stringDropID = pref.getString(LOCATION_DROP_ID, "");
         SharedPreferences tripPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
@@ -104,31 +126,74 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         destination = findViewById(R.id.drop_hub);
         update = findViewById(R.id.update_data);
         scrollView = findViewById(R.id.scrollView_rent_progress);
-        hours.setText(stringHrs);
-
+        //hours.setText(stringHrs);
+        updateCost = findViewById(R.id.update_cost);
         update.setOnClickListener(this);
         destination.setOnClickListener(this);
         hours.setOnClickListener(this);
-
+        infoCost = findViewById(R.id.infoCost);
+        infoCost.setOnClickListener(this);
         if (stringDrop.isEmpty()) {
             destination.setText("DROP POINT");
         } else {
-            int dropSpace = (stringDrop.contains(" ")) ? stringDrop.indexOf(" ") : stringDrop.length() - 1;
-            String dropCutName = stringDrop.substring(0, dropSpace);
-            destination.setText(dropCutName);
+            String upToNCharacters = stringDrop.substring(0, Math.min(stringDrop.length(), 20));
+            destination.setText(upToNCharacters);
+
             dropID = stringDropID;
             Log.d(TAG, "Drop Location  is " + stringDrop + " ID is " + stringDropID);
         }
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityUpdateInfo.this);
+        imageDialog2 = new Dialog(this);
+        upi = findViewById(R.id.upiRental);
+        upi.setOnClickListener(this);
+        dummy = findViewById(R.id.dummy);
+        dummy.setOnClickListener(this);
+        myDialog = new Dialog(this);
     }
 
+    private void ShowPopup(int id) {
+
+        myDialog.setContentView(R.layout.popup_new_request);
+        TextView infoText = myDialog.findViewById(R.id.info_text);
+
+        if (id == 1) {
+            infoText.setText("Cost as per rental time. Please pay full amount to begin your trip.");
+        }
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 77;   //y position
+        myDialog.show();
+        Window window = myDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        myDialog.setCanceledOnTouchOutside(true);
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.infoCost:
+                ShowPopup(1);
+                break;
+            case R.id.dummy:
+                userUpdateTrip();
+                break;
+
+            case R.id.upiRental:
+
+                String amount = PriceOnly;
+                String note = "Payment for rental service";
+                String name = "Zipp-E";
+                String upiId = "9084083967@ybl";
+                payUsingUpi(amount, upiId, name, note);
+                break;
 
             case R.id.update_data:
-                alertDialog();
+                /*alertDialog();*/
+                userUpdateTrip();
                 break;
             case R.id.drop_hub:
                 Intent drop = new Intent(ActivityUpdateInfo.this, HubList.class);
@@ -137,51 +202,257 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
                 startActivity(drop);
                 break;
             case R.id.hours:
-                LayoutInflater layoutInflater = (LayoutInflater) ActivityUpdateInfo.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                assert layoutInflater != null;
-                View customView = layoutInflater.inflate(R.layout.hrs_popup, null);
-
-                TextView hs2 = customView.findViewById(R.id.hrs2);
-                TextView hs4 = customView.findViewById(R.id.hrs4);
-                TextView hs8 = customView.findViewById(R.id.hrs8);
-                TextView hs12 = customView.findViewById(R.id.hrs12);
-
-                //instantiate popup window
-                popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                //display the popup window
-                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-                popupWindow.showAtLocation(scrollView, Gravity.CENTER, 0, 0);
-                popupWindow.setOutsideTouchable(false);
-                //close the popup window on button click
-                hs2.setOnClickListener(this);
-                hs4.setOnClickListener(this);
-                hs8.setOnClickListener(this);
-                hs12.setOnClickListener(this);
+                ImagePopup2();
                 break;
 
-            case R.id.hrs2:
-                popupWindow.dismiss();
-                hours.setText("2");
+            case R.id.txt1:
+                stringHrs = "1";
+                imageDialog2.dismiss();
+                hours.setText("1 hr / ₹ 1.00 per min");
+                userUpdateTime("1");
                 break;
-            case R.id.hrs4:
-                popupWindow.dismiss();
-                hours.setText("4");
+            case R.id.txt2:
+                stringHrs = "2";
+                imageDialog2.dismiss();
+                hours.setText("2 hr / ₹ 0.90 per min");
+                userUpdateTime("2");
                 break;
-            case R.id.hrs8:
-                popupWindow.dismiss();
-                hours.setText("8");
+            case R.id.txt3:
+                stringHrs = "3";
+                imageDialog2.dismiss();
+                hours.setText("3 hr / ₹ 0.80 per min");
+                userUpdateTime("3");
                 break;
-            case R.id.hrs12:
-                popupWindow.dismiss();
-                hours.setText("12");
+            case R.id.txt4:
+                stringHrs = "4";
+                imageDialog2.dismiss();
+                hours.setText("4 hr / ₹ 0.70 per min");
+                userUpdateTime("4");
+                break;
+            case R.id.txt5:
+                stringHrs = "5";
+                imageDialog2.dismiss();
+                hours.setText("5 hr / ₹ 0.60 per min");
+                userUpdateTime("5");
+                break;
+            case R.id.txt6:
+                stringHrs = "6";
+                imageDialog2.dismiss();
+                hours.setText("6 hr / ₹ 0.50 per min");
+                userUpdateTime("6");
+                break;
+            case R.id.txt9:
+                stringHrs = "9";
+                imageDialog2.dismiss();
+                hours.setText("9 hr / ₹ 0.50 per min");
+                userUpdateTime("9");
+                break;
+            case R.id.txt12:
+                stringHrs = "12";
+                imageDialog2.dismiss();
+                hours.setText("12 hr / ₹ 0.50 per min");
+                userUpdateTime("12");
+                break;
+
+        }
+    }
+
+    void payUsingUpi(String amount, String upiId, String name, String note) {
+
+        Uri uri = Uri.parse("upi://pay").buildUpon()
+                .appendQueryParameter("pa", upiId)
+                .appendQueryParameter("pn", name)
+                .appendQueryParameter("tn", note)
+                .appendQueryParameter("am", amount)
+                .appendQueryParameter("cu", "INR")
+                .build();
+
+
+        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
+        upiPayIntent.setData(uri);
+
+        // will always show a dialog to user to choose an app
+        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
+
+        // check if intent resolves
+        if (null != chooser.resolveActivity(getPackageManager())) {
+            startActivityForResult(chooser, UPI_PAYMENT);
+        } else {
+            Toast.makeText(ActivityUpdateInfo.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case UPI_PAYMENT:
+                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                    if (data != null) {
+                        String trxt = data.getStringExtra("response");
+                        Log.d("UPI", "onActivityResult: " + trxt);
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add(trxt);
+                        upiPaymentDataOperation(dataList);
+                    } else {
+                        Log.d("UPI", "onActivityResult: " + "Return data is null");
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add("nothing");
+                        upiPaymentDataOperation(dataList);
+                    }
+                } else {
+                    Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                    ArrayList<String> dataList = new ArrayList<>();
+                    dataList.add("nothing");
+                    upiPaymentDataOperation(dataList);
+                }
                 break;
         }
     }
 
+    private void upiPaymentDataOperation(ArrayList<String> data) {
+        if (isConnectionAvailable(this)) {
+            String str = data.get(0);
+            Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
+            String paymentCancel = "";
+            if (str == null) str = "discard";
+            String status = "";
+            String approvalRefNo = "";
+            String response[] = str.split("&");
+            for (int i = 0; i < response.length; i++) {
+                String equalStr[] = response[i].split("=");
+                if (equalStr.length >= 2) {
+                    if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
+                        status = equalStr[1].toLowerCase();
+                    } else if (equalStr[0].toLowerCase().equals("ApprovalRefNo".toLowerCase()) || equalStr[0].toLowerCase().equals("txnRef".toLowerCase())) {
+                        approvalRefNo = equalStr[1];
+                    }
+                } else {
+                    paymentCancel = "Payment cancelled by user.";
+                }
+            }
+
+            if (status.equals("success")) {
+                //Code to handle successful transaction here.
+                Toast.makeText(ActivityUpdateInfo.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
+                userUpdateTrip();
+                Log.d("UPI", "responseStr: " + approvalRefNo);
+            } else if ("Payment cancelled by user.".equals(paymentCancel)) {
+                Toast.makeText(ActivityUpdateInfo.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(ActivityUpdateInfo.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(ActivityUpdateInfo.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static boolean isConnectionAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnected()
+                    && netInfo.isConnectedOrConnecting()
+                    && netInfo.isAvailable()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private void ImagePopup2() {
+
+        imageDialog2.setContentView(R.layout.popup_images3);
+        String hrs = stringHrs;
+
+        TextView txt1 = (TextView) imageDialog2.findViewById(R.id.txt1);
+        TextView txt2 = (TextView) imageDialog2.findViewById(R.id.txt2);
+        TextView txt3 = (TextView) imageDialog2.findViewById(R.id.txt3);
+        TextView txt4 = (TextView) imageDialog2.findViewById(R.id.txt4);
+        TextView txt5 = (TextView) imageDialog2.findViewById(R.id.txt5);
+        TextView txt6 = (TextView) imageDialog2.findViewById(R.id.txt6);
+        TextView txt9 = (TextView) imageDialog2.findViewById(R.id.txt9);
+        TextView txt12 = (TextView) imageDialog2.findViewById(R.id.txt12);
+        if (hrs.equals("1")) {
+            txt1.setVisibility(View.GONE);
+        }
+        if (hrs.equals("2")) {
+            txt1.setVisibility(View.GONE);
+            txt2.setVisibility(View.GONE);
+        }
+        if (hrs.equals("3")) {
+            txt1.setVisibility(View.GONE);
+            txt2.setVisibility(View.GONE);
+            txt3.setVisibility(View.GONE);
+        }
+        if (hrs.equals("4")) {
+            txt1.setVisibility(View.GONE);
+            txt2.setVisibility(View.GONE);
+            txt3.setVisibility(View.GONE);
+            txt4.setVisibility(View.GONE);
+        }
+        if (hrs.equals("5")) {
+            txt1.setVisibility(View.GONE);
+            txt2.setVisibility(View.GONE);
+            txt3.setVisibility(View.GONE);
+            txt4.setVisibility(View.GONE);
+            txt5.setVisibility(View.GONE);
+        }
+        if (hrs.equals("6")) {
+            txt1.setVisibility(View.GONE);
+            txt2.setVisibility(View.GONE);
+            txt3.setVisibility(View.GONE);
+            txt4.setVisibility(View.GONE);
+            txt5.setVisibility(View.GONE);
+            txt6.setVisibility(View.GONE);
+        }
+        if (hrs.equals("9")) {
+            txt1.setVisibility(View.GONE);
+            txt2.setVisibility(View.GONE);
+            txt3.setVisibility(View.GONE);
+            txt4.setVisibility(View.GONE);
+            txt5.setVisibility(View.GONE);
+            txt6.setVisibility(View.GONE);
+            txt9.setVisibility(View.GONE);
+        }
+        if (hrs.equals("12")) {
+            txt1.setVisibility(View.GONE);
+            txt2.setVisibility(View.GONE);
+            txt3.setVisibility(View.GONE);
+            txt4.setVisibility(View.GONE);
+            txt5.setVisibility(View.GONE);
+            txt6.setVisibility(View.GONE);
+            txt9.setVisibility(View.GONE);
+            txt12.setVisibility(View.GONE);
+        }
+        txt1.setOnClickListener(this);
+        txt2.setOnClickListener(this);
+        txt3.setOnClickListener(this);
+        txt4.setOnClickListener(this);
+        txt5.setOnClickListener(this);
+        txt6.setOnClickListener(this);
+        txt9.setOnClickListener(this);
+        txt12.setOnClickListener(this);
+
+        imageDialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = imageDialog2.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 80;   //y position
+
+        imageDialog2.show();
+        Window window = imageDialog2.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        imageDialog2.setCanceledOnTouchOutside(true);
+    }
 
     private void userUpdateTrip() {
-        String hour = hours.getText().toString();
+        String hour = stringHrs;
         String stringAuth = stringAuthCookie;
         Map<String, String> params = new HashMap();
         params.put("auth", stringAuth);
@@ -201,7 +472,26 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         }, a::onFailure);
     }
 
-    private void alertDialog() {
+    private void userUpdateTime(String time) {
+        String stringAuth = stringAuthCookie;
+        Map<String, String> params = new HashMap();
+        params.put("auth", stringAuth);
+        params.put("updatedtime", time);
+        JSONObject param = new JSONObject(params);
+        ActivityUpdateInfo a = ActivityUpdateInfo.this;
+        Log.d(TAG, "Values: auth=" + stringAuth + " updatedtime=" + time);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rental-update");
+        UtilityApiRequestPost.doPOST(a, "user-time-update", param, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 3);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+    }
+
+    /*private void alertDialog() {
         Log.d(TAG, " alert Dialog opened");
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setMessage("YOU MAY BE CHARGED EXTRA FOR CHANGING THE DETAILS. \nARE YOU SURE YOU WANT TO CHANGE DETAILS?");
@@ -223,8 +513,14 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         });
         AlertDialog alertDialog = dialog.create();
         alertDialog.show();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
 
     }
-
+*/
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ActivityUpdateInfo.this, ActivityRentInProgress.class));
+        finish();
+    }
 }

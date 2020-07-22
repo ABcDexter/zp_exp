@@ -21,6 +21,8 @@
         <item name="fontFamily">@font/orbitron</item>
         <item name="android:textColor">#F1EAEA</item>
     </style>
-
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorAccent">#EC7721</item>
+    </style>
 
 </resources>

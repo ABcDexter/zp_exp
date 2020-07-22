@@ -30,11 +30,11 @@
 
             <ImageButton
                 android:id="@+id/satisfied"
-                android:layout_width="250dp"
-                android:layout_height="200dp"
+                android:layout_width="200dp"
+                android:layout_height="190dp"
                 android:layout_gravity="center"
                 android:background="@drawable/aadhar_container"
-                android:padding="15dp"
+                android:padding="25dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/happy"
                 android:layout_above="@id/zippe_logo"
@@ -46,16 +46,16 @@
                 android:layout_height="70dp"
                 android:layout_centerInParent="true"
                 android:id="@+id/zippe_logo"
-                android:layout_marginBottom="50dp"
-                android:layout_marginTop="50dp"/>
+                android:layout_marginBottom="60dp"
+                android:layout_marginTop="60dp"/>
 
             <ImageButton
                 android:id="@+id/notSatisfied"
-                android:layout_width="250dp"
-                android:layout_height="200dp"
+                android:layout_width="200dp"
+                android:layout_height="190dp"
                 android:layout_gravity="center"
                 android:background="@drawable/aadhar_container"
-                android:padding="15dp"
+                android:padding="25dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/unhappy"
                 android:layout_below="@+id/zippe_logo"

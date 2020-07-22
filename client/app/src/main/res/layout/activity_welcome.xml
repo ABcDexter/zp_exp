@@ -6,15 +6,6 @@
     android:background="@drawable/black_background1"
     tools:context=".ActivityWelcome">
 
-    <!--<TextView
-        android:id="@+id/tx_hi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:text="HI!"
-        android:textColor="@android:color/white"
-        android:textSize="50sp"/>-->
     <ImageView
         android:id="@+id/tx_hi"
         android:layout_width="120dp"
@@ -26,11 +17,10 @@
     <ImageView
         android:layout_width="170dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tx_hi"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:src="@drawable/iam"
-        android:layout_below="@id/tx_hi"/>
-
+        android:src="@drawable/iam" />
 
     <ImageView
         android:id="@+id/iv_zippee"
@@ -45,7 +35,7 @@
         android:layout_height="50dp"
         android:layout_above="@id/zippe_logo"
         android:src="@drawable/scooty_left"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/zippe_logo"
@@ -59,25 +49,15 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_below="@id/zippe_logo"
-        android:src="@drawable/zbee_left" />
+        android:src="@drawable/zbee_left"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/scooty_down"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_below="@id/zippe_logo"
-        android:src="@drawable/scooty_right"
-        android:visibility="gone"/>
-
-    <!--<TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_ride"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="45sp"
-        android:text="CHOOSE MODULE"
-        android:textColor="@android:color/white"
-        android:textSize="23sp" />-->
+        android:src="@drawable/scooty_right" />
 
     <ImageButton
         android:id="@+id/btn_ride"

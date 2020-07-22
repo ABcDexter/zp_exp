@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D7FB05"
+    android:background="@color/colorPrimaryDark"
     android:orientation="vertical">
 
     <TextView
@@ -48,7 +48,7 @@
         android:layout_below="@id/attitude"
         android:layout_marginTop="16dp"
         android:checked="false"
-        android:text="Vehicle Condition"
+        android:text="Vehicle condition"
         android:textColor="#000"
         android:textSize="20sp"
         android:layout_marginStart="5dp" />
@@ -60,7 +60,7 @@
         android:layout_below="@id/condition"
         android:layout_marginTop="16dp"
         android:checked="false"
-        android:text="Vehicle Cleanliness"
+        android:text="Vehicle cleanliness"
         android:textColor="#000"
         android:textSize="20sp"
         android:layout_marginStart="5dp"/>

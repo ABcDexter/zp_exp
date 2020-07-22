@@ -1,22 +1,27 @@
 package com.client.rent;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
@@ -39,9 +44,10 @@ import java.util.Map;
 public class ActivityRentInProgress extends ActivityDrawer implements View.OnClickListener {
 
     private static final String TAG = "ActivityRentInProgress";
-    TextView shareDetails, emergencyCall, destination, nameD, phone, hours, vNum, remainingHours;
+    TextView emergencyCall, destination, nameD, phone, hours, vNum, remainingHours, shareLocation;
     ImageButton endRent;
     ScrollView scrollView;
+    RelativeLayout rlPhone;
     public static final String AUTH_KEY = "AuthKey";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String VAN_PICK = "VanPick";
@@ -53,6 +59,7 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     private static ActivityRentInProgress instance;
     FusedLocationProviderClient mFusedLocationClient;
+    Dialog myDialog;
 
     String stringAuthCookie;
 
@@ -67,6 +74,22 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         if (id == 1) {
             String time = response.getString("time");
             remainingHours.setText(time);
+
+            int t = Integer.parseInt(time);
+            if (t < 0) {
+                t = -t;
+                ShowPopup(2);
+                txt.setText("extended mins :");
+                String timePositive = Integer.toString(t);
+                remainingHours.setText(timePositive);
+                if (t > 10) {
+                    myDialog.dismiss();
+                    myDialog.hide();
+                    txt.setText("extended mins :");
+                    remainingHours.setText(timePositive);
+                }
+            }
+
         }
         //response on hitting user-trip-get-status API
         if (id == 3) {
@@ -78,10 +101,18 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (status.equals("ST")) {
+                        String vno = response.getString("vno");
+                        vNum.setText(vno);
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("14");
                         startService(intent);
-                        timeRemaining();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                timeRemaining();
+                            }
+                        }, 45000);
+
                     }
                     if (status.equals("FN") || status.equals("TR")) {
                         String price = response.getString("price");
@@ -98,7 +129,6 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -106,9 +136,9 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(this, "Updated Unsuccessful!", Toast.LENGTH_LONG).show();
     }
 
+    TextView txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,23 +162,28 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         SharedPreferences tripPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
         String stringDName = tripPref.getString(DRIVER_NAME, "");
         String stringDPhn = tripPref.getString(DRIVER_PHN, "");
-
+        shareLocation = findViewById(R.id.share_location);
+        shareLocation.setOnClickListener(this);
         vNum = findViewById(R.id.v_no);
         hours = findViewById(R.id.hours);
+        txt = findViewById(R.id.txt);
         remainingHours = findViewById(R.id.remaining_hrs);
         destination = findViewById(R.id.drop_hub);
         nameD = findViewById(R.id.supervisor_name);
         phone = findViewById(R.id.supervisor_phone);
-        shareDetails = findViewById(R.id.share_ride_details);
+        //shareDetails = findViewById(R.id.share_ride_details);
         emergencyCall = findViewById(R.id.emergency);
         endRent = findViewById(R.id.end_rent);
         scrollView = findViewById(R.id.scrollView_rent_progress);
-
-        vNum.setText(stringVan);
+        rlPhone = findViewById(R.id.rl_p);
+        rlPhone.setOnClickListener(this);
+        //vNum.setText(stringVan);
         nameD.setText(stringDName);
         phone.setText(stringDPhn);
+        /*nameD.setText("JHON WICK");
+        phone.setText("+917060743705");*/
 
-        shareDetails.setOnClickListener(this);
+        //shareDetails.setOnClickListener(this);
         emergencyCall.setOnClickListener(this);
         endRent.setOnClickListener(this);
         destination.setOnClickListener(this);
@@ -158,28 +193,60 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         checkStatus();
         timeRemaining();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityRentInProgress.this);
+        myDialog = new Dialog(this);
+
     }
 
+    private void ShowPopup(int id) {
+
+        myDialog.setContentView(R.layout.popup_new_request);
+        TextView infoText = myDialog.findViewById(R.id.info_text);
+
+        if (id == 1) {
+            infoText.setText("This feature shall be active soon.");
+        }
+        if (id == 2) {
+            infoText.setText("Your rental time is over. Please return the vehicle within 10 mins to avoid any extra rental charge.");
+            myDialog.show();
+            myDialog.setCanceledOnTouchOutside(false);
+
+        }
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 77;   //y position
+        myDialog.show();
+        Window window = myDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        myDialog.setCanceledOnTouchOutside(true);
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.share_ride_details:
+            /*case R.id.share_ride_details:
                 selectAction(ActivityRentInProgress.this);
-                break;
-            case R.id.supervisor_phone:
+                break;*/
+            /*case R.id.supervisor_phone:
+                callSuper();
+                break;*/
+            case R.id.rl_p:
                 callSuper();
                 break;
             case R.id.emergency:
                 btnSetOnEmergency();
                 break;
-
+            case R.id.share_location:
+                ShowPopup(1);
+                break;
             case R.id.drop_hub:
             case R.id.hours:
                 Intent drop = new Intent(ActivityRentInProgress.this, ActivityUpdateInfo.class);
                 startActivity(drop);
                 break;
-            case  R.id.end_rent:
+            case R.id.end_rent:
                 Intent nearest = new Intent(ActivityRentInProgress.this, ActivityNearestHub.class);
                 startActivity(nearest);
         }

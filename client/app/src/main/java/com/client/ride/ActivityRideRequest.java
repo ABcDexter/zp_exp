@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -224,7 +225,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
             //String kept = stringPick.substring(0, stringPick.indexOf(","));
             //String remainder = stringPick.substring(stringPick.indexOf(",")+1, stringPick.length());
             pickPlaceInfo.setText(splitted[0]);*/
-            String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 25));
+            String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 20));
             pickPlaceInfo.setText(upToNCharacters);
             //Log.d(TAG, "qwertyuiop"+upToNCharacters);
         } catch (Exception e) {
@@ -233,7 +234,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         }
 
         try {
-            String upTo16Characters = stringDrop.substring(0, Math.min(stringDrop.length(), 25));
+            String upTo16Characters = stringDrop.substring(0, Math.min(stringDrop.length(), 20));
             dropPlaceInfo.setText(upTo16Characters);
         } catch (Exception e) {
             dropPlaceInfo.setText(stringDrop);
@@ -300,11 +301,25 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         TextView accept = myDialog.findViewById(R.id.accept_request);
         if (id == 1) {
             ll.setVisibility(View.GONE);
-            infoText.setText("This is an approximate cost. May change depending on ride time.");
+            String part1= "This is an approximate cost as per ";
+            String part2= "Google Maps (distance and time taken)";
+            String part3= ". May change depending on ride time.";
+
+            String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
+            infoText.setText(Html.fromHtml(sourceString));
+            //infoText.setText("This is an approximate cost as per <b> Google Maps (distance and time taken)</b>. May change depending on ride time.");
         }
         if (id == 2) {
             ll.setVisibility(View.GONE);
-            infoText.setText("Approximate time as per Google Maps. May change depending on traffic.");
+            String part1= "Approximate time as per ";
+            String part2= "Google Maps";
+            String part3= ". May change depending on traffic.";
+
+            String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
+            infoText.setText(Html.fromHtml(sourceString));
+
+
+            //infoText.setText("Approximate time as per <b>Google Maps</b>. May change depending on traffic.");
         }
         if (id == 3) {
             infoText.setText(stringPick);

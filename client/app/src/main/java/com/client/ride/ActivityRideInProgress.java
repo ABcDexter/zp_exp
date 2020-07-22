@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +31,7 @@ import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +43,7 @@ import java.util.Map;
 public class ActivityRideInProgress extends ActivityDrawer implements View.OnClickListener {
 
     TextView shareDetails, emergencyCall, trackLocation, nameD, phone, otp, vNum;
+    TextView liveLocation;
     ImageButton endRide;
     ScrollView scrollView;
     private static final String TAG = "ActivityRideInProgress";
@@ -124,7 +125,6 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
 
         instance = this;
 
-
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuthCookie = prefPLoc.getString(AUTH_KEY, "");
         SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
@@ -150,6 +150,8 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         endRide = findViewById(R.id.end_ride);
         endRide.setOnClickListener(this);
         scrollView = findViewById(R.id.scrollView_ride_OTP);
+        liveLocation = findViewById(R.id.share_location);
+        liveLocation.setOnClickListener(this);
 
         checkStatus();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityRideInProgress.this);
@@ -181,7 +183,8 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     private void alertDialog() {
         Log.d(TAG, " alert Dialog opened");
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setMessage("Your ride is not yet complete. You will be charged as per your chosen destination.\nAre you sure you want to end ride?");
+
+        dialog.setMessage("Your ride is not yet complete. You will be charged as per your chosen destination.\nAre you sure you want to end your ride?");
         dialog.setTitle("END RIDE");
         dialog.setPositiveButton("YES",
                 new DialogInterface.OnClickListener() {
@@ -200,7 +203,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         });
         AlertDialog alertDialog = dialog.create();
         alertDialog.show();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
 
     }
 
@@ -231,34 +234,47 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         startActivity(intent);
     }
 
-    private void ImagePopup() {
+    /* private void ImagePopup() {
 
-        imageDialog.setContentView(R.layout.popup_images3);
-        TextView txt1 = (TextView) imageDialog.findViewById(R.id.txt1);
-        TextView txt2 = (TextView) imageDialog.findViewById(R.id.txt2);
+         imageDialog.setContentView(R.layout.popup_images3);
+         TextView txt1 = (TextView) imageDialog.findViewById(R.id.txt1);
+        */
+    /* TextView txt2 = (TextView) imageDialog.findViewById(R.id.txt2);
         TextView txt3 = (TextView) imageDialog.findViewById(R.id.txt3);
-        RelativeLayout rl1 = (RelativeLayout) imageDialog.findViewById(R.id.rl_1);
-        RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.rl_2);
+        */
+    /*RelativeLayout rl1 = (RelativeLayout) imageDialog.findViewById(R.id.rl_1);
+     */
+    /*RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.rl_2);
         RelativeLayout rl3 = (RelativeLayout) imageDialog.findViewById(R.id.rl_3);
-
+*/
+    /*
         txt1.setText("SEND SMS");
-        txt2.setText("VIDEO CALL");
-        txt3.setText("CANCEL");
+        */
+    /*txt2.setText("VIDEO CALL");
+        txt3.setText("CANCEL");*/
+    /*
 
         rl1.setOnClickListener(this);
-        rl2.setOnClickListener(this);
-        rl3.setOnClickListener(this);
+       */
+    /* rl2.setOnClickListener(this);
+        rl3.setOnClickListener(this);*/
+    /*
 
         imageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         imageDialog.show();
         imageDialog.setCanceledOnTouchOutside(true);
     }
-
+*/
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.share_ride_details:
-                ImagePopup();
+                String messageBody = "I am riding ZIPP-E with\n Driver Name: " + nameD.getText().toString() + "\n Driver Mobile Number" + phone.getText().toString();
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.setData(Uri.parse("sms:"));
+                sendIntent.putExtra("sms_body", messageBody);
+                startActivity(sendIntent);
+                //ImagePopup();
                 //selectAction(ActivityRideInProgress.this);
                 break;
 
@@ -271,22 +287,28 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
             case R.id.track_your_location:
                 trackLocation();
                 break;
-            case R.id.rl_1:
-                String messageBody = "TRACK MY RIDE HERE";
+            /*case R.id.rl_1:
+*//*
+                String messageBody = "I am riding ZIPP-E with\n Driver Name: "+nameD.getText().toString()+"\n Driver Mobile Number"+phone.getText().toString();
                 Intent sendIntent = new Intent(Intent.ACTION_VIEW);
                 sendIntent.setData(Uri.parse("sms:"));
                 sendIntent.putExtra("sms_body", messageBody);
                 startActivity(sendIntent);
-                imageDialog.dismiss();
-                break;
-            case R.id.rl_2:
+                imageDialog.dismiss();*//*
+                break;*/
+            /*case R.id.rl_2:
                 Intent whatsappLaunch = getPackageManager().getLaunchIntentForPackage("com.whatsapp");
                 startActivity(whatsappLaunch);
                 imageDialog.dismiss();
-                break;
-            case R.id.rl_3:
+                break;*/
+            /*case R.id.rl_3:
                 imageDialog.dismiss();
-                break;
+                break;*/
+            case R.id.share_location:
+                Snackbar snackbar = Snackbar.make(scrollView, "COMING SOON", Snackbar.LENGTH_LONG);
+                snackbar.show();
         }
     }
+
+
 }

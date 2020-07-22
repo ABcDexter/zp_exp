@@ -10,17 +10,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,11 +42,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivityRentHome extends ActivityDrawer implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class ActivityRentHome extends ActivityDrawer implements View.OnClickListener {
     private static final String TAG = "ActivityRentHome";
-    Spinner vehicle, hours;
+    Button vehicle, hours;
     ImageButton confirmRentButton;
-    TextView reject_rq, accept_rq, dialog_txt, pick, drop;
+    TextView reject_rq, accept_rq, dialog_txt, pick, drop, scheduleRent;
+    Dialog myDialog, imageDialog, imageDialog2;
 
     public static final String AUTH_KEY = "AuthKey";
     public static final String AN_KEY = "AadharKey";
@@ -60,12 +64,13 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     public static final String NO_HOURS = "NoHours";
 
     SharedPreferences prefAuth, prefBuss;
-    Dialog myDialog;
     ScrollView scrollView;
     private static ActivityRentHome instance;
     Vibrator vibrator;
 
-    String VehicleType, RentRide, NoHours, PaymentMode;
+    String RentRide, PaymentMode;
+    String NoHours = "";
+    String VehicleType = "";
     String lat, lng;
     String stringAuth, stringBuss, bussFlag, stringAN;
     String Rent, pMode, pickID, dropID, pickPoint, dropPoint;
@@ -98,7 +103,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                 } else
                     ShowPopup(1);
             } else if (array.length() > 0) {
-                ShowPopup(2);
+                //ShowPopup(2);
                 SharedPreferences pref = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
                 editor.remove(BUSS);
@@ -131,10 +136,14 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         //initializing views
         scrollView = findViewById(R.id.scrollViewRentRide);
         vehicle = findViewById(R.id.vehicle_type);
+        vehicle.setOnClickListener(this);
         hours = findViewById(R.id.no_hours);
+        hours.setOnClickListener(this);
         confirmRentButton = findViewById(R.id.confirm_rent);
         pick = findViewById(R.id.txt_pick_hub);
         drop = findViewById(R.id.txt_drop_point);
+        scheduleRent = findViewById(R.id.schedule_rent);
+        scheduleRent.setOnClickListener(this);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         confirmRentButton.setOnClickListener(this);
@@ -175,58 +184,11 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             Log.d(TAG, "Drop Location  is " + stringDrop + " ID is " + stringDropID);
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.custom_spinner, getResources().getStringArray(R.array.vehicle_array_sans_zbee)) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0) {
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.WHITE);
-                    tv.setBackgroundColor(Color.DKGRAY);
-                } else {
-                    tv.setTextColor(Color.WHITE);
-                }
-                return view;
-            }
-        };
-        adapter.setDropDownViewResource(R.layout.spinner_item_orange);
-        vehicle.setAdapter(adapter);
-        vehicle.setOnItemSelectedListener(this);
-
-        ArrayAdapter<String> adapterNoRiders = new ArrayAdapter<String>(this,
-                R.layout.custom_spinner, getResources().getStringArray(R.array.hours_array)) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0) {
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.WHITE);
-                    tv.setBackgroundColor(Color.DKGRAY);
-                } else {
-                    tv.setTextColor(Color.WHITE);
-                }
-                return view;
-            }
-        };
-        adapterNoRiders.setDropDownViewResource(R.layout.spinner_item_blue);
-        hours.setAdapter(adapterNoRiders);
-        hours.setOnItemSelectedListener(this);
-
         myDialog = new Dialog(this);
         getAvailableVehicle();
+
+        imageDialog = new Dialog(this);
+        imageDialog2 = new Dialog(this);
     }
 
     private void ShowPopup(int id) {
@@ -246,16 +208,30 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             dialog_txt.setText("no ride available currently.\nNotify me when available.");
             reject_rq.setOnClickListener(this);
             accept_rq.setOnClickListener(this);
-            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            myDialog.show();
             myDialog.setCanceledOnTouchOutside(false);
         }
         if (id == 2) {
             //TODO send push notification
-            dialog_txt.setText("Rides are available.");
-            myDialog.setCanceledOnTouchOutside(true);
+            //dialog_txt.setText("Rides are available.");
 
         }
+        if (id == 3) {
+            dialog_txt.setText("This feature shall be active soon.");
+
+            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+            //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+            //wmlp.x = 100;   //x position
+            wmlp.y = 77;   //y position
+            myDialog.show();
+            Window window = myDialog.getWindow();
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            myDialog.setCanceledOnTouchOutside(true);
+        }
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+        myDialog.setCanceledOnTouchOutside(true);
     }
 
     public void getAvailableVehicle() {
@@ -279,9 +255,15 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.vehicle_type:
+                ImagePopup();
+                break;
+            case R.id.no_hours:
+                ImagePopup2();
+                break;
             case R.id.confirm_rent:
                 Log.d(TAG, "confirm_rent button clicked!");
-                if (/*RentRide == null ||*/ VehicleType.equals("VEHICLE TYPE") || NoHours.equals("NO OF HOURS") || pick.getText().equals("PICK UP POINT")
+                if (/*RentRide == null ||*/ VehicleType.equals("") || NoHours.equals("") || pick.getText().equals("PICK UP POINT")
                         || drop.getText().equals("DROP POINT")/*|| PaymentMode == null*/) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -317,7 +299,9 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                 getAvailableVehicle();
                 myDialog.dismiss();
                 break;
-
+            case R.id.schedule_rent:
+                ShowPopup(3);
+                break;
             case R.id.txt_pick_hub:
                 Intent pick = new Intent(ActivityRentHome.this, HubList.class);
                 pick.putExtra("Request", "pick_rent");
@@ -330,7 +314,61 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                 Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
                 startActivity(drop);
                 break;
-
+            case R.id.txt1:
+                NoHours = "1";
+                imageDialog2.dismiss();
+                hours.setText("1 hr / ₹ 1.00 per min");
+                break;
+            case R.id.txt2:
+                NoHours = "2";
+                imageDialog2.dismiss();
+                hours.setText("2 hrs / ₹ 0.90 per min");
+                break;
+            case R.id.txt3:
+                NoHours = "3";
+                imageDialog2.dismiss();
+                hours.setText("3 hrs /  ₹ 0.80 PER MIN");
+                break;
+            case R.id.txt4:
+                NoHours = "4";
+                imageDialog2.dismiss();
+                hours.setText("4 hrs / ₹ 0.70 per min");
+                break;
+            case R.id.txt5:
+                NoHours = "5";
+                imageDialog2.dismiss();
+                hours.setText("5 hrs / ₹ 0.60 per min");
+                break;
+            case R.id.txt6:
+                NoHours = "6";
+                imageDialog2.dismiss();
+                hours.setText("6 hrs / ₹ 0.50 per min");
+                break;
+            case R.id.txt9:
+                NoHours = "9";
+                imageDialog2.dismiss();
+                hours.setText("9 hrs / ₹ 0.50 per min");
+                break;
+            case R.id.txt12:
+                NoHours = "12";
+                imageDialog2.dismiss();
+                hours.setText("12 hrs / ₹ 0.50 per min");
+                break;
+            case R.id.rl_1:
+                VehicleType = "0";
+                imageDialog.dismiss();
+                vehicle.setText("E-CYCLE");
+                break;
+            case R.id.rl_2:
+                VehicleType = "1";
+                imageDialog.dismiss();
+                vehicle.setText("E-SCOOTY");
+                break;
+            case R.id.rl_3:
+                VehicleType = "2";
+                imageDialog.dismiss();
+                vehicle.setText("E-BIKE");
+                break;
         }
     }
 
@@ -347,48 +385,77 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                 PaymentMode + "srcid:" + pickID + "dstid:" + dropID);
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        switch (parent.getId()) {
-            case R.id.vehicle_type:
-                VehicleType = vehicle.getItemAtPosition(position).toString();
-                switch (VehicleType) {
-                    case "E-SCOOTY":
-                        VehicleType = "1";
-                        break;
-                    case "E-BIKE":
-                        VehicleType = "2";
-                        break;
-                    case "E-CYCLE":
-                        VehicleType = "2";
-                        break;
+    private void ImagePopup() {
 
-                }
-                break;
-            case R.id.no_hours:
-                NoHours = hours.getItemAtPosition(position).toString();
-                switch (NoHours) {
-                    case "2 hr / 15 kms":
-                        NoHours = "2";
-                        break;
-                    case "4 hr / 40 kms":
-                        NoHours = "4";
-                        break;
-                    case "8 hr / 70 kms":
-                        NoHours = "8";
-                        break;
-                    case "12 hrs / 90 kms":
-                        NoHours = "12";
-                        break;
-                }
-                break;
-        }
+        imageDialog.setContentView(R.layout.popup_images4);
+        TextView txt1 = (TextView) imageDialog.findViewById(R.id.txt1);
+        TextView txt2 = (TextView) imageDialog.findViewById(R.id.txt2);
+        TextView txt3 = (TextView) imageDialog.findViewById(R.id.txt3);
+        RelativeLayout rl1 = (RelativeLayout) imageDialog.findViewById(R.id.rl_1);
+        RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.rl_2);
+        RelativeLayout rl3 = (RelativeLayout) imageDialog.findViewById(R.id.rl_3);
+
+        txt1.setText("E-CYCLE");
+        txt2.setText("E-SCOOTY");
+        txt3.setText("E-BIKE");
+
+        rl1.setOnClickListener(this);
+        rl2.setOnClickListener(this);
+        rl3.setOnClickListener(this);
+
+        imageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = imageDialog.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 80;   //y position
+        imageDialog.show();
+        Window window = imageDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        imageDialog.setCanceledOnTouchOutside(true);
     }
 
-    //auto generated method for AdapterView.OnItemSelectedListener
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+    SpannableStringBuilder spannableStringBuilder;
+    String txt_3;
+
+    private void ImagePopup2() {
+
+        imageDialog2.setContentView(R.layout.popup_images3);
+        TextView txt1 = (TextView) imageDialog2.findViewById(R.id.txt1);
+        TextView txt2 = (TextView) imageDialog2.findViewById(R.id.txt2);
+        TextView txt3 = (TextView) imageDialog2.findViewById(R.id.txt3);
+        TextView txt4 = (TextView) imageDialog2.findViewById(R.id.txt4);
+        TextView txt5 = (TextView) imageDialog2.findViewById(R.id.txt5);
+        TextView txt6 = (TextView) imageDialog2.findViewById(R.id.txt6);
+        TextView txt9 = (TextView) imageDialog2.findViewById(R.id.txt9);
+        TextView txt12 = (TextView) imageDialog2.findViewById(R.id.txt12);
+
+        txt1.setOnClickListener(this);
+        txt2.setOnClickListener(this);
+        txt3.setOnClickListener(this);
+        txt4.setOnClickListener(this);
+        txt5.setOnClickListener(this);
+        txt6.setOnClickListener(this);
+        txt9.setOnClickListener(this);
+        txt12.setOnClickListener(this);
+
+        imageDialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = imageDialog2.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 80;   //y position
+
+        imageDialog2.show();
+        Window window = imageDialog2.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        imageDialog2.setCanceledOnTouchOutside(true);
     }
 
+    private void showSmallSizeText(String s) {
+        RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(.5f);
+        spannableStringBuilder.setSpan(relativeSizeSpan, txt_3.indexOf(s), txt_3.indexOf(s) + (s).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
 }
 

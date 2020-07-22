@@ -110,7 +110,6 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
         scooty_up = findViewById(R.id.scooty_up);
         scooty_down = findViewById(R.id.scooty_down);
-        //checkStatus();
         moveZbee();
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityWelcome.this);
@@ -126,12 +125,13 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
     private void moveZbee() {
         scooty_up.setVisibility(View.GONE);
-        scooty_down.setVisibility(View.GONE);
-        zippe_iv_below.setVisibility(View.VISIBLE);
+        scooty_down.setVisibility(View.VISIBLE);
+        zippe_iv_below.setVisibility(View.GONE);
         zippe_iv.setVisibility(View.VISIBLE);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zippe_iv_below, "translationX", 1800, 0f);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scooty_down, "translationX", 1800, 0f);
         objectAnimator.setDuration(1700);
         objectAnimator.start();
+
         /*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*/
 
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zippe_iv, "translationX", 0f, 1500);
@@ -148,10 +148,10 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
     private void moveScooty() {
         scooty_up.setVisibility(View.VISIBLE);
-        scooty_down.setVisibility(View.VISIBLE);
-        zippe_iv_below.setVisibility(View.GONE);
+        scooty_down.setVisibility(View.GONE);
+        zippe_iv_below.setVisibility(View.VISIBLE);
         zippe_iv.setVisibility(View.GONE);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scooty_down, "translationX", 1800, 0f);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zippe_iv_below, "translationX", 1800, 0f);
         objectAnimator.setDuration(1700);
         objectAnimator.start();
         /*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*/
@@ -230,10 +230,14 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         if (id == 6) {
             dialog_txt.setText("Ride canceled by you.");
         }
+        if (id == 7) {
+            dialog_txt.setText("Sorry ! All our vehicles are currently rented out. Please try again later.");
+        }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
         myDialog.setCanceledOnTouchOutside(true);
     }
+
     private void ShowPopup1(int id) {
 
         myDialog.setContentView(R.layout.popup_new_request);
@@ -310,7 +314,8 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     };
 
 
-    public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
+    public void
+    onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG, "RESPONSE:" + response);
         //response on hitting user-trip-get-status API
         if (id == 1) {
@@ -357,41 +362,36 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                     }
                     if (rtype.equals("1")) {
                         if (status.equals("RQ")) {
-                        /*Snackbar snackbar = Snackbar
-                                .make(scrollView, "WAITING FOR DRIVER", Snackbar.LENGTH_INDEFINITE)
-                                .setAction("CANCEL", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        cancelRequest();
-
-                                    }
-                                });*/
                             Intent rq = new Intent(ActivityWelcome.this, ActivityRentRequest.class);
-                            /*rq.putExtra("st", "RQ");*/
                             startActivity(rq);
                         }
                         if (status.equals("AS")) {
-                            String otp = response.getString("otp");
-                            String van = response.getString("vno");
-                            //String price = response.getString("price");
+                            /*String otp = response.getString("otp");
                             SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                            sp_otp.edit().putString(OTP_PICK, otp).apply();
-                            sp_otp.edit().putString(VAN_PICK, van).apply();
-                            //sp_otp.edit().putString(PRICE_RENT,price).apply();
+                            sp_otp.edit().putString(OTP_PICK, otp).apply();*/
                             Intent as = new Intent(ActivityWelcome.this, ActivityRentOTP.class);
                             startActivity(as);
                         }
                         if (status.equals("ST")) {
+                            String van = response.getString("vno");
+                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                            sp_otp.edit().putString(VAN_PICK, van).apply();
                             Intent as = new Intent(ActivityWelcome.this, ActivityRentInProgress.class);
                             startActivity(as);
                         }
                         if (status.equals("FN") || status.equals("TR")) {
+                            //retireTrip();
                             Intent fntr = new Intent(ActivityWelcome.this, ActivityRentEnded.class);
                             startActivity(fntr);
                         }
 
+                        if (status.equals("TO")) {
+                            ShowPopup(7);
+                        }
+
                     }
-                } else {
+                }
+                else {
                     Log.d(TAG, "active=" + active);
 
                     SharedPreferences prefTripDetails = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
@@ -409,42 +409,66 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                 e.printStackTrace();
             }
         }
+
         // response on hitting auth-trip-get-info API
         if (id == 2) {
             String st = response.getString("st");
-            if (st.equals("PD")) {
-                String price = response.getString("price");
-                String time = response.getString("time");
-                String dist = response.getString("dist");
-                String speed = response.getString("speed");
-                SharedPreferences pref = getApplicationContext().getSharedPreferences(PREFS_LOCATIONS, MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.remove(PREFS_LOCATIONS);
-                editor.apply();
+            String rtype = response.getString("rtype");
+            if (rtype.equals("0")) {
+                if (st.equals("PD")) {
+                    String price = response.getString("price");
+                    SharedPreferences pref = getApplicationContext().getSharedPreferences(PREFS_LOCATIONS, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.remove(PREFS_LOCATIONS);
+                    editor.apply();
 
-                SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
-                SharedPreferences.Editor editor1 = prefBuzz.edit();
-                editor1.remove(BUSS_FLAG);
-                editor1.apply();
-            }
+                    SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
+                    SharedPreferences.Editor editor1 = prefBuzz.edit();
+                    editor1.remove(BUSS_FLAG);
+                    editor1.apply();
 
-            if (st.equals("DN")) {
-                ShowPopup(3);
-                //Toast.makeText(this, "DRIVER DENIED PICKUP", Toast.LENGTH_LONG).show();
+
+                }
+
+                if (st.equals("DN")) {
+                    ShowPopup(3);
+                }
+                if (st.equals("TO")) {
+                    ShowPopup(4);
+                }
+                if (st.equals("FL")) {
+                    ShowPopup(5);
+                }
+                if (st.equals("CN")) {
+                    ShowPopup(6);
+                }
+                retireTrip();
             }
-            if (st.equals("TO")) {
-                ShowPopup(4);
-                //Toast.makeText(this, "RIDE TIMED OUT ", Toast.LENGTH_LONG).show();
+            if (rtype.equals("1")) {
+                if (st.equals("PD")) {
+                    //String price = response.getString("price");
+
+                    SharedPreferences pref = getApplicationContext().getSharedPreferences(PREFS_LOCATIONS, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.remove(PREFS_LOCATIONS);
+                    editor.apply();
+
+                    SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
+                    SharedPreferences.Editor editor1 = prefBuzz.edit();
+                    editor1.remove(BUSS_FLAG);
+                    editor1.apply();
+                    retireTrip();
+                }
+                if (st.equals("FN")) {
+                    retireTrip();
+                }
+                if(st.equals("CN")){
+                    retireTrip();
+                }
+                retireTrip();
+
             }
-            if (st.equals("FL")) {
-                ShowPopup(5);
-                //Toast.makeText(this, "RIDE FAILED ! \nSORRY FOR THE INCONVENIENCE CAUSED !", Toast.LENGTH_LONG).show();
-            }
-            if (st.equals("CN")) {
-                ShowPopup(6);
-                //Toast.makeText(this, "RIDE CANCELED BY YOU !", Toast.LENGTH_LONG).show();
-            }
-            retireTrip();
+            //retireTrip();
 
         }
         //response on hitting user-trip-retire API

@@ -76,7 +76,7 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
 
         CameraPosition googlePlex = CameraPosition.builder()
                 .target(new LatLng(srcLat, srcLng))
-                .zoom(7)
+                .zoom(12)//zoom level
                 .bearing(0)
                 .tilt(45)
                 .build();

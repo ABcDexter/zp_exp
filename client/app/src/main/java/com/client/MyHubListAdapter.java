@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.client.rent.ActivityRentHome;
 import com.client.rent.ActivityRentInProgress;
+import com.client.rent.ActivityUpdateInfo;
 import com.client.ride.ActivityRideHome;
 
 import java.util.List;
@@ -108,7 +109,7 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
                     directoryLocation.edit().putString(LOCATION_DROP_ID, strID).apply();
                     Log.d("MyHubListAdapter", "Rental Drop Location Saved" + directoryLocation);
 
-                    Intent intent = new Intent(context, ActivityRentInProgress.class);
+                    Intent intent = new Intent(context, ActivityUpdateInfo.class);
                     context.startActivity(intent);
                     Log.d("MyHubListAdapter", "Rental Drop Location " + strValue + " Send from  MyHubListAdapter");
                     ((Activity) context).finish();

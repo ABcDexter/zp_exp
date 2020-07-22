@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -243,10 +244,23 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
         if (id == 1) {
-            infoText.setText("This is an approximate cost. May change depending on ride time.");
+            String part1= "This is an approximate cost as per ";
+            String part2= "Google Maps (distance and time taken)";
+            String part3= ". May change depending on ride time.";
+
+            String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
+            infoText.setText(Html.fromHtml(sourceString));
+            //infoText.setText("This is an approximate cost. May change depending on ride time.");
         }
         if (id == 2) {
-            infoText.setText("Approximate time as per Google Maps. May change depending on traffic.");
+            String part1= "Approximate time as per ";
+            String part2= "Google Maps";
+            String part3= ". May change depending on traffic.";
+
+            String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
+            infoText.setText(Html.fromHtml(sourceString));
+
+            //infoText.setText("Approximate time as per Google Maps. May change depending on traffic.");
         }
         if (id == 3) {
             infoText.setText(stringPick);
@@ -314,7 +328,7 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         AlertDialog alert = alertDialog.create();
         alert.setCanceledOnTouchOutside(false);
         alert.show();
-        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
+        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
     }
 
     private void userCancelTrip() {

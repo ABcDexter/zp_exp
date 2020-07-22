@@ -13,6 +13,8 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -76,8 +78,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     Map<String, String> params = new HashMap();
 
     String srcLat, srcLng, dstLat, dstLng;
-    String dstName ="";
-    String srcName ="";
+    String dstName = "";
+    String srcName = "";
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
@@ -89,7 +91,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
             String count = response.getString("count");
 
             if (count.equals("0")) {
-                next.setEnabled(false);//the user cannot go to the next activity if vehicle not available at the hub
+                //next.setEnabled(false);//the user cannot go to the next activity if vehicle not available at the hub
                 if (stringBuss.equals("BussMeNot")) {
                     Log.d(TAG, "user not interested in notifications");
                     SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
@@ -291,7 +293,14 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         rl3.setOnClickListener(this);
 
         imageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = imageDialog.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 80 ;   //y position
         imageDialog.show();
+        Window window = imageDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         imageDialog.setCanceledOnTouchOutside(true);
     }
 
@@ -303,21 +312,32 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         TextView txt3 = (TextView) imageDialog2.findViewById(R.id.txt3);
         RelativeLayout per1 = (RelativeLayout) imageDialog2.findViewById(R.id.per_1);
         RelativeLayout per2 = (RelativeLayout) imageDialog2.findViewById(R.id.per_2);
+        RelativeLayout per3 = (RelativeLayout) imageDialog2.findViewById(R.id.per_3);
 
-        if (vehicle.getText().toString().equals("E-BIKE")||vehicle.getText().toString().equals("E-SCOOTY")){
+        if (vehicle.getText().toString().equals("E-BIKE") || vehicle.getText().toString().equals("E-SCOOTY")) {
             per2.setVisibility(View.GONE);
-        }else {
+            per3.setVisibility(View.GONE);
+        } else {
             per2.setVisibility(View.VISIBLE);
         }
         txt1.setText("1");
         txt2.setText("2");
-        txt3.setText("( 1 child upto 5 years rides free )");
 
         per1.setOnClickListener(this);
         per2.setOnClickListener(this);
+        per3.setOnClickListener(this);
 
         imageDialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = imageDialog2.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 80;   //y position
+
         imageDialog2.show();
+        Window window = imageDialog2.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
         imageDialog2.setCanceledOnTouchOutside(true);
     }
 
@@ -330,7 +350,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         params.put("vtype", VehicleType);
         JSONObject parameters = new JSONObject(params);
 
-        Log.d(TAG, "Values: auth=" + auth + " srclat" + srcLat + " srclng" + srcLng+" vtype="+VehicleType);
+        Log.d(TAG, "Values: auth=" + auth + " srclat" + srcLat + " srclng" + srcLng + " vtype=" + VehicleType);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-is-driver-av");
         UtilityApiRequestPost.doPOST(a, "user-is-driver-av", parameters, 30000, 0, response -> {
             try {
@@ -345,79 +365,10 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.letsGo_ride:
-                //Log.d(TAG, "button clicked!");
-                /*try {*/
-                    if (dstName.equals("") || etDst.getText().toString().equals("") || etDst.getText().toString().equals("DROP POINT") ||
+                if (dstName.equals("") || etDst.getText().toString().equals("") || etDst.getText().toString().equals("DROP POINT") ||
                         srcName.equals("") || etPlace.getText().toString().equals("") || etPlace.getText().toString().equals("PICK UP POINT") ||
                         vehicle.getText().toString().equals("VEHICLE TYPE") ||
-                            riders.getText().toString().equals("NO OF RIDERS")) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                        } else {
-                            vibrator.vibrate(1000);
-                        }
-                        Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
-                        snackbar.show();
-                    } else{
-                        storeData();
-                        isDriverAv();
-
-
-                    }
-                    /*if (srcName.equals("") || etPlace.getText().toString().equals("") || etPlace.getText().toString().equals("PICK UP POINT")) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                        } else {
-                            vibrator.vibrate(1000);
-                        }
-                        Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
-                        snackbar.show();
-                    }*/
-                    /*if (vehicle.getText().toString().equals("VEHICLE TYPE")) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                        } else {
-                            vibrator.vibrate(1000);
-                        }
-                        Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
-                        snackbar.show();
-                    }
-                    if (riders.getText().toString().equals("NO OF RIDERS")) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                        } else {
-                            vibrator.vibrate(1000);
-                        }
-                        Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
-                        snackbar.show();
-                    }
-                    */
-                    /*if (VehicleType.equals("") || RiderNo.equals("")) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                        } else {
-                            vibrator.vibrate(1000);
-                        }
-                        Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
-                        snackbar.show();
-                    }*/
-                /*} catch (Exception e) {
-                    storeData();
-
-                    Intent rideIntent = new Intent(ActivityRideHome.this, ActivityRideRequest.class);
-                    rideIntent.putExtra("npas", RiderNo);
-                    rideIntent.putExtra("vtype", VehicleType);
-                    startActivity(rideIntent);
-                    e.printStackTrace();
-                }*/
-                /*storeData();
-
-                Intent rideIntent = new Intent(ActivityRideHome.this, ActivityRideRequest.class);
-                rideIntent.putExtra("npas", RiderNo);
-                rideIntent.putExtra("vtype", VehicleType);
-                startActivity(rideIntent);*/
-               /* if (VehicleType.equals("") || RiderNo.equals("") || srcName.equals("")
-                        || dstName.equals("")) {
+                        riders.getText().toString().equals("NO OF RIDERS")) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                     } else {
@@ -425,14 +376,10 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                     }
                     Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
                     snackbar.show();
-                } else*/ /*{
+                } else {
                     storeData();
-
-                    Intent rideIntent = new Intent(ActivityRideHome.this, ActivityRideRequest.class);
-                    rideIntent.putExtra("npas", RiderNo);
-                    rideIntent.putExtra("vtype", VehicleType);
-                    startActivity(rideIntent);
-                }*/
+                    isDriverAv();
+                }
                 break;
 
             case R.id.reject_request:
@@ -476,6 +423,11 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
             case R.id.per_2:
                 riders.setText("2");
                 RiderNo = "2";
+                imageDialog2.dismiss();
+                break;
+            case R.id.per_3:
+                riders.setText("2 + 1");
+                RiderNo = "3";
                 imageDialog2.dismiss();
                 break;
         }

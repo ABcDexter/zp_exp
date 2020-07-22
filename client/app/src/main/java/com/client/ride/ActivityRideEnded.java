@@ -13,8 +13,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.client.ActivityRateZippe;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,10 +44,13 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
     private static final String TAG = "ActivityRideEnded";
     private static ActivityRideEnded instance;
     Dialog myDialog;
-
-    Button done;
+    String onlyPrice;
+    ImageButton paynow;
+    //Button done;
     ActivityRideEnded a = ActivityRideEnded.this;
     Map<String, String> params = new HashMap();
+    ScrollView scrollView;
+    TextView txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
 
         SharedPreferences prefCookie = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuthCookie = prefCookie.getString(AUTH_KEY, "");
+        txt = findViewById(R.id.txt);
 
         upiPayment = findViewById(R.id.upi);
         cost = findViewById(R.id.payment);
@@ -67,10 +73,13 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         getPrice();
         upiPayment.setOnClickListener(this);
         checkStatus();
-        done = findViewById(R.id.confirm_btn);
-        done.setOnClickListener(this);
+        /*done = findViewById(R.id.confirm_btn);
+        done.setOnClickListener(this);*/
         myDialog = new Dialog(this);
 
+        paynow = findViewById(R.id.pay_now);
+        paynow.setOnClickListener(this);
+        scrollView = findViewById(R.id.scrollView_ride_OTP);
     }
 
     public static ActivityRideEnded getInstance() {
@@ -103,6 +112,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         if (id == 1) {
             String actualPrice = response.getString("price");
             cost.setText("₹ " + actualPrice);
+            onlyPrice = actualPrice;
         }
         //response on hitting user-trip-get-status API
         if (id == 2) {
@@ -115,7 +125,13 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
 
                 } else if (active.equals("true")) {
                     String status = response.getString("st");
-                    if (status.equals("TR") || status.equals("FN")) {
+                    if (status.equals("TR")) {
+                        Intent intent = new Intent(this, UtilityPollingService.class);
+                        intent.setAction("05");
+                        startService(intent);
+                        txt.setText("you have chosen to end \nyour ride with");
+                    }
+                    if (status.equals("FN")) {
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("05");
                         startService(intent);
@@ -145,20 +161,27 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.upi:
-                String amount = cost.getText().toString();
+                String amount = onlyPrice;
                 String note = "Payment for ride service";
                 String name = "Zipp-E";
                 String upiId = "9084083967@ybl";
                 payUsingUpi(amount, upiId, name, note);
                 break;
 
-            case R.id.confirm_btn:
+            /*case R.id.confirm_btn:
                 paymentMade();
-                break;
+                break;*/
             case R.id.cash:
                 ShowPopup();
                 break;
-
+            case R.id.pay_now:
+                Snackbar snackbar = Snackbar
+                        .make(scrollView, "Please make your payment, before booking your next ride.", Snackbar.LENGTH_INDEFINITE);
+                View sbView = snackbar.getView();
+                TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
+                textView.setTextColor(Color.YELLOW);
+                snackbar.show();
+                break;
         }
     }
 
