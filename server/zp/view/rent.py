@@ -347,11 +347,14 @@ def supRentCheck(_dct, sup):
     qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
     if len(qsVehicles) == 0:
         return HttpJSONResponse({'count':0}) # making it easy for Volley to handle JSONArray and JSONObject
-
+    #aasdf
     # Get the first requested trip from Supervisors place id
     qsTrip = Trip.objects.filter(srcid=sup.pid, st__in=['RQ', 'AS', 'TR', 'FN']).order_by('-rtime')
-    uName = User.objects.filter(an=qsTrip[0].uan)[0].name
-    ret = {} if not len(qsTrip) else {'tid': qsTrip[0].id, 'st': qsTrip[0].st, 'rvtype': qsTrip[0].rvtype, 'uname':uName}
+    rentals = []
+    for trip in qsTrip :
+        uName = User.objects.filter(an=trip.uan)[0].name
+        rentals.append({'tid': trip.id, 'st': trip.st, 'rvtype': trip.rvtype, 'uname': uName})
+    ret = {} if not len(qsTrip) else {'rentals': rentals}
     return HttpJSONResponse(ret)
 
 
