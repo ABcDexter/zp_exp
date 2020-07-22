@@ -350,7 +350,7 @@ def supRentCheck(_dct, sup):
 
     # Get the first requested trip from Supervisors place id
     qsTrip = Trip.objects.filter(srcid=sup.pid, st__in=['RQ', 'AS', 'TR', 'FN']).order_by('-rtime')
-    uName = User.objects.filter(an=qsTrip[0].an)[0].name
+    uName = User.objects.filter(an=qsTrip[0].uan)[0].name
     ret = {} if not len(qsTrip) else {'tid': qsTrip[0].id, 'st': qsTrip[0].st, 'rvtype': qsTrip[0].rvtype, 'uname':uName}
     return HttpJSONResponse(ret)
 
@@ -504,8 +504,7 @@ def supRentStart(dct, _sup):
         tid
     '''
     qsTrip = Trip.objects.filter(id=dct['tid'])
-    if len(qsTrip):
-        trip = qsTrip[0]
+    trip = qsTrip[0]
 
     if str(dct['otp']) == str(getOTP(trip.uan, trip.dan, trip.atime)):
         trip.st = 'ST'
