@@ -339,7 +339,8 @@ def userTripGetStatus(_dct, user):
                 ret['time'] = int(remTimeMins)
                 ret['vno'] = vehicle.regn  # moves to ST state
 
-            # TODO In case of rental make the rental send the number of minutes remaining .
+            # done In case of rental make the rental send the number of minutes remaining .
+            # this is given by authTimeRemaining
 
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
