@@ -535,7 +535,7 @@ def authTripGetInfo(dct, entity):
     ret = {'st': trip.st, 'rtype':trip.rtype}
     if trip.st in ['FN', 'TR', 'PD']:
         remPrice = int(float(getTripPrice(trip)['price']) - float(getRentPrice(trip.hrs)['price']))
-        price = str(price) + '.00' if remPrice >= 0 else '0.00'
+        price = str(remPrice) + '.00' if remPrice >= 0 else '0.00'
         ret.update({'price': price})
     return HttpJSONResponse(ret)
 
