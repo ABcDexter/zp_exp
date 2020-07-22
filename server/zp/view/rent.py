@@ -350,7 +350,8 @@ def supRentCheck(_dct, sup):
 
     # Get the first requested trip from Supervisors place id
     qsTrip = Trip.objects.filter(srcid=sup.pid, st__in=['RQ', 'AS', 'TR', 'FN']).order_by('-rtime')
-    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'st': qsTrip[0].st, 'rvtype': qsTrip[0].rvtype}
+    uName = User.objects.filter(an=qsTrip[0].an)[0].name
+    ret = {} if not len(qsTrip) else {'tid': qsTrip[0].id, 'st': qsTrip[0].st, 'rvtype': qsTrip[0].rvtype, 'uname':uName}
     return HttpJSONResponse(ret)
 
 
@@ -375,10 +376,12 @@ def supRentVehicleAssign(dct, sup):
         # Ensure that the chosen vehicle is here and not assigned to a trip
         vehicle = Vehicle.objects.filter(an=dct['van'], pid=trip.srcid)[0]
         if vehicle.tid != -1:
-            raise ZPException(400, 'Vehicle already in trip')
+            raise ZPException(400, 'Vehicle already in trip!')
+        elif vehicle.vtype != trip.rvtype:
+            raise ZPException(400, 'Vehicle type not the same as requested!')
 
         # Make the trip
-        trip.st = 'AS' #TODO make this 'as' state
+        trip.st = 'AS'
         trip.dan = sup.an #dan is sup.an
         trip.van = vehicle.an
         trip.atime = datetime.now(timezone.utc)
@@ -536,12 +539,12 @@ def supRentEnd(dct, _sup):
     trip.save()
 
     # Get the vehicle
-    recVehicle = Vehicle.objects.filter(an=trip.van)[0]
+    #recVehicle = Vehicle.objects.filter(an=trip.van)[0]
 
     # Calculate price
     # dctPrice = getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
-    dctPrice = getRentPrice(trip.hrs, (trip.etime - trip.stime).seconds //60 ) #TODO updaete this to geive rem amount
-    return HttpJSONResponse(dctPrice)
+    #dctPrice = #getRentPrice(trip.hrs, (trip.etime - trip.stime).seconds //60 )
+    return HttpJSONResponse({'price': int(float(getTripPrice(trip)['price']) - float(getRentPrice(trip.hrs)['price']))})
 
 
 @makeView()
