@@ -91,14 +91,17 @@ def userRentGetVehicle(_dct, entity, trip):
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-@checkTripStatus('AS')
+@checkTripStatus(['AS', 'ST'])
 def userRentGetSup(_dct, _user, trip):
     '''
     Returns aadhaar, name and phone of hub supervisor
     '''
-    #TODO send drop hub supervisor
-    sup = Supervisor.objects.filter(an=trip.dan)[0]
-    ret = {'pn': sup.pn, 'name': sup.name}
+    if trip.st == 'AS':
+        sup = Supervisor.objects.filter(pid=trip.srcid)[0]
+        ret = {'pn': sup.pn, 'name': sup.name}
+    else:
+        sup = Supervisor.objects.filter(pid=trip.dstid)[0]
+        ret = {'pn': sup.pn, 'name': sup.name}
     return HttpJSONResponse(ret)
 
 
