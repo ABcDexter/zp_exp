@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from url_magic import makeView
 from ..models import Place, Trip, Progress
 from ..models import User, Vehicle, Driver, Location
-from ..utils import ZPException, HttpJSONResponse
+from ..utils import ZPException, HttpJSONResponse, googleDistAndTime
 from ..utils import getOTP
 from ..utils import getRoutePrice, getTripPrice, getRidePrice, getRiPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
@@ -468,27 +468,9 @@ def userIsDriverAv(dct, user):
 
             #print(srcCoOrds, dstCoOrds)
 
-            import googlemaps
-            gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
-            dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
-            # log(dctDist)
-            # print('############# DST : ', dctDist)
-            if dctDist['status'] != 'OK':
-                raise ZPException(501, 'Error fetching distance matrix')
+            gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+            nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
-            dctElem = dctDist['rows'][0]['elements'][0]
-            nDist = 0
-            nTime = 0
-            if dctElem['status'] == 'OK':
-                nDist = dctElem['distance']['value']
-                nTime = int(dctElem['duration']['value']) // 60
-            elif dctElem['status'] == 'NOT_FOUND':
-                nDist, nTime = 0,0
-            elif dctElem['status'] == 'ZERO_RESULTS':
-                nDist, nTime = 0,0
-
-            print('distance: ', nDist)
-            print('time: ', nTime)
             if nTime or nDist:
                 if nDist < 10_000 : # 10 kms
                     print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})

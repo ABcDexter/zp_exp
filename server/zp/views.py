@@ -31,7 +31,7 @@ from .utils import headers
 
 from url_magic import makeView
 from zp.view import rent, ride, deliver, pwa
-
+from .utils import googleDistAndTime
 ###########################################
 # Types
 Filename = str
@@ -287,29 +287,8 @@ def userTripGetStatus(_dct, user):
             # print('################',dstCoOrds)
 
             # print(srcCoOrds, dstCoOrds)
-
-            import googlemaps
-            gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
-            dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
-            # log(dctDist)
-            # print('############# DST : ', dctDist)
-            if dctDist['status'] != 'OK':
-                raise ZPException(501, 'Error fetching distance matrix')
-
-            dctElem = dctDist['rows'][0]['elements'][0]
-            nDist = 0
-            nTime = 0
-            if dctElem['status'] == 'OK':
-                nDist = dctElem['distance']['value']
-                nTime = int(dctElem['duration']['value']) // 60
-            elif dctElem['status'] == 'NOT_FOUND':
-                nDist, nTime = 0, 0
-            elif dctElem['status'] == 'ZERO_RESULTS':
-                nDist, nTime = 0, 0
-
-            #print('distance: ', nDist)
-            #print('time: ', nTime)
-
+            gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+            nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
             if trip.rtype == '1': #RENTAL
                 ret['price'] = getRentPrice(trip.hrs)['price']

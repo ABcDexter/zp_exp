@@ -27,6 +27,8 @@ from django.conf import settings
 import requests
 from urllib.parse import urlencode
 
+import googlemaps
+
 #from fuzzywuzzy import fuzz as accurate
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = settings.GOOGLE_APPLICATION_CREDENTIALS
@@ -203,11 +205,12 @@ def googleDistAndTime(srcCoOrds, dstCoOrds):
     Returns:
         dictionary of dist, time
     '''
+
     import googlemaps
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
     dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
     # log(dctDist)
-    print('############# DST : ', dctDist)
+    # print('############# DST : ', dctDist)
     if dctDist['status'] != 'OK':
         raise ZPException(501, 'Error fetching distance matrix')
 
@@ -216,10 +219,12 @@ def googleDistAndTime(srcCoOrds, dstCoOrds):
     nTime = 0
     if dctElem['status'] == 'OK':
         nDist = dctElem['distance']['value']
-        nTime = dctElem['duration']['value']
-    print('distance: ', nDist)
-    print('time: ', nTime)
-    ret = {'dist: ', nDist, 'time: ', nTime}
+        nTime = int(dctElem['duration']['value']) // 60
+    elif dctElem['status'] == 'NOT_FOUND':
+        nDist, nTime = 0, 0
+    elif dctElem['status'] == 'ZERO_RESULTS':
+        nDist, nTime = 0, 0
+    ret = {'dist': nDist, 'time': nTime}
 
     return ret
 
@@ -552,22 +557,39 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     10:00:00 am	₹ 30.00	total	₹ 390.00
     11:00:00 am	₹ 30.00	total	₹ 420.00
     12:00:00 pm	₹ 30.00 total	₹ 450.00
+
+    1	    0-60 	                     ₹60.00
+    0.95	0-120	₹114.00	  ₹ 0.00     ₹54.00
+    0.9  	0-180	₹162.00	  ₹ 0.00     ₹48.00
+    0.85	0-240	₹204.00	  ₹ 0.00     ₹42.00
+    0.8	    0-300	₹240.00	  ₹ 0.00     ₹36.00
+    0.75	0-360	₹270.00	  ₹ 0.00     ₹30.00
+    0.7	    0-420	₹294.00	  ₹ 6.00     ₹24.00
+    0.65	0-480	₹312.00	  ₹ 18.00    ₹18.00
+    0.6	    0-540	₹324.00	  ₹ 36.00    ₹12.00
+    0.55	0-600	₹330.00	  ₹ 60.00    ₹6.00
+    0.5	    0-660	₹330.00	  ₹ 90.00    ₹0.00
+    0.5	    0-720	₹360.00	  ₹ 90.00    ₹30.00
     '''
     iMaxSpeed = 25  # capped to 25 kmph
     iTimeActualMins = int(iTimeHrs) * 60 if iTimeActualMins == 0 else int(iTimeActualMins)
     #hrs converted to mins
-	
-    lstPrice = [ 0, 100, 90, 80, 70, 60, 50, 50, 50, 50, 50, 50, 50, 50]  # paise per minute for every 1 hour
-    idx      = [ 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13 ] # for every 1 hour, after 12th hour maybe charge extra
-    idxNext  = [ 0, 70, 130, 190, 250, 310, 370, 430, 490, 550, 610, 670, 730 ] # for what should be the limit for next hours charges
-    lstActualPrice = [0, 60.00, 54.00, 48.00, 42.00, 36.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00 ] #finalPrice
+    #lstPrice = [ 0, 100, 90, 80, 70, 60, 50, 50, 50, 50, 50, 50, 50, 50]  # paise per minute for every 1 hour
+    #idx      = [ 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13 ] # for every 1 hour, after 12th hour maybe charge extra
+    #idxNext  = [ 0, 70, 130, 190, 250, 310, 370, 430, 490, 550, 610, 670, 730 ] # for what should be the limit for next hours charges
+    #lstActualPrice = [0, 60.00, 54.00, 48.00, 42.00, 36.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00 ] #finalPrice
+
+    idxNext = [ 0, 60, 120, 180, 240, 300, 300, 420, 480, 540, 600, 660, 720,
+                 780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440]  # for next hours charges
+    lstUpdatedPrice = [0, 60.00, 54.00, 48.00, 42.00, 36.00, 30.00, 24.00, 18.00, 12.00, 6.00, 0.00, 30.00
+                       ]  # finalPrice
 
     try:
         idxMul = next(x[0] for x in enumerate(idxNext) if x[1] >= iTimeActualMins) #Find the correct value from the
     except StopIteration:
         idxMul = 12
-    price = sum(lstActualPrice[1:idxMul+1])
-    #price = lstPrice[iTimeHrs] * iTimeSec
+    price = sum(lstUpdatedPrice[1:idxMul+1]) # sum(lstActualPrice[1:idxMul+1])
+    # price = lstPrice[iTimeHrs] * iTimeSec
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
         'speed': round(iMaxSpeed,0) #(fAvgSpeed * 3.6))
@@ -823,22 +845,8 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
 
     print(srcCoOrds,dstCoOrds)
 
-    import googlemaps
-    gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
-    dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
-    #log(dctDist)
-    print( '############# DST : ', dctDist)
-    if dctDist['status'] != 'OK':
-        raise ZPException(501, 'Error fetching distance matrix')
-
-    dctElem = dctDist['rows'][0]['elements'][0]
-    nDist = 0
-    nTime = 0
-    if dctElem['status'] == 'OK':
-        nDist = dctElem['distance']['value']
-        nTime = dctElem['duration']['value']
-    print('distance: ', nDist)
-    print('time: ', nTime)
+    gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+    nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
     fDist = nDist
     iVType, iPayMode, iTimeSec = 2, 1, nTime #int(iVType), int(iPayMode), int(iTimeSec)  # need explicit type conversion to int
@@ -950,23 +958,8 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
 
     print(srcCoOrds, dstCoOrds)
 
-    import googlemaps
-    gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
-    dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
-    #log(dctDist)
-    print( '############# DST : ', dctDist)
-    if dctDist['status'] != 'OK':
-        raise ZPException(501, 'Error fetching distance matrix')
-
-    dctElem = dctDist['rows'][0]['elements'][0]
-    nDist = 0
-    nTime = 0
-    if dctElem['status'] == 'OK':
-        print(dctElem)
-        nDist = dctElem['distance']['value']
-        nTime = dctElem['duration']['value']
-    print('distance: ', nDist)
-    print('time: ', nTime)
+    gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+    nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
     fDist = nDist
     iVType, iPayMode = int(iVType), int(iPayMode)  # need explicit type conversion to int

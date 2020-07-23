@@ -13,7 +13,8 @@ from django.db.utils import OperationalError, IntegrityError
 from url_magic import makeView
 from ..models import Place, Delivery, Progress, Location
 from ..models import User, Vehicle, Agent
-from ..utils import ZPException, HttpJSONResponse, saveTmpImgFile, doOCR, log, aadhaarNumVerify, renameTmpImgFiles
+from ..utils import ZPException, HttpJSONResponse, saveTmpImgFile, doOCR, log, aadhaarNumVerify, renameTmpImgFiles, \
+    googleDistAndTime
 from ..utils import getOTP
 from ..utils import getDeliveryPrice, getDelPrice
 from ..utils import handleException, extractParams, checkAuth, retireDelEntity, getClientAuth
@@ -161,28 +162,9 @@ def userIsAgentAv(dct, user):
         # print('################',dstCoOrds)
 
         print(srcCoOrds, dstCoOrds)
+        gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+        nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
-        import googlemaps
-        gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
-        dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
-        # log(dctDist)
-        # print('############# DST : ', dctDist)
-        if dctDist['status'] != 'OK':
-            raise ZPException(501, 'Error fetching distance matrix')
-
-        dctElem = dctDist['rows'][0]['elements'][0]
-        nDist = 0
-        nTime = 0
-        if dctElem['status'] == 'OK':
-            nDist = dctElem['distance']['value']
-            nTime = int(dctElem['duration']['value'])//60
-        elif dctElem['status'] == 'NOT_FOUND':
-            nDist, nTime = 0,0  # 2048, 60  # dummy distance, time in mins
-        elif dctElem['status'] == 'ZERO_RESULTS':
-            nDist, nTime = 0,0  # 4096, 120
-
-        print('distance: ', nDist)
-        print('time: ', nTime)
         if nDist and nTime:
             agents.append({'an': agent['an'], 'name': agent['name'], 'dist': nDist, 'time': nTime})
     
@@ -633,27 +615,9 @@ def agentDeliveryCheck(_dct, agent):
         # print('################',dstCoOrds)
         print(srcCoOrds, dstCoOrds)
 
-        import googlemaps
-        gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
-        dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
-        # log(dctDist)
-        # print('############# DST : ', dctDist)
-        if dctDist['status'] != 'OK':
-            raise ZPException(501, 'Error fetching distance matrix')
+        gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+        nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
-        dctElem = dctDist['rows'][0]['elements'][0]
-        nDist = 0
-        nTime = 0
-        if dctElem['status'] == 'OK':
-            nDist = dctElem['distance']['value']
-            nTime = int(dctElem['duration']['value']) // 60
-        elif dctElem['status'] == 'NOT_FOUND':
-            nDist, nTime = 0, 0
-        elif dctElem['status'] == 'ZERO_RESULTS':
-            nDist, nTime = 0, 0
-
-        print('distance: ', nDist)
-        print('time: ', nTime)
         if nTime or nDist:
             if nDist < 10_000:  # 10 kms radius
                 print({'did': deli['id'], 'srcland':deli['srcland'], 'dstland':deli['dstland']})
