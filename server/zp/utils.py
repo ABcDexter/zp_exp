@@ -193,6 +193,35 @@ def doOCR(path):
     return ret
 
 
+def googleDistAndTime(srcCoOrds, dstCoOrds):
+    '''
+
+    Args:
+        srcCoOrds: list of lat,lng of the source
+        dstCoOrds: list of lat, lng of the destination
+
+    Returns:
+        dictionary of dist, time
+    '''
+    import googlemaps
+    gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
+    dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
+    # log(dctDist)
+    print('############# DST : ', dctDist)
+    if dctDist['status'] != 'OK':
+        raise ZPException(501, 'Error fetching distance matrix')
+
+    dctElem = dctDist['rows'][0]['elements'][0]
+    nDist = 0
+    nTime = 0
+    if dctElem['status'] == 'OK':
+        nDist = dctElem['distance']['value']
+        nTime = dctElem['duration']['value']
+    print('distance: ', nDist)
+    print('time: ', nTime)
+    ret = {'dist: ', nDist, 'time: ', nTime}
+
+    return ret
 
 
 #################################

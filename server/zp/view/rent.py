@@ -61,7 +61,7 @@ def userRentalUpdate(dct, user, trip):
     # trip.dstid = dct['dstid']
     if 'hrs' in dct:
         iHrs = int(dct['hrs'])
-        trip.hrs = iHrs
+        trip.hrs += iHrs # increment and not update
     if 'dstid' in dct:
         trip.dstid = dct['dstid']
     trip.save()
@@ -134,30 +134,30 @@ def userRentEnd(_dct, user, _trip):
 
     close1 = Place()
     close2 = Place()
-    close3 = Place()
+    #close3 = Place()
 
     if not len(qsPrevHubs):
         close1.pn, close1.lat, close1.lng, c1Dst = qsCurrHub[0].pn, qsCurrHub[0].lat,  qsCurrHub[0].lng,  currDst
         close2.pn, close2.lat, close2.lng, c2Dst = qsNextHubs[0].pn, qsNextHubs[0].lat,  qsNextHubs[0].lng, next0Dst
-        close3.pn, close3.lat, close3.lng, c3Dst = qsNextHubs[1].pn, qsNextHubs[1].lat,  qsNextHubs[1].lng, next1Dst
+        #close3.pn, close3.lat, close3.lng, c3Dst = qsNextHubs[1].pn, qsNextHubs[1].lat,  qsNextHubs[1].lng, next1Dst
 
     elif not len(qsNextHubs):
         close1.pn, close1.lat, close1.lng, c1Dst = qsCurrHub[0].pn, qsCurrHub[0].lat, qsCurrHub[0].lng, currDst
         close2.pn, close2.lat, close2.lng, c2Dst = qsPrevHubs[1].pn, qsPrevHubs[1].lat, qsPrevHubs[1].lng, prev1Dst
-        close3.pn, close3.lat, close3.lng, c3Dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat, qsPrevHubs[0].lng, prev0Dst
+        #close3.pn, close3.lat, close3.lng, c3Dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat, qsPrevHubs[0].lng, prev0Dst
 
     else:
         close1.pn, close1.lat, close1.lng, c1Dst = qsCurrHub[0].pn, qsCurrHub[0].lat, qsCurrHub[0].lng, currDst
         if prev0Dst >= next0Dst:
             close2.pn, close2.lat, close2.lng, c2Dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat, qsPrevHubs[0].lng, prev0Dst
-            close3.pn, close3.lat, close3.lng, c3Dst = qsNextHubs[0].pn, qsNextHubs[0].lat,  qsNextHubs[0].lng, next1Dst
+            #close3.pn, close3.lat, close3.lng, c3Dst = qsNextHubs[0].pn, qsNextHubs[0].lat,  qsNextHubs[0].lng, next1Dst
         else:
             close2.pn, close2.lat, close2.lng, c2Dst = qsNextHubs[0].pn, qsNextHubs[0].lat, qsNextHubs[0].lng, next1Dst
-            close3.pn, close3.lat, close3.lng, c3Dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat, qsPrevHubs[0].lng, prev0Dst
+            #close3.pn, close3.lat, close3.lng, c3Dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat, qsPrevHubs[0].lng, prev0Dst
 
     return HttpJSONResponse({'close1pn': close1.pn, 'close1lat': close1.lat, 'close1lng': close1.lng, 'close1dst': c1Dst,
-                            'close2pn': close2.pn, 'close2lat': close2.lat, 'close2lng': close2.lng, 'close2dst': c2Dst,
-                             'close3pn': close3.pn, 'close3lat': close3.lat, 'close3lng': close3.lng, 'close3dst': c3Dst
+                            'close2pn': close2.pn, 'close2lat': close2.lat, 'close2lng': close2.lng, 'close2dst': c2Dst#,
+                             #'close3pn': close3.pn, 'close3lat': close3.lat, 'close3lng': close3.lng, 'close3dst': c3Dst
                              })
 
 
@@ -194,7 +194,7 @@ def userTimeUpdate(dct, _user, trip):
     Returns price
     '''
     # newDropHub =  dct['newdrophub'] if 'newdrophub' in dct else  trip.dstid
-    extraHrs = int(dct['updatedtime'])
+    extraHrs = int(trip.hrs)+int(dct['updatedtime'])
     # recVehicle = Vehicle.objects.filter(an=trip.van)[0]
     oldPrice = getRentPrice(trip.hrs) #= getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
     newPrice = getRentPrice(extraHrs) #= getRentPrice(trip.srcid, newDropHub, recVehicle.vtype, trip.pmode, extraHrs)
@@ -325,7 +325,6 @@ def userRentPay(dct, _user, trip):
     return HttpJSONResponse({'otp': getOTP(trip.uan, trip.dan, trip.atime)})
 
 
-
 # ============================================================================
 # Supervisor views
 # ============================================================================
@@ -333,7 +332,7 @@ def userRentPay(dct, _user, trip):
 
 @makeView()
 @csrf_exempt
-@handleException(IndexError, 'Trip not found', 404)
+@handleException(IndexError, 'Trip/User/Vehicle not found', 404)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
@@ -360,7 +359,7 @@ def supRentCheck(_dct, sup):
 
 @makeView()
 @csrf_exempt
-@handleException(IndexError, 'Trip not found', 404)
+@handleException(IndexError, 'Place/Trip/User/Vehicle not found', 404)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
