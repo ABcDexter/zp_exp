@@ -22,6 +22,8 @@ from django.urls import include, re_path
 
 from url_magic import makeView
 makeView.APP_NAME = 'zp'
+# from zp.view.schedule import schedule
+
 from zp import views
 
 urlpatterns = [re_path(e[0], e[1]) for e in  makeView.dctUrls.items() ]
@@ -31,3 +33,4 @@ urlpatterns = [re_path(e[0], e[1]) for e in  makeView.dctUrls.items() ]
 '''
     #path('admin/', admin.site.urls),
 '''
+# schedule()

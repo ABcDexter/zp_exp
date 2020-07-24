@@ -570,6 +570,19 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     0.55	0-600	₹330.00	  ₹ 60.00    ₹6.00
     0.5	    0-660	₹330.00	  ₹ 90.00    ₹0.00
     0.5	    0-720	₹360.00	  ₹ 90.00    ₹30.00
+
+    1.00	 	₹ 60.00     ₹ 60.00
+    0.90		₹ 108.00    ₹ 48.00
+    0.80		₹ 144.00    ₹ 36.00
+    0.75   	    ₹ 180.00    ₹ 36.00
+    0.70		₹ 210.00    ₹ 30.00
+    0.65		₹ 234.00    ₹ 24.00
+    0.60   	    ₹ 252.00    ₹ 18.00
+    0.55		₹ 264.00    ₹ 12.00
+    0.50		₹ 270.00    ₹ 6.00
+    0.50        ₹ 300.00    ₹ 30.00
+    0.50        ₹ 330.00    ₹ 30.00
+    0.50        ₹ 360.00    ₹ 30.00
     '''
     iMaxSpeed = 25  # capped to 25 kmph
     iTimeActualMins = int(iTimeHrs) * 60 if iTimeActualMins == 0 else int(iTimeActualMins)
@@ -579,10 +592,14 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     #idxNext  = [ 0, 70, 130, 190, 250, 310, 370, 430, 490, 550, 610, 670, 730 ] # for what should be the limit for next hours charges
     #lstActualPrice = [0, 60.00, 54.00, 48.00, 42.00, 36.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00 ] #finalPrice
 
-    idxNext = [ 0, 60, 120, 180, 240, 300, 300, 420, 480, 540, 600, 660, 720,
-                 780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440]  # for next hours charges
-    lstUpdatedPrice = [0, 60.00, 54.00, 48.00, 42.00, 36.00, 30.00, 24.00, 18.00, 12.00, 6.00, 0.00, 30.00
-                       ]  # finalPrice
+    #idxNext = [ 0, 60, 120, 180, 240, 300, 300, 420, 480, 540, 600, 660, 720,
+    #             780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440]  # for next hours charges
+    #lstUpdatedPrice = [0, 60.00, 54.00, 48.00, 42.00, 36.00, 30.00, 24.00, 18.00, 12.00, 6.00, 0.00, 30.00
+    #                  ]  # finalPrice
+
+    idxNext = [0, 60, 120, 180, 240, 300, 300, 420, 480, 540, 600, 660, 720]
+    #             780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440]  # for next hours charges
+    lstUpdatedPrice = [0, 60.00, 48.00, 36.00, 36.00, 30.00, 24.00, 18.00, 12.00, 6.00, 30.00, 30.00, 30.00, 30.00]  # finalPrice
 
     try:
         idxMul = next(x[0] for x in enumerate(idxNext) if x[1] >= iTimeActualMins) #Find the correct value from the

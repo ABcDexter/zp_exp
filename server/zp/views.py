@@ -32,6 +32,8 @@ from .utils import headers
 from url_magic import makeView
 from zp.view import rent, ride, deliver, pwa
 from .utils import googleDistAndTime
+from zp.view import schedule
+
 ###########################################
 # Types
 Filename = str
