@@ -30,11 +30,11 @@ from ..utils import handleException, extractParams, checkAuth, checkTripStatus, 
 # sched.add_job(sensor, 'cron', minute='*')
 # sched.start()
 count = 0
-SERVER_URL = os.environ.get('ZP_URL', 'http://127.0.0.1:9999/')  # localhost
+#SERVER_URL = os.environ.get('ZP_URL', 'http://127.0.0.1:9999/')  # localhost
 sched = BackgroundScheduler()  # daemon=True)
 sched.start()
 
-# SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
+SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
 
 ###########################
 # Helper functions for scheduling
