@@ -57,7 +57,9 @@ def authDeliveryGetInfo(dct, entity):
     if deli.st in ['AS']:
         ret.update(getDelPrice(deli))
     elif deli.st in ['PD', 'FN']:
-        ret.update({'tip': deli.tip, 'earn':float(getDelPrice(deli)['price'])/10}) #TODO return earning from delivery
+        ret.update({'tip': deli.tip,
+                    'price': float(getDelPrice(deli)['price']),
+                    'earn':float(getDelPrice(deli)['price'])/10}) #TODO return earning from delivery
 
     return HttpJSONResponse(ret)
 
@@ -879,7 +881,8 @@ def authDeliveryHistory(dct, entity, deli):
 
         for i in qsDeli:
             thisOneBro = {'id': i['id'], 'st': i['st'],
-                          'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0])['price'])/10 ,
+                          'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0])['price']) ,
+                          'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0])['price'])/10, #earns 10%
                           'tip': i['tip']}  # ,
 
             # TODO 'stime':i['stime'], 'etime':i['etime']}
