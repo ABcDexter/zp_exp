@@ -38,16 +38,17 @@ ADMIN_AUTH    = '437468756c68752066687461676e'
 M_PER_DEG_LNG = 97220.765  # These values are specific to fleet location
 M_PER_DEG_LAT = 110839.613
 DSQUARE_THRESH = 2500 # 50*50
+
 RIDE_RQ_TIMEOUT = 180 # 3 minutes
 RIDE_AS_TIMEOUT = 300 # 5 mintues
 LOG_DIR = '/srv/data/logs/'
 #DRIVER_OF_TIMEOUT = 240
 
-RENT_RQ_TIMEOUT = 600 # 10 mins
-RENT_AS_TIMEOUT = 900 # 15 minutes
+RENT_RQ_TIMEOUT = 1800  # 30 mins
+RENT_AS_TIMEOUT = 3600  # 60 minutes
 
-DEL_RQ_TIMEOUT = 900  # 15 minutes
-DEL_AS_TIMEOUT = 1800 # 30 minutes
+DEL_RQ_TIMEOUT = 900   # 15 minutes
+DEL_AS_TIMEOUT = 1800  # 30 minutes
 # Application definition
 
 INSTALLED_APPS = [

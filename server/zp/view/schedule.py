@@ -140,7 +140,7 @@ def userRentSchedule(dct, user):
         dinaank = datetime(year, month, date, hour - 1, (minute - 30) % 60, 00)
     else:
         dinaank = datetime(year, month, date, hour, minute - 30, 00)
-    dinaank = datetime(year, month, date, hour, minute, 30)
+    dinaank = datetime(year, month, date, hour - 1, minute, 30)
     print(dinaank)
     global sched
     sched.pause()
@@ -151,7 +151,7 @@ def userRentSchedule(dct, user):
     print(sched)
     print(sched.get_jobs())  # _jobstores.ne #job.next_run_time)
     sched.resume()
-    time.sleep(30)
+    time.sleep(10)
     ret = {}
     # ret = getRentPrice(dct['hrs'])
     # ret['tid'] = trip.id
