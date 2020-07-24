@@ -519,3 +519,36 @@ class Location(models.Model):
         db_table = 'location'
         ordering = ['lat', 'lng']
         managed = True
+
+
+class Rate(models.Model):
+    '''
+    id (int): Autoincrement primary key
+
+    type = type of the rating, which is rent+rentid, or reide+rideid, deli+deliveryid
+    ""
+    ""
+    ""
+    "Any other"
+    '''
+    TYPE = [
+        ('RIDE', 'ride'),
+        ('RENT', 'rental'),
+        ('DELI', 'delivery'),
+        ('NAN', 'null')
+    ]
+
+    RATINGS = [
+        ('AT', 'attitude'),  # Attitude of contact person (driver/supervisor/delivery agent)
+        ('VC', 'vehiclecon'),   # Vehicle condition
+        ('CL',  'cleanliness'),  # cleanliness of the vehicle
+        ('OT', 'other'),  # failed due to any reason other than cancellation
+    ]
+    id = models.CharField(primary_key=True, max_length=10)
+    type = models.CharField(max_length=4, choices=TYPE, default='NAN', db_index=True)
+    rating = models.CharField(max_length=20, choices=RATINGS, default='OT', db_index=True)
+    money = models.FloatField(db_index=True, default=0.0)
+
+    class Meta:
+        db_table = 'rate'
+        managed = True

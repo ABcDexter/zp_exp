@@ -1133,7 +1133,8 @@ def authTripRate(dct, entity, trip):
     rating system...
     HTTP args:
         auth,
-        rate
+        rate,
+
     '''
     print(dct, entity, trip)
     bIsUser = True if type(entity) is User else False #user or driver
