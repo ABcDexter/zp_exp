@@ -1129,7 +1129,7 @@ def userGiveOtp(dct, user, _trip):
 @transaction.atomic
 @checkAuth()
 @checkTripStatus(['PD'])
-def authTripRate(dct, entity, trip):
+def authRideRate(dct, entity, trip):
     '''
     rating system...
     HTTP args:
@@ -1145,6 +1145,14 @@ def authTripRate(dct, entity, trip):
         numTrips = Trip.objects.filter(dan=driver.an).count()
         driver.mark = (driver.mark+int(dct['rate']))/(numTrips+1)
         driver.save()
+
+        # give the ratings
+        rate.id = 'ride' + str(trip.id)
+        rate.type = 'ride'
+        rate.rating = dct['rate']
+        rate.money = getTripPrice(trip)
+        rate.save()
+
     else :
         user = User.objects.filter(an=trip.uan)[0]
         numTrips = Trip.objects.filter(uan=user.an).count()
