@@ -322,6 +322,26 @@ def userDeliveryCancel(_dct, _user, delivery):
     return HttpJSONResponse({})
 
 
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Delivery not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkDeliveryStatus(['ST'])
+def userDeliveryTrack(dct, user):
+    '''
+        Track the Delivery for a user
+    '''
+    deli = Delivery.objects.filter(id=dct['did'])[0]  # get that delivery
+    # agent = Agent.objects.filter(an=deli.dan)[0]  # get that agent
+    loc = Location.objects.filter(an=deli.dan)[0]  # get the location
+    ret = {'lat': loc.lat, 'lng': loc.lng}
+
+    return HttpJSONResponse(ret)
+
+
 # ============================================================================
 # Agent views
 # ============================================================================

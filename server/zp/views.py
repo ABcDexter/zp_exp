@@ -33,6 +33,7 @@ from url_magic import makeView
 from zp.view import rent, ride, deliver, pwa
 from .utils import googleDistAndTime
 from zp.view import schedule
+from .models import Rate
 
 ###########################################
 # Types
@@ -1137,6 +1138,7 @@ def authTripRate(dct, entity, trip):
 
     '''
     print(dct, entity, trip)
+    rate = Rate()
     bIsUser = True if type(entity) is User else False #user or driver
     if bIsUser :
         driver = Driver.objects.filter(an=trip.dan)[0]
