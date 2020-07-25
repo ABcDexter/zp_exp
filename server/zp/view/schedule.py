@@ -290,7 +290,7 @@ def userRideSchedule(dct, user):
     global sched
     sched.pause()
     sched.add_job(callAPI, 'date', run_date=dinaank,
-                  args=['user-rent-request', params, user.auth])
+                  args=['user-ride-request', params, user.auth])
     print(sched)
     print(sched.get_jobs())  # _jobstores.ne #job.next_run_time)
     sched.resume()
