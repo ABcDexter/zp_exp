@@ -336,8 +336,11 @@ def userDeliveryTrack(dct, user):
     '''
     deli = Delivery.objects.filter(id=dct['did'])[0]  # get that delivery
     # agent = Agent.objects.filter(an=deli.dan)[0]  # get that agent
-    loc = Location.objects.filter(an=deli.dan)[0]  # get the location
-    ret = {'lat': loc.lat, 'lng': loc.lng}
+    if deli.st in ['ST', 'PD']:
+        loc = Location.objects.filter(an=deli.dan)[0]  # get the location
+        ret = {'lat': loc.lat, 'lng': loc.lng}
+    else:
+        raise ZPException('Trip NOT in right state to track agent', 501)
 
     return HttpJSONResponse(ret)
 
