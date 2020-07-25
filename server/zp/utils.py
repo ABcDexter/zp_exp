@@ -28,7 +28,7 @@ import requests
 from urllib.parse import urlencode
 
 import googlemaps
-import pandas as pd
+#import pandas as pd
 
 #from fuzzywuzzy import fuzz as accurate
 

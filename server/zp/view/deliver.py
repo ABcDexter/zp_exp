@@ -260,17 +260,17 @@ def userDeliveryRequest(dct, user): #, _delivery):
                                                                             dct['dstland'], dct['dstphone']
 
     if 'fr' in dct:
-        delivery.fl = dct['fr']
+        delivery.fr = dct['fr']
     if 'fl' in dct:
         delivery.fl = dct['fl']
     if 'li' in dct:
-        delivery.fl = dct['li']
+        delivery.li = dct['li']
     if 'kd' in dct:
-        delivery.fl = dct['fl']
+        delivery.kd = dct['kd']
     if 'kw' in dct:
-        delivery.fl = dct['kw']
+        delivery.kw = dct['kw']
     if 'kc' in dct:
-        delivery.fl = dct['kc']
+        delivery.kc = dct['kc']
 
     if 'details' in dct:
         delivery.details = dct['details']
