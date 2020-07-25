@@ -123,7 +123,7 @@ def userRentSchedule(dct, user):
         date, month, year,
         hour, minute.
     '''
-    print("Rental Request param : ", dct)
+    print("Rental scheduling Request param : ", dct)
 
     # Even though we can use IDs directly, look them up in the DB to prevent bogus IDs
     placeSrc = Place.objects.filter(id=dct['srcid'])[0]
@@ -159,7 +159,6 @@ def userRentSchedule(dct, user):
     return HttpJSONResponse(ret)
 
 
-
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
@@ -192,10 +191,13 @@ def userDeliverySchedule(dct, user):
 
         fr, fl, li, kd, kw, kc,
 
-        tip
+        tip,
 
+        5 more things
+        date, month, year,
+        hour, minute.
     '''
-    print("#######  ", len(dct), "Delivery request param : ",  dct)
+    print("#######  ", len(dct), "Delivery scheduling request param : ",  dct)
     params = {'fr': dct['fr'] if 'fr' in dct else 0, 'fl': dct['fl'] if 'fl' in dct else 0,
               'li': dct['li'] if 'li' in dct else 0, 'kd': dct['kd'] if 'kd' in dct else 0,
               'kw': dct['kw'] if 'kw' in dct else 0, 'kc': dct['kc'] if 'kc' in dct else 0,
@@ -239,4 +241,59 @@ def userDeliverySchedule(dct, user):
     print(sched.get_jobs())  # _jobstores.ne #job.next_run_time)
     sched.resume()
     time.sleep(5)
+    return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def userRideSchedule(dct, user):
+    '''
+    User calls this to request a ride
+
+    HTTP args:
+    Ride :
+        srclat, srclng,
+        dstlat, dstlng,
+        npas - number of passengers
+        #srcid - id of the selected start place
+        #dstid - id of the selected destination
+        rtype - rent or ride
+        vtype - vehicle type
+        pmode - payment mode (cash / upi)
+
+
+        5 more things
+        date, month, year,
+        hour, minute.
+    '''
+    print("Ride scheduling Request param : ", dct)
+
+    params = {'rtype': '0', 'npas': dct['npas'], 'pmode': dct['pmode'], 'vtype': dct['vtype']}
+    params.update({'srclat': dct['srclat'], 'srclng': dct['srclng'], 'dstlat': dct['dstlat'], 'dstlng': dct['dstlng']})
+    year = int(dct['year'])
+    month = int(dct['month'])
+    date = int(dct['date'])
+
+    hour = int(dct['hour'])
+    minute = int(dct['min'])
+
+    if minute - 30 < 0:
+        dinaank = datetime(year, month, date, hour - 1, (minute - 30) % 60, 00)
+    else:
+        dinaank = datetime(year, month, date, hour, minute - 30, 00)
+    # dinaank = datetime(year, month, date, hour - 1, minute, 30)
+    print(dinaank)
+    global sched
+    sched.pause()
+    sched.add_job(callAPI, 'date', run_date=dinaank,
+                  args=['user-rent-request', params, user.auth])
+    print(sched)
+    print(sched.get_jobs())  # _jobstores.ne #job.next_run_time)
+    sched.resume()
+    time.sleep(10)
+
     return HttpJSONResponse({})
