@@ -28,6 +28,7 @@ import requests
 from urllib.parse import urlencode
 
 import googlemaps
+import pandas as pd
 
 #from fuzzywuzzy import fuzz as accurate
 
@@ -273,6 +274,127 @@ STATES = [
     ('Puducherry', 'puducherry', 	'PY')
  ]
 
+pins_to_name = {
+'248121' : ' Ajabpur, Dehradun ',
+'248125' : ' Ambari, Dehradun ',
+'248007' : ' Ambiwala, Dehradun ',
+'248003' : ' Anarwala, Dehradun ',
+'248199' : ' Tuini, Dehradun ',
+'248001' : ' Araghar, Dehradun ',
+'249201' : ' Ashutosh Nagar, Dehradun ',
+'248252' : ' Thaina, Dehradun ',
+'248143' : ' Kaluwala, Dehradun ',
+'248140' : ' Resham Majri, Dehradun ',
+'248005' : ' Tunwala, Dehradun ',
+'248196' : ' Samalta, Dehradun ',
+'248161' : ' Bhaniawala, Dehradun ',
+'248008' : ' Tapovan, Dehradun ',
+'248122' : ' Barlowganj, Dehradun ',
+'248124' : ' Nada, Dehradun ',
+'248197' : ' Tilwari, Dehradun ',
+'248009' : ' Shahanshahi Ashram, Dehradun ',
+'248123' : ' Tungra, Dehradun ',
+'248141' : ' Ghangora, Dehradun ',
+'248164' : ' Chhibroo, Dehradun ',
+'249204' : ' S.N. temple, Dehradun ',
+'248002' : ' Turner Road, Dehradun ',
+'248145' : ' Rani Pokhari, Dehradun ',
+'248165' : ' Ubhreau, Dehradun ',
+'248167' : ' Dhakrani, Dehradun ',
+'248142' : ' Vikasnagar, Dehradun ',
+'248159' : ' Khadar, Dehradun ',
+'249205' : ' Raiwala, Dehradun ',
+'248160' : ' Harrawala, Dehradun ',
+'248179' : ' Savoy Hotel, Dehradun ',
+'248006' : ' Newforest, Dehradun ',
+'248195' : ' Vijepur Hathibarka, Dehradun ',
+'248152' : ' Jharipani, Dehradun ',
+'248202' : ' K.P.kshetra, Dehradun ',
+'248119' : ' Korwa, Dehradun ',
+'248148' : ' Kulhal, Dehradun ',
+'248171' : ' Mehuwala, Dehradun ',
+'248110' : ' Mohbewala, Dehradun ',
+'248115' : ' Mothrowala, Dehradun ',
+'247670' : ' Narsan Kalan, Dehradun ',
+'248010' : ' Nehrugram, Dehradun ',
+'248198' : ' Vikasnagar, Dehradun ',
+'249203' : ' Pashulok, Dehradun ',
+'248126' : ' Ranjhawala, Dehradun ',
+'248102' : ' Sahstradhara, Dehradun ',
+'248146' : ' Seemadwar, Dehradun ',
+'249202' : ' Virbhadra, Dehradun ',
+'313601' : ' Vallabhnagar, Udaipur ',
+'313611' : ' Tothada, Udaipur ',
+'313804' : ' Sundra, Udaipur ',
+'313702' : ' Vass, Udaipur ',
+'313703' : ' Wali, Udaipur ',
+'313604' : ' Sarangpura, Udaipur ',
+'313031' : ' Sisarma, Udaipur ',
+'313701' : ' Upreta, Udaipur ',
+'313038' : ' Sheshpur, Udaipur ',
+'313602' : ' Vana, Udaipur ',
+'313026' : ' Tokar, Udaipur ',
+'313905' : ' Veerpura, Udaipur ',
+'313803' : ' Suveri, Udaipur ',
+'313705' : ' Surajgarh, Udaipur ',
+'307025' : ' Sandraf, Udaipur ',
+'313203' : ' Vadiyar, Udaipur ',
+'313802' : ' Ugamna Kotra, Udaipur ',
+'313027' : ' Toda, Udaipur ',
+'313902' : ' Thana, Udaipur ',
+'313603' : ' Saleda, Udaipur ',
+'313801' : ' Tidi, Udaipur ',
+'313011' : ' Thoor, Udaipur ',
+'313025' : ' Bari Tb (s), Udaipur ',
+'313708' : ' Teja Ka was, Udaipur ',
+'313024' : ' Zinc Smelter, Udaipur ',
+'313204' : ' Wanri, Udaipur ',
+'313003' : ' Udaipur Industrial area, Udaipur ',
+'313605' : ' Sihar, Udaipur ',
+'313001' : ' Udaipur University campus, Udaipur ',
+'313201' : ' Veerdholia, Udaipur ',
+'313903' : ' Surkhand Ka khera, Udaipur ',
+'313205' : ' Vasni Kalan, Udaipur ',
+'313015' : ' Umaramines, Udaipur ',
+'313904' : ' Chawand, Udaipur ',
+'313022' : ' Nandwel, Udaipur ',
+'313901' : ' Zawar Mines, Udaipur ',
+'313206' : ' Sanwar, Udaipur ',
+'313704' : ' Sayra, Udaipur ',
+'313002' : ' Udaipur H magri, Udaipur ',
+'263157' : ' Tushrar, Nainital ',
+'263159' : ' Syat, Nainital ',
+'263126' : ' Rnibagh, Nainital ',
+'263139' : ' Painth Parao, Nainital ',
+'263143' : ' Arjunpur, Nainital ',
+'263136' : ' Bhimtal, Nainital ',
+'263163' : ' Bail Parao, Nainital ',
+'263140' : ' Pawalgarh, Nainital ',
+'263128' : ' Patwadanger, Nainital ',
+'263134' : ' Unchakote, Nainital ',
+'263132' : ' Supi, Nainital ',
+'263141' : ' Kunwarpur, Nainital ',
+'263131' : ' Bhumiadhar, Nainital ',
+'263127' : ' Jeolikote, Nainital ',
+'244715' : ' Tukura, Nainital ',
+'263164' : ' Chhoi, Nainital ',
+'263158' : ' Nathuwakhan, Nainital ',
+'263135' : ' Talla Bardho, Nainital ',
+'262580' : ' Dholigaon, Nainital ',
+'263138' : ' Unura, Nainital ',
+'263156' : ' Ghorakhal, Nainital ',
+'263408' : ' Gularbhoj, Nainital ',
+'262404' : ' Haldu Chaur, Nainital ',
+'263002' : ' Tallital, Nainital ',
+'263162' : ' Kamola, Nainital ',
+'263001' : ' Pangoot, Nainital ',
+'262402' : ' Lalkua, Nainital ',
+'263129' : ' Manorapeak, Nainital ',
+'263144' : ' Mota Haldu, Nainital ',
+'263137' : ' Ramgarh, Nainital ',
+'263155' : ' Sattal, Nainital '
+
+}
 count = 0
 #################################
 
@@ -1020,6 +1142,7 @@ def getRiPrice(trip):
     return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)#, (trip.etime - trip.stime).seconds)
 
 ###############
+# GOOGLE
 
 def extract_lat_lng(address_or_postalcode, data_type = 'json'):
     """
@@ -1040,8 +1163,83 @@ def extract_lat_lng(address_or_postalcode, data_type = 'json'):
         return {}
     latlng = {}
     try:
+        print(r.json()['results'][0]['address_components'][1]['long_name'])
         latlng = r.json()['results'][0]['geometry']['location']
     except:
         pass
     return latlng.get("lat"), latlng.get("lng")
 
+
+def extract_name_from_pin(address_or_postalcode, data_type='json'):
+    """
+
+    Args:
+        address_or_postalcode:
+        data_type:
+
+    Returns:
+        lat,lng of the place
+    """
+    '''
+    endpoint = f"https://maps.googleapis.com/maps/api/geocode/{data_type}"
+    params = {"address": address_or_postalcode, "key": settings.GOOGLE_PLACES_KEY}
+    url_params = urlencode(params)
+    url = f"{endpoint}?{url_params}"
+    r = requests.get(url)
+    townName = {}
+    if r.status_code not in range(200, 299):
+        return townName
+
+    townName['name'] = ''
+    # try:
+    print(r.json())
+    print(r.json()['results'][0]['address_components'][1]['long_name'])
+    townName['name'] = r.json()['results'][0]['address_components'][1]['long_name']
+    # r.json()['results'][0]['geometry']['location']
+    # except:
+    '''
+    townName = {}
+    if address_or_postalcode in pins_to_name:
+        townName['name'] = pins_to_name[address_or_postalcode]
+    else:
+        townName['name'] = "This PIN code is not serviceable yet."
+    return townName
+
+
+
+'''
+data = pd.read_excel('./pin_codes.xlsx')
+>>> data
+           State  District      Location  Pincode
+0    Uttarakhand  Dehradun       Ajabpur   248121
+1    Uttarakhand  Dehradun        Ambari   248125
+2    Uttarakhand  Dehradun      Ambiwala   248007
+3    Uttarakhand  Dehradun      Anarwala   248003
+4    Uttarakhand  Dehradun           Anu   248199
+..           ...       ...           ...      ...
+857  Uttarakhand  Nainital  Thala Manral   244715
+858  Uttarakhand  Nainital        Tukura   244715
+859  Uttarakhand  Nainital       Tushrar   263157
+860  Uttarakhand  Nainital     Unchakote   263134
+861  Uttarakhand  Nainital         Unura   263138
+
+[862 rows x 4 columns]
+>>> rows = [ row for ix, row in data.iterrows()]
+>>> rows
+len(rows)
+862
+>>> 
+>>> 
+>>> 
+>>> 
+>>> 
+>>> nainital
+set()
+>>> for i in range(862):
+...     if rows[i]['District'] == 'Nainital':
+...             nainital.add(rows[i]['Pincode'])
+... 
+>>> #data = pd.read_excel('./pin_codes.xlsx')
+>>> len(nainital)
+
+'''

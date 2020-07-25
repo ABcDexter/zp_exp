@@ -618,6 +618,9 @@ def authLocationUpdate(dct, entity):
 
     TODO: Add some sanity checks - check that d/dt delta from previous location is not unreasonably high!
     '''
+    if not dct['lat'] or not dct['lng']:
+        print(type(entity) , " with an :", entity.an , "sent empty lat/lng")
+        return HttpJSONResponse({})
 
     # Get the location object for this entity
     qsLoc = Location.objects.filter(an=entity.an)

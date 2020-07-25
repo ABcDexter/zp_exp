@@ -20,6 +20,7 @@ from ..utils import getDeliveryPrice, getDelPrice
 from ..utils import handleException, extractParams, checkAuth, retireDelEntity, getClientAuth
 from ..utils import checkDeliveryStatus
 import googlemaps
+from ..utils import extract_name_from_pin
 
 ###########################################
 # Types
@@ -901,7 +902,6 @@ def authDeliveryHistory(dct, entity, deli):
     # print("REEEEEEEEEEEE ",len(qsDeli))
     if len(qsDeli):
         states = []
-
         for i in qsDeli:
             thisOneBro = {'id': i['id'], 'st': i['st'],
                           'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0])['price']) ,
@@ -931,17 +931,38 @@ def authDeliveryRate(dct, entity, deli):
         rate
     '''
     print(dct, entity, deli)
-    bIsUser = True if type(entity) is User else False #user or driver
+    bIsUser = True if type(entity) is User else False  # user or agent
     if bIsUser :
-        driver = Driver.objects.filter(an=deli.dan)[0]
-        numDeliverys = Delivery.objects.filter(dan=driver.an).count()
-        driver.mark = (driver.mark+int(dct['rate']))/(numDeliverys+1)
-        driver.save()
+        agent = Agent.objects.filter(an=deli.dan)[0]
+        numDeliverys = Delivery.objects.filter(dan=agent.an).count()
+        agent.mark = (agent.mark+int(dct['rate']))/(numDeliverys+1)
+        agent.save()
     else :
         user = User.objects.filter(an=deli.uan)[0]
         numDeliverys = Delivery.objects.filter(uan=user.an).count()
         user.mark = (user.mark+int(dct['rate']))/(numDeliverys+1)
         user.save()
-    #think maybe mark the deli as RATED, do we need an extra state ...?
-
+    # think maybe mark the deli as RATED, do we need an extra state ...?
     return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'This PIN code is not serviceable yet.', 404)
+@handleException(googlemaps.exceptions.TransportError, 'Internet Connectivity Problem', 503)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def authLocationNameFromPin(dct, entity):
+    '''
+    Returns the estimated price for the trip
+
+    HTTP args:
+        srcpin,
+        dstpin
+
+    returns the name of place or none
+    '''
+    print("Google Ride Estimate param : ", dct)
+    ret = extract_name_from_pin(str(dct['pin']))
+    return HttpJSONResponse(ret)
