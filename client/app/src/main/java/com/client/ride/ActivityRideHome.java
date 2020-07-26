@@ -276,13 +276,13 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
 
     private void ImagePopup() {
 
-        imageDialog.setContentView(R.layout.popup_images);
+        imageDialog.setContentView(R.layout.popup_vehicles);
         TextView txt1 = (TextView) imageDialog.findViewById(R.id.txt1);
         TextView txt2 = (TextView) imageDialog.findViewById(R.id.txt2);
         TextView txt3 = (TextView) imageDialog.findViewById(R.id.txt3);
-        RelativeLayout rl1 = (RelativeLayout) imageDialog.findViewById(R.id.rl_1);
-        RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.rl_2);
-        RelativeLayout rl3 = (RelativeLayout) imageDialog.findViewById(R.id.rl_3);
+        RelativeLayout rl1 = (RelativeLayout) imageDialog.findViewById(R.id.ride_rl_1);
+        RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.ride_rl_2);
+        RelativeLayout rl3 = (RelativeLayout) imageDialog.findViewById(R.id.ride_rl_3);
 
         txt1.setText("E-SCOOTY");
         txt2.setText("E-BIKE");
@@ -306,7 +306,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
 
     private void ImagePopup2() {
 
-        imageDialog2.setContentView(R.layout.popup_images2);
+        imageDialog2.setContentView(R.layout.popup_riders);
         TextView txt1 = (TextView) imageDialog2.findViewById(R.id.txt1);
         TextView txt2 = (TextView) imageDialog2.findViewById(R.id.txt2);
         TextView txt3 = (TextView) imageDialog2.findViewById(R.id.txt3);
@@ -330,8 +330,6 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         imageDialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = imageDialog2.getWindow().getAttributes();
 
-        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
-        //wmlp.x = 100;   //x position
         wmlp.y = 80;   //y position
 
         imageDialog2.show();
@@ -400,17 +398,17 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
             case R.id.no_riders:
                 ImagePopup2();
                 break;
-            case R.id.rl_1:
+            case R.id.ride_rl_1:
                 vehicle.setText("E-SCOOTY");
                 imageDialog.dismiss();
                 VehicleType = "1";
                 break;
-            case R.id.rl_2:
+            case R.id.ride_rl_2:
                 vehicle.setText("E-BIKE");
                 VehicleType = "2";
                 imageDialog.dismiss();
                 break;
-            case R.id.rl_3:
+            case R.id.ride_rl_3:
                 vehicle.setText("ZBEE");
                 VehicleType = "3";
                 imageDialog.dismiss();

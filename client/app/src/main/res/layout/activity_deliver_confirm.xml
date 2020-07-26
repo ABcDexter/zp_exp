@@ -12,149 +12,236 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/txtt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:fontFamily="@font/rajdhani_medium"
-                android:text="confirm delivery"
+                android:text="Are you ready to confirm \nyour delivery?"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="23sp" />
 
-
-            <RelativeLayout
-                android:id="@+id/rl_tip"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_below="@id/image_zbee_below"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/rect_box_outline"
-                android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:gravity="center|start"
-                    android:text="Thank your partner"
-                    android:textAllCaps="true"
-                    android:textSize="18sp" />
-
-                <EditText
-                    android:id="@+id/tip"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_toEndOf="@+id/txt"
-                    android:drawableStart="@drawable/ic_rupee"
-                    android:gravity="center|start"
-                    android:hint="Enter Tip"
-                    android:inputType="number"
-                    android:maxLength="2"
-                    android:padding="5dp"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="16sp"
-                    android:textColor="@color/txtColor"/>
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/infoTip"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/ic_info" />
-
-            </RelativeLayout>
-            <ImageView
-                android:id="@+id/image_zbee"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_above="@+id/layoutZippeee"
-                android:src="@drawable/zbee_right" />
-            <include
-                android:id="@+id/layoutZippeee"
-                layout="@layout/zippe_logo"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_centerInParent="true" />
-            <ImageView
-                android:id="@+id/image_zbee_below"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_below="@+id/layoutZippeee"
-                android:src="@drawable/zbee_left"
-                android:visibility="invisible" />
-            <RelativeLayout
-                android:id="@+id/rl_cost"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_above="@id/image_zbee"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/rect_box_outline"
-                android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/txtc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:gravity="center|start"
-                    android:text="total payment -"
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/payment"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_toEndOf="@+id/txtc"
-                    android:drawableStart="@drawable/ic_rupee"
-                    android:gravity="center|start"
-                    android:text="250"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/infoPayment"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/ic_info" />
-
-            </RelativeLayout>
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/confirm_btn"
-                android:text="@string/disclaimer"
-                android:textSize="12sp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="190dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
 
+                <LinearLayout
+                    android:id="@+id/rl_cost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
+                    android:background="@drawable/rect_box_outline"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:gravity="center|end"
+                        android:text="total payment"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="23dp"
+                        android:gravity="center|start"
+                        android:text=":"
+                        android:textAllCaps="true"
+                        android:textSize="23sp" />
+
+                    <TextView
+                        android:id="@+id/payment"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="5dp"
+                        android:text="₹ 333"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/infoPayment"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/ic_info" />
+
+                </LinearLayout>
+
+                <!-- <RelativeLayout
+                     android:id="@+id/rl_cost"
+                     android:layout_width="match_parent"
+                     android:layout_height="50dp"
+                     android:layout_above="@id/image_zbee"
+                     android:layout_marginBottom="30dp"
+                     android:background="@drawable/rect_box_outline"
+                     android:padding="5dp">
+
+                     <TextView
+                         android:id="@+id/txtc"
+                         android:layout_width="wrap_content"
+                         android:layout_height="50dp"
+                         android:gravity="center|start"
+                         android:text="total payment"
+                         android:textAllCaps="true"
+                         android:textSize="20sp" />
+
+                     <TextView
+                         android:id="@+id/payment"
+                         android:layout_width="match_parent"
+                         android:layout_height="50dp"
+                         android:layout_marginStart="20dp"
+                         android:layout_marginEnd="20dp"
+                         android:layout_toEndOf="@+id/txtc"
+                         android:gravity="center|start"
+                         android:text="250"
+                         android:textAlignment="center"
+                         android:textAllCaps="true"
+                         android:textSize="20sp" />
+
+                     <androidx.appcompat.widget.AppCompatImageButton
+                         android:id="@+id/infoPayment"
+                         android:layout_width="25dp"
+                         android:layout_height="25dp"
+                         android:layout_alignParentEnd="true"
+                         android:layout_centerVertical="true"
+                         android:layout_marginEnd="5dp"
+                         android:background="@drawable/ic_info" />
+
+                 </RelativeLayout>
+ -->
+                <ImageView
+                    android:id="@+id/image_zbee"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_above="@+id/layoutZippeee"
+                    android:src="@drawable/scooty_left" />
+
+                <include
+                    android:id="@+id/layoutZippeee"
+                    layout="@layout/zippe_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_centerInParent="true" />
+
+                <ImageView
+                    android:id="@+id/image_zbee_below"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/layoutZippeee"
+                    android:src="@drawable/scooty_right"
+                    android:visibility="invisible" />
+
+
+                <RelativeLayout
+                    android:id="@+id/rl_tip"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/rect_box_outline">
+
+                    <TextView
+                        android:id="@+id/txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:gravity="center|end"
+                        android:paddingStart="10dp"
+                        android:text="Thank your agent"
+                        android:textAllCaps="true"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/colon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_toEndOf="@id/txt"
+                        android:gravity="center|start"
+                        android:text=":"
+                        android:textAllCaps="true"
+                        android:textSize="23sp" />
+
+                    <TextView
+                        android:id="@+id/rupee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_toEndOf="@id/colon"
+                        android:gravity="center|start"
+                        android:text="₹"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/tip"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="25dp"
+                        android:layout_toEndOf="@+id/rupee"
+                        android:gravity="center|start"
+                        android:hint="Enter Tip"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:padding="5dp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/txtColor"
+                        android:textSize="16sp" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/infoTip"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/ic_info" />
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/disclaimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linear_layout"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="80dp"
+                android:justificationMode="inter_word"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:text="@string/disclaimer"
+                android:textSize="12sp" />
 
             <ImageButton
                 android:id="@+id/confirm_btn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/disclaimer"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/btn_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/confirm"
                 android:textAllCaps="true" />
+
         </RelativeLayout>
     </ScrollView>
 

@@ -23,9 +23,10 @@ import com.client.R;
 
 public class ActivityRateRent extends ActivityDrawer implements View.OnClickListener {
 
-    ImageButton happy,sad;
+    ImageButton happy, sad;
     ScrollView scrollView;
-    Dialog myDialog,checkDialog;
+    Dialog myDialog, checkDialog;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +43,14 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
         /*Objects.requireNonNull(getSupportActionBar()).setTitle("fgh");*/
 
         happy = findViewById(R.id.satisfied);
-        happy.setOnClickListener(this);
         sad = findViewById(R.id.notSatisfied);
+        scrollView = findViewById(R.id.scrollViewRateActivity);
+        textView = findViewById(R.id.txt_rate);
+
+        textView.setText("RATE YOUR EXPERIENCE");
+        happy.setOnClickListener(this);
         sad.setOnClickListener(this);
 
-        scrollView = findViewById(R.id.scrollViewRateActivity);
         myDialog = new Dialog(this);
         checkDialog = new Dialog(this);
 
@@ -54,7 +58,7 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.satisfied:
                 ShowPopup();
                 break;
@@ -64,12 +68,13 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
 
         }
     }
+
     private void ShowPopup() {
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
-        infoText.setText("Thank you for renting ZIPP-E");
+        infoText.setText("Thanks for renting ZIPP-E");
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
@@ -100,10 +105,12 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
         CheckBox chk1 = checkDialog.findViewById(R.id.attitude);
         CheckBox chk2 = checkDialog.findViewById(R.id.condition);
         CheckBox chk3 = checkDialog.findViewById(R.id.clean);
+        CheckBox chk4 = checkDialog.findViewById(R.id.other);
 
         chk1.setText("Attitude of contact person");
         chk2.setText("Vehicle condition");
         chk3.setText("Vehicle cleanliness");
+        chk4.setText("Any other");
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

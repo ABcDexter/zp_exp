@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+    android:background="@drawable/rect_box_outline"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txt_head"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="false"
+        android:layout_centerInParent="false"
+        android:layout_centerHorizontal="false"
+        android:background="#605D5D"
+        android:gravity="center"
+        android:text="No of hours"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txt1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt_head"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+
+    <TextView
+        android:id="@+id/txt2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt1"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/txt3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt2"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/txt4"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt3"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/txt5"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt4"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/txt6"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt5"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/txt7"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt6"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/txt8"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt7"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/txt9"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt8"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/txt10"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt9"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/txt11"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt10"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/txt12"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txt11"
+        android:background="@drawable/rect_orange"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+</RelativeLayout>

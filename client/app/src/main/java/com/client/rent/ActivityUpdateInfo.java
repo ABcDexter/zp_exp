@@ -64,6 +64,8 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
     final int UPI_PAYMENT = 0;
     Button dummy;
     Dialog myDialog;
+    String[] costAsTime = {"", "1", "0.90", "0.80", "0.75", "0.70", "0.65", "0.60", "0.55", "0.50",
+                            "0.50", "0.50","0.50"};
 
     public static ActivityUpdateInfo getInstance() {
         return instance;
@@ -90,8 +92,6 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
             updateCost.setText("₹ " + cost);
             PriceOnly = cost;
             update.setClickable(false);
-
-
         }
     }
 
@@ -119,6 +119,7 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         stringAuthCookie = prefPLoc.getString(AUTH_KEY, "");
         SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
         stringHrs = pref.getString(NO_HOURS, "");
+        Log.d(TAG, "######stringHrs = "+stringHrs);
         String stringDrop = pref.getString(LOCATION_DROP, "");
         String stringDropID = pref.getString(LOCATION_DROP_ID, "");
         SharedPreferences tripPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
@@ -206,51 +207,43 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
                 break;
 
             case R.id.txt1:
-                stringHrs = "1";
+                //stringHrs = "1";
                 imageDialog2.dismiss();
-                hours.setText("1 hr / ₹ 1.00 per min");
                 userUpdateTime("1");
                 break;
             case R.id.txt2:
-                stringHrs = "2";
+                //stringHrs = "2";
                 imageDialog2.dismiss();
-                hours.setText("2 hr / ₹ 0.90 per min");
                 userUpdateTime("2");
                 break;
             case R.id.txt3:
-                stringHrs = "3";
+                //stringHrs = "3";
                 imageDialog2.dismiss();
-                hours.setText("3 hr / ₹ 0.80 per min");
                 userUpdateTime("3");
                 break;
             case R.id.txt4:
-                stringHrs = "4";
+                //stringHrs = "4";
                 imageDialog2.dismiss();
-                hours.setText("4 hr / ₹ 0.70 per min");
                 userUpdateTime("4");
                 break;
             case R.id.txt5:
-                stringHrs = "5";
+                //stringHrs = "5";
                 imageDialog2.dismiss();
-                hours.setText("5 hr / ₹ 0.60 per min");
                 userUpdateTime("5");
                 break;
             case R.id.txt6:
-                stringHrs = "6";
+                //stringHrs = "6";
                 imageDialog2.dismiss();
-                hours.setText("6 hr / ₹ 0.50 per min");
                 userUpdateTime("6");
                 break;
             case R.id.txt9:
-                stringHrs = "9";
+                //stringHrs = "9";
                 imageDialog2.dismiss();
-                hours.setText("9 hr / ₹ 0.50 per min");
                 userUpdateTime("9");
                 break;
-            case R.id.txt12:
-                stringHrs = "12";
+            case R.id.txt11:
+                //stringHrs = "12";
                 imageDialog2.dismiss();
-                hours.setText("12 hr / ₹ 0.50 per min");
                 userUpdateTime("12");
                 break;
 
@@ -365,8 +358,10 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
 
     private void ImagePopup2() {
 
-        imageDialog2.setContentView(R.layout.popup_images3);
+        imageDialog2.setContentView(R.layout.popup_hours_edit);
         String hrs = stringHrs;
+Log.d(TAG, "@@@@@@@hrs "+ hrs+ "stringHrs "+stringHrs);
+        TextView head = (TextView) imageDialog2.findViewById(R.id.txt_head);
 
         TextView txt1 = (TextView) imageDialog2.findViewById(R.id.txt1);
         TextView txt2 = (TextView) imageDialog2.findViewById(R.id.txt2);
@@ -374,68 +369,180 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         TextView txt4 = (TextView) imageDialog2.findViewById(R.id.txt4);
         TextView txt5 = (TextView) imageDialog2.findViewById(R.id.txt5);
         TextView txt6 = (TextView) imageDialog2.findViewById(R.id.txt6);
+        TextView txt7 = (TextView) imageDialog2.findViewById(R.id.txt7);
+        TextView txt8 = (TextView) imageDialog2.findViewById(R.id.txt8);
         TextView txt9 = (TextView) imageDialog2.findViewById(R.id.txt9);
+        TextView txt10 = (TextView) imageDialog2.findViewById(R.id.txt10);
+        TextView txt11 = (TextView) imageDialog2.findViewById(R.id.txt11);
         TextView txt12 = (TextView) imageDialog2.findViewById(R.id.txt12);
+
+        head.setText("Extend by");
         if (hrs.equals("1")) {
-            txt1.setVisibility(View.GONE);
+            //txt11.setVisibility(View.GONE);
+            txt1.setText("1 hr (60 mins) @ ₹ "+costAsTime[2]+" / min");
+            txt2.setText("2 hr (120 mins) @ ₹ "+costAsTime[3]+" / min");
+            txt3.setText("3 hr (180 mins) @ ₹ "+costAsTime[4]+" / min");
+            txt4.setText("4 hr (240 mins) @ ₹ "+costAsTime[5]+" / min");
+            txt5.setText("5 hr (300 mins) @ ₹ "+costAsTime[6]+" / min");
+            txt6.setText("6 hr (360 mins) @ ₹ "+costAsTime[7]+" / min");
+            txt7.setText("7 hr (420 mins) @ ₹ "+costAsTime[8]+" / min");
+            txt8.setText("8 hr (480 mins) @ ₹ "+costAsTime[9]+" / min");
+            txt9.setText("9 hr (560 mins) @ ₹ "+costAsTime[10]+" / min");
+            txt10.setText("10 hr (600 mins) @ ₹ "+costAsTime[11]+" / min");
+            txt11.setText("11 hr (660 mins) @ ₹ "+costAsTime[12]+" / min");
         }
         if (hrs.equals("2")) {
-            txt1.setVisibility(View.GONE);
-            txt2.setVisibility(View.GONE);
+            txt11.setVisibility(View.GONE);
+
+            txt1.setText("1 hr (60 mins) @ ₹ "+costAsTime[3]+" / min");
+            txt2.setText("2 hr (120 mins) @ ₹ "+costAsTime[4]+" / min");
+            txt3.setText("3 hr (180 mins) @ ₹ "+costAsTime[5]+" / min");
+            txt4.setText("4 hr (240 mins) @ ₹ "+costAsTime[6]+" / min");
+            txt5.setText("5 hr (300 mins) @ ₹ "+costAsTime[7]+" / min");
+            txt6.setText("6 hr (360 mins) @ ₹ "+costAsTime[8]+" / min");
+            txt7.setText("7 hr (420 mins) @ ₹ "+costAsTime[9]+" / min");
+            txt8.setText("8 hr (480 mins) @ ₹ "+costAsTime[10]+" / min");
+            txt9.setText("9 hr (560 mins) @ ₹ "+costAsTime[11]+" / min");
+            txt10.setText("10 hr (600 mins) @ ₹ "+costAsTime[12]+" / min");
         }
         if (hrs.equals("3")) {
-            txt1.setVisibility(View.GONE);
-            txt2.setVisibility(View.GONE);
-            txt3.setVisibility(View.GONE);
+            txt11.setVisibility(View.GONE);
+            txt10.setVisibility(View.GONE);
+
+            txt1.setText("1 hr (60 mins) @ ₹ "+costAsTime[4]+" / min");
+            txt2.setText("2 hr (120 mins) @ ₹ "+costAsTime[5]+" / min");
+            txt3.setText("3 hr (180 mins) @ ₹ "+costAsTime[6]+" / min");
+            txt4.setText("4 hr (240 mins) @ ₹ "+costAsTime[7]+" / min");
+            txt5.setText("5 hr (300 mins) @ ₹ "+costAsTime[8]+" / min");
+            txt6.setText("6 hr (360 mins) @ ₹ "+costAsTime[9]+" / min");
+            txt7.setText("7 hr (420 mins) @ ₹ "+costAsTime[10]+" / min");
+            txt8.setText("8 hr (480 mins) @ ₹ "+costAsTime[11]+" / min");
+            txt9.setText("9 hr (560 mins) @ ₹ "+costAsTime[12]+" / min");
         }
         if (hrs.equals("4")) {
-            txt1.setVisibility(View.GONE);
-            txt2.setVisibility(View.GONE);
-            txt3.setVisibility(View.GONE);
-            txt4.setVisibility(View.GONE);
+            txt11.setVisibility(View.GONE);
+            txt10.setVisibility(View.GONE);
+            txt9.setVisibility(View.GONE);
+
+            txt1.setText("1 hr (60 mins) @ ₹ "+costAsTime[5]+" / min");
+            txt2.setText("2 hr (120 mins) @ ₹ "+costAsTime[6]+" / min");
+            txt3.setText("3 hr (180 mins) @ ₹ "+costAsTime[7]+" / min");
+            txt4.setText("4 hr (240 mins) @ ₹ "+costAsTime[8]+" / min");
+            txt5.setText("5 hr (300 mins) @ ₹ "+costAsTime[9]+" / min");
+            txt6.setText("6 hr (360 mins) @ ₹ "+costAsTime[10]+" / min");
+            txt7.setText("7 hr (420 mins) @ ₹ "+costAsTime[11]+" / min");
+            txt8.setText("8 hr (480 mins) @ ₹ "+costAsTime[12]+" / min");
         }
         if (hrs.equals("5")) {
-            txt1.setVisibility(View.GONE);
-            txt2.setVisibility(View.GONE);
-            txt3.setVisibility(View.GONE);
-            txt4.setVisibility(View.GONE);
-            txt5.setVisibility(View.GONE);
+            txt11.setVisibility(View.GONE);
+            txt10.setVisibility(View.GONE);
+            txt9.setVisibility(View.GONE);
+            txt8.setVisibility(View.GONE);
+
+            txt1.setText("1 hr (60 mins) @ ₹ "+costAsTime[6]+" / min");
+            txt2.setText("2 hr (120 mins) @ ₹ "+costAsTime[7]+" / min");
+            txt3.setText("3 hr (180 mins) @ ₹ "+costAsTime[8]+" / min");
+            txt4.setText("4 hr (240 mins) @ ₹ "+costAsTime[9]+" / min");
+            txt5.setText("5 hr (300 mins) @ ₹ "+costAsTime[10]+" / min");
+            txt6.setText("6 hr (360 mins) @ ₹ "+costAsTime[11]+" / min");
+            txt7.setText("7 hr (420 mins) @ ₹ "+costAsTime[12]+" / min");
         }
         if (hrs.equals("6")) {
-            txt1.setVisibility(View.GONE);
-            txt2.setVisibility(View.GONE);
-            txt3.setVisibility(View.GONE);
-            txt4.setVisibility(View.GONE);
-            txt5.setVisibility(View.GONE);
+            txt11.setVisibility(View.GONE);
+            txt10.setVisibility(View.GONE);
+            txt9.setVisibility(View.GONE);
+            txt8.setVisibility(View.GONE);
+            txt7.setVisibility(View.GONE);
+
+            txt1.setText("1 hr (60 mins) @ ₹ "+costAsTime[7]+" / min");
+            txt2.setText("2 hr (120 mins) @ ₹ "+costAsTime[8]+" / min");
+            txt3.setText("3 hr (180 mins) @ ₹ "+costAsTime[9]+" / min");
+            txt4.setText("4 hr (240 mins) @ ₹ "+costAsTime[10]+" / min");
+            txt5.setText("5 hr (300 mins) @ ₹ "+costAsTime[11]+" / min");
+            txt6.setText("6 hr (360 mins) @ ₹ "+costAsTime[12]+" / min");
+        }
+        if (hrs.equals("7")) {
+            txt11.setVisibility(View.GONE);
+            txt10.setVisibility(View.GONE);
+            txt9.setVisibility(View.GONE);
+            txt8.setVisibility(View.GONE);
+            txt7.setVisibility(View.GONE);
             txt6.setVisibility(View.GONE);
+
+            txt1.setText("1 hr (60 mins) @ ₹ "+costAsTime[8]+" / min");
+            txt2.setText("2 hr (120 mins) @ ₹ "+costAsTime[9]+" / min");
+            txt3.setText("3 hr (180 mins) @ ₹ "+costAsTime[10]+" / min");
+            txt4.setText("4 hr (240 mins) @ ₹ "+costAsTime[11]+" / min");
+            txt5.setText("5 hr (300 mins) @ ₹ "+costAsTime[12]+" / min");
+        }
+        if (hrs.equals("8")) {
+            txt11.setVisibility(View.GONE);
+            txt10.setVisibility(View.GONE);
+            txt9.setVisibility(View.GONE);
+            txt8.setVisibility(View.GONE);
+            txt7.setVisibility(View.GONE);
+            txt6.setVisibility(View.GONE);
+            txt5.setVisibility(View.GONE);
+
+            txt1.setText("1 hr (60 mins) @ ₹ "+costAsTime[9]+" / min");
+            txt2.setText("2 hr (120 mins) @ ₹ "+costAsTime[10]+" / min");
+            txt3.setText("3 hr (180 mins) @ ₹ "+costAsTime[11]+" / min");
+            txt4.setText("4 hr (240 mins) @ ₹ "+costAsTime[12]+" / min");
         }
         if (hrs.equals("9")) {
-            txt1.setVisibility(View.GONE);
-            txt2.setVisibility(View.GONE);
-            txt3.setVisibility(View.GONE);
-            txt4.setVisibility(View.GONE);
-            txt5.setVisibility(View.GONE);
-            txt6.setVisibility(View.GONE);
+            txt11.setVisibility(View.GONE);
+            txt10.setVisibility(View.GONE);
             txt9.setVisibility(View.GONE);
-        }
-        if (hrs.equals("12")) {
-            txt1.setVisibility(View.GONE);
-            txt2.setVisibility(View.GONE);
-            txt3.setVisibility(View.GONE);
-            txt4.setVisibility(View.GONE);
-            txt5.setVisibility(View.GONE);
+            txt8.setVisibility(View.GONE);
+            txt7.setVisibility(View.GONE);
             txt6.setVisibility(View.GONE);
-            txt9.setVisibility(View.GONE);
-            txt12.setVisibility(View.GONE);
+            txt5.setVisibility(View.GONE);
+            txt4.setVisibility(View.GONE);
+
+            txt1.setText("1 hr (60 mins) @ ₹ "+costAsTime[10]+" / min");
+            txt2.setText("2 hr (120 mins) @ ₹ "+costAsTime[11]+" / min");
+            txt3.setText("3 hr (180 mins) @ ₹ "+costAsTime[12]+" / min");
         }
+        if (hrs.equals("10")) {
+            txt11.setVisibility(View.GONE);
+            txt10.setVisibility(View.GONE);
+            txt9.setVisibility(View.GONE);
+            txt8.setVisibility(View.GONE);
+            txt7.setVisibility(View.GONE);
+            txt6.setVisibility(View.GONE);
+            txt5.setVisibility(View.GONE);
+            txt4.setVisibility(View.GONE);
+            txt3.setVisibility(View.GONE);
+
+            txt1.setText("1 hr (60 mins) @ ₹ "+costAsTime[11]+" / min");
+            txt2.setText("2 hr (120 mins) @ ₹ "+costAsTime[12]+" / min");
+        }
+        if (hrs.equals("11")) {
+            txt11.setVisibility(View.GONE);
+            txt10.setVisibility(View.GONE);
+            txt9.setVisibility(View.GONE);
+            txt8.setVisibility(View.GONE);
+            txt7.setVisibility(View.GONE);
+            txt6.setVisibility(View.GONE);
+            txt5.setVisibility(View.GONE);
+            txt4.setVisibility(View.GONE);
+            txt3.setVisibility(View.GONE);
+            txt2.setVisibility(View.GONE);
+
+            txt1.setText("1 hr (60 mins) @ ₹ "+costAsTime[12]+" / min");
+        }
+        txt12.setVisibility(View.GONE);
         txt1.setOnClickListener(this);
         txt2.setOnClickListener(this);
         txt3.setOnClickListener(this);
         txt4.setOnClickListener(this);
         txt5.setOnClickListener(this);
         txt6.setOnClickListener(this);
+        txt7.setOnClickListener(this);
+        txt8.setOnClickListener(this);
         txt9.setOnClickListener(this);
-        txt12.setOnClickListener(this);
+        txt10.setOnClickListener(this);
+        txt11.setOnClickListener(this);
 
         imageDialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = imageDialog2.getWindow().getAttributes();
@@ -491,32 +598,6 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         }, a::onFailure);
     }
 
-    /*private void alertDialog() {
-        Log.d(TAG, " alert Dialog opened");
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setMessage("YOU MAY BE CHARGED EXTRA FOR CHANGING THE DETAILS. \nARE YOU SURE YOU WANT TO CHANGE DETAILS?");
-        dialog.setTitle("UPDATE");
-        dialog.setPositiveButton("YES",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int which) {
-
-                        userUpdateTrip();
-                        Log.d(TAG, "checkStatus invoked");
-                    }
-                });
-        dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "DETAILS NOT UPDATED", Toast.LENGTH_LONG).show();
-            }
-        });
-        AlertDialog alertDialog = dialog.create();
-        alertDialog.show();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
-
-    }
-*/
     @Override
     public void onBackPressed() {
         super.onBackPressed();

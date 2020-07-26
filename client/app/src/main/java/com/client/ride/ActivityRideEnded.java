@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
@@ -192,7 +194,15 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
 
         infoText.setText("Please pay cash " + cost.getText().toString());
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 77;   //y position
         myDialog.show();
+        Window window = myDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
         myDialog.setCanceledOnTouchOutside(true);
     }
 

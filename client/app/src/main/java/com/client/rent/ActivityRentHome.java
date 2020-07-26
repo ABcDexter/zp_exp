@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -317,54 +315,69 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             case R.id.txt1:
                 NoHours = "1";
                 imageDialog2.dismiss();
-                hours.setText("1 hr / ₹ 1.00 per min");
+                hours.setText("1 hr (60 mins) @ ₹ 1.00 / min");
                 break;
             case R.id.txt2:
                 NoHours = "2";
                 imageDialog2.dismiss();
-                hours.setText("2 hrs / ₹ 0.90 per min");
+                hours.setText("2 hrs (120 mins) @ ₹ 0.95 / min");
                 break;
             case R.id.txt3:
                 NoHours = "3";
                 imageDialog2.dismiss();
-                hours.setText("3 hrs /  ₹ 0.80 PER MIN");
+                hours.setText("3 hrs (180 mins) @ ₹ 0.90 / min");
                 break;
             case R.id.txt4:
                 NoHours = "4";
                 imageDialog2.dismiss();
-                hours.setText("4 hrs / ₹ 0.70 per min");
+                hours.setText("4 hrs (240 mins) @ ₹ 0.85 / min");
                 break;
             case R.id.txt5:
                 NoHours = "5";
                 imageDialog2.dismiss();
-                hours.setText("5 hrs / ₹ 0.60 per min");
+                hours.setText("5 hrs (300 mins) @ ₹ 0.80 / min");
                 break;
             case R.id.txt6:
                 NoHours = "6";
                 imageDialog2.dismiss();
-                hours.setText("6 hrs / ₹ 0.50 per min");
+                hours.setText("6 hrs (360 mins) @ ₹ 0.75 / min");
+                break;
+            case R.id.txt7:
+                NoHours = "7";
+                imageDialog2.dismiss();
+                hours.setText("7 hrs (420 mins) @ ₹ 0.70 / min");
+                break;
+            case R.id.txt8:
+                NoHours = "8";
+                imageDialog2.dismiss();
+                hours.setText("8 hrs (480 mins) @ ₹ 0.65 / min");
                 break;
             case R.id.txt9:
                 NoHours = "9";
                 imageDialog2.dismiss();
-                hours.setText("9 hrs / ₹ 0.50 per min");
+                hours.setText("9 hrs (540 mins) @ ₹ 0.60 / min");
                 break;
-            case R.id.txt12:
+            case R.id.txt10:
+                NoHours = "10";
+                imageDialog2.dismiss();
+                hours.setText("10 hrs (600 mins) @ ₹ 0.55 / min");
+                break;
+            case R.id.txt11:
                 NoHours = "12";
                 imageDialog2.dismiss();
-                hours.setText("12 hrs / ₹ 0.50 per min");
+                hours.setText("11 hrs (660 mins) @ ₹ 0.50 / min");
                 break;
-            case R.id.rl_1:
+            case R.id.rent_rl_1:
                 VehicleType = "0";
                 imageDialog.dismiss();
                 vehicle.setText("E-CYCLE");
                 break;
-            case R.id.rl_2:
+            case R.id.rent_rl_2:
                 VehicleType = "1";
                 imageDialog.dismiss();
                 vehicle.setText("E-SCOOTY");
                 break;
-            case R.id.rl_3:
+            case R.id.rent_rl_3:
                 VehicleType = "2";
                 imageDialog.dismiss();
                 vehicle.setText("E-BIKE");
@@ -387,13 +400,13 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
 
     private void ImagePopup() {
 
-        imageDialog.setContentView(R.layout.popup_images4);
+        imageDialog.setContentView(R.layout.popup_rent_vehicles);
         TextView txt1 = (TextView) imageDialog.findViewById(R.id.txt1);
         TextView txt2 = (TextView) imageDialog.findViewById(R.id.txt2);
         TextView txt3 = (TextView) imageDialog.findViewById(R.id.txt3);
-        RelativeLayout rl1 = (RelativeLayout) imageDialog.findViewById(R.id.rl_1);
-        RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.rl_2);
-        RelativeLayout rl3 = (RelativeLayout) imageDialog.findViewById(R.id.rl_3);
+        RelativeLayout rl1 = (RelativeLayout) imageDialog.findViewById(R.id.rent_rl_1);
+        RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.rent_rl_2);
+        RelativeLayout rl3 = (RelativeLayout) imageDialog.findViewById(R.id.rent_rl_3);
 
         txt1.setText("E-CYCLE");
         txt2.setText("E-SCOOTY");
@@ -420,23 +433,32 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
 
     private void ImagePopup2() {
 
-        imageDialog2.setContentView(R.layout.popup_images3);
+        imageDialog2.setContentView(R.layout.popup_hours);
         TextView txt1 = (TextView) imageDialog2.findViewById(R.id.txt1);
         TextView txt2 = (TextView) imageDialog2.findViewById(R.id.txt2);
         TextView txt3 = (TextView) imageDialog2.findViewById(R.id.txt3);
         TextView txt4 = (TextView) imageDialog2.findViewById(R.id.txt4);
         TextView txt5 = (TextView) imageDialog2.findViewById(R.id.txt5);
         TextView txt6 = (TextView) imageDialog2.findViewById(R.id.txt6);
+        TextView txt7 = (TextView) imageDialog2.findViewById(R.id.txt7);
+        TextView txt8 = (TextView) imageDialog2.findViewById(R.id.txt8);
         TextView txt9 = (TextView) imageDialog2.findViewById(R.id.txt9);
+        TextView txt10 = (TextView) imageDialog2.findViewById(R.id.txt10);
+        TextView txt11 = (TextView) imageDialog2.findViewById(R.id.txt11);
         TextView txt12 = (TextView) imageDialog2.findViewById(R.id.txt12);
 
+       // txt1.setText(getText(R.string._1_hr));
         txt1.setOnClickListener(this);
         txt2.setOnClickListener(this);
         txt3.setOnClickListener(this);
         txt4.setOnClickListener(this);
         txt5.setOnClickListener(this);
         txt6.setOnClickListener(this);
+        txt7.setOnClickListener(this);
+        txt8.setOnClickListener(this);
         txt9.setOnClickListener(this);
+        txt10.setOnClickListener(this);
+        txt11.setOnClickListener(this);
         txt12.setOnClickListener(this);
 
         imageDialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -444,7 +466,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
 
         //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
         //wmlp.x = 100;   //x position
-        wmlp.y = 80;   //y position
+        wmlp.y = 0;   //y position
 
         imageDialog2.show();
         Window window = imageDialog2.getWindow();
@@ -453,9 +475,5 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         imageDialog2.setCanceledOnTouchOutside(true);
     }
 
-    private void showSmallSizeText(String s) {
-        RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(.5f);
-        spannableStringBuilder.setSpan(relativeSizeSpan, txt_3.indexOf(s), txt_3.indexOf(s) + (s).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-    }
 }
 

@@ -18,11 +18,11 @@
 
 
             <ImageView
-                android:id="@+id/image_zbee"
+                android:id="@+id/image_scooty_up"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_above="@+id/layoutZippeee"
-                android:src="@drawable/zbee_right" />
+                android:src="@drawable/scooty_left" />
 
             <include
                 android:id="@+id/layoutZippeee"
@@ -32,18 +32,18 @@
                 android:layout_centerVertical="true" />
 
             <ImageView
-                android:id="@+id/image_zbee_below"
+                android:id="@+id/image_scooty_below"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_below="@+id/layoutZippeee"
-                android:src="@drawable/zbee_left"
+                android:src="@drawable/scooty_right"
                 android:visibility="invisible" />
 
             <LinearLayout
                 android:id="@+id/rl_cost"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_above="@id/image_zbee"
+                android:layout_above="@id/image_scooty_up"
                 android:layout_marginBottom="50dp"
                 android:background="@drawable/rect_box_outline"
                 android:padding="5dp"
@@ -242,7 +242,7 @@
                 android:id="@+id/rl_pick"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/image_zbee_below"
+                android:layout_below="@+id/image_scooty_below"
                 android:layout_marginTop="50dp"
                 android:background="@drawable/rect_box_outline">
 

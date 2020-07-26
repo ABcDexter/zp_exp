@@ -59,7 +59,7 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     private static ActivityRentInProgress instance;
     FusedLocationProviderClient mFusedLocationClient;
-    Dialog myDialog;
+    Dialog myDialog, colorDialog;
 
     String stringAuthCookie;
 
@@ -76,20 +76,31 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
             remainingHours.setText(time);
 
             int t = Integer.parseInt(time);
+            if (t == 10) {
+                PopupColor(1);
+            }
+            if (t == 5) {
+                PopupColor(2);
+            }
+            if (t == 0) {
+                ShowPopup(2);
+            }
             if (t < 0) {
                 t = -t;
-                ShowPopup(2);
                 txt.setText("extended mins :");
                 String timePositive = Integer.toString(t);
                 remainingHours.setText(timePositive);
-                if (t > 10) {
-                    myDialog.dismiss();
-                    myDialog.hide();
-                    txt.setText("extended mins :");
-                    remainingHours.setText(timePositive);
-                }
             }
 
+        }
+
+        //response on hitting user-rent-get-sup API
+        if (id ==2){
+            String name = response.getString("name");
+            String phn = response.getString("pn");
+
+            nameD.setText(name);
+            phone.setText(phn);
         }
         //response on hitting user-trip-get-status API
         if (id == 3) {
@@ -194,7 +205,9 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         timeRemaining();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityRentInProgress.this);
         myDialog = new Dialog(this);
+        colorDialog = new Dialog(this);
 
+        getDropSup();
     }
 
     private void ShowPopup(int id) {
@@ -206,9 +219,7 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
             infoText.setText("This feature shall be active soon.");
         }
         if (id == 2) {
-            infoText.setText("Your rental time is over. Please return the vehicle within 10 mins to avoid any extra rental charge.");
-            myDialog.show();
-            myDialog.setCanceledOnTouchOutside(false);
+            infoText.setText("Your rental time has been extended. Next hourly rental charge is now applicable.");
 
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -221,6 +232,35 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         Window window = myDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         myDialog.setCanceledOnTouchOutside(true);
+    }
+
+    private void PopupColor(int id) {
+
+        colorDialog.setContentView(R.layout.popup_color);
+        TextView infoText = colorDialog.findViewById(R.id.info_text);
+
+        if (id == 1) {
+            infoText.setText("Your rental time will be over in 10 mins. Please return the vehicle to avoid any extra rental charge.");
+            myDialog.show();
+            myDialog.setCanceledOnTouchOutside(false);
+
+        }
+        if (id == 2) {
+            infoText.setText("Your rental time will be over in 5 mins. Please return the vehicle to avoid any extra rental charge.");
+            myDialog.show();
+            myDialog.setCanceledOnTouchOutside(false);
+
+        }
+        colorDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = colorDialog.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 77;   //y position
+        colorDialog.show();
+        Window window = colorDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        colorDialog.setCanceledOnTouchOutside(true);
     }
 
     @Override
@@ -263,6 +303,24 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         UtilityApiRequestPost.doPOST(a, "auth-time-remaining", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+    }
+
+    private void getDropSup() {
+        String stringAuth = stringAuthCookie;
+        Map<String, String> params = new HashMap();
+        params.put("auth", stringAuth);
+        JSONObject param = new JSONObject(params);
+        ActivityRentInProgress a = ActivityRentInProgress.this;
+        Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-get-sup");
+        UtilityApiRequestPost.doPOST(a, "user-rent-get-sup", param, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 2);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();

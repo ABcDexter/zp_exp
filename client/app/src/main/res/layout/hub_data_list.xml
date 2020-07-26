@@ -12,7 +12,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="8dp">
 
         <TextView
@@ -33,13 +33,14 @@
             android:textColor="@android:color/background_dark"
             android:textSize="23sp"
             android:visibility="gone" />
-        <!-- <TextView
+         <TextView
              android:id="@+id/text_lat"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:text="latitude"
              android:textSize="20sp"
-             android:textColor="@android:color/background_dark"/>
+             android:textColor="@android:color/background_dark"
+             android:visibility="gone" />
 
          <TextView
              android:id="@+id/text_lng"
@@ -47,7 +48,8 @@
              android:layout_height="wrap_content"
              android:text="longitude"
              android:textSize="20sp"
-             android:textColor="@android:color/background_dark"/>-->
+             android:textColor="@android:color/background_dark"
+             android:visibility="gone" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

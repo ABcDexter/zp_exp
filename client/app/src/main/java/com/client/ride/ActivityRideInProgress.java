@@ -236,7 +236,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
 
     /* private void ImagePopup() {
 
-         imageDialog.setContentView(R.layout.popup_images3);
+         imageDialog.setContentView(R.layout.popup_hours);
          TextView txt1 = (TextView) imageDialog.findViewById(R.id.txt1);
         */
     /* TextView txt2 = (TextView) imageDialog.findViewById(R.id.txt2);

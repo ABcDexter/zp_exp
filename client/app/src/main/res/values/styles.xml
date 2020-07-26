@@ -24,5 +24,9 @@
     <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:colorAccent">#EC7721</item>
     </style>
-
+    <style name="ThemeOverlay.MySwitchCompat" parent="">
+        <item name="colorControlActivated">@color/colorPrimaryDark</item>
+        <item name="colorSwitchThumbNormal">@color/colorPrimary</item>
+        <item name="android:colorForeground">#42221f1f</item>
+    </style>
 </resources>

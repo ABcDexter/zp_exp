@@ -12,12 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:text=""
+        android:text="text appears here"
         android:textAllCaps="false"
         android:textColor="#000"
         android:textSize="20sp"
-        android:padding="15dp"
-        />
+        android:padding="15dp" />
 
     <LinearLayout
         android:id="@+id/layout_btn"

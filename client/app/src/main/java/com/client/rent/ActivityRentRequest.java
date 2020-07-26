@@ -59,7 +59,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     TextView vSpeed, advPay, pickPlaceInfo, dropPlaceInfo;
     ScrollView scrollView;
     String stringAuth, stringPick, stringDrop;
-    ImageView zbeeR, zbeeL;
+    ImageView scootyUp, scootyDown;
     SharedPreferences prefAuth;
     ActivityRentRequest a;
     Dialog myDialog;
@@ -201,8 +201,8 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         dropPlaceInfo = findViewById(R.id.drop_hub);
         scrollView = findViewById(R.id.scrollView_rent_request);
         next = findViewById(R.id.confirm_rent_book);
-        zbeeR = findViewById(R.id.image_zbee);
-        zbeeL = findViewById(R.id.image_zbee_below);
+        scootyUp = findViewById(R.id.image_scooty_up);
+        scootyDown = findViewById(R.id.image_scooty_below);
         speedInfo = findViewById(R.id.infoSpeed);
         paymentInfo = findViewById(R.id.infoPayment);
         PickInfo = findViewById(R.id.infoPick);
@@ -280,7 +280,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         TextView infoText = myDialog.findViewById(R.id.info_text);
 
         if (id == 1) {
-            infoText.setText("Max speed of this vehicle has been set to 25 km/hr for your own safety.");
+            infoText.setText("Max speed of this vehicle has been set to 25 km/hr (as per government norms) for your own safety.");
             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
@@ -290,7 +290,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
         }
         if (id == 2) {
-            infoText.setText("Cost as per rental time. Please pay full amount to begin your trip.");
+            infoText.setText("Cost calculated as per your rental time. Please pay full amount to begin your trip.");
             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
@@ -330,13 +330,13 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     }
 
     private void moveit() {
-        zbeeL.setVisibility(View.VISIBLE);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zbeeL, "translationX", 1500, 0f);
+        scootyDown.setVisibility(View.VISIBLE);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scootyDown, "translationX", 1500, 0f);
         objectAnimator.setDuration(1500);
         objectAnimator.start();
         objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
 
-        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zbeeR, "translationX", 0f, 1500);
+        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(scootyUp, "translationX", 0f, 1500);
         objectAnimator1.setDuration(1500);
         objectAnimator1.start();
         objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);

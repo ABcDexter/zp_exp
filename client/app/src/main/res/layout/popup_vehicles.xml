@@ -33,7 +33,7 @@
         android:textColor="@color/txtColor"
         android:textSize="18sp" />-->
     <RelativeLayout
-        android:id="@+id/rl_1"
+        android:id="@+id/ride_rl_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_head"
@@ -62,10 +62,10 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rl_2"
+        android:id="@+id/ride_rl_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rl_1"
+        android:layout_below="@+id/ride_rl_1"
         android:background="@drawable/rect_blue">
 
         <TextView
@@ -91,10 +91,10 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rl_3"
+        android:id="@+id/ride_rl_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rl_2"
+        android:layout_below="@+id/ride_rl_2"
         android:background="@drawable/rect_blue">
 
         <TextView

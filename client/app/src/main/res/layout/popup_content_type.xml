@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="21dp"
+    android:layout_marginEnd="21dp"
+    android:background="@drawable/rect_box_outline"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txt_head"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/rect_orange_white"
+        android:gravity="center"
+        android:text="Package Contents"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:textStyle="bold"  />
+
+    <RelativeLayout
+        android:id="@+id/ride_rl_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_head"
+        android:background="@drawable/rect_grey">
+
+        <TextView
+            android:id="@+id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_marginStart="30dp"
+            android:gravity="center"
+            android:text="Documents / Books"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="#fff"
+            android:textSize="20sp"  />
+
+        <ImageView
+            android:id="@+id/img1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/books" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ride_rl_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ride_rl_1"
+        android:background="@drawable/rect_grey">
+
+        <TextView
+            android:id="@+id/txt2"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_marginStart="30dp"
+            android:gravity="center"
+            android:text="Clothes / Accessories"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/img2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/cloths" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ride_rl_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ride_rl_2"
+        android:background="@drawable/rect_grey">
+
+        <TextView
+            android:id="@+id/txt3"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_marginStart="30dp"
+            android:gravity="center"
+            android:text="Household Items"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="#fff"
+            android:textSize="20sp"  />
+
+        <ImageView
+            android:id="@+id/img3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/household" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ride_rl_3"
+        android:background="@drawable/rect_grey">
+
+        <TextView
+            android:id="@+id/txt4"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_marginStart="30dp"
+            android:gravity="center"
+            android:text="Food Items"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="#fff"
+            android:textSize="20sp"  />
+
+        <ImageView
+            android:id="@+id/img4"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/food" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_4"
+        android:background="@drawable/rect_grey">
+
+        <TextView
+            android:id="@+id/txt5"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_marginStart="30dp"
+            android:gravity="center"
+            android:text="Electronics / electrical"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="#fff"
+            android:textSize="20sp"  />
+
+        <ImageView
+            android:id="@+id/img5"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/electronics" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_5"
+        android:background="@drawable/rect_grey">
+
+        <TextView
+            android:id="@+id/txt6"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_marginStart="30dp"
+            android:gravity="center"
+            android:text="Any Other"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="#fff"
+            android:textSize="20sp"  />
+
+        <ImageView
+            android:id="@+id/img6"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/other" />
+    </RelativeLayout>
+
+</RelativeLayout>

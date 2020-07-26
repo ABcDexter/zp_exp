@@ -60,13 +60,18 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
     public static final String AUTH_KEY = "AuthKey";
+    public static final String VEHICLE_TYPE = "VehicleType";
+    public static final String LOCATION_PICK_LAT = "PickLocationLat";
+    public static final String LOCATION_PICK_LNG = "PickLocationLng";
+    public static final String LOCATION_DROP_LAT = "DropLocationLat";
+    public static final String LOCATION_DROP_LNG = "DropLocationLng";
 
     private static ActivityRentOTP instance;
-    TextView origin, destination, dName, dPhone, OTP, costEst, upiRental;
+    TextView origin, destination, dName, dPhone, OTP, costEst, upiRental, vtype;
     ScrollView scrollView;
     Dialog myDialog;
     ImageButton costInfo, PickInfo, DropInfo, cancel;
-    String stringAuthCookie, stringPick, stringDrop, PriceOnly;
+    String stringAuthCookie, stringPick, stringDrop, PriceOnly, pickLat, pickLng, dropLat, dropLng;
     ActivityRentOTP a = ActivityRentOTP.this;
     ImageView lock;
     final int UPI_PAYMENT = 0;
@@ -177,35 +182,54 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         SharedPreferences prefPLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
         stringPick = prefPLoc.getString(LOCATION_PICK, "");
         stringDrop = prefPLoc.getString(LOCATION_DROP, "");
+        pickLat = prefPLoc.getString(LOCATION_PICK_LAT, "");
+        pickLng = prefPLoc.getString(LOCATION_PICK_LNG, "");
+        dropLat = prefPLoc.getString(LOCATION_DROP_LAT, "");
+        dropLng = prefPLoc.getString(LOCATION_DROP_LNG, "");
         String stringCost = prefPLoc.getString(COST_DROP, "");
         String otpPick = prefPLoc.getString(OTP_PICK, "");
+        String vType = prefPLoc.getString(VEHICLE_TYPE, "");
 
         costEst = findViewById(R.id.adv_payment_otp);
+        vtype = findViewById(R.id.vtype);
         dName = findViewById(R.id.supervisor_name);
         dPhone = findViewById(R.id.supervisor_phone);
         rlPhone = findViewById(R.id.rl_p);
-        rlPhone.setOnClickListener(this);
         OTP = findViewById(R.id.otp_rent);
         lock = findViewById(R.id.otp_lock);
-        lock.setOnClickListener(this);
         origin = findViewById(R.id.pick_hub);
         destination = findViewById(R.id.drop_hub);
         cancel = findViewById(R.id.cancel_rent_booking);
         costInfo = findViewById(R.id.infoCost);
         scrollView = findViewById(R.id.scrollView_rent_OTP);
         PickInfo = findViewById(R.id.infoPick);
-        PickInfo.setOnClickListener(this);
         DropInfo = findViewById(R.id.infoDrop);
-        DropInfo.setOnClickListener(this);
         dummy = findViewById(R.id.dummy);
-        dummy.setOnClickListener(this);
         upiRental = findViewById(R.id.upiRental);
-        upiRental.setOnClickListener(this);
 
+        dummy.setOnClickListener(this);
+        upiRental.setOnClickListener(this);
+        DropInfo.setOnClickListener(this);
+        rlPhone.setOnClickListener(this);
+        lock.setOnClickListener(this);
+        PickInfo.setOnClickListener(this);
         cancel.setOnClickListener(this);
         costEst.setText(stringCost);
         //costEst.setText("₹ 260.00");
         costInfo.setOnClickListener(this);
+        destination.setOnClickListener(this);
+        origin.setOnClickListener(this);
+        if (!vType.isEmpty()) {
+            if (vType.equals("0")) {
+                vtype.setText("e-cycle");
+            }
+            if (vType.equals("1")) {
+                vtype.setText("e-scooty");
+            }
+            if (vType.equals("2")) {
+                vtype.setText("e-bike");
+            }
+        }
 
         dPhone.setOnClickListener(this);
 
@@ -225,17 +249,14 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         if (stringDrop.isEmpty()) {
             destination.setText("DROP POINT");
         } else {
-            String upToNCharacters = stringDrop.substring(0, Math.min(stringDrop.length(), 20));
+            String upToNCharacters = stringDrop.substring(0, Math.min(stringDrop.length(), 10));
             destination.setText(upToNCharacters);
-            /*int dropSpace = (stringDrop.contains(" ")) ? stringDrop.indexOf(" ") : stringDrop.length() - 1;
-            String dropCutName = stringDrop.substring(0, dropSpace);
-            destination.setText(dropCutName);*/
         }
 
         if (stringPick.isEmpty()) {
             origin.setText("PICK UP");
         } else {
-            String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 20));
+            String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 10));
             origin.setText(upToNCharacters);
 
         }
@@ -269,7 +290,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         TextView accept = myDialog.findViewById(R.id.accept_request);
 
         if (id == 1) {
-            infoText.setText("Cost as per rental time. Please pay full amount to begin your trip.");
+            infoText.setText("Cost calculated as per your rental time. Please pay full amount to begin your trip and to unlock OTP.");
         }
         if (id == 2) {
             infoText.setText("Make payment only after checking the condition of vehicle");
@@ -293,6 +314,9 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         if (id == 7) {
             infoText.setText("Please pay full amount to unlock your OTP");
         }
+        if (id == 8) {
+            infoText.setText("Open Map. Work in Progress");
+        }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
@@ -310,56 +334,6 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     public static ActivityRentOTP getInstance() {
         return instance;
     }
-
-    /*private void showAlertDialog() {
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityRentOTP.this);
-        alertDialog.setTitle("CANCEL RIDE");
-        String[] items = {"DRIVER DENIED DESTINATION",
-                "DRIVER DENIED PICKUP",
-                "EXPECTED A SHORTER WAIT TIME",
-                "UNABLE TO CONTACT DRIVER",
-                "MY REASON IS NOT LISTED"};
-        alertDialog.setCancelable(false);
-
-        int checkedItem = 1;
-        alertDialog.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                        //Toast.makeText(ActivityRideOTP.this, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
-                        Snackbar snackbar = Snackbar
-                                .make(scrollView, "Thank you for your feedback.", Snackbar.LENGTH_LONG);
-                        snackbar.show();
-
-                        break;
-                }
-            }
-        });
-
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //ShowPopup(4);
-
-            }
-        });
-
-        alertDialog.setPositiveButton("Don't Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog alert = alertDialog.create();
-        alert.setCanceledOnTouchOutside(false);
-        alert.show();
-        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
-    }*/
 
     private void userCancelTrip() {
         String stringAuth = stringAuthCookie;
@@ -393,18 +367,34 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.drop_hub:
+                ShowPopup(6);
+                break;
+            case R.id.pick_hub:
+                ShowPopup(5);
+                break;
             case R.id.infoCost:
                 ShowPopup(1);
                 break;
             case R.id.infoPick:
-                ShowPopup(5);
+                String lat1 = pickLat;
+                String lng1 = pickLng;
+                Intent map = new Intent(ActivityRentOTP.this, MapsHubLocation.class);
+                map.putExtra("lat", lat1);
+                map.putExtra("lng", lng1);
+                startActivity(map);
+                //ShowPopup(8);
                 break;
             case R.id.infoDrop:
-                ShowPopup(6);
+                String lat2 = dropLat;
+                String lng2 = dropLng;
+                Intent map1 = new Intent(ActivityRentOTP.this, MapsHubLocation.class);
+                map1.putExtra("lat", lat2);
+                map1.putExtra("lng", lng2);
+                startActivity(map1);
+                //ShowPopup(8);
                 break;
-            /*case R.id.give_otp: //TODO remove this later
-                giveOtp();
-                break;*/
+
             case R.id.upiRental:
 
                 String amount = PriceOnly;

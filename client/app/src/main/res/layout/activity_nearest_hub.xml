@@ -8,11 +8,19 @@
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp">
 
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_close"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:id="@+id/close"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="please go to the nearest point to end your trip"
+        android:text="please go to the nearest drop point to end your rental"
         android:id="@+id/txt"
         android:paddingStart="4dp"
         android:textAllCaps="true"
@@ -110,44 +118,4 @@
             android:background="@drawable/ic_location" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_hub3"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/rect_box_outline"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_below="@id/ll_hub2">
-
-        <TextView
-            android:id="@+id/hub3"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1.5"
-            android:gravity="center|start"
-            android:paddingStart="10dp"
-            android:text="daath bhimtal"
-            android:textAllCaps="true"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/dst3"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="0.5"
-            android:gravity="center|end"
-            android:paddingEnd="20dp"
-            android:text="5 km"
-            android:textAllCaps="true"
-            android:textSize="20sp" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/loc3"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/ic_location" />
-    </LinearLayout>
 </RelativeLayout>

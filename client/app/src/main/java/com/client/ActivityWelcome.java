@@ -64,6 +64,10 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
 
+    public static final String SRC_NAME = "PICK UP POINT";
+    public static final String DST_NAME = "DROP POINT";
+    public static final String LOCATION_PICK_ID = "PickLocationID";
+    public static final String LOCATION_DROP_ID = "DropLocationID";
     public static final String AUTH_KEY = "AuthKey";
     public static final String AN_KEY = "AadharKey";
     public static final String TRIP_ID = "TripID";
@@ -390,8 +394,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                         }
 
                     }
-                }
-                else {
+                } else {
                     Log.d(TAG, "active=" + active);
 
                     SharedPreferences prefTripDetails = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
@@ -450,7 +453,10 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
                     SharedPreferences pref = getApplicationContext().getSharedPreferences(PREFS_LOCATIONS, MODE_PRIVATE);
                     SharedPreferences.Editor editor = pref.edit();
-                    editor.remove(PREFS_LOCATIONS);
+                    editor.remove(LOCATION_PICK);
+                    editor.remove(LOCATION_DROP);
+                    editor.remove(LOCATION_DROP_ID);
+                    editor.remove(LOCATION_PICK_ID);
                     editor.apply();
 
                     SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
@@ -462,7 +468,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                 if (st.equals("FN")) {
                     retireTrip();
                 }
-                if(st.equals("CN")){
+                if (st.equals("CN")) {
                     retireTrip();
                 }
                 retireTrip();
@@ -477,11 +483,15 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
+
+
             Log.d(TAG, "tripID= " + TRIP_ID + DRIVER_NAME + DRIVER_PHN);
 
             SharedPreferences prefLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editorLoc = prefLoc.edit();
             editorLoc.remove(VAN_PICK);
+            editorLoc.remove(DST_NAME);
+            editorLoc.remove(SRC_NAME);
             editorLoc.remove(OTP_PICK);
             editorLoc.apply();
 

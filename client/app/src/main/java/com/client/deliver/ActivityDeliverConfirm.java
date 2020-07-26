@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -77,7 +79,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     ImageButton done;
     ActivityDeliverConfirm a = ActivityDeliverConfirm.this;
     Map<String, String> params = new HashMap();
-    String stringAuth, addPick, addDrop, pickLat, pickLng, fr, fl, li, kd, kw, kc, details, distance, did,pickName,dropName,
+    String stringAuth, addPick, addDrop, pickLat, pickLng, fr, fl, li, kd, kw, kc, details, distance, did, pickName, dropName,
             dropLat, dropLng, pickLand, dropLand, pickPin, dropPin, pickMobile, dropMobile, conType, conSize;
     ImageView zbeeR, zbeeL;
 
@@ -137,7 +139,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     }
 
     private void deliveryEstimate() {
-String auth = stringAuth;
+        String auth = stringAuth;
         params.put("auth", auth);
         params.put("srclat", pickLat);
         params.put("srclng", pickLng);
@@ -295,12 +297,18 @@ String auth = stringAuth;
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
         if (id == 1) {
-            infoText.setText("THIS AMOUNT IS CREDITED TO PARTNER'S ACCOUNT");
+            infoText.setText("The amount shall be directly credited to our  agent's account.");
         }
         if (id == 2) {
-            infoText.setText("BASE PRICE: " + "Rs. 15" + "\nDISTANCE: " + distance + " km");
+            infoText.setText("Base price : " + "₹ 15" + "\nDistance : " + distance + " km");
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+        wmlp.y = 50;   //y position
+
+        Window window = myDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         myDialog.show();
         myDialog.setCanceledOnTouchOutside(true);
     }
@@ -312,7 +320,7 @@ String auth = stringAuth;
         if (id == 1) {
             String actualPrice = response.getString("price");
             distance = response.getString("dist");
-            cost.setText(actualPrice);
+            cost.setText("₹ "+actualPrice);
         }
         //response on hitting user-delivery-request API
         if (id == 2) {
@@ -329,7 +337,7 @@ String auth = stringAuth;
                     String status = response.getString("st");
                     if (status.equals("RQ")) {
                         Snackbar snackbar = Snackbar
-                                .make(scrollView, "WAITING FOR AGENT", Snackbar.LENGTH_INDEFINITE)
+                                .make(scrollView, "WAITING FOR AGENT TO ACCEPT", Snackbar.LENGTH_INDEFINITE)
                                 .setAction("CANCEL", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -364,7 +372,8 @@ String auth = stringAuth;
                 //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
-        //response on hitting user-trip-cancel API
+
+        //response on hitting user-delivery-cancel API
         if (id == 4) {
             Intent home = new Intent(ActivityDeliverConfirm.this, ActivityDeliverHome.class);
             startActivity(home);
@@ -375,6 +384,13 @@ String auth = stringAuth;
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ActivityDeliverConfirm.this, ActivityDeliverItemDetails.class));
+        finish();
     }
 }
 

@@ -11,17 +11,19 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.android.volley.VolleyError;
+import com.client.ActivityDrawer;
+import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
@@ -41,7 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ActivityDeliverFillAddress extends AppCompatActivity implements View.OnClickListener {
+public class ActivityDeliverFillAddress extends ActivityDrawer implements View.OnClickListener {
     TextView txtAddress;
     EditText pinCode, landmark, mobile, name;
     String choose = "";
@@ -83,7 +85,12 @@ public class ActivityDeliverFillAddress extends AppCompatActivity implements Vie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_deliver_fill_address);
+        FrameLayout frameLayout = findViewById(R.id.activity_frame);
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        assert layoutInflater != null;
+        View activityView = layoutInflater.inflate(R.layout.activity_deliver_fill_address, null, false);
+        frameLayout.addView(activityView);
+
         instance = this;
 
         //initializing views
@@ -109,11 +116,11 @@ public class ActivityDeliverFillAddress extends AppCompatActivity implements Vie
         assert fillRequest != null;
         if (fillRequest.equals("pick")) {
             choose = "pick";
-            txtAddress.setText("PICKUP ADDRESS");
+            txtAddress.setText("Pickup Details");
 
         } else if (fillRequest.equals("drop")) {
             choose = "drop";
-            txtAddress.setText("Delivery Address");
+            txtAddress.setText("Delivery Details");
         }
         if (imgBtnConfirm.equals("false")) {
             Log.d(TAG, "confirm.setEnabled(false)");
@@ -135,8 +142,10 @@ public class ActivityDeliverFillAddress extends AppCompatActivity implements Vie
         EditText editText = fView.findViewById(R.id.place_autocomplete_search_input);
         editText.setTextColor(Color.WHITE);*/
         EditText etPlace = (EditText) autocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
-        etPlace.setHint("FLAT, BUILDING NAME");
+        etPlace.setHint("LOCATION");
+        etPlace.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         etPlace.setTextColor(Color.WHITE);
+        etPlace.setPadding(0, 0, 150, 0);
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
 
@@ -325,5 +334,10 @@ public class ActivityDeliverFillAddress extends AppCompatActivity implements Vie
 
         }
     }
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ActivityDeliverFillAddress.this, ActivityDeliverHome.class));
+        finish();
+    }
 }

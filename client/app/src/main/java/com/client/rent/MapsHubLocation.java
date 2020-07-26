@@ -142,7 +142,7 @@ public class MapsHubLocation extends AppCompatActivity implements OnMapReadyCall
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
         //stop location updates
         if (mGoogleApiClient != null) {

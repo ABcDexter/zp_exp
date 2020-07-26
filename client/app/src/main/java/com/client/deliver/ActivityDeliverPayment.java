@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -11,8 +13,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +39,7 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
 
     TextView upiPayment, cost;
     final int UPI_PAYMENT = 0;
-    String strAuth, DID;
+    String strAuth, DID,costOnly;
 
     private static final String TAG = "ActivityDeliverPayment";
     private static final String DELIVERY_OTP = "DeliveryOtp";
@@ -46,8 +51,8 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
 
     private static ActivityDeliverPayment instance;
     Dialog myDialog;
-
-    Button done;
+ImageView infoCost;
+    Button dummy;
     ActivityDeliverPayment a = ActivityDeliverPayment.this;
     Map<String, String> params = new HashMap();
 
@@ -69,13 +74,32 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
 
         upiPayment = findViewById(R.id.upi);
         cost = findViewById(R.id.payment);
-        done = findViewById(R.id.confirm_btn);
-
+        dummy = findViewById(R.id.dummy);
+        infoCost=findViewById(R.id.infoCost);
+        infoCost.setOnClickListener(this);
         upiPayment.setOnClickListener(this);
-        done.setOnClickListener(this);
+        dummy.setOnClickListener(this);
         checkStatus();
-    }
+        myDialog = new Dialog(this);
 
+    }
+    private void ShowPopup() {
+
+        myDialog.setContentView(R.layout.popup_new_request);
+        TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
+
+        infoText.setText("Please pay " + cost.getText().toString());
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 40;   //y position
+        myDialog.show();
+        Window window = myDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        myDialog.setCanceledOnTouchOutside(true);
+    }
     public static ActivityDeliverPayment getInstance() {
         return instance;
     }
@@ -104,12 +128,23 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
                     String status = response.getString("st");
                     if (status.equals("AS")) {
                         String price = response.getString("price");
-                        cost.setText(price);
+                        cost.setText("₹ "+price);
+                        costOnly = price;
                     }
-                    if (status.equals("TR") || status.equals("FN")) {
+                    if (status.equals("FN")) {
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("32");
                         startService(intent);
+
+                        SharedPreferences preferences = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.clear();
+                        editor.apply();
+                        SharedPreferences preferencesD = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor1 = preferencesD.edit();
+                        editor1.clear();
+                        editor1.apply();
+
                     }
                 } else {
                     Intent homePage = new Intent(ActivityDeliverPayment.this, ActivityWelcome.class);
@@ -134,16 +169,18 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.upi:
-                String amount = cost.getText().toString();
+                String amount = costOnly;
                 String note = "Payment for rental service";
                 String name = "Zipp-E";
                 String upiId = "9084083967@ybl";
                 payUsingUpi(amount, upiId, name, note);
                 break;
 
-            case R.id.confirm_btn:
+            case R.id.dummy:
                 paymentMade();
-
+            case R.id.infoCost:
+                ShowPopup();
+                break;
         }
     }
 
@@ -261,6 +298,7 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
                 //Code to handle successful transaction here.
                 Toast.makeText(ActivityDeliverPayment.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
                 Log.d("UPI", "responseStr: " + approvalRefNo);
+                paymentMade();
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(ActivityDeliverPayment.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
             } else {
@@ -284,4 +322,10 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
         return false;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ActivityDeliverPayment.this, ActivityDeliverConfirm.class));
+        finish();
+    }
 }

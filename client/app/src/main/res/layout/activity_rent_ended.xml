@@ -134,6 +134,7 @@
                 android:text="dummy"
                 android:layout_alignParentBottom="true"/>
         </RelativeLayout>
+
     </ScrollView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

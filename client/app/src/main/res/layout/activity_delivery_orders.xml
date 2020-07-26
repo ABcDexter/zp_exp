@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,26 +29,41 @@
                 android:textAllCaps="true"
                 android:textSize="25sp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <include
                 layout="@layout/zippe_logo"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginTop="50dp" />
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp" />
 
             <TextView
+                android:id="@+id/txtInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"
                 android:text=""
                 android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="23sp"
-                android:id="@+id/txtInfo"/>
+                android:textAllCaps="false"
+                android:textSize="23sp" />
 
+            <TextView
+                android:id="@+id/track_delivery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:drawableEnd="@drawable/ic_location"
+                android:text="Track your delivery"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:visibility="gone" />
         </LinearLayout>
+
     </ScrollView>
 
 </RelativeLayout>

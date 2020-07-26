@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.client.deliver.ActivityDeliveryOrders;
+import com.client.deliver.ActivityDeliveryHistoryList;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -37,6 +37,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
 
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +62,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         nv = findViewById(R.id.nv);
-nv.setNavigationItemSelectedListener(this);
+        nv.setNavigationItemSelectedListener(this);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
@@ -83,7 +84,8 @@ nv.setNavigationItemSelectedListener(this);
             @Override
             public void onClick(View v) {
                 Log.d("ACTION", "menuButton clicked");
-                if (!mDrawerLayout.isDrawerOpen(Gravity.RIGHT))mDrawerLayout.openDrawer(Gravity.RIGHT);
+                if (!mDrawerLayout.isDrawerOpen(Gravity.RIGHT))
+                    mDrawerLayout.openDrawer(Gravity.RIGHT);
                 else mDrawerLayout.closeDrawer(Gravity.LEFT);
                 //setNavigationDrawer();
                 Log.d("ACTION", "setNavigationDrawer() method called");
@@ -100,59 +102,6 @@ nv.setNavigationItemSelectedListener(this);
 
     }
 
-    /*private void setNavigationDrawer() {
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                switch (id) {
-                    case R.id.nav_logout:
-                        FirebaseAuth.getInstance().signOut();
-
-                        Intent intent = new Intent(ActivityDrawer.this, ActivityMain.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-
-                        SharedPreferences preferences = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.clear();
-                        editor.apply();
-
-                        SharedPreferences authPref = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editorAuth = authPref.edit();
-                        editorAuth.clear();
-                        editorAuth.apply();
-                        break;
-
-                    case R.id.nav_profile:
-                        Intent lang = new Intent(ActivityDrawer.this, UserProfileActivity.class);
-                        startActivity(lang);
-                        break;
-                    case R.id.nav_home:
-                        Intent home = new Intent(ActivityDrawer.this, ActivityWelcome.class);
-                        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(home);
-                        break;
-                    */
-    /*case R.id.nav_delivery_orders:
-                        Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryOrders.class);
-                        deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(deliveryOrders);
-                        break;*//*
-
-                    case R.id.nav_ride_history:
-                        Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryOrders.class);
-                        deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(deliveryOrders);
-                        break;
-                    default:
-                        return true;
-                }
-                return true;
-            }
-        });
-    }
-*/
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -217,16 +166,17 @@ nv.setNavigationItemSelectedListener(this);
                 startActivity(home);
                 break;
             case R.id.nav_ride_history:
-                /*Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryOrders.class);
-                deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(deliveryOrders);*/
                 Toast.makeText(this, "COMING SOON", Toast.LENGTH_LONG).show();
                 break;
-
+            case R.id.nav_delivery_orders:
+                Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryHistoryList.class);
+                deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(deliveryOrders);
+                break;
             default:
                 return true;
         }
         return true;
     }
-        //return false;
-    }
+    //return false;
+}

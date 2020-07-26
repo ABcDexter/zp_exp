@@ -18,10 +18,10 @@
     <item android:id="@+id/nav_home"
         android:icon="@drawable/ic_home_black"
         android:title="HOME"/>
-    <!--<item
+    <item
         android:id="@+id/nav_delivery_orders"
         android:icon="@drawable/ic_time"
-        android:title="Delivery Orders"/>-->
+        android:title="Delivery Orders"/>
     <item
         android:id="@+id/nav_ride_history"
         android:icon="@drawable/ic_time"
@@ -31,5 +31,10 @@
         android:id="@+id/nav_customer_support"
         android:icon="@drawable/ic_insert_comment"
         android:title="CUSTOMER SUPPORT"/>
+
+    <item
+        android:id="@+id/nav_tnc"
+        android:icon="@drawable/ic_insert_comment"
+        android:title="TERMS AND CONDITIONS"/>
 
 </menu>
