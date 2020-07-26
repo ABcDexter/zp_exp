@@ -151,7 +151,7 @@ def userRentSchedule(dct, user):
     print(sched)
     print(sched.get_jobs())  # _jobstores.ne #job.next_run_time)
     sched.resume()
-    time.sleep(10)
+    time.sleep(5)
     ret = {}
     # ret = getRentPrice(dct['hrs'])
     # ret['tid'] = trip.id
@@ -294,6 +294,6 @@ def userRideSchedule(dct, user):
     print(sched)
     print(sched.get_jobs())  # _jobstores.ne #job.next_run_time)
     sched.resume()
-    time.sleep(10)
+    time.sleep(5)
 
     return HttpJSONResponse({})
