@@ -154,7 +154,7 @@ def driverRideCheck(_dct, driver):
     return HttpJSONResponse(ret)
 
 
-
+# Do we allow drivers this choice or jsut assign them automatically as I am doing with deliveries.
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)

@@ -347,7 +347,7 @@ def userDeliveryTrack(dct, user):
 
 
 # ============================================================================
-# Agent views
+# Admin views
 # ============================================================================
 
 
@@ -384,6 +384,59 @@ def adminAgentRegister(dct):
         recAgent.save()
 
     return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Agent not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Transaction error', 500)
+@extractParams
+@checkAuth()
+def adminAgentAssign(dct):
+    '''
+    Checks for deliveries in RQ state and assigns the nearest AV agent.
+
+    HTTP args:
+        *: Any other fields that need to be updated/corrected (except state)
+
+    Note:
+        this uses Google distance, assigns closest as per time, so might not be accurate
+    '''
+    # Get the deliveries and look for RQ ones
+    qsDeli = Delivery.objects.filter(st='RQ')
+
+    qsAgent = Agent.objects.filter(mode='AV', did='-1')
+
+    # for deli in qsDeli:
+    # do one delivery at a time
+    deli = qsDeli[0]
+    srcCoOrds = ['%s, %s' % (deli.srclat, deli.srclng)]
+    iterAn = 0
+    minDist, minTime = 10_000, 60  # 10 kms and 60 minutes
+    for agent in qsAgent:
+        locAgent = Location.objects.filter(an=agent.an)[0]
+
+        dstCoOrds = ['%s,%s' % (locAgent.lat, locAgent.lng)]
+        print(srcCoOrds, dstCoOrds)
+
+        gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+        nDist, nTime = gMapsRet['dist'], gMapsRet['time']
+        print(" dist : ", nDist, " time : ", nTime)
+        if nTime and (nTime < minTime):
+            minTime = nTime
+            minDist = nDist
+            iterAn = agent.an
+
+    print("closest agent is : ", minDist, " kms away and ", minTime, " minutes away")
+
+    choosenAgent = Agent.objects.filter(an=iterAn)[0]
+
+    if choosenAgent.mode != 'AV':
+        raise ZPException('Agent is already registered', 501)
+
+    return HttpJSONResponse({})
+
 
 # ============================================================================
 # Agent views
