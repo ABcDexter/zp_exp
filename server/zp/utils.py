@@ -29,7 +29,7 @@ from urllib.parse import urlencode
 
 import googlemaps
 #import pandas as pd
-
+from math import ceil
 #from fuzzywuzzy import fuzz as accurate
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = settings.GOOGLE_APPLICATION_CREDENTIALS
@@ -968,7 +968,7 @@ def retireDelEntity(entity: [User, Agent, Vehicle]) -> None :
 
 # Delivery module
 
-def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
+def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express):
     '''
     Determines the price given the rent details and time taken
     time is etime - stime
@@ -987,28 +987,34 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
     nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
     fDist = nDist
-    iVType, iPayMode, iTimeSec = 2, 1, nTime*60 #int(iVType), int(iPayMode), int(iTimeSec)  # need explicit type conversion to int
+    iVType, iPayMode, iTimeSec = 2, 1, nTime*60
 
     # Calculate the speed if time is known or else use average speed for estimates
     fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
 
     # Get base fare for vehicle
-    fBaseFare = Vehicle.BASE_FARE[iVType]
+    fBaseFare =  50.00  # Vehicle.BASE_FARE[iVType]
 
     # Get average economic weight
-    idSrcWt = 100 # Place.objects.filter(id=idSrc)[0].wt
-    idDstWt = 100 # Place.objects.filter(id=idDst)[0].wt
-    avgWt = (idSrcWt + idDstWt) / 200
+    # idSrcWt = 100 # Place.objects.filter(id=idSrc)[0].wt
+    # idDstWt = 100 # Place.objects.filter(id=idDst)[0].wt
+    # avgWt = (idSrcWt + idDstWt) / 200
 
     # get per km price for vehicle
-    maxPricePerKM = 15
-    vehiclePricePerKM = (iVType / 4) * maxPricePerKM
+    # maxPricePerKM = 15
+    # vehiclePricePerKM = (iVType / 4) * maxPricePerKM
 
     # Calculate price
-    price = fBaseFare + (fDist / 1000) * vehiclePricePerKM * avgWt
-    if iPayMode == Trip.UPI:
-        price *= 0.9
+    price = fBaseFare  # + (fDist / 1000) * vehiclePricePerKM * avgWt
+    if fDist > 5000:
+        price += ceil((fDist - 5000) / 1000) * 10.00
+        print(fDist, ceil((fDist - 5000) / 1000), price )
+    #if iPayMode == Trip.UPI:
+    #    price *= 0.9
 
+    if express == '1':
+        price += 20.00  # 20 Rs extra for express
+        print('okay############')
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes

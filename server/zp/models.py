@@ -357,20 +357,22 @@ class Delivery(models.Model):
     # 6 check
     # fragile,flammable, liquid, keep dry, keep warm , keep cold
     CHECKBOXES = [('NO', 'NONE'),
+                  ('BR', 'BREAKABLE'),
                   ('FR', 'FRAGILE'),
-                  ('FL', 'FLAMMABLE'),
                   ('LI', 'LIQUID'),
-                  ('KD', 'KEEPDRY'),
                   ('KW', 'KEEPWARM'),
-                  ('KC', 'KEEPCOLD')
+                  ('KC', 'KEEPCOLD'),
+                  ('PE', 'PERISHABLE')
                 ]
 
     fr = models.BooleanField(default=False, db_index=True)
-    fl = models.BooleanField(default=False, db_index=True)
+    br = models.BooleanField(default=False, db_index=True)
     li = models.BooleanField(default=False, db_index=True)
-    kd = models.BooleanField(default=False, db_index=True)
+    pe = models.BooleanField(default=False, db_index=True)
     kw = models.BooleanField(default=False, db_index=True)
     kc = models.BooleanField(default=False, db_index=True)
+
+    express = models.BooleanField(default=False, db_index=True)
 
     st = models.CharField(max_length=2, choices=STATUSES, default='RQ', db_index=True)
     uan = models.BigIntegerField(db_index=True)
@@ -388,7 +390,7 @@ class Delivery(models.Model):
     dstlat = models.FloatField(null=False, db_index=True, default=0)
     dstlng = models.FloatField(null=False, db_index=True, default=0)
 
-    itype = models.CharField(db_index=True, choices=CATEGORIES, max_length=6, default='OTH')
+    itype = models.CharField(db_index=True, choices=CATEGORIES, max_length=20, default='OTH')
     idim = models.CharField(db_index=True, choices=DIMENSIONS, max_length=6, default='M')
 
     # delivery address

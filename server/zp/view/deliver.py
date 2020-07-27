@@ -191,16 +191,13 @@ def userDeliveryEstimate(dct, _user):
         dstlat, dstlng
         itype,
         idim,
-        fr, fl, li, kd, kw, kc,
+        fr, br, li, kc, kw, pe, (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable),
+        express = 0 or 1
         pmode
     '''
     print("Delivery Estimate param : ", dct)
-    #TODO update the algorithm as the
-    # Item type
-    # IDims
-    # checks,
-    # Okay? tonight.
-    ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], 1, 1)
+    ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], 1, 1, dct['express'])
+
     return HttpJSONResponse(ret)
 
 
@@ -232,7 +229,7 @@ def userDeliveryRequest(dct, user): #, _delivery):
 
         details,
 
-        fr, fl, li, kd, kw, kc,
+        fr, br, li, kc, kw, pe, (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable)
 
         tip
 
@@ -259,23 +256,22 @@ def userDeliveryRequest(dct, user): #, _delivery):
     delivery.dstper, delivery.dstadd, delivery.dstland, delivery.dstphone = dct['dstper'], dct['dstadd'], \
                                                                             dct['dstland'], dct['dstphone']
 
-    if 'fr' in dct:
-        delivery.fr = dct['fr']
-    if 'fl' in dct:
-        delivery.fl = dct['fl']
-    if 'li' in dct:
-        delivery.li = dct['li']
-    if 'kd' in dct:
-        delivery.kd = dct['kd']
-    if 'kw' in dct:
-        delivery.kw = dct['kw']
-    if 'kc' in dct:
-        delivery.kc = dct['kc']
+    delivery.br = dct['br'] if 'br' in dct else 0
 
-    if 'details' in dct:
-        delivery.details = dct['details']
-    if 'tip' in dct:
-        delivery.tip = dct['tip']
+    delivery.fr = dct['fr'] if 'fr' in dct else 0
+
+    delivery.kc = dct['kc'] if 'kc' in dct else 0
+
+    delivery.kw = dct['kw'] if 'kw' in dct else 0
+
+    delivery.li = dct['li'] if 'li' in dct else 0
+
+    delivery.pe = dct['pe'] if 'pe' in dct else 0
+
+    delivery.details = dct['details'] if 'details' in dct else ''
+
+    delivery.tip = int(float(dct['tip'])) if 'tip' in dct else 0
+
     delivery.save()
 
     user.did = delivery.id

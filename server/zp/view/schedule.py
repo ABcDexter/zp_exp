@@ -198,8 +198,8 @@ def userDeliverySchedule(dct, user):
         hour, minute.
     '''
     print("#######  ", len(dct), "Delivery scheduling request param : ",  dct)
-    params = {'fr': dct['fr'] if 'fr' in dct else 0, 'fl': dct['fl'] if 'fl' in dct else 0,
-              'li': dct['li'] if 'li' in dct else 0, 'kd': dct['kd'] if 'kd' in dct else 0,
+    params = {'fr': dct['fr'] if 'fr' in dct else 0, 'br': dct['br'] if 'br' in dct else 0,
+              'li': dct['li'] if 'li' in dct else 0, 'pe': dct['pe'] if 'pe' in dct else 0,
               'kw': dct['kw'] if 'kw' in dct else 0, 'kc': dct['kc'] if 'kc' in dct else 0,
               'tip': dct['tip'] if 'tip' in dct else 0, 'details': dct['details'] if 'details' in dct else ''}
     # 8 cheejein bhaiye
