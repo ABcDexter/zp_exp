@@ -623,7 +623,6 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
     if time taken is not provided, its estimated from vehicle type
     '''
     # Get this route distance
-    #idSrc, idDst = 7,2  #TODO remove this
     #recRoute = Route.getRoute(idSrc, idDst)
     fDist = 6000 #iDist  #recRoute.dist
     iVType, iPayMode, iTimeSec = int(iVType), int(iPayMode), int(iTimeSec) #need explicit type conversion to int
@@ -988,7 +987,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
     nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
     fDist = nDist
-    iVType, iPayMode, iTimeSec = 2, 1, nTime #int(iVType), int(iPayMode), int(iTimeSec)  # need explicit type conversion to int
+    iVType, iPayMode, iTimeSec = 2, 1, nTime*60 #int(iVType), int(iPayMode), int(iTimeSec)  # need explicit type conversion to int
 
     # Calculate the speed if time is known or else use average speed for estimates
     fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
@@ -1099,10 +1098,10 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
 
     gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
     nDist, nTime = gMapsRet['dist'], gMapsRet['time']
-
+    print(nDist, nTime)
     fDist = nDist
     iVType, iPayMode = int(iVType), int(iPayMode)  # need explicit type conversion to int
-    iTimeSec = nTime if iTime == 0 else iTime
+    iTimeSec = nTime*60 if iTime == 0 else iTime
     # Calculate the speed if time is known or else use average speed for estimates
     fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
 
