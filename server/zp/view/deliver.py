@@ -55,12 +55,13 @@ def authDeliveryGetInfo(dct, entity):
 
     # get the deli and append pricing info if complete
     ret = {'st': deli.st}
+    hs = User.objects.filter(an=deli.uan)[0].hs
     if deli.st in ['AS']:
-        ret.update(getDelPrice(deli))
+        ret.update(getDelPrice(deli, hs))
     elif deli.st in ['PD', 'FN']:
         ret.update({'tip': deli.tip,
-                    'price': float(getDelPrice(deli)['price']),
-                    'earn':float(getDelPrice(deli)['price'])/10}) #TODO return earning from delivery
+                    'price': getDelPrice(deli, hs)['price'],
+                    'earn':float(getDelPrice(deli, hs)['price'])/10}) #TODO return earning from delivery
 
     return HttpJSONResponse(ret)
 
@@ -103,10 +104,11 @@ def userDeliveryGetStatus(dct, user):
 
         if ret['active']:
             if deli.st == 'RQ':  # Delivery.PAYABLE:
-                price = getDelPrice(deli)
+                price = getDelPrice(deli, user.hs)
                 ret.update(price)
             elif deli.st == 'AS':
-                price = int(float(getDelPrice(deli)['price']))+int(deli.tip)
+                # price = #round(float("{:.2s}".format(getDelPrice(deli, user.hs)['price'])), 2) #+ (1.00*deli.tip)
+                price = "%0.2f" % (float(getDelPrice(deli, user.hs)['price']) + (1.00*deli.tip) )
                 ret.update({'price': price})
     else:
 
@@ -181,7 +183,7 @@ def userIsAgentAv(dct, user):
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def userDeliveryEstimate(dct, _user):
+def userDeliveryEstimate(dct, user):
     '''
     Returns the estimated price for the delivery
 
@@ -199,7 +201,7 @@ def userDeliveryEstimate(dct, _user):
     print("Delivery Estimate param : ", dct)
     # NOPE add price of the closest agent
     ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'],
-                           dct['idim'], dct['pmode'], dct['express'])
+                           dct['idim'], dct['pmode'], dct['express'], user.hs)
 
     return HttpJSONResponse(ret)
 
@@ -651,7 +653,8 @@ def agentDeliveryGetStatus(_dct, agent):
                         'dstlng': deli.dstlng})
         # For ended delis that need payment send the price data
         if deli.st in Delivery.PAYABLE:
-            ret.update(getDelPrice(deli))
+            hs = User.objects.filter(an=deli.uan)[0].hs
+            ret.update(getDelPrice(deli, hs))
 
         ret['active'] = deli.st in Delivery.AGENT_ACTIVE
         ret['st'] = deli.st
@@ -954,9 +957,10 @@ def authDeliveryHistory(dct, entity, deli):
     if len(qsDeli):
         states = []
         for i in qsDeli:
+            hs = User.objects.filter(an=deli.uan)[0].hs
             thisOneBro = {'id': i['id'], 'st': i['st'],
-                          'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0])['price']) ,
-                          'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0])['price'])/10, #earns 10%
+                          'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
+                          'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
                           'tip': i['tip']}  # ,
 
             # TODO 'stime':i['stime'], 'etime':i['etime']}

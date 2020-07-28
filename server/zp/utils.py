@@ -745,12 +745,14 @@ def getTripPrice(trip):
         #return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
         return getRentPrice(trip.hrs, (trip.etime - trip.stime).seconds//60) #convert seconds to minutes
 
-def getDelPrice(deli):
+
+def getDelPrice(deli, hs):
     '''
     Gets price info for non active deliveries
     '''
     # vehicle = Vehicle.objects.filter(an=deli.van)[0]
-    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, deli.express)
+    # home state of user
+    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, deli.express, hs)
 
 ###########################################
 
@@ -968,7 +970,8 @@ def retireDelEntity(entity: [User, Agent, Vehicle]) -> None :
 
 # Delivery module
 
-def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express):
+
+def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs):
     '''
     Determines the price given the rent details and time taken
     time is etime - stime
@@ -992,16 +995,10 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express):
     fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
 
     # Get base fare for vehicle
-    fBaseFare =  50.00  # Vehicle.BASE_FARE[iVType]
-
-    # Get average economic weight
-    # idSrcWt = 100 # Place.objects.filter(id=idSrc)[0].wt
-    # idDstWt = 100 # Place.objects.filter(id=idDst)[0].wt
-    # avgWt = (idSrcWt + idDstWt) / 200
-
-    # get per km price for vehicle
-    # maxPricePerKM = 15
-    # vehiclePricePerKM = (iVType / 4) * maxPricePerKM
+    if str(hs).lower() == 'UK'.lower():
+        fBaseFare = 20.00
+    else:
+        fBaseFare = 50.00  # Vehicle.BASE_FARE[iVType]
 
     # Calculate price
     price = fBaseFare  # + (fDist / 1000) * vehiclePricePerKM * avgWt
@@ -1013,7 +1010,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express):
 
     if express == '1':
         price += 20.00  # 20 Rs extra for express
-        print('okay############')
+        print('Expresss okay############')
     '''
     # L = 10
     # XL = 20
