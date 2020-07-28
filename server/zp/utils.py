@@ -750,7 +750,7 @@ def getDelPrice(deli):
     Gets price info for non active deliveries
     '''
     # vehicle = Vehicle.objects.filter(an=deli.van)[0]
-    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, 1, 1) #ToDO fix this for the dimensions
+    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, deli.express)
 
 ###########################################
 
@@ -972,7 +972,6 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express):
     '''
     Determines the price given the rent details and time taken
     time is etime - stime
-    #TODO add the variable of the size in this
     '''
     # Get this route distance
 
@@ -1015,6 +1014,18 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express):
     if express == '1':
         price += 20.00  # 20 Rs extra for express
         print('okay############')
+    '''
+    # L = 10
+    # XL = 20
+    # XXL = 30
+    '''
+    if size == 'L':
+        price += 10.00
+    elif size == 'XL':
+        price += 20.00
+    elif size == 'XXL':
+        price += 30.00
+
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes

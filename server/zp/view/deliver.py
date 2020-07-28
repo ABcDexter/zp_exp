@@ -191,12 +191,15 @@ def userDeliveryEstimate(dct, _user):
         dstlat, dstlng
         itype,
         idim,
-        fr, br, li, kc, kw, pe, (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable),
+        #fr, br, li, kc, kw, pe, (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable),
         express = 0 or 1
+        size= L, XL, XXL
         pmode
     '''
     print("Delivery Estimate param : ", dct)
-    ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], 1, 1, dct['express'])
+    # NOPE add price of the closest agent
+    ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'],
+                           dct['idim'], dct['pmode'], dct['express'])
 
     return HttpJSONResponse(ret)
 
@@ -247,7 +250,7 @@ def userDeliveryRequest(dct, user): #, _delivery):
 
     delivery.idim = dct['idim']
     delivery.itype = dct['itype']
-    delivery.pmode = 1 # online for now , later one can be edited to dct['pmode']
+    delivery.pmode = 1  # online for now , later one can be edited to dct['pmode']
     delivery.rtime = datetime.now(timezone.utc)
 
     delivery.srcper, delivery.srcadd, delivery.srcland, delivery.srcphone = dct['srcper'], dct['srcadd'], \
@@ -890,7 +893,6 @@ def agentDeliveryRetire(dct, agent, deli):
     PD : agent already retired from agentPaymentConfirm
     FL : admin already retired from adminHandleFailedDelivery()
 
-    TODO: move this common code to a function
     '''
     # made the agent AV and reset the tid to -1
     agent.mode = 'AV'

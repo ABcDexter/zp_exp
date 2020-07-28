@@ -404,7 +404,7 @@ class Delivery(models.Model):
     srcphone = models.CharField(max_length=15, db_index=True, null=True)
     dstphone = models.CharField(max_length=15, db_index=True, null=True)
 
-    # we TODO weights
+    # weights are as per dimensions
     pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)
 
     details = models.CharField(db_index=False, max_length=150, null=True)
