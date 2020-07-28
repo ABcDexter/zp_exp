@@ -957,13 +957,25 @@ def authDeliveryHistory(dct, entity, deli):
     if len(qsDeli):
         states = []
         for i in qsDeli:
+            # print(str(i['stime'])[:19])
+            strSTime = str(i['stime'])[:19]
+            # print(i['etime'])
+            sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+            if i['st'] in ['FN', 'CN']:
+                strETime = str(i['etime'])[:19]
+                eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+            else:
+                eTime = 'ONGOING'
+
             hs = User.objects.filter(an=deli.uan)[0].hs
             thisOneBro = {'id': i['id'], 'st': i['st'],
                           'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
                           'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
-                          'tip': i['tip']}  # ,
+                          'tip': i['tip'],
+                          'sdate': str(sTime),
+                          'edate': str(eTime)
+                          }
 
-            # TODO 'stime':i['stime'], 'etime':i['etime']}
             states.append(thisOneBro)
         print(states)
         ret.update({'delis': states})

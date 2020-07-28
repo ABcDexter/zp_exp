@@ -1087,10 +1087,18 @@ def authTripHistory(dct, entity):
         states = []
 
         for i in qsTrip:
-
-            ithTrip = {'id':i['id'],'st':i['st'], 'price':getRiPrice(Trip.objects.filter(id=i['id'])[0])['price']}#,
-                          #TODO Buggy as the getTripPrice only calculates ended Trips
-                          #TODO 'stime':i['stime'], 'etime':i['etime']}
+            # print(str(i['stime'])[:19])
+            strSTime = str(i['stime'])[:21]
+            strETime = str(i['etime'])[:21]
+            sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S.%f').date()
+            if i['st'] in ['FN', 'TR', 'PD']:
+                eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S.%f').date()
+            else :
+                eTime = 'ONGOING'
+            ithTrip = {'id':i['id'],'st':i['st'], 'price':getRiPrice(Trip.objects.filter(id=i['id'])[0])['price'],
+                       'sdate': str(sTime),
+                       'edate': str(eTime)
+                       }
             states.append(ithTrip)
         print(states)
         ret.update({'trips':states})
