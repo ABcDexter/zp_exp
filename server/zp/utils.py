@@ -493,6 +493,17 @@ def doOCRback(path):
     return ret
 
 
+def getSCID(an: int, admin: int, rtime: datetime) -> int:
+    '''
+    Generates a deterministic SCID
+    '''
+    sText = 'zippee-otp-%s-%s-%s' % (str(an), str(admin), str(rtime))
+    shaText = sText.encode('utf-8')
+    m = hashlib.new('ripemd160')
+    m.update(shaText)
+    scid = m.hexdigest()[:10]
+    return str(scid)
+
 
 def getOTP(an: int, dan: int, rtime: datetime) -> int:
     '''

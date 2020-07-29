@@ -21,7 +21,7 @@ from ..utils import ZPException, HttpJSONResponse
 from ..utils import getOTP
 from ..utils import getTripPrice, getRentPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
-
+from ..utils import getSCID, getDelPrice
 ###########################
 
 
@@ -207,7 +207,7 @@ def userDeliverySchedule(dct, user):
                     hour, minute.
 
     '''
-    print("#######  ", len(dct), "Delivery scheduling request param : ",  dct)
+    """
     params = {'fr': dct['fr'] if 'fr' in dct else 0, 'br': dct['br'] if 'br' in dct else 0,
               'li': dct['li'] if 'li' in dct else 0, 'pe': dct['pe'] if 'pe' in dct else 0,
               'kw': dct['kw'] if 'kw' in dct else 0, 'kc': dct['kc'] if 'kc' in dct else 0,
@@ -241,7 +241,15 @@ def userDeliverySchedule(dct, user):
     else:
         dinaank = datetime(year, month, date, hour, minute - 30, 00)
     '''
-    pDinaank = datetime(pYear, pMonth, pDate, pHour - 1, pMinute, 30)
+    # now since the server is UTC and we work with IST, and diff between then is 5 hours 30 minutes
+
+    # if pMinute - 30 < 0:
+    #    dinaank = datetime(pYear, pMonth, pDate, pHour - 6, (minute - 30) % 60, 00)
+    # else:
+    #    dinaank = datetime(year, month, date, hour, minute - 30, 00)
+
+    pDinaank = datetime(pYear, pMonth, pDate, pHour - 6, pMinute, 30)  # 6 hours ago
+
     print(pDinaank)
 
     dYear = int(dct['dYear'])
@@ -271,6 +279,91 @@ def userDeliverySchedule(dct, user):
     sched.resume()
     time.sleep(5)
     return HttpJSONResponse({})
+    """
+
+
+    print("#######  ", len(dct), "Delivery scheduling request param : ",  dct)
+
+    delivery = Delivery()
+    delivery.st = 'SC'
+    delivery.uan = user.an  # 1 is used for auth of user
+
+    delivery.srclat, delivery.srclng, delivery.dstlat, delivery.dstlng = dct['srclat'], dct['srclng'], \
+                                                                         dct['dstlat'], dct['dstlng']
+    # 2, 3, 4, 5,
+    delivery.srcpin, delivery.dstpin = dct['srcpin'],  dct['dstpin']
+    # 6,7
+    delivery.idim = dct['idim']
+    delivery.itype = dct['itype']
+    delivery.pmode = dct['pmode']
+    # delivery.rtime = datetime.now(timezone.utc) automated
+    # 8,9,10
+    delivery.srcper, delivery.srcadd, delivery.srcland, delivery.srcphone = dct['srcper'], dct['srcadd'], \
+                                                                            dct['srcland'], dct['srcphone']
+    # 11,12,13,14,
+    delivery.dstper, delivery.dstadd, delivery.dstland, delivery.dstphone = dct['dstper'], dct['dstadd'], \
+                                                                            dct['dstland'], dct['dstphone']
+    # 15,16,17,18
+    delivery.br = dct['br'] if 'br' in dct else 0
+    delivery.fr = dct['fr'] if 'fr' in dct else 0
+    delivery.kc = dct['kc'] if 'kc' in dct else 0
+    delivery.kw = dct['kw'] if 'kw' in dct else 0
+    delivery.li = dct['li'] if 'li' in dct else 0
+    delivery.pe = dct['pe'] if 'pe' in dct else 0
+    # 19,20,21,22,23,24
+    delivery.det = dct['det'] if 'det' in dct else ''
+    delivery.srcdet = dct['srcdet'] if 'srcdet' in dct else ''
+    delivery.dstdet = dct['dstdet'] if 'dstdet' in dct else ''
+    # 25, 26, 28 #    27th is missed deliveratty
+    delivery.tip = int(float(dct['tip'])) if 'tip' in dct else 0
+    # 29
+
+    pYear = int(dct['pYear'])
+    pMonth = int(dct['pMonth'])
+    pDate = int(dct['pDate'])
+    pHour = int(dct['pHour'])
+    pMinute = int(dct['pMinute'])
+    # 30, 31, 32, 33, 34
+
+    pDinaank = datetime(pYear, pMonth, pDate, pHour - 6, pMinute, 00)  # 6 hours ago
+
+    dYear = int(dct['dYear'])
+    dMonth = int(dct['dMonth'])
+    dDate = int(dct['dDate'])
+    dHour = int(dct['dHour'])
+    dMinute = int(dct['dMinute'])
+    # 30, 31, 32, 33, 34
+
+    dDinaank = datetime(pYear, pMonth, pDate, pHour, pMinute, 00)  # 6 hours ago
+
+    delivery.picktime = datetime.strptime(str(pDinaank), '%Y-%m-%d %H:%M:%S')  # .%f')
+    delivery.droptime = datetime.strptime(str(dDinaank), '%Y-%m-%d %H:%M:%S')  # .%f')
+    # 35, 36, 37, 38, 39
+
+    delivery.save()
+    scid = getSCID(user.an, delivery.id, delivery.rtime)
+
+    delivery.scid = scid
+    delivery.save()
+    params = {"scid": scid}
+
+    global sched
+    sched.pause()
+    sched.add_job(callAPI, 'date', run_date=pDinaank,
+                  args=['user-delivery-rq', params,
+                        user.auth])
+    print(sched)
+    print(sched.get_jobs())  # _jobstores.ne #job.next_run_time)
+    sched.resume()
+    time.sleep(1)
+
+    user.did = delivery.id
+    user.save()
+
+    ret = {'scid': delivery.scid}
+    ret.update({'price': float(getDelPrice(delivery, user.hs)['price'])})
+
+    return HttpJSONResponse(ret)
 
 
 @makeView()

@@ -26,7 +26,7 @@ class User(models.Model):
 
     pid  = models.IntegerField(null=True, db_index=True)
     tid  = models.IntegerField(default=-1, db_index=True)
-    did  = models.IntegerField(default=-1, db_index=True)
+    did = models.CharField(db_index=True, null=False, default='', max_length=11)
 
     name = models.CharField(null=True, max_length=64, db_index=True)
     gdr  = models.CharField(null=True, max_length=16, db_index=True)
@@ -316,11 +316,14 @@ class Delivery(models.Model):
     tabula rasa
     '''
     STATUSES = [
+        ('SC', 'scheduled'),  # scheduler by the user via app
+        ('PD', 'paid'),     #paid
+        ('RC', 'reached'),
+
         ('RQ', 'requested'),  # requested from the user via app
         ('AS', 'assigned'),  # assigned a delivery agent to this, waiting for the agent to come to user location
         ('ST', 'started'),  # agent started delivery
         ('FN', 'finished'),  # delivered successfully
-        ('PD', 'paid'),     #paid
         ('CN', 'cancelled'),  # cancelled by the user
         ('DN', 'denied'),  # refused by agent, this happens only after AS state
         ('TO', 'timeout'),  # request timed out
@@ -328,11 +331,11 @@ class Delivery(models.Model):
     ]
 
     # Active delivery states wrt user's and agent's perspective
-    USER_ACTIVE = ['RQ', 'AS' ]  # not PD, ST, TO, CN, DN, FL, FN
-    AGENT_ACTIVE = ['AS', 'PD', 'ST']  # not RQ, TO, CN, DN, FL, FN
+    USER_ACTIVE = ['SC']  # not PD, RQ, AS, ST, TO, CN, DN, FL, FN
+    AGENT_ACTIVE = ['AS', 'RC', 'ST']  # not PD, RQ, TO, CN, DN, FL, FN
 
     # States requiring payment to be done
-    PAYABLE = ['RQ', 'AS']
+    PAYABLE = ['SC']
 
     CASH = 0
     UPI = 1
@@ -365,6 +368,8 @@ class Delivery(models.Model):
                   ('PE', 'PERISHABLE')
                 ]
 
+    scid = models.CharField(db_index=True, null=False, default='', max_length=11)
+
     fr = models.BooleanField(default=False, db_index=True)
     br = models.BooleanField(default=False, db_index=True)
     li = models.BooleanField(default=False, db_index=True)
@@ -374,7 +379,7 @@ class Delivery(models.Model):
 
     express = models.BooleanField(default=False, db_index=True)
 
-    st = models.CharField(max_length=2, choices=STATUSES, default='RQ', db_index=True)
+    st = models.CharField(max_length=2, choices=STATUSES, default='SC', db_index=True)  # scheduled
     uan = models.BigIntegerField(db_index=True)
     dan = models.BigIntegerField(db_index=True, default=-1)
     van = models.BigIntegerField(db_index=True, default=-1)

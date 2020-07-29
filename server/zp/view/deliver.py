@@ -96,11 +96,11 @@ def userDeliveryGetStatus(dct, user):
     '''
     print(dct)
     # Get the users current deli if any
-    if user.did != -1:
+    if len(user.did) > 0:
 
-        qsDeli = Delivery.objects.filter(id=user.did)
+        qsDeli = Delivery.objects.filter(scid=user.did)
         deli = qsDeli[0]
-        ret = {'st': deli.st, 'did': deli.id, 'active': deli.st in Delivery.USER_ACTIVE}
+        ret = {'st': deli.st, 'scid': deli.scid, 'active': deli.st in Delivery.USER_ACTIVE}
 
         if ret['active']:
             if deli.st == 'RQ':  # Delivery.PAYABLE:
@@ -297,7 +297,7 @@ def userDeliveryRequest(dct, user): #, _delivery):
 
     delivery.save()
 
-    user.did = delivery.id
+    user.did = delivery.scid  # .id
     user.save()
     return HttpJSONResponse({'did': delivery.id})
 
@@ -308,19 +308,19 @@ def userDeliveryRequest(dct, user): #, _delivery):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkDeliveryStatus(['AS'])
+@checkDeliveryStatus(['SC'])
 def userDeliveryPay(_dct, user, delivery):
     '''
         Cancel the Delivery for a user if requested, assigned or started
         Should PD delivery also be allowed to Cancel? What about refund?
     '''
-    user.did = -1 #retire the user
+    user.did = ''  # retire the user
     user.save()
 
-    delivery.st = 'PD'
+    delivery.st = 'PD'  # paid now
     delivery.save()
-    otp = getOTP(delivery.uan, delivery.dan, delivery.atime)
-    return HttpJSONResponse({'otp': otp})
+
+    return HttpJSONResponse({})
 
 
 @makeView()
@@ -329,7 +329,7 @@ def userDeliveryPay(_dct, user, delivery):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkDeliveryStatus(['RQ', 'AS']) #TODO should this have PD or not?
+@checkDeliveryStatus(['SC', 'PD', 'RQ', 'AS'])  # After PD, refund will happen.
 def userDeliveryCancel(_dct, _user, delivery):
     '''
         Cancel the Delivery for a user if requested, assigned or started
@@ -363,6 +363,27 @@ def userDeliveryTrack(dct, user):
         raise ZPException('Trip NOT in right state to track agent', 501)
 
     return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Delivery not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkDeliveryStatus(['ST'])
+def userDeliveryRQ(dct, user):
+    '''
+        Put the delivery into the RQ queue
+
+        Http args:
+            auth, scid
+    '''
+    
+    deli = Delivery.objects.filter(scid=dct['scid'])[0]  # get that delivery
+    deli.st = 'RQ' # now the delivery is in RQ
+    return HttpJSONResponse({})
 
 
 # ============================================================================
@@ -797,7 +818,7 @@ def agentDeliveryAccept(dct, agent):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkDeliveryStatus(['AS', 'PD'])
+@checkDeliveryStatus(['AS', 'RC'])
 def agentDeliveryCancel(_dct, agent, deli):
     '''
     Called by agent to deny a delivery that was assigned (AS)
@@ -828,7 +849,7 @@ def agentDeliveryCancel(_dct, agent, deli):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkDeliveryStatus(['PD'])
+@checkDeliveryStatus(['RC'])
 def agentDeliveryStart(dct, _agent, deli):
     '''
     Agent calls this to start the deli providing the OTP that the user shared
@@ -961,7 +982,7 @@ def authDeliveryFail(dct, agent, deli):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkDeliveryStatus(['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
+@checkDeliveryStatus(['SC', 'RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
 def authDeliveryHistory(dct, entity, deli):
     '''
     returns the history of all Deliveries for a entity
