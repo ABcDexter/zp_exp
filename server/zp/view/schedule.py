@@ -253,8 +253,8 @@ def userDeliverySchedule(dct, user):
     dropDinaank = datetime(dYear, dMonth, dDate, dHour - 1, dMinute, 30)
     print(dropDinaank)
 
-    pickDate = str(datetime.strptime(str(pDinaank), '%Y-%m-%d %H:%M:%S.%f'))
-    dropDate = str(datetime.strptime(str(dropDinaank), '%Y-%m-%d %H:%M:%S.%f'))
+    pickDate = str(datetime.strptime(str(pDinaank), '%Y-%m-%d %H:%M:%S'))
+    dropDate = str(datetime.strptime(str(dropDinaank), '%Y-%m-%d %H:%M:%S'))
     params.update({'picktime': pickDate, 'droptime':dropDate})
     # 29 cheejein bhaiiye
 
