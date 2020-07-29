@@ -180,13 +180,13 @@ def userDeliverySchedule(dct, user):
         8. srcper,
         9. dstper,
         10. srdadd,
-        11. srcpin
+        11. srcpin,
         12. srcland,
         13. dstadd,
-        14. dstpin
+        14. dstpin,
         15. dstland,
         16. itype,
-        17. idim
+        17. idim,
         18. det,
         19. srcdet,
         20. dstdet,
@@ -250,10 +250,12 @@ def userDeliverySchedule(dct, user):
     dHour = int(dct['dHour'])
     dMinute = int(dct['dMinute'])
 
-    dropDate = datetime(dYear, dMonth, dDate, dHour - 1, dMinute, 30)
-    print(dropDate)
+    dropDinaank = datetime(dYear, dMonth, dDate, dHour - 1, dMinute, 30)
+    print(dropDinaank)
 
-    params.update({'picktime': pDinaank, 'droptime':dropDate})
+    pickDate = str(datetime.strptime(str(pDinaank), '%Y-%m-%d %H:%M:%S.%f'))
+    dropDate = str(datetime.strptime(str(dropDinaank), '%Y-%m-%d %H:%M:%S.%f'))
+    params.update({'picktime': pickDate, 'droptime':dropDate})
     # 29 cheejein bhaiiye
 
     params.update({'express': dct['express']})
