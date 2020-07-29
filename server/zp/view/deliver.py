@@ -188,14 +188,13 @@ def userDeliveryEstimate(dct, user):
     Returns the estimated price for the delivery
 
     HTTP args:
-        auth, srcpin, dstpin,
+        auth,
         srclat, srclng,
         dstlat, dstlng
         itype,
-        idim,
+        idim = L, XL, XXL
         #fr, br, li, kc, kw, pe, (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable),
         express = 0 or 1
-        size= L, XL, XXL
         pmode
     '''
     print("Delivery Estimate param : ", dct)
@@ -215,67 +214,86 @@ def userDeliveryEstimate(dct, user):
 #@checkDeliveryStatus(['INACTIVE'])
 def userDeliveryRequest(dct, user): #, _delivery):
     '''
-    Returns the estimated price for the delivery
+    Returns the did for the requested
 
     HTTP args:
-        auth,
-        srclat, srclng,
-        dstlat, dstlng,
+        1. auth,
+        2. srclat,
+        3. srclng,
+        4. dstlat,
+        5. dstlng,
+        6. srcphone,
+        7. dstphone,
+        8. srcper,
+        9. dstper,
+        10. srdadd,
+        11. srcpin
+        12. srcland,
+        13. dstadd,
+        14. dstpin
+        15. dstland,
+        16. itype,
+        17. idim
+        18. det,
+        19. srcdet,
+        20. dstdet,
+        21. fr,
+        22. br,
+        23. li,
+        24. kc,
+        25. kw,
+        26. pe,
+        # 27. no (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable)
+        28. tip
+        29. express 0 or 1
+        30. picktime:
+                    date, month, year,
+                    hour, minute.
+        31. droptime
+                    date, month, year,
+                    hour, minute.
 
-        srcphone, dstphone,
-        srcper, dstper,
-
-        srdadd, srcpin
-        srcland,
-        dstadd, dstpin
-        dstland,
-
-        itype, idim
-
-        details,
-
-        fr, br, li, kc, kw, pe, (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable)
-
-        tip
-
+    Delivery has total 39 attributes as on now : 16:26 29/7/2020
     '''
     print("#######  ", len(dct), "Delivery request param : ",  dct)
 
     delivery = Delivery()
-    delivery.st = 'RQ'
-    delivery.uan = user.an
+    delivery.st = 'RQ' #1
+    delivery.uan = user.an #2
 
     delivery.srclat, delivery.srclng, delivery.dstlat, delivery.dstlng = dct['srclat'], dct['srclng'], \
                                                                          dct['dstlat'], dct['dstlng']
-
+    # 3,4,5,6
     delivery.srcpin, delivery.dstpin = dct['srcpin'],  dct['dstpin']
-
+    # 7,8,9,10
     delivery.idim = dct['idim']
     delivery.itype = dct['itype']
-    delivery.pmode = 1  # online for now , later one can be edited to dct['pmode']
+    delivery.pmode = dct['pmode']
     delivery.rtime = datetime.now(timezone.utc)
-
+    # 11,12,13,14
     delivery.srcper, delivery.srcadd, delivery.srcland, delivery.srcphone = dct['srcper'], dct['srcadd'], \
                                                                             dct['srcland'], dct['srcphone']
-
+    # 15,16,17,18
     delivery.dstper, delivery.dstadd, delivery.dstland, delivery.dstphone = dct['dstper'], dct['dstadd'], \
                                                                             dct['dstland'], dct['dstphone']
 
     delivery.br = dct['br'] if 'br' in dct else 0
-
     delivery.fr = dct['fr'] if 'fr' in dct else 0
-
     delivery.kc = dct['kc'] if 'kc' in dct else 0
-
     delivery.kw = dct['kw'] if 'kw' in dct else 0
-
     delivery.li = dct['li'] if 'li' in dct else 0
-
     delivery.pe = dct['pe'] if 'pe' in dct else 0
-
-    delivery.details = dct['details'] if 'details' in dct else ''
-
+    # 19,20,21,22,23,24
+    delivery.det = dct['det'] if 'det' in dct else ''
+    delivery.srcdet = dct['srcdet'] if 'srcdet' in dct else ''
+    delivery.dstdet = dct['dstdet'] if 'dstdet' in dct else ''
+    # 25, 26, 27
     delivery.tip = int(float(dct['tip'])) if 'tip' in dct else 0
+    # 28
+
+    delivery.picktime = datetime.strptime(str(dct['picktime']), '%Y-%m-%d %H:%M:%S.%f')
+    delivery.droptime = datetime.strptime(str(dct['droptime']), '%Y-%m-%d %H:%M:%S.%f')
+    # 29, 30
 
     delivery.save()
 

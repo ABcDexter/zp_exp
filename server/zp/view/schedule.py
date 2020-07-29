@@ -170,58 +170,70 @@ def userDeliverySchedule(dct, user):
     User calls this to schedule a DELIVERY
 
     HTTP args:
-        auth
+        1. auth,
+        2. srclat,
+        3. srclng,
+        4. dstlat,
+        5. dstlng,
+        6. srcphone,
+        7. dstphone,
+        8. srcper,
+        9. dstper,
+        10. srdadd,
+        11. srcpin
+        12. srcland,
+        13. dstadd,
+        14. dstpin
+        15. dstland,
+        16. itype,
+        17. idim
+        18. det,
+        19. srcdet,
+        20. dstdet,
+        21. fr,
+        22. br,
+        23. li,
+        24. kc,
+        25. kw,
+        26. pe,
+        # 27. no (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable)
+        28. tip
+        29. express 0 or 1
+        30-34. picktime:
+                    date, month, year,
+                    hour, minute.
+        35-39. droptime
+                    date, month, year,
+                    hour, minute.
 
-    HTTP args:
-        auth,
-        srclat, srclng,
-        dstlat, dstlng,
-
-        srcphone, dstphone,
-        srcper, dstper,
-
-        srdadd, srcpin
-        srcland,
-        dstadd, dstpin
-        dstland,
-
-        itype, idim
-
-        details,
-
-        fr, fl, li, kd, kw, kc,
-
-        tip,
-
-        5 more things
-        date, month, year,
-        hour, minute.
     '''
     print("#######  ", len(dct), "Delivery scheduling request param : ",  dct)
     params = {'fr': dct['fr'] if 'fr' in dct else 0, 'br': dct['br'] if 'br' in dct else 0,
               'li': dct['li'] if 'li' in dct else 0, 'pe': dct['pe'] if 'pe' in dct else 0,
               'kw': dct['kw'] if 'kw' in dct else 0, 'kc': dct['kc'] if 'kc' in dct else 0,
-              'tip': dct['tip'] if 'tip' in dct else 0, 'details': dct['details'] if 'details' in dct else ''}
-    # 8 cheejein bhaiye
+              'tip': dct['tip'] if 'tip' in dct else 0, 'det': dct['det'] if 'det' in dct else '',
+              'srcdet': dct['srcdet'] if 'srcdet' in dct else 0, 'dstdet': dct['dstdet'] if 'dstdet' in dct else ''
+              }
+    # 10 cheejein bhaiye
     params.update({'srclat': dct['srclat'], 'srclng': dct['srclng'], 'dstlat': dct['dstlat'], 'dstlng': dct['dstlng']})
-    # 12 cheejein bhaiye
-    params.update({'srcpin': dct['srcpin'], 'dstpin': dct['dstpin']})
     # 14 cheejein bhaiye
+    params.update({'srcpin': dct['srcpin'], 'dstpin': dct['dstpin']})
+    # 16 cheejein bhaiye
     params.update({'idim': dct['idim'], 'itype': dct['itype'], 'pmode': dct['pmode']})
-    # 17 cheejein bhaiye
+    # 19 cheejein bhaiye
     params.update({'srcper': dct['srcper'], 'srcadd': dct['srcadd'],
                    'srcland': dct['srcland'], 'srcphone': dct['srcphone']})
-    # 21 cheejein bhaiyye
+    # 23 cheejein bhaiyye
     params.update({'dstper': dct['dstper'], 'dstadd': dct['dstadd'],
                    'dstland': dct['dstland'], 'dstphone': dct['dstphone']})
-    # 25 cheejein bhaiyye
+    # 27 cheejein bhaiyye
 
-    year = int(dct['year'])
-    month = int(dct['month'])
-    date = int(dct['date'])
+    pYear = int(dct['pYear'])
+    pMonth = int(dct['pMonth'])
+    pDate = int(dct['pDate'])
 
-    hour = int(dct['hour'])
-    minute = int(dct['min'])
+    pHour = int(dct['pHour'])
+    pMinute = int(dct['pMinute'])
 
     '''
     if minute - 30 < 0:
@@ -229,12 +241,27 @@ def userDeliverySchedule(dct, user):
     else:
         dinaank = datetime(year, month, date, hour, minute - 30, 00)
     '''
-    dinaank = datetime(year, month, date, hour - 1, minute, 30)
-    print(dinaank)
+    pDinaank = datetime(pYear, pMonth, pDate, pHour - 1, pMinute, 30)
+    print(pDinaank)
+
+    dYear = int(dct['dYear'])
+    dMonth = int(dct['dMonth'])
+    dDate = int(dct['dDate'])
+    dHour = int(dct['dHour'])
+    dMinute = int(dct['dMinute'])
+
+    dropDate = datetime(dYear, dMonth, dDate, dHour - 1, dMinute, 30)
+    print(dropDate)
+
+    params.update({'picktime': pDinaank, 'droptime':dropDate})
+    # 29 cheejein bhaiiye
+
+    params.update({'express': dct['express']})
+    # 30 cheejein bhaiyye
 
     global sched
     sched.pause()
-    sched.add_job(callAPI, 'date', run_date=dinaank,
+    sched.add_job(callAPI, 'date', run_date=pDinaank,
                   args=['user-delivery-request', params,
                         user.auth])
     print(sched)

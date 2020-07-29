@@ -383,6 +383,9 @@ class Delivery(models.Model):
     stime = models.DateTimeField(db_index=True, null=True)
     etime = models.DateTimeField(db_index=True, null=True)
 
+    picktime = models.DateTimeField(db_index=True, null=True)
+    droptime = models.DateTimeField(db_index=True, null=True)
+
     srcpin = models.IntegerField(db_index=True)
     srclat = models.FloatField(null=False, db_index=True, default=0)
     srclng = models.FloatField(null=False, db_index=True, default=0)
@@ -407,8 +410,12 @@ class Delivery(models.Model):
     # weights are as per dimensions
     pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)
 
-    details = models.CharField(db_index=False, max_length=150, null=True)
+    det = models.CharField(db_index=False, max_length=150, null=True)
+    srcdet = models.CharField(db_index=False, max_length=150, null=True)
+    dstdet = models.CharField(db_index=False, max_length=150, null=True)
+
     tip = models.IntegerField(db_index=False, default=0)
+
     class Meta:
         db_table = 'delivery'
         managed = True
