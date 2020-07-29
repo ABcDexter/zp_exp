@@ -291,8 +291,8 @@ def userDeliveryRequest(dct, user): #, _delivery):
     delivery.tip = int(float(dct['tip'])) if 'tip' in dct else 0
     # 28
 
-    delivery.picktime = datetime.strptime(str(dct['picktime']), '%Y-%m-%d %H:%M:%S.%f')
-    delivery.droptime = datetime.strptime(str(dct['droptime']), '%Y-%m-%d %H:%M:%S.%f')
+    delivery.picktime = datetime.strptime(str(dct['picktime']), '%Y-%m-%d %H:%M:%S')  # .%f')
+    delivery.droptime = datetime.strptime(str(dct['droptime']), '%Y-%m-%d %H:%M:%S')  # .%f')
     # 29, 30
 
     delivery.save()
