@@ -62,6 +62,8 @@ def authDeliveryGetInfo(dct, entity):
         ret.update({'tip': deli.tip,
                     'price': getDelPrice(deli, hs)['price'],
                     'earn':float(getDelPrice(deli, hs)['price'])/10})  # TODO return earning from delivery
+    elif deli.st == 'AS':
+        ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
 
     return HttpJSONResponse(ret)
 
