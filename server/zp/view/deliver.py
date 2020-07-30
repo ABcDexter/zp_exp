@@ -311,6 +311,7 @@ def userDeliveryPay(_dct, user, delivery):
         Cancel the Delivery for a user if requested, assigned or started
         Should PD delivery also be allowed to Cancel? What about refund?
     '''
+    print(delivery.scid, delivery.id)
     user.did = ''  # retire the user
     user.save()
 
