@@ -314,11 +314,12 @@ def userDeliveryRequest(dct, user): #, _delivery):
 @checkDeliveryStatus(['SC'])
 def userDeliveryPay(_dct, user, delivery):
     '''
-        Cancel the Delivery for a user if requested, assigned or started
-        Should PD delivery also be allowed to Cancel? What about refund?
+        Pay for the Delivery for a user after scheduled
+        Https args:
+            auth
     '''
     print(delivery.scid, delivery.id)
-    user.did = ''  # retire the user
+    user.did = ''  # retire the user, #TODO move this logic to userDeliveryRetire() and comment this out
     user.save()
 
     delivery.st = 'PD'  # paid now
@@ -388,6 +389,26 @@ def userDeliveryRQ(dct, user):
     deli = Delivery.objects.filter(scid=dct['scid'])[0]  # get that delivery
     deli.st = 'RQ' # now the delivery is in RQ
     deli.save()
+    return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Delivery not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkDeliveryStatus(['PD'])
+def userDeliveryRetire(dct, user, _deli):
+    '''
+        retires the delivery for the use
+
+        Http args:
+            auth, scid
+    '''
+    user.did = ''
+    user.save()
     return HttpJSONResponse({})
 
 
