@@ -172,7 +172,7 @@ def userRentEnd(_dct, user, _trip):
 @checkTripStatus('ST')
 def authTimeRemaining(_dct, entity, trip):
     '''
-    Returns aadhaar, name and phone of current assigned supervisor
+    #Obsolete tells the remaining minutes.
     '''
     ret = {}
     currTime = datetime.now(timezone.utc)
@@ -256,6 +256,7 @@ def userVehicleHold(_dct, user, trip):
 #@checkTripStatus(['INACTIVE'])
 def userRentRequest(dct, user): #, _trip):
     '''
+    #Obsolete
     User calls this to request a rental
 
     HTTP args:
@@ -267,6 +268,7 @@ def userRentRequest(dct, user): #, _trip):
         vtype - vehicle type
         hrs   - number of hours
         pmode - 1 from the user
+
     '''
     print("Rental Request param : ", dct)
 
@@ -560,7 +562,7 @@ def supRentEnd(dct, _sup):
 @checkAuth()
 def supPaymentConfirm(dct, _sup):
     '''
-    Supervisor calls this to confirm money received
+    #Obsolete Supervisor calls this to confirm money received
     '''
     qsTrip = Trip.objects.filter(id=dct['tid'])
     if len(qsTrip):
@@ -592,7 +594,6 @@ def supRentRetire(dct, _sup):
     qsTrip = Trip.objects.filter(id=dct['tid'])
     trip = qsTrip[0]
     trip.st = 'PD'
-    
     trip.save()
 
     vehicle = Vehicle.objects.filter(tid=trip.id)[0]

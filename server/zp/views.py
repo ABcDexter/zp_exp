@@ -321,8 +321,6 @@ def userTripGetStatus(_dct, user):
                 ret['time'] = int(remTimeMins)
                 ret['vno'] = vehicle.regn  # moves to ST state
 
-            # done In case of rental make the rental send the number of minutes remaining .
-            # this is given by authTimeRemaining
 
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
@@ -1140,28 +1138,46 @@ def userGiveOtp(dct, user, _trip):
 @transaction.atomic
 @checkAuth()
 @checkTripStatus(['PD'])
-def authRideRate(dct, entity, trip):
+def authTripRate(dct, entity, trip):
     '''
     rating system...
     HTTP args:
         auth,
         rate,
+        rev,
 
     '''
     print(dct, entity, trip)
     rate = Rate()
     bIsUser = True if type(entity) is User else False #user or driver
+    print(bIsUser)
     if bIsUser :
-        driver = Driver.objects.filter(an=trip.dan)[0]
-        numTrips = Trip.objects.filter(dan=driver.an).count()
-        driver.mark = (driver.mark+int(dct['rate']))/(numTrips+1)
-        driver.save()
-
+        if trip.rtype == '0':
+            driver = Driver.objects.filter(an=trip.dan)[0]
+            numTrips = Trip.objects.filter(dan=driver.an).count()
+            driver.mark = (driver.mark+int(dct['rate']))/(numTrips+1)
+            driver.save()
+        # else :
+        # rate the super visor
         # give the ratings
-        rate.id = 'ride' + str(trip.id)
-        rate.type = 'ride'
-        rate.rating = dct['rate']
-        rate.money = getTripPrice(trip)
+        rate.id = 'trip' + str(trip.id)
+        rate.type = 'ride' if trip.rtype == '0' else 'rent'
+        rate.rev = dct['rev']
+        '''
+        ('attitude', 'attitude'),  # Attitude of contact person (driver/supervisor/delivery agent)
+        ('vehiclecon', 'vehiclecon'),   # Vehicle condition
+        ('cleanliness',  'cleanliness'),  # cleanliness of the vehicle
+        ('OTher'
+        '''
+        if 'attitude' in dct['rev'].lower():
+            rate.rating = 'attitude'
+        elif 'condition' in dct['rev'].lower():
+            rate.rating = 'vehiclecon'
+        elif 'clean' in dct['rev'].lower():
+            rate.rating = 'cleanliness'
+        else:
+            rate.rating = dct['rev']
+        rate.money = getTripPrice(trip)['price']
         rate.save()
 
     else :
@@ -1170,5 +1186,6 @@ def authRideRate(dct, entity, trip):
         user.mark = (user.mark+int(dct['rate']))/(numTrips+1)
         user.save()
     #think maybe mark the trip as RATED, do we need an extra state ...?
+    # NOPE as per 30/7/2020
 
     return HttpJSONResponse({})

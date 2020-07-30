@@ -203,6 +203,7 @@ class Trip(models.Model):
     pmode : payment mode (cash / upi)
     hrs : for RENTAL, number of hours
     rvtype(int): requested vehicle type
+    rev = review about this trip
     '''
     STATUSES = [
         ('RQ', 'requested'),  # requested from the user via app
@@ -216,6 +217,7 @@ class Trip(models.Model):
         ('DN', 'denied'),     # refused by driver, this happens only after AS state
         ('TO', 'timeout'),  # request timed out
         ('FL', 'failed'),  # failed due to any reason other than cancellation
+        # ('RT', 'rated'), # THIS MEANS THAT THE TRIP IS DONE
     ]
 
     # Active trip states wrt users and drivers perspective
@@ -544,6 +546,7 @@ class Rate(models.Model):
     ""
     ""
     "Any other"
+    rev = review
     '''
     TYPE = [
         ('RIDE', 'ride'),
@@ -553,15 +556,16 @@ class Rate(models.Model):
     ]
 
     RATINGS = [
-        ('AT', 'attitude'),  # Attitude of contact person (driver/supervisor/delivery agent)
-        ('VC', 'vehiclecon'),   # Vehicle condition
-        ('CL',  'cleanliness'),  # cleanliness of the vehicle
-        ('OT', 'other'),  # failed due to any reason other than cancellation
+        ('attitude', 'attitude'),  # Attitude of contact person (driver/supervisor/delivery agent)
+        ('vehiclecon', 'vehiclecondition'),   # Vehicle condition
+        ('cleanliness',  'cleanliness'),  # cleanliness of the vehicle
+        ('other', ' other '),  # failed due to any reason other than cancellation
     ]
     id = models.CharField(primary_key=True, max_length=10)
     type = models.CharField(max_length=4, choices=TYPE, default='NAN', db_index=True)
     rating = models.CharField(max_length=20, choices=RATINGS, default='OT', db_index=True)
     money = models.FloatField(db_index=True, default=0.0)
+    rev = models.CharField(max_length=280, default='')
 
     class Meta:
         db_table = 'rate'
