@@ -49,7 +49,7 @@ def authDeliveryGetInfo(dct, entity):
     Returns deli info for this agent or user for any past or current deli
     '''
     # get the delivery and ensure entity was in it
-    deli = Delivery.objects.filter(id=dct['did'])[0]
+    deli = Delivery.objects.filter(id=dct['scid'])[0]
     if not (deli.uan == entity.an or deli.dan == entity.an):
         raise ZPException('Invalid deli ID', 400)
 
@@ -117,7 +117,7 @@ def userDeliveryGetStatus(dct, user):
 
     else:
 
-        deli = Delivery.objects.filter(id=dct['did'])[0]
+        deli = Delivery.objects.filter(id=dct['scid'])[0]
         ret = {'active': False, 'st': deli.st}
 
         # For paid Delivery request send OTP, and 'an' of vehicle and Agent
@@ -350,7 +350,7 @@ def userDeliveryTrack(dct, user):
     '''
         Track the Delivery for a user
     '''
-    deli = Delivery.objects.filter(id=dct['did'])[0]  # get that delivery
+    deli = Delivery.objects.filter(id=dct['scid'])[0]  # get that delivery
     # agent = Agent.objects.filter(an=deli.dan)[0]  # get that agent
     if deli.st in ['ST', 'PD']:
         loc = Location.objects.filter(an=deli.dan)[0]  # get the location
