@@ -68,8 +68,8 @@ class Admin(Entity):
                 ret = self.callAPI('admin-agent-assign')
                 did = ret['did']
                 auth = ret['babua']
-                print(" values : ", did, "auth of agent closest " , auth)
-                response = self.callAPI('agent-delivery-accept', {'auth': auth, 'did': did})
+                print(" values : ", did, "auth of agent closest ", auth)
+                response = self.callAPI('agent-delivery-accept', {'did': did}, auth)
 
             pass
 
