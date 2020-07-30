@@ -119,7 +119,8 @@ def userDeliveryGetStatus(dct, user):
 
         deli = Delivery.objects.filter(scid=dct['scid'])[0]
         ret = {'active': deli.st in Delivery.USER_ACTIVE, 'st': deli.st}
-
+        if deli.st == 'SC':
+            ret.update(getDelPrice(deli, user.hs))
         # For paid Delivery request send OTP, and 'an' of vehicle and Agent
         if deli.st == 'PD':
             ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
