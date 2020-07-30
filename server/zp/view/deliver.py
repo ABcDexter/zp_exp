@@ -494,7 +494,7 @@ def adminAgentAssign(dct):
             minDist = nDist
             iterAn = agent.an
 
-    print("closest agent is : ", minDist, " kms away and ", minTime, " minutes away")
+    print("closest agent is : ", minDist, " metres away and ", minTime, " minutes away")
 
     choosenAgent = Agent.objects.filter(an=iterAn)[0]
 
@@ -775,7 +775,6 @@ def agentDeliveryCheck(_dct, agent):
     return HttpJSONResponse(ret)
 
 
-
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
@@ -845,19 +844,19 @@ def agentDeliveryAccept(dct, agent):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkDeliveryStatus(['AS', 'RC'])
+@checkDeliveryStatus(['RC', 'AS'])  # should we remove the 'AS' state from here
 def agentDeliveryCancel(_dct, agent, deli):
     '''
     Called by agent to deny a delivery that was assigned (AS)
     '''
     # Change deli status from assigned to  denied
     # Set the state for the deli and agent - agent is set to OF on failure
-    if deli.st == 'AS':
-        agent.mode = 'AV'
-        deli.st = 'DN'
+    #if deli.st == 'RC':
+    agent.mode = 'LK'  # agent is locked after this unless, he sends the reason for cancellation
+    deli.st = 'DN'
 
     # Reset agent did, but not users since they need to see the DN state
-    retireDelEntity(agent)
+    # retireDelEntity(agent)  moved to agentDeliveryRetire()
 
     # Note the time of deli cancel/fail and save
     deli.etime = datetime.now(timezone.utc)
@@ -960,14 +959,13 @@ def agentUserRate(_dct, agent, deli):
     return HttpJSONResponse({})
 
 
-
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkDeliveryStatus(['CN', 'TO'])
+@checkDeliveryStatus(['CN', 'TO', 'FN', 'DN'])
 def agentDeliveryRetire(dct, agent, deli):
     '''
     Resets agent's and vehicles active deli
