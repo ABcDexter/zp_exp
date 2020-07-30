@@ -356,7 +356,7 @@ def userDeliveryTrack(dct, user):
     '''
     deli = Delivery.objects.filter(scid=dct['scid'])[0]  # get that delivery
     # agent = Agent.objects.filter(an=deli.dan)[0]  # get that agent
-    if deli.st in ['ST', 'PD']:
+    if deli.st in ['ST', 'AS']:
         loc = Location.objects.filter(an=deli.dan)[0]  # get the location
         ret = {'lat': loc.lat, 'lng': loc.lng}
     else:
@@ -841,6 +841,25 @@ def agentDeliveryCancel(_dct, agent, deli):
     #vehicle = Vehicle.objects.filter(tid=deli.id)[0]
     #retireDelEntity(vehicle)
 
+    return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth(['BK'])
+@checkDeliveryStatus(['AS'])
+def agentDeliveryReached(dct, _agent, deli):
+    '''
+    Agent calls this to tell (s)he reached
+    TODO: Verify via agent location that the agent actually reached
+    HTTP Args:
+        auth
+    '''
+    deli.st = 'RC'
+    deli.save()
     return HttpJSONResponse({})
 
 
