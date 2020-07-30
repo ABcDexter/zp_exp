@@ -307,7 +307,7 @@ class Supervisor(models.Model):
         managed = True
 
 ########################
-#Delivery module
+# Delivery module
 ########################
 
 

@@ -325,7 +325,12 @@ def userDeliverySchedule(dct, user):
     pMinute = int(dct['pMinute'])
     # 30, 31, 32, 33, 34
 
-    pDinaank = datetime(pYear, pMonth, pDate, pHour - 6, pMinute, 00)  # 6 hours ago
+
+    if pMinute  < 30:
+        pDinaank = datetime(pYear, pMonth, pDate, pHour - 6, (pMinute + 30) % 60, 00)
+     else :
+        pDinaank = datetime(pYear, pMonth, pDate, pHour - 5, (pMinute - 30) % 60, 00)
+
 
     dYear = int(dct['dYear'])
     dMonth = int(dct['dMonth'])
@@ -334,7 +339,7 @@ def userDeliverySchedule(dct, user):
     dMinute = int(dct['dMinute'])
     # 30, 31, 32, 33, 34
 
-    dDinaank = datetime(pYear, pMonth, pDate, pHour, pMinute, 00)  # 6 hours ago
+    dDinaank = datetime(dYear, dMonth, dDate, dHour, dMinute, 00)  # 6 hours ago
 
     delivery.picktime = datetime.strptime(str(pDinaank), '%Y-%m-%d %H:%M:%S')  # .%f')
     delivery.droptime = datetime.strptime(str(dDinaank), '%Y-%m-%d %H:%M:%S')  # .%f')
