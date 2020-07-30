@@ -49,7 +49,11 @@ def authDeliveryGetInfo(dct, entity):
     Returns deli info for this agent or user for any past or current deli
     '''
     # get the delivery and ensure entity was in it
-    deli = Delivery.objects.filter(scid=dct['scid'])[0]
+    if 'did' in dct:
+        deli = Delivery.objects.filter(id=dct['did'])[0]
+    elif 'scid':
+        deli = Delivery.objects.filter(scid=dct['scid'])[0]
+
     if not (deli.uan == entity.an or deli.dan == entity.an):
         raise ZPException('Invalid deli ID', 400)
 
@@ -130,7 +134,6 @@ def userDeliveryGetStatus(dct, user):
             # For started delis send deli progress percent
         if deli.st in ['AS', 'RC']:
             ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
-
 
     return HttpJSONResponse(ret)
 
