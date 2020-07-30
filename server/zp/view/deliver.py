@@ -1006,7 +1006,7 @@ def authDeliveryHistory(dct, entity, deli):
                 eTime = 'ONGOING'
 
             hs = User.objects.filter(an=deli.uan)[0].hs
-            thisOneBro = {'id': i['id'], 'st': i['st'],
+            thisOneBro = {'scid': i['scid'], 'st': i['st'],
                           'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
                           'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
                           'tip': i['tip'],
