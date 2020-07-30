@@ -500,8 +500,9 @@ def adminAgentAssign(dct):
 
     if choosenAgent.mode != 'AV':
         raise ZPException('Agent is already registered', 501)
-
-    return HttpJSONResponse({})
+    delId = deli.id
+    auth = choosenAgent.auth
+    return HttpJSONResponse({'babua': auth, 'did': delId})
 
 
 # ============================================================================

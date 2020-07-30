@@ -61,6 +61,16 @@ class Admin(Entity):
                             self.log('Freed user with auth : %s' % failed['uauth'] )
                         time.sleep(fDelay)
 
+            if not self.logIfErr(dctRet) and prob(0.99):
+
+                self.log('Assigning Agents to RQ deliveries')
+
+                ret = self.callAPI('admin-agent-assign')
+                did = ret['did']
+                auth = ret['babua']
+                print(" values : ", did, "auth of agent closest " , auth)
+                response = self.callAPI('agent-delivery-accept', {'auth': auth, 'did': did})
+
             pass
 
             # Sleep for specified time
