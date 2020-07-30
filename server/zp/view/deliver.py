@@ -56,12 +56,12 @@ def authDeliveryGetInfo(dct, entity):
     # get the deli and append pricing info if complete
     ret = {'st': deli.st}
     hs = User.objects.filter(an=deli.uan)[0].hs
-    if deli.st in ['AS']:
+    if deli.st in ['SC']:
         ret.update(getDelPrice(deli, hs))
     elif deli.st in ['PD', 'FN']:
         ret.update({'tip': deli.tip,
                     'price': getDelPrice(deli, hs)['price'],
-                    'earn':float(getDelPrice(deli, hs)['price'])/10}) #TODO return earning from delivery
+                    'earn':float(getDelPrice(deli, hs)['price'])/10})  # TODO return earning from delivery
 
     return HttpJSONResponse(ret)
 
@@ -103,6 +103,10 @@ def userDeliveryGetStatus(dct, user):
         ret = {'st': deli.st, 'scid': deli.scid, 'active': deli.st in Delivery.USER_ACTIVE}
 
         if ret['active']:
+            if deli.st == 'SC':  # Delivery.PAYABLE:
+                price = getDelPrice(deli, user.hs)
+                ret.update(price)
+        else:
             if deli.st == 'RQ':  # Delivery.PAYABLE:
                 price = getDelPrice(deli, user.hs)
                 ret.update(price)
@@ -110,6 +114,7 @@ def userDeliveryGetStatus(dct, user):
                 # price = #round(float("{:.2s}".format(getDelPrice(deli, user.hs)['price'])), 2) #+ (1.00*deli.tip)
                 price = "%0.2f" % (float(getDelPrice(deli, user.hs)['price']) + (1.00*deli.tip) )
                 ret.update({'price': price})
+
     else:
 
         deli = Delivery.objects.filter(id=dct['did'])[0]
@@ -119,16 +124,7 @@ def userDeliveryGetStatus(dct, user):
         if deli.st == 'PD':
             ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
             # For started delis send deli progress percent
-        '''
-        if deli.st == 'ST':
-            progress = Progress.objects.filter(tid=deli.id)[0]
-            ret['pct'] = progress.pct
-            if deli.rtype == 1:
-                currTime = datetime.now(timezone.utc)
-                diffTime = (currTime - deli.stime).total_seconds() / 60  # minutes
-                remHrs = diffTime - deli.hrs
-                ret['time'] = remHrs
-        '''
+
     return HttpJSONResponse(ret)
 
 
@@ -999,7 +995,10 @@ def authDeliveryHistory(dct, entity, deli):
             # print(str(i['stime'])[:19])
             strSTime = str(i['stime'])[:19]
             # print(i['etime'])
-            sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+            if i['st'] in ['ST', 'FL', 'FN']:
+                sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+            else:
+                sTime = 'NOTSTARTED'
             if i['st'] in ['FN', 'CN']:
                 strETime = str(i['etime'])[:19]
                 eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
