@@ -118,7 +118,7 @@ def userDeliveryGetStatus(dct, user):
     else:
 
         deli = Delivery.objects.filter(scid=dct['scid'])[0]
-        ret = {'active': False, 'st': deli.st}
+        ret = {'active': deli.st in Delivery.USER_ACTIVE, 'st': deli.st}
 
         # For paid Delivery request send OTP, and 'an' of vehicle and Agent
         if deli.st == 'PD':
