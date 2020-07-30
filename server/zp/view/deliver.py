@@ -381,6 +381,7 @@ def userDeliveryRQ(dct, user):
     
     deli = Delivery.objects.filter(scid=dct['scid'])[0]  # get that delivery
     deli.st = 'RQ' # now the delivery is in RQ
+    deli.save()
     return HttpJSONResponse({})
 
 
@@ -442,7 +443,7 @@ def adminAgentAssign(dct):
         this uses Google distance, assigns closest as per time, so might not be accurate
     '''
     # Get the deliveries and look for RQ ones
-    qsDeli = Delivery.objects.filter(st='RQ')
+    qsDeli = Delivery.objects.filter(st__in=['RQ', 'PD'])
 
     qsAgent = Agent.objects.filter(mode='AV', did='-1')
 
