@@ -769,7 +769,7 @@ def agentDeliveryAccept(dct, agent):
     ret = {}
     # Assign agent to deli and create a deli progress entry
     deli = Delivery.objects.filter(id=dct['did'])[0]
-    if deli.st == 'RQ':
+    if deli.st in ['RQ', 'PD']:
         # Ensure that the chosen vehicle is here and not assigned to a deli
         #vehicle = Vehicle.objects.filter(an=dct['van'], pid=deli.srcpin)[0] #????? how
         #if vehicle.tid != -1:
