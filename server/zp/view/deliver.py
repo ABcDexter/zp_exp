@@ -62,7 +62,7 @@ def authDeliveryGetInfo(dct, entity):
         ret.update({'tip': deli.tip,
                     'price': getDelPrice(deli, hs)['price'],
                     'earn':float(getDelPrice(deli, hs)['price'])/10})  # TODO return earning from delivery
-    elif deli.st == 'AS':
+    elif deli.st in ['AS', 'RC']:
         ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
 
     return HttpJSONResponse(ret)
@@ -108,6 +108,7 @@ def userDeliveryGetStatus(dct, user):
             if deli.st == 'SC':  # Delivery.PAYABLE:
                 price = getDelPrice(deli, user.hs)
                 ret.update(price)
+        '''
         else:
             if deli.st == 'RQ':  # Delivery.PAYABLE:
                 price = getDelPrice(deli, user.hs)
@@ -116,7 +117,7 @@ def userDeliveryGetStatus(dct, user):
                 # price = #round(float("{:.2s}".format(getDelPrice(deli, user.hs)['price'])), 2) #+ (1.00*deli.tip)
                 price = "%0.2f" % (float(getDelPrice(deli, user.hs)['price']) + (1.00*deli.tip) )
                 ret.update({'price': price})
-
+        '''
     else:
 
         deli = Delivery.objects.filter(scid=dct['scid'])[0]
@@ -124,9 +125,12 @@ def userDeliveryGetStatus(dct, user):
         if deli.st == 'SC':
             ret.update(getDelPrice(deli, user.hs))
         # For paid Delivery request send OTP, and 'an' of vehicle and Agent
-        if deli.st == 'PD':
-            ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
+        #if deli.st == 'PD':
+            #ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
             # For started delis send deli progress percent
+        if deli.st in ['AS', 'RC']:
+            ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
+
 
     return HttpJSONResponse(ret)
 
