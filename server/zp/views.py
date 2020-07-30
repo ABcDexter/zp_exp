@@ -337,7 +337,7 @@ def userTripGetStatus(_dct, user):
 
             ret['price'] = price
     else:
-        ret = {'active': False, 'st': trip.st, 'tid': trip.id}
+        ret = {'active': False, 'st': 'NONE', 'tid': -1}
 
     return HttpJSONResponse(ret)
 
