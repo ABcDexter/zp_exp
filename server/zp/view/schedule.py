@@ -357,7 +357,7 @@ def userDeliverySchedule(dct, user):
     sched.resume()
     time.sleep(1)
 
-    user.did = delivery.id
+    user.did = delivery.scid
     user.save()
 
     ret = {'scid': delivery.scid}
