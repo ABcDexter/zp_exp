@@ -328,9 +328,9 @@ def userDeliverySchedule(dct, user):
 
     if pMinute  < 30:
         pDinaank = datetime(pYear, pMonth, pDate, pHour - 6, (pMinute + 30) % 60, 00)
-    else :
+    else:
         pDinaank = datetime(pYear, pMonth, pDate, pHour - 5, (pMinute - 30) % 60, 00)
-
+    print("DATETIME for RQ is : ", pDinaank)
 
     dYear = int(dct['dYear'])
     dMonth = int(dct['dMonth'])
@@ -366,7 +366,7 @@ def userDeliverySchedule(dct, user):
     user.save()
 
     ret = {'scid': delivery.scid}
-    ret.update({'price': float(getDelPrice(delivery, user.hs)['price'])})
+    ret.update({'price': getDelPrice(delivery, user.hs)['price']})
 
     return HttpJSONResponse(ret)
 
