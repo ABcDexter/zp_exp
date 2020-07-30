@@ -328,7 +328,7 @@ def userDeliverySchedule(dct, user):
 
     if pMinute  < 30:
         pDinaank = datetime(pYear, pMonth, pDate, pHour - 6, (pMinute + 30) % 60, 00)
-     else :
+    else :
         pDinaank = datetime(pYear, pMonth, pDate, pHour - 5, (pMinute - 30) % 60, 00)
 
 
