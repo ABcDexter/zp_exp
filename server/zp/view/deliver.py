@@ -412,6 +412,26 @@ def userDeliveryRetire(dct, user, _deli):
     return HttpJSONResponse({})
 
 
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def authDeliveryDATA(dct, entity):
+    '''
+    Returns a list of places data corresponding to zbee stations.
+        Https:
+            auth, scid
+    '''
+
+    deli = Delivery.objects.filter(scid=dct['scid']).values('scid','fr', 'li', 'pe', 'kw', 'kc', 'express', 'st', 'rtime',
+        'atime', 'stime', 'etime', 'picktime', 'droptime',#: datetime.datetime(2020, 7, 29, 15, 10, tzinfo=<UTC>),
+        'srcpin', 'srclat', 'srclng', 'dstpin', 'dstlat', 'dstlng', 'itype', 'idim', 'srcper', 'dstper',
+        'srcadd', 'dstadd', 'srcland','dstland', 'srcphone', 'dstphone','pmode', 'det', 'srcdet', 'dstdet', 'tip')
+    lstDeli = [str(i) for i in deli]
+    return HttpJSONResponse({'deli': lstDeli})
+
+
 # ============================================================================
 # Admin views
 # ============================================================================
