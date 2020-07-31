@@ -763,7 +763,7 @@ def getDelPrice(deli, hs):
     '''
     # vehicle = Vehicle.objects.filter(an=deli.van)[0]
     # home state of user
-    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, deli.express, hs)
+    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, deli.express, hs, deli.tip)
 
 ###########################################
 
@@ -982,7 +982,7 @@ def retireDelEntity(entity: [User, Agent, Vehicle]) -> None :
 # Delivery module
 
 
-def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs):
+def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, tip):
     '''
     Determines the price given the rent details and time taken
     time is etime - stime
@@ -1033,6 +1033,8 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs):
         price += 20.00
     elif size == 'XXL':
         price += 30.00
+
+    price += tip
 
     return {
         'price': str(round(float('%.2f' % price),0))+'0',

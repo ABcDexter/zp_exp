@@ -318,10 +318,10 @@ def userRentRequest(dct, user): #, _trip):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkTripStatus(['AS'])
+@checkTripStatus(['AS', 'FN'])
 def userRentPay(dct, _user, trip):
     '''
-    User calls this to request a rental
+    User calls this to pay for the rental
 
     HTTP args:
         auth
