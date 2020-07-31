@@ -16,7 +16,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            <TextView
+                android:id="@+id/txt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="User Information"
+                android:textAllCaps="true"
+                android:textSize="20sp" />
 
+            <Button
+                android:id="@+id/viewMap"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="35dp"
+                android:background="@drawable/rect_box_solid"
+                android:text="View Map" />
             <TextView
                 android:id="@+id/userName"
                 android:layout_width="match_parent"
@@ -43,31 +61,19 @@
                 android:textColor="@color/txtColor"
                 android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/userSrc"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_margin="25dp"
-                android:background="@drawable/rect_box_outline"
-                android:gravity="center"
-                android:text="origin"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textColor="@color/txtColor"
-                android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/userDst"
+
+                android:id="@+id/txt1"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_margin="25dp"
-                android:background="@drawable/rect_box_outline"
+                android:layout_below="@id/src_phone"
+                android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="destination"
-                android:textAlignment="center"
+                android:padding="5dp"
+                android:text="enter otp provided by user"
                 android:textAllCaps="true"
-                android:textColor="@color/txtColor"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/otp"
@@ -79,6 +85,7 @@
                 android:background="@drawable/rect_box_outline"
                 android:gravity="center"
                 android:hint="OTP"
+                android:maxLength="4"
                 android:textAlignment="center"
                 android:textColor="@color/txtColor"
                 android:inputType="number"/>

@@ -144,7 +144,7 @@
             android:id="@+id/confirmDetails"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_below="@+id/containerAadharBack"
+            android:layout_below="@+id/tnc"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:background="@drawable/btn_bkg"
@@ -160,6 +160,18 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:visibility="invisible" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/containerAadharBack"
+            android:text="I AGREE TO TERMS &amp; conditions "
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:textColor="@color/txtColor"
+            android:buttonTint="@color/txtColor"
+            android:id="@+id/tnc"/>
     </RelativeLayout>
 
 </ScrollView>

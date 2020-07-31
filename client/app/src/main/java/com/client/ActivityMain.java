@@ -70,28 +70,23 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
 
     public void onSuccess(JSONObject response) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
-
-        String age = response.getString("age");
-        String an = response.getString("an");
+//response on hitting register-user API
         String auth = response.getString("auth");
-        String dl = response.getString("dl");
-        String gdr = response.getString("gdr");
-        String hs = response.getString("hs");
-        String name = response.getString("name");
+        String an = response.getString("an");
         String pn = response.getString("pn");
-        String tid = response.getString("tid");
-
+        String name = response.getString("name");
+        String age = response.getString("age");
+        String gdr = response.getString("gdr");
 
         //TODO use the value of userExists
 
         SharedPreferences sp_cookie = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         sp_cookie.edit().putString(AUTH_KEY, auth).apply();
+        sp_cookie.edit().putString(AN_KEY, an).apply();
+        sp_cookie.edit().putString(PHONE_KEY, pn).apply();
+        sp_cookie.edit().putString(NAME_KEY, name).apply();
         sp_cookie.edit().putString(AGE_KEY, age).apply();
         sp_cookie.edit().putString(GDR_KEY, gdr).apply();
-        sp_cookie.edit().putString(HS_KEY, hs).apply();
-        sp_cookie.edit().putString(NAME_KEY, name).apply();
-        sp_cookie.edit().putString(PHONE_KEY, pn).apply();
-        sp_cookie.edit().putString(AN_KEY, an).apply();
         Intent next = new Intent(ActivityMain.this, ActivityProfileReview.class);
         startActivity(next);
         finish();

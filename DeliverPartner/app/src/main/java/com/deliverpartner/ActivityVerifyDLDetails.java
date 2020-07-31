@@ -26,12 +26,12 @@ import java.util.Map;
 public class ActivityVerifyDLDetails extends AppCompatActivity {
     ImageView zbeeRight, zbeeLeft;
     private static final String TAG = "ActivityVerifyDLDetails";
-    public static final String PICTURE_UPLOAD_STATUS = "com.driver.pictureUploadStatus";
+    public static final String PICTURE_UPLOAD_STATUS = "com.agent.pictureUploadStatus";
     public static final String VERIFICATION_TOKEN = "Token";
     public static final String MOBILE = "Mobile";
     public static final String AADHAR = "Aadhar";
-    public static final String AUTH_COOKIE = "com.driver.cookie";
-    public static final String COOKIE = "Cookie";
+    public static final String AUTH_KEY = "Auth";
+    public static final String AUTH_COOKIE = "com.agent.cookie";
     TextView message;
     private static ActivityVerifyDLDetails instance;
 
@@ -43,7 +43,7 @@ public class ActivityVerifyDLDetails extends AppCompatActivity {
             //enter this if "status" equals "true"
             String auth = response.getString("auth");
             SharedPreferences sp_cookie = this.getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
-            sp_cookie.edit().putString(COOKIE, auth).apply();
+            sp_cookie.edit().putString(AUTH_KEY, auth).apply();
 
             message.setText("Details Verified.");
             new Handler().postDelayed(new Runnable() {
@@ -58,7 +58,7 @@ public class ActivityVerifyDLDetails extends AppCompatActivity {
             //enter this if "status" equals "false"
             //Polling is-driver-verified APIs
             Intent i = new Intent(this, UtilityPollingService.class);
-            i.setAction("0");
+            i.setAction("00");
             startService(i);
         }
     }
@@ -104,7 +104,7 @@ public class ActivityVerifyDLDetails extends AppCompatActivity {
 
         Log.d(TAG, "Values: token=" + token + " an=" + aadhar + " pn=" + mobile);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME is-driver-verified");
-        UtilityApiRequestPost.doPOST(a, "is-driver-verified", parameters, 30000, 0, response -> {
+        UtilityApiRequestPost.doPOST(a, "is-agent-verified", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response);// call this method if api was hit successfully
             } catch (JSONException e) {

@@ -53,8 +53,10 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
     public static final String VERIFICATION_TOKEN = "Token";
     public static final String AADHAR = "Aadhar";
     public static final String MOBILE = "Mobile";
-    public static final String PICTURE_UPLOAD_STATUS = "com.driver.pictureUploadStatus";
-    String mobile, aadhar_f, aadhar_b, dl_b, dl_f, mVerificationId;
+    public static final String PICTURE_UPLOAD_STATUS = "com.agent.pictureUploadStatus";
+    public static final String AUTH_KEY = "Auth";
+    public static final String AUTH_COOKIE = "com.agent.cookie";
+    String mobile, aadhar_f, aadhar_b, dl_b, dl_f;
     Bitmap bitmap;
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
@@ -79,12 +81,24 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        try {
+            String auth = response.getString("auth");
+            SharedPreferences pref_uploadStatus = this.getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
+            pref_uploadStatus.edit().putString(AUTH_KEY, auth).apply();
+
+            Intent signIn = new Intent(ActivityMain.this, ActivityWelcome.class);
+            startActivity(signIn);
+            finish();
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
         Snackbar snackbar = Snackbar.make(scrollView, "UPLOAD SUCCESSFUL!", Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 
     public void onFailure(VolleyError error) {
-        Snackbar snackbar = Snackbar.make(scrollView, "UPLOAD UNSUCCESSFUL! CHECK YOUR INTERNET CONNECTION", Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(scrollView, "UNSUCCESSFUL! CHECK YOUR INTERNET CONNECTION", Snackbar.LENGTH_LONG);
         snackbar.show();
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
@@ -253,8 +267,9 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
                 ActivityMain a = ActivityMain.this;
                 Log.d(TAG, "Values: phone=" + mobile +"\n" +" aadhaarFront=" + aadharF +"\n" + " aadhaarBack="
                         + aadharB +"\n" + "licenseFront= " + dl_f +"\n" +"licenseBack=" + dl_b);
-                Log.d(TAG, "UtilityApiRequestPost.doPOST register-driver");
-                UtilityApiRequestPost.doPOST(a, "register-driver", parameters, 30000, 0, a::onSuccess, a::onFailure);
+                Log.d(TAG, "UtilityApiRequestPost.doPOST register-agent");
+                UtilityApiRequestPost.doPOST(a, "register-agent", parameters, 30000, 0,
+                        a::onSuccess, a::onFailure);
             }
         });
 

@@ -23,7 +23,7 @@ public class UtilityPollingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent != null && intent.getAction() != null && intent.getAction().equals("0")) {
+        if (intent != null && intent.getAction() != null && intent.getAction().equals("00")) {
             final int fixedTimeUpdateLoc = 30;
             secondsActLocSel = fixedTimeUpdateLoc;
             final Handler handler = new Handler();
@@ -52,14 +52,77 @@ public class UtilityPollingService extends Service {
             });
         }
 
-        if (intent != null && intent.getAction() != null && intent.getAction().equals("1")) {
-            new Handler().postDelayed(new Runnable() {
+        //polling for
+        if (intent != null && intent.getAction() != null && intent.getAction().equals("01")) {
+
+            final int fixedTimeUpdateLoc = 30;
+            //final boolean stopTimerFlag2 = false;
+            secondsActLocSel = fixedTimeUpdateLoc;
+            //stopTimer2 = stopTimerFlag2;
+/*
+            if (stop) {
+*/
+            final Handler handler = new Handler();
+            handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    ActivityHome.getInstance().sendLocation();
+                    secondsActLocSel--;
+                    if (secondsActLocSel < 0) {
+                        Log.d("ActivityHome.getInstance().sendLocation(); in seconds < 0", "Value of seconds: " + secondsActLocSel);
+
+                        stopTimerActLocSel = true;
+                        ActivityHome.getInstance().sendLocation();
+
+                    } else {
+                        stopTimerActLocSel = false;
+                    }
+
+                    if (stopTimerActLocSel == false) {
+                        Log.d("ActivityHome.getInstance().sendLocation(); in seconds == false ", "Value of seconds: " + secondsActLocSel);
+
+                        handler.postDelayed(this, 1000);
+                    } else {
+                        stopSelf();
+                    }
                 }
-            }, 30000);
+            });
         }
+
+        if (intent != null && intent.getAction() != null && intent.getAction().equals("02")) {
+
+            final int fixedTimeUpdateLoc = 30;
+            //final boolean stopTimerFlag2 = false;
+            secondsActLocSel = fixedTimeUpdateLoc;
+            //stopTimer2 = stopTimerFlag2;
+/*
+            if (stop) {
+*/
+            final Handler handler = new Handler();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    secondsActLocSel--;
+                    if (secondsActLocSel < 0) {
+                        Log.d("ActivityHome.getInstance().getStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+
+                        stopTimerActLocSel = true;
+                        ActivityHome.getInstance().getStatus();
+
+                    } else {
+                        stopTimerActLocSel = false;
+                    }
+
+                    if (stopTimerActLocSel == false) {
+                        Log.d("ActivityHome.getInstance().getStatus(); in seconds == false ", "Value of seconds: " + secondsActLocSel);
+
+                        handler.postDelayed(this, 1000);
+                    } else {
+                        stopSelf();
+                    }
+                }
+            });
+        }
+
         /*if (intent != null && intent.getAction() != null && intent.getAction().equals("2")) {
             final int fixedTimeUpdateLoc = 30;
             //final boolean stopTimerFlag2 = false;

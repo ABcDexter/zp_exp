@@ -30,8 +30,8 @@ public class ActivityVerifyDLDetails extends AppCompatActivity {
     public static final String VERIFICATION_TOKEN = "Token";
     public static final String MOBILE = "Mobile";
     public static final String AADHAR = "Aadhar";
-    public static final String AUTH_COOKIE = "com.driver.cookie";
-    public static final String COOKIE = "Cookie";
+    public static final String AUTH_KEY = "Auth";
+    public static final String AUTH_COOKIE = "com.agent.cookie";
     TextView message;
     private static ActivityVerifyDLDetails instance;
 
@@ -43,7 +43,7 @@ public class ActivityVerifyDLDetails extends AppCompatActivity {
             //enter this if "status" equals "true"
             String auth = response.getString("auth");
             SharedPreferences sp_cookie = this.getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
-            sp_cookie.edit().putString(COOKIE, auth).apply();
+            sp_cookie.edit().putString(AUTH_KEY, auth).apply();
 
             message.setText("Details Verified.");
             new Handler().postDelayed(new Runnable() {
@@ -53,12 +53,12 @@ public class ActivityVerifyDLDetails extends AppCompatActivity {
                     startActivity(next);
                     finish();
                 }
-            }, 30000);
+            }, 8000);
         } else if (registerStatus.equals("false")) {
             //enter this if "status" equals "false"
             //Polling is-driver-verified APIs
             Intent i = new Intent(this, UtilityPollingService.class);
-            i.setAction("0");
+            i.setAction("00");
             startService(i);
         }
     }

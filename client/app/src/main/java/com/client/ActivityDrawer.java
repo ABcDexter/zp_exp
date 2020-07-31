@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -18,12 +19,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.client.deliver.ActivityDeliveryHistoryList;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
-public class ActivityDrawer extends AppCompatActivity {
+public class ActivityDrawer extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawerLayout = null;
     private ActionBarDrawerToggle mDrawerToggle = null;
@@ -33,6 +35,8 @@ public class ActivityDrawer extends AppCompatActivity {
     TextView nameText;
     public static final String NAME_KEY = "NameKey";
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
+
+    public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +62,7 @@ public class ActivityDrawer extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         nv = findViewById(R.id.nv);
-
+        nv.setNavigationItemSelectedListener(this);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
@@ -80,9 +84,10 @@ public class ActivityDrawer extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("ACTION", "menuButton clicked");
-                if (!mDrawerLayout.isDrawerOpen(Gravity.RIGHT))mDrawerLayout.openDrawer(Gravity.RIGHT);
+                if (!mDrawerLayout.isDrawerOpen(Gravity.RIGHT))
+                    mDrawerLayout.openDrawer(Gravity.RIGHT);
                 else mDrawerLayout.closeDrawer(Gravity.LEFT);
-                setNavigationDrawer();
+                //setNavigationDrawer();
                 Log.d("ACTION", "setNavigationDrawer() method called");
 
             }
@@ -95,37 +100,6 @@ public class ActivityDrawer extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void setNavigationDrawer() {
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                switch (id) {
-                    case R.id.nav_logout:
-                        FirebaseAuth.getInstance().signOut();
-
-                        Intent intent = new Intent(ActivityDrawer.this, ActivityMain.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-
-                    case R.id.nav_profile:
-                        Intent lang = new Intent(ActivityDrawer.this, UserProfileActivity.class);
-                        startActivity(lang);
-                        break;
-                    case R.id.nav_home:
-                        Intent home = new Intent(ActivityDrawer.this, ActivityWelcome.class);
-                        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(home);
-                        break;
-
-                    default:
-                        return true;
-                }
-                return true;
-            }
-        });
     }
 
     @Override
@@ -167,6 +141,42 @@ public class ActivityDrawer extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
+        startActivity(new Intent(ActivityDrawer.this, ActivityWelcome.class));
+        finish();
     }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        switch (id) {
+            case R.id.nav_logout:
+                FirebaseAuth.getInstance().signOut();
+
+                Intent intent = new Intent(ActivityDrawer.this, ActivityMain.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+
+            case R.id.nav_profile:
+                Intent lang = new Intent(ActivityDrawer.this, UserProfileActivity.class);
+                startActivity(lang);
+                break;
+            case R.id.nav_home:
+                Intent home = new Intent(ActivityDrawer.this, ActivityWelcome.class);
+                home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(home);
+                break;
+            case R.id.nav_ride_history:
+                Toast.makeText(this, "COMING SOON", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.nav_delivery_orders:
+                Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryHistoryList.class);
+                deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(deliveryOrders);
+                break;
+            default:
+                return true;
+        }
+        return true;
+    }
+    //return false;
 }

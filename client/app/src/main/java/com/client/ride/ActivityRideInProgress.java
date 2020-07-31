@@ -1,6 +1,7 @@
 package com.client.ride;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,13 +25,13 @@ import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
-import com.client.ActivityTrackYourProgress;
 import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,36 +39,35 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class ActivityRideInProgress extends ActivityDrawer implements View.OnClickListener {
 
-    TextView shareDetails, emergencyCall, trackLocation, origin, destination, nameD, phone, otp, vNum;
+    TextView shareDetails, emergencyCall, trackLocation, nameD, phone, otp, vNum;
+    TextView liveLocation;
     ImageButton endRide;
     ScrollView scrollView;
-    public static final String AUTH_KEY = "AuthKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     private static final String TAG = "ActivityRideInProgress";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
-    public static final String LOCATION_PICK = "PickLocation";
-    public static final String LOCATION_DROP = "DropLocation";
+    public static final String VAN_PICK = "com.client.Locations";
+    public static final String AUTH_KEY = "AuthKey";
+    public static final String TRIP_ID = "TripID";
+    public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     public static final String OTP_PICK = "OTPPick";
-    public static final String VAN_PICK = "VanPick";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
 
-    public static final String TRIP_ID = "TripID";
-    public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    String lat, lng;
     private static ActivityRideInProgress instance;
     FusedLocationProviderClient mFusedLocationClient;
     ActivityRideInProgress a = ActivityRideInProgress.this;
-
+    Map<String, String> params = new HashMap();
+    Dialog imageDialog;
     String stringAuthCookie;
 
     public static ActivityRideInProgress getInstance() {
         return instance;
     }
 
-    public void onSuccess(JSONObject response, int id) throws Exception {
+    public void onSuccess(JSONObject response, int id) {
         Log.d(TAG, "RESPONSE:" + response);
 //response on hitting user-trip-cancel API
         if (id == 2) {
@@ -100,7 +100,6 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -126,21 +125,16 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
 
         instance = this;
 
-
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuthCookie = prefPLoc.getString(AUTH_KEY, "");
         SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-        String stringPick = pref.getString(LOCATION_PICK, "");
-        String stringDrop = pref.getString(LOCATION_DROP, "");
         String stringOtp = pref.getString(OTP_PICK, "");
         String stringVan = pref.getString(VAN_PICK, "");
         String stringDName = pref.getString(DRIVER_NAME, "");
         String stringDPhn = pref.getString(DRIVER_PHN, "");
-
-        origin = findViewById(R.id.pick_place);
+        imageDialog = new Dialog(this);
         vNum = findViewById(R.id.v_no);
         vNum.setText(stringVan);
-        destination = findViewById(R.id.drop_place);
         nameD = findViewById(R.id.driver_name);
         nameD.setText(stringDName);
         phone = findViewById(R.id.driver_phone);
@@ -156,53 +150,22 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         endRide = findViewById(R.id.end_ride);
         endRide.setOnClickListener(this);
         scrollView = findViewById(R.id.scrollView_ride_OTP);
+        liveLocation = findViewById(R.id.share_location);
+        liveLocation.setOnClickListener(this);
 
-        if (stringDrop.isEmpty()) {
-            destination.setText("DROP POINT");
-        } else {
-            int dropSpace = (stringDrop.contains(" ")) ? stringDrop.indexOf(" ") : stringDrop.length() - 1;
-            String dropCutName = stringDrop.substring(0, dropSpace);
-            destination.setText(dropCutName);
-        }
-
-        if (stringPick.isEmpty()) {
-            origin.setText("PICK UP");
-        } else {
-            int pickSpace = (stringPick.contains(" ")) ? stringPick.indexOf(" ") : stringPick.length() - 1;
-            String pickCutName = stringPick.substring(0, pickSpace);
-            origin.setText(pickCutName);
-        }
         checkStatus();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityRideInProgress.this);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.share_ride_details:
-                selectAction(ActivityRideInProgress.this);
-                break;
 
-            case R.id.emergency:
-                btnSetOnEmergency();
-                break;
-            case R.id.end_ride:
-                alertDialog();
-                break;
-            case R.id.track_your_location:
-                trackYourLocation();
-                break;
-        }
-    }
+    public void trackLocation() {
+        Intent intent = new Intent(ActivityRideInProgress.this, MapsActivity2.class);
+        startActivity(intent);
 
-    private void trackYourLocation() {
-        Intent progress = new Intent(ActivityRideInProgress.this, ActivityTrackYourProgress.class);
-        startActivity(progress);
     }
 
     private void userCancelTrip() {
         String stringAuth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
         params.put("auth", stringAuth);
         JSONObject param = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + stringAuth);
@@ -220,7 +183,8 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     private void alertDialog() {
         Log.d(TAG, " alert Dialog opened");
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setMessage("YOU MAY BE CHARGED FOR CANCELLING THE RIDE. \nARE YOU SURE YOU WANT TO END RIDE?");
+
+        dialog.setMessage("Your ride is not yet complete. You will be charged as per your chosen destination.\nAre you sure you want to end your ride?");
         dialog.setTitle("END RIDE");
         dialog.setPositiveButton("YES",
                 new DialogInterface.OnClickListener() {
@@ -239,13 +203,12 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         });
         AlertDialog alertDialog = dialog.create();
         alertDialog.show();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
 
     }
 
     public void checkStatus() {
         String auth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -271,30 +234,81 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         startActivity(intent);
     }
 
-    private void selectAction(Context context) {
-        final CharSequence[] options = {"SEND SMS", "VIDEO CALL", "Cancel"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
+    /* private void ImagePopup() {
 
-                if (options[item].equals("SEND SMS")) {
-                    String messageBody = "TRACK MY RIDE HERE";
-                    Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                    sendIntent.setData(Uri.parse("sms:"));
-                    sendIntent.putExtra("sms_body", messageBody);
-                    startActivity(sendIntent);
+         imageDialog.setContentView(R.layout.popup_hours);
+         TextView txt1 = (TextView) imageDialog.findViewById(R.id.txt1);
+        */
+    /* TextView txt2 = (TextView) imageDialog.findViewById(R.id.txt2);
+        TextView txt3 = (TextView) imageDialog.findViewById(R.id.txt3);
+        */
+    /*RelativeLayout rl1 = (RelativeLayout) imageDialog.findViewById(R.id.rl_1);
+     */
+    /*RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.rl_2);
+        RelativeLayout rl3 = (RelativeLayout) imageDialog.findViewById(R.id.rl_3);
+*/
+    /*
+        txt1.setText("SEND SMS");
+        */
+    /*txt2.setText("VIDEO CALL");
+        txt3.setText("CANCEL");*/
+    /*
 
-                } else if (options[item].equals("VIDEO CALL")) {
-                    Intent whatsappLaunch = getPackageManager().getLaunchIntentForPackage("com.whatsapp");
-                    startActivity(whatsappLaunch);
+        rl1.setOnClickListener(this);
+       */
+    /* rl2.setOnClickListener(this);
+        rl3.setOnClickListener(this);*/
+    /*
 
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
+        imageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        imageDialog.show();
+        imageDialog.setCanceledOnTouchOutside(true);
     }
+*/
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.share_ride_details:
+                String messageBody = "I am riding ZIPP-E with\n Driver Name: " + nameD.getText().toString() + "\n Driver Mobile Number" + phone.getText().toString();
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.setData(Uri.parse("sms:"));
+                sendIntent.putExtra("sms_body", messageBody);
+                startActivity(sendIntent);
+                //ImagePopup();
+                //selectAction(ActivityRideInProgress.this);
+                break;
+
+            case R.id.emergency:
+                btnSetOnEmergency();
+                break;
+            case R.id.end_ride:
+                alertDialog();
+                break;
+            case R.id.track_your_location:
+                trackLocation();
+                break;
+            /*case R.id.rl_1:
+*//*
+                String messageBody = "I am riding ZIPP-E with\n Driver Name: "+nameD.getText().toString()+"\n Driver Mobile Number"+phone.getText().toString();
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.setData(Uri.parse("sms:"));
+                sendIntent.putExtra("sms_body", messageBody);
+                startActivity(sendIntent);
+                imageDialog.dismiss();*//*
+                break;*/
+            /*case R.id.rl_2:
+                Intent whatsappLaunch = getPackageManager().getLaunchIntentForPackage("com.whatsapp");
+                startActivity(whatsappLaunch);
+                imageDialog.dismiss();
+                break;*/
+            /*case R.id.rl_3:
+                imageDialog.dismiss();
+                break;*/
+            case R.id.share_location:
+                Snackbar snackbar = Snackbar.make(scrollView, "COMING SOON", Snackbar.LENGTH_LONG);
+                snackbar.show();
+        }
+    }
+
 
 }

@@ -21,21 +21,29 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ActivityRideCompleted extends ActivityDrawer implements View.OnClickListener {
 
-    public static final String AUTH_COOKIE = "com.driver.cookie";
-    public static final String COOKIE = "Cookie";
     private static final String TAG = "ActivityRideCompleted";
-    public static final String TRIP_DETAILS = "com.driver.tripDetails";
     public static final String TRIP_ID = "TripId";
+    public static final String TRIP_DETAILS = "com.driver.tripDetails";
+    public static final String AUTH_KEY = "Auth";
+    public static final String AUTH_COOKIE = "com.agent.cookie";
+    public static final String TID = "RideID";
+    public static final String SRCLAT = "TripSrcLat";
+    public static final String SRCLNG = "TripSrcLng";
+    public static final String DSTLAT = "TripDstLat";
+    public static final String DSTLNG = "TripDstLng";
     TextView price;
     Button home;
     String authCookie, paymentMode;
     RadioGroup paymentGrp;
     RadioButton paymentCash, paymentUPI;
     int paymentMethodId = 0;
+    String strAuth, strTid;
+
+    ActivityRideCompleted a = ActivityRideCompleted.this;
+    Map<String, String> params = new HashMap();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +58,10 @@ public class ActivityRideCompleted extends ActivityDrawer implements View.OnClic
         frameLayout.addView(activityView);
 //retrieve locally stored data
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
-        authCookie = cookie.getString(COOKIE, "");
-        getPrice();// get the actual cost to be collected from the userby the driver
+        authCookie = cookie.getString(AUTH_KEY, "");
+        SharedPreferences pref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+        strTid = pref.getString(TID, "");
+        getInfo();
         //initializing variables
         price = findViewById(R.id.txt_rideCost);
         home = findViewById(R.id.btn_paymntAccepted);
@@ -62,8 +72,10 @@ public class ActivityRideCompleted extends ActivityDrawer implements View.OnClic
         paymentCash.setOnClickListener(this);
         paymentUPI.setOnClickListener(this);
         home.setOnClickListener(this);
+
     }
-//method to tell the server that payment was received by the user
+
+    //method to tell the server that payment was received by the user
     private void paymentAccepted(int paymentMethod) {
         String amount = price.getText().toString();
         //the driver has to select the mode of payment
@@ -76,10 +88,8 @@ public class ActivityRideCompleted extends ActivityDrawer implements View.OnClic
                 Toast.makeText(this, "PLEASE SELECT PAYMENT METHOD!", Toast.LENGTH_SHORT).show();
             }
             String auth = authCookie;
-            Map<String, String> params = new HashMap();
             params.put("auth", auth);
             JSONObject parameters = new JSONObject(params);
-            ActivityRideCompleted a = ActivityRideCompleted.this;
 
             Log.d(TAG, "Values: auth=" + auth);
             Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME driver-payment-confirm");
@@ -94,8 +104,9 @@ public class ActivityRideCompleted extends ActivityDrawer implements View.OnClic
             Toast.makeText(this, "Check your internet connection!", Toast.LENGTH_SHORT).show();
         }
     }
-//method to get the actual payment that the user has to make
-    private void getPrice() {
+
+    //method to get the actual payment that the user has to make
+    /*private void getPrice() {
         SharedPreferences pref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
         String tid = pref.getString(TRIP_ID, "");
         String auth = authCookie;
@@ -105,7 +116,7 @@ public class ActivityRideCompleted extends ActivityDrawer implements View.OnClic
         JSONObject parameters = new JSONObject(params);
         ActivityRideCompleted a = ActivityRideCompleted.this;
 
-        Log.d(TAG, "Values: auth=" + auth+" tid="+tid);
+        Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-actual-price");
         UtilityApiRequestPost.doPOST(a, "auth-ride-get-info", parameters, 30000, 0, response -> {
             try {
@@ -114,21 +125,42 @@ public class ActivityRideCompleted extends ActivityDrawer implements View.OnClic
                 e.printStackTrace();
             }
         }, a::onFailure);
+    }*/
+
+    public void getInfo() {
+        String auth = authCookie;
+        params.put("auth", auth);
+        params.put("tid", strTid);
+        JSONObject parameters = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + auth + " tid=" + strTid);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");
+        UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 1);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
-        if (id == 1) {
+        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        /*if (id == 1) {
             //get the price and display it in the UI
-            Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
             String actualPrice = response.getString("price");
             price.setText(actualPrice);
-        }
+        }*/
         if (id == 2) {
             //payment made, now move to the home page
-            Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
             Intent home = new Intent(ActivityRideCompleted.this, ActivityHome.class);
             startActivity(home);
             finish();
+        }
+        //response on hitting auth-trip-get-info API
+        if (id == 1) {
+            String actualPrice = response.getString("price");
+            price.setText(actualPrice);
         }
     }
 

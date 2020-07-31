@@ -47,9 +47,9 @@ public class ActivityRideInProgress extends AppCompatActivity implements View.On
         if (id == 1) {
             //polling to send driver's device location every 30 sec to server
             Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
-            Intent i = new Intent(this, UtilityPollingService.class);
+            /*Intent i = new Intent(this, UtilityPollingService.class);
             i.setAction("3");
-            startService(i);
+            startService(i);*/
 
         }
         if (id == 2) {

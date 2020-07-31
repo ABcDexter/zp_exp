@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,29 +37,33 @@ import java.util.Map;
 
 public class ActivityRideRequest extends ActivityDrawer implements View.OnClickListener {
 
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
-
+    private static final String TAG = "ActivityRideRequest";
+    public static final String COST_DROP = "";
+    public static final String TIME_DROP = "e";
+    public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
+    public static final String SRC_LNG = "SrcLng";
+    public static final String SRC_LAT = "SrcLat";
+    public static final String DST_LAT = "DropLat";
+    public static final String DST_LNG = "DropLng";
+    public static final String SRC_NAME = "PICK UP POINT";
+    public static final String DST_NAME = "DROP POINT";
+    public static final String RENT_RIDE = "RentRide";
+    public static final String PAYMENT_MODE = "PaymentMode";
+    public static final String VAN_PICK = "com.client.Locations";
     public static final String AUTH_KEY = "AuthKey";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    private static final String TAG = "ActivityRideRequest";
-    public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
-    public static final String LOCATION_PICK = "PickLocation";
-    public static final String LOCATION_DROP = "DropLocation";
-    public static final String COST_DROP = "CostDrop";
-    public static final String TIME_DROP = "TimeDrop";
     public static final String OTP_PICK = "OTPPick";
-    public static final String VAN_PICK = "VanPick";
-    public static final String RENT_RIDE = "RentRide";
+    public static final String DRIVER_MINS = "DriverMins";
 
-    ImageButton next, costInfo, timeInfo;
-    TextView /*pick, drop,*/ costEst, timeEst, pickPlaceInfo, dropPlaceInfo, riders;
+    ImageButton next, costInfo, timeInfo, pickInfo, dropInfo;
+    TextView costEst, timeEst, pickPlaceInfo, dropPlaceInfo;
     ScrollView scrollView;
-    String stringAuth;
-    ImageView zbeeR, zbeeL;
+    String stringAuth, stringPick, stringDrop;
+    ImageView zbeeR, zbeeL, scooty_up, scooty_down;
     SharedPreferences prefAuth;
     Dialog myDialog;
-    String rideInfo, vTypeInfo, noRiderInfo, pModeInfo, dropInfo, pickInfo, pickPlace, dropPlace;
+    String rideInfo, vTypeInfo, noRiderInfo, pModeInfo, srcLat, srcLng, dstLat, dstLng, time, cost;
     Map<String, String> params = new HashMap();
     ActivityRideRequest a = ActivityRideRequest.this;
 
@@ -65,30 +71,27 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG, "RESPONSE:" + response);
-//response on hitting user-trip-estimate API
-        if (id == 1) {
 
+        //response on hitting user-ride-estimate API
+        if (id == 1) {
             try {
                 // Parsing json object response
                 // response will be a json object
                 String price = response.getString("price");
                 String time = response.getString("time");
 
-                costEst.setText(price);
-                timeEst.setText(time);
+                costEst.setText("₹ " + price);
+                timeEst.setText(time + " MINS");
                 SharedPreferences sp_cookie = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
                 sp_cookie.edit().putString(TIME_DROP, time).apply();
                 sp_cookie.edit().putString(COST_DROP, price).apply();
 
                 Log.d(TAG, "price:" + price + " time:" + time);
-
             } catch (JSONException e) {
-
                 e.printStackTrace();
-                //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
-//response on hitting user-trip-request API
+        //response on hitting user-ride-request API
         if (id == 2) {
             String tid = response.getString("tid");
             SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
@@ -98,21 +101,20 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         //response on hitting user-trip-get-status API
         if (id == 3) {
             try {
-
                 String active = response.getString("active");
                 if (active.equals("true")) {
                     String status = response.getString("st");
                     String tid = response.getString("tid");
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
+
                     if (status.equals("RQ")) {
                         Snackbar snackbar = Snackbar
-                                .make(scrollView, "WAITING FOR DRIVER", Snackbar.LENGTH_INDEFINITE)
+                                .make(scrollView, "SEARCHING FOR YOUR RIDE...", Snackbar.LENGTH_INDEFINITE)
                                 .setAction("CANCEL", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         cancelRequest();
-
                                     }
                                 });
                         snackbar.setActionTextColor(Color.RED);
@@ -127,13 +129,13 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
                     if (status.equals("AS")) {
                         String otp = response.getString("otp");
                         String van = response.getString("vno");
+                        String mins = response.getString("time");
                         Intent as = new Intent(ActivityRideRequest.this, ActivityRideOTP.class);
-                        as.putExtra("OTP", otp);
-                        as.putExtra("VAN", van);
                         startActivity(as);
                         SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
                         sp_otp.edit().putString(OTP_PICK, otp).apply();
                         sp_otp.edit().putString(VAN_PICK, van).apply();
+                        sp_otp.edit().putString(DRIVER_MINS,mins).apply();
                     }
                 } else {
                     Intent homePage = new Intent(ActivityRideRequest.this, ActivityWelcome.class);
@@ -144,11 +146,10 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
         //response on hitting user-trip-cancel API
-        if (id == 4){
+        if (id == 4) {
             Intent home = new Intent(ActivityRideRequest.this, ActivityWelcome.class);
             startActivity(home);
             finish();
@@ -172,61 +173,95 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         instance = this;
 
         SharedPreferences prefPLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-        String stringPick = prefPLoc.getString(LOCATION_PICK, "");
-        String stringDrop = prefPLoc.getString(LOCATION_DROP, "");
+        stringPick = prefPLoc.getString(SRC_NAME, "");
+        stringDrop = prefPLoc.getString(DST_NAME, "");
+        String SrcLat = prefPLoc.getString(SRC_LAT, "");
+        String SrcLng = prefPLoc.getString(SRC_LNG, "");
+        String DstLng = prefPLoc.getString(DST_LNG, "");
+        String DstLat = prefPLoc.getString(DST_LAT, "");
+        String PModeInfo = prefPLoc.getString(PAYMENT_MODE, "");
+        String RideInfo = prefPLoc.getString(RENT_RIDE, "");
+        String Time = prefPLoc.getString(TIME_DROP, "");
+        String Cost = prefPLoc.getString(COST_DROP, "");
+
+        srcLat = SrcLat;
+        srcLng = SrcLng;
+        dstLat = DstLat;
+        dstLng = DstLng;
+        pModeInfo = PModeInfo;
+        rideInfo = RideInfo;
+        time = Time;
+        cost = Cost;
+
+        prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
+        stringAuth = prefAuth.getString(AUTH_KEY, "");
 
         Intent data = getIntent();
-        rideInfo = data.getStringExtra("rtype");
         noRiderInfo = data.getStringExtra("npas");
-        pickInfo = data.getStringExtra("srcid");
-        dropInfo = data.getStringExtra("dstid");
         vTypeInfo = data.getStringExtra("vtype");
-        pModeInfo = data.getStringExtra("pmode");
-        pickPlace = data.getStringExtra("pick");
-        dropPlace = data.getStringExtra("drop");
+
 
         costEst = findViewById(R.id.cost_estimate);
         timeEst = findViewById(R.id.time_estimate);
         pickPlaceInfo = findViewById(R.id.pick_info);
         dropPlaceInfo = findViewById(R.id.drop_info);
-        riders = findViewById(R.id.ridersInfo);
-
-        int pickSpace = (stringPick.contains(" ")) ? stringPick.indexOf(" ") : stringPick.length() - 1;
-        String pickCutName = stringPick.substring(0, pickSpace);
-
-        pickPlaceInfo.setText(pickCutName);
-
-        int dropSpace = (stringDrop.contains(" ")) ? stringDrop.indexOf(" ") : stringDrop.length() - 1;
-        String dropCutName = stringDrop.substring(0, dropSpace);
-
-        dropPlaceInfo.setText(dropCutName);
-        riders.setText(noRiderInfo);
-
-
-        prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
-        stringAuth = prefAuth.getString(AUTH_KEY, "");
-        a = ActivityRideRequest.this;
-
-        rideEstimate();
-
         scrollView = findViewById(R.id.scrollView_location_selection);
-
         next = findViewById(R.id.confirm_ride_book);
-        next.setOnClickListener(this);
-
         zbeeR = findViewById(R.id.image_zbee);
         zbeeL = findViewById(R.id.image_zbee_below);
         costInfo = findViewById(R.id.infoCost);
-        costInfo.setOnClickListener(this);
         timeInfo = findViewById(R.id.infoTime);
+        pickInfo = findViewById(R.id.infoPick);
+        dropInfo = findViewById(R.id.infoDrop);
+        scooty_up = findViewById(R.id.scooty_up);
+        scooty_down = findViewById(R.id.scooty_down);
+
+        dropInfo.setOnClickListener(this);
+        pickInfo.setOnClickListener(this);
+        try {
+            /*String[] splitted = stringPick.split(",",2);
+            System.out.println(splitted[0]);
+            System.out.println(splitted[1]);
+            //String kept = stringPick.substring(0, stringPick.indexOf(","));
+            //String remainder = stringPick.substring(stringPick.indexOf(",")+1, stringPick.length());
+            pickPlaceInfo.setText(splitted[0]);*/
+            String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 20));
+            pickPlaceInfo.setText(upToNCharacters);
+            //Log.d(TAG, "qwertyuiop"+upToNCharacters);
+        } catch (Exception e) {
+            pickPlaceInfo.setText(stringPick);
+            e.printStackTrace();
+        }
+
+        try {
+            String upTo16Characters = stringDrop.substring(0, Math.min(stringDrop.length(), 20));
+            dropPlaceInfo.setText(upTo16Characters);
+        } catch (Exception e) {
+            dropPlaceInfo.setText(stringDrop);
+            e.printStackTrace();
+        }
+
+        next.setOnClickListener(this);
+        costInfo.setOnClickListener(this);
         timeInfo.setOnClickListener(this);
         myDialog = new Dialog(this);
+        rideEstimate();
 
+        if (!time.equals("")) {
+            timeEst.setText(time + " MINS");
+        }
+        if (!cost.equals("")) {
+            // costEst.setText(cost);
+            /*if(this.currency.equals("\u20B9")) {
+                r="₹ "+r;
+            }*/
+            costEst.setText("₹ " + cost);
+        }
+        //checkStatus();
     }
 
     private void cancelRequest() {
         String auth = stringAuth;
-        Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -240,9 +275,9 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
             }
         }, a::onFailure);
     }
+
     public void checkStatus() {
         String auth = stringAuth;
-        Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -265,18 +300,34 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         TextView reject = myDialog.findViewById(R.id.reject_request);
         TextView accept = myDialog.findViewById(R.id.accept_request);
         if (id == 1) {
-            infoText.setText("THIS IS ONLY AN APPROXIMATION OF COST. IT MAY CHANGE DEPENDING ON THE TRAFFIC");
+            ll.setVisibility(View.GONE);
+            String part1= "This is an approximate cost as per ";
+            String part2= "Google Maps (distance and time taken)";
+            String part3= ". May change depending on ride time.";
+
+            String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
+            infoText.setText(Html.fromHtml(sourceString));
+            //infoText.setText("This is an approximate cost as per <b> Google Maps (distance and time taken)</b>. May change depending on ride time.");
         }
         if (id == 2) {
-            infoText.setText("THIS IS ONLY AN APPROXIMATION OF TIME. IT MAY CHANGE DEPENDING ON THE TRAFFIC");
+            ll.setVisibility(View.GONE);
+            String part1= "Approximate time as per ";
+            String part2= "Google Maps";
+            String part3= ". May change depending on traffic.";
+
+            String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
+            infoText.setText(Html.fromHtml(sourceString));
+
+
+            //infoText.setText("Approximate time as per <b>Google Maps</b>. May change depending on traffic.");
         }
         if (id == 3) {
-            ll.setVisibility(View.VISIBLE);
-            infoText.setText("NOTIFY ME WHEN RIDE IS AVAILABLE");
-
-            reject.setOnClickListener(this);
-            accept.setOnClickListener(this);
+            infoText.setText(stringPick);
         }
+        if (id == 4) {
+            infoText.setText(stringDrop);
+        }
+
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
         myDialog.setCanceledOnTouchOutside(true);
@@ -311,6 +362,12 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
                 //TODO
                 break;
             case R.id.confirm_ride_book:
+                /*if (vTypeInfo.equals("1") || vTypeInfo.equals("2")) {
+                    moveScooty();
+                }
+                if (vTypeInfo.equals("3")) {
+                    moveit();
+                }*/
                 moveit();
                 userRequestRide();
                 break;
@@ -320,22 +377,46 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
             case R.id.infoCost:
                 ShowPopup(1);
                 break;
+            case R.id.infoPick:
+                ShowPopup(3);
+                break;
+            case R.id.infoDrop:
+                ShowPopup(4);
+                break;
         }
     }
 
+   /* private void moveScooty() {
+        scooty_up.setVisibility(View.VISIBLE);
+        scooty_down.setVisibility(View.VISIBLE);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scooty_down, "translationX", 1500, 0f);
+        objectAnimator.setDuration(1500);
+        objectAnimator.start();
+        objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
+
+        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(scooty_up, "translationX", 0f, 1500);
+        objectAnimator1.setDuration(1500);
+        objectAnimator1.start();
+        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
+    }*/
+
     private void rideEstimate() {
-        params.put("auth", stringAuth);
-        params.put("npas", noRiderInfo);
-        params.put("dstid", dropInfo);
+        String auth = stringAuth;
+        params.put("auth", auth);
+        params.put("srclat", srcLat);
+        params.put("srclng", srcLng);
+        params.put("dstlat", dstLat);
+        params.put("dstlng", dstLng);
+        params.put("rtype", rideInfo);
         params.put("vtype", vTypeInfo);
         params.put("pmode", pModeInfo);
-        params.put("rtype",rideInfo);
 
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: npas=" + noRiderInfo + " dstid = " + dropInfo + " vtype = " + vTypeInfo + " pmode = " + pModeInfo+" rtype="+rideInfo);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-trip-estimate");
+        Log.d(TAG, "Values: auth=" + auth + " srclat=" + srcLat + " srclng=" + srcLng
+                + " dstlat=" + dstLat + " dstlng=" + dstLng + " vtype=" + vTypeInfo + " pmode=" + pModeInfo + " rtype=" + rideInfo);
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-ride-estimate");
 
-        UtilityApiRequestPost.doPOST(a, "user-trip-estimate", parameters, 2000, 0, response -> {
+        UtilityApiRequestPost.doPOST(a, "user-ride-estimate", parameters, 2000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
             } catch (JSONException e) {
@@ -345,25 +426,36 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
     }
 
     protected void userRequestRide() {
-        params.put("auth", stringAuth);
-        params.put("npas", noRiderInfo);
-        params.put("srcid", pickInfo);
-        params.put("dstid", dropInfo);
+        String auth = stringAuth;
+        params.put("auth", auth);
+        params.put("srclat", srcLat);
+        params.put("srclng", srcLng);
+        params.put("dstlat", dstLat);
+        params.put("dstlng", dstLng);
         params.put("rtype", rideInfo);
         params.put("vtype", vTypeInfo);
         params.put("pmode", pModeInfo);
+        params.put("npas", noRiderInfo);
 
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: npas=" + noRiderInfo + " srcid = " + pickInfo + " dstid = "
-                + dropInfo + " rtype = " + rideInfo + " vtype = " + vTypeInfo + " pmode = " + pModeInfo);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-trip-request");
+        Log.d(TAG, "Values: auth=" + auth + " srclat=" + srcLat + " srclng=" + srcLng
+                + " dstlat=" + dstLat + " dstlng=" + dstLng + " vtype=" + vTypeInfo + " pmode="
+                + pModeInfo + " rtype=" + rideInfo + " npas=" + noRiderInfo);
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-ride-request");
 
-        UtilityApiRequestPost.doPOST(a, "user-trip-request", parameters, 2000, 0, response -> {
+        UtilityApiRequestPost.doPOST(a, "user-ride-request", parameters, 2000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }, a::onFailure);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ActivityRideRequest.this, ActivityRideHome.class));
+        finish();
     }
 }

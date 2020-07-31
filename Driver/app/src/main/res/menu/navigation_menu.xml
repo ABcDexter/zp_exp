@@ -18,8 +18,8 @@
     <item android:id="@+id/nav_home"
         android:icon="@drawable/ic_home_black"
         android:title="Home"/>
-    <item android:id="@+id/nav_passerby"
+    <!--<item android:id="@+id/nav_passerby"
         android:icon="@drawable/ic_home_black"
-        android:title="Passerby"/>
+        android:title="Passerby"/>-->
 
 </menu>

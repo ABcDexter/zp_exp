@@ -1,18 +1,27 @@
 package com.client;
 
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
 import com.client.deliver.ActivityDeliverHome;
@@ -26,7 +35,13 @@ import com.client.ride.ActivityRideHome;
 import com.client.ride.ActivityRideInProgress;
 import com.client.ride.ActivityRideOTP;
 import com.client.ride.ActivityRideRequest;
-import com.client.ride.MapsActivity2;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +52,7 @@ import java.util.Map;
 public class ActivityWelcome extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "ActivityWelcome";
-    ImageView zippe_iv, zippe_iv_below;
+    ImageView zippe_iv, zippe_iv_below, scooty_up, scooty_down;
     public static final String BUSS = "Buss";
     public static final String BUSS_FLAG = "com.client.ride.BussFlag";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
@@ -49,22 +64,39 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
 
+    public static final String SRC_NAME = "PICK UP POINT";
+    public static final String DST_NAME = "DROP POINT";
+    public static final String LOCATION_PICK_ID = "PickLocationID";
+    public static final String LOCATION_DROP_ID = "DropLocationID";
     public static final String AUTH_KEY = "AuthKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
+    public static final String AN_KEY = "AadharKey";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
+    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     SharedPreferences prefAuth;
     String stringAuth;
     ImageButton btnRent, btnRide, btnDeliver;
     ActivityWelcome a = ActivityWelcome.this;
+    Map<String, String> params = new HashMap();
+    String auth;
+    private static ActivityWelcome instance;
+    FusedLocationProviderClient mFusedLocationClient;
+    int PERMISSION_ALL = 1;
+    String[] PERMISSIONS = {
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.CALL_PHONE};
+    String lat, lng, stringAN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        instance = this;
 
         prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuth = prefAuth.getString(AUTH_KEY, "");
+        stringAN = prefAuth.getString(AN_KEY, "");
 
         btnRent = findViewById(R.id.btn_rent);
         btnRent.setOnClickListener(this);
@@ -72,7 +104,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         btnRide.setOnClickListener(this);
         btnDeliver = findViewById(R.id.btn_deliver);
         btnDeliver.setOnClickListener(this);
-        String auth = stringAuth;
+        auth = stringAuth;
         if (auth.equals("")) {
             Intent registerUser = new Intent(ActivityWelcome.this, ActivityMain.class);
             startActivity(registerUser);
@@ -80,25 +112,88 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         }
         zippe_iv = findViewById(R.id.iv_zippee);
         zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
+        scooty_up = findViewById(R.id.scooty_up);
+        scooty_down = findViewById(R.id.scooty_down);
+        moveZbee();
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityWelcome.this);
+        getLastLocation();
         checkStatus();
-        moveIt();
+        myDialog = new Dialog(this);
+
     }
 
-    private void moveIt() {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zippe_iv_below, "translationX", 1500, 0f);
-        objectAnimator.setDuration(1600);
+    public static ActivityWelcome getInstance() {
+        return instance;
+    }
+
+    private void moveZbee() {
+        scooty_up.setVisibility(View.GONE);
+        scooty_down.setVisibility(View.VISIBLE);
+        zippe_iv_below.setVisibility(View.GONE);
+        zippe_iv.setVisibility(View.VISIBLE);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scooty_down, "translationX", 1800, 0f);
+        objectAnimator.setDuration(1700);
         objectAnimator.start();
-        objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
+
+        /*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*/
 
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zippe_iv, "translationX", 0f, 1500);
         objectAnimator1.setDuration(1700);
         objectAnimator1.start();
-        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
+        /*objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                moveScooty();
+            }
+        }, 1600);
+    }
+
+    private void moveScooty() {
+        scooty_up.setVisibility(View.VISIBLE);
+        scooty_down.setVisibility(View.GONE);
+        zippe_iv_below.setVisibility(View.VISIBLE);
+        zippe_iv.setVisibility(View.GONE);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zippe_iv_below, "translationX", 1800, 0f);
+        objectAnimator.setDuration(1700);
+        objectAnimator.start();
+        /*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*/
+
+        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(scooty_up, "translationX", 0f, 1500);
+        objectAnimator1.setDuration(1700);
+        objectAnimator1.start();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                moveZbee();
+            }
+        }, 1600);
+        /* objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
+    }
+
+    public void sendLocation() {
+        Log.d(TAG, "inside sendLocation()");
+        params.put("an", stringAN);
+        params.put("auth", stringAuth);
+        params.put("lat", lat);
+        params.put("lng", lng);
+        JSONObject parameters = new JSONObject(params);
+
+        Log.d(TAG, "auth = " + stringAuth + " lat =" + lat + " lng = " + lng + " an=" + stringAN);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST auth-location-update");
+        UtilityApiRequestPost.doPOST(a, "auth-location-update", parameters, 30000, 0, response -> {
+            try {
+                a.onSuccess(response, 4);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+
     }
 
     public void checkStatus() {
-        String auth = stringAuth;
-        Map<String, String> params = new HashMap();
+
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -113,10 +208,120 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         }, a::onFailure);
     }
 
-    public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
-        //SuccessMethod onSuccess = SuccessMethod.getInstance();
+    Dialog myDialog;
+    TextView dialog_txt;
+
+    private void ShowPopup(int id) {
+
+        myDialog.setContentView(R.layout.popup_color);
+        dialog_txt = myDialog.findViewById(R.id.info_text);
+        LinearLayout ln = myDialog.findViewById(R.id.layout_btn);
+        if (id == 1) {
+            dialog_txt.setText("No ride available currently.\nNotify me when available.");
+        }
+        if (id == 2) {
+            dialog_txt.setText("Drivers are available.");
+        }
+        if (id == 3) {
+            dialog_txt.setText("We are sorry ! Your Ride was cancelled due to unavoidable circumstances. Please try again.");
+        }
+        if (id == 4) {
+            dialog_txt.setText("Your RIDE request has timed out. Please try again.");
+        }
+        if (id == 5) {
+            dialog_txt.setText("We were unable to complete your ride. Any inconvenience deeply regretted.");
+        }
+        if (id == 6) {
+            dialog_txt.setText("Ride canceled by you.");
+        }
+        if (id == 7) {
+            dialog_txt.setText("Sorry ! All our vehicles are currently rented out. Please try again later.");
+        }
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+        myDialog.setCanceledOnTouchOutside(true);
+    }
+
+    private void ShowPopup1(int id) {
+
+        myDialog.setContentView(R.layout.popup_new_request);
+        dialog_txt = myDialog.findViewById(R.id.info_text);
+
+        if (id == 2) {
+            dialog_txt.setText("Drivers are available.");
+        }
+
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+        myDialog.setCanceledOnTouchOutside(true);
+    }
+
+    public void getLastLocation() {
+        Log.d(TAG, "Inside getLastLocation()");
+        if (hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        } else {
+            Log.d(TAG, "inside else of getLastLocation()");
+            mFusedLocationClient.getLastLocation().addOnCompleteListener(
+                    new OnCompleteListener<Location>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Location> task) {
+                            Location location = task.getResult();
+                            if (location == null) {
+                                requestNewLocationData();
+                            } else {
+                                Log.d(TAG, "inside else of addOnCompleteListener()");
+                                lat = location.getLatitude() + "";
+                                lng = location.getLongitude() + "";
+                                Log.d(TAG, "lat = " + lat + " lng = " + lng);
+                                sendLocation();
+                            }
+                        }
+                    });
+        }
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        Log.d(TAG, "inside hasPermission()");
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void requestNewLocationData() {
+        Log.d(TAG, "inside requestNewLocationData()");
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(0);
+        mLocationRequest.setFastestInterval(0);
+        mLocationRequest.setNumUpdates(1);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.requestLocationUpdates(
+                mLocationRequest, mLocationCallback,
+                Looper.myLooper());
+    }
+
+    private LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Log.d(TAG, "inside LocationResult() call");
+            Location mLastLocation = locationResult.getLastLocation();
+            lat = mLastLocation.getLatitude() + "";
+            lng = mLastLocation.getLongitude() + "";
+        }
+    };
+
+
+    public void
+    onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG, "RESPONSE:" + response);
-//response on hitting user-trip-get-status API
+        //response on hitting user-trip-get-status API
         if (id == 1) {
             try {
                 String active = response.getString("active");
@@ -128,15 +333,6 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (rtype.equals("0")) {
                         if (status.equals("RQ")) {
-                        /*Snackbar snackbar = Snackbar
-                                .make(scrollView, "WAITING FOR DRIVER", Snackbar.LENGTH_INDEFINITE)
-                                .setAction("CANCEL", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        cancelRequest();
-
-                                    }
-                                });*/
                             Intent rq = new Intent(ActivityWelcome.this, ActivityRideRequest.class);
                             rq.putExtra("st", "RQ");
                             startActivity(rq);
@@ -153,7 +349,6 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                             startActivity(as);
                         }
                         if (status.equals("ST")) {
-
                             Intent as = new Intent(ActivityWelcome.this, ActivityRideInProgress.class);
                             startActivity(as);
                         }
@@ -161,40 +356,41 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                             Intent fntr = new Intent(ActivityWelcome.this, ActivityRideEnded.class);
                             startActivity(fntr);
                         }
+                        if (status.equals("CN")) {
+                            Log.d(TAG, "trip cancelled");
+                        }
+                        if (status.equals("TO") || status.equals("DN") || status.equals("FL")) {
+
+                            Log.d(TAG, "error");
+                        }
                     }
                     if (rtype.equals("1")) {
                         if (status.equals("RQ")) {
-                        /*Snackbar snackbar = Snackbar
-                                .make(scrollView, "WAITING FOR DRIVER", Snackbar.LENGTH_INDEFINITE)
-                                .setAction("CANCEL", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        cancelRequest();
-
-                                    }
-                                });*/
                             Intent rq = new Intent(ActivityWelcome.this, ActivityRentRequest.class);
-                            /*rq.putExtra("st", "RQ");*/
                             startActivity(rq);
                         }
                         if (status.equals("AS")) {
-                            String otp = response.getString("otp");
-                            String van = response.getString("vno");
-                            //String price = response.getString("price");
+                            /*String otp = response.getString("otp");
                             SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                            sp_otp.edit().putString(OTP_PICK, otp).apply();
-                            sp_otp.edit().putString(VAN_PICK, van).apply();
-                            //sp_otp.edit().putString(PRICE_RENT,price).apply();
+                            sp_otp.edit().putString(OTP_PICK, otp).apply();*/
                             Intent as = new Intent(ActivityWelcome.this, ActivityRentOTP.class);
                             startActivity(as);
                         }
                         if (status.equals("ST")) {
+                            String van = response.getString("vno");
+                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                            sp_otp.edit().putString(VAN_PICK, van).apply();
                             Intent as = new Intent(ActivityWelcome.this, ActivityRentInProgress.class);
                             startActivity(as);
                         }
                         if (status.equals("FN") || status.equals("TR")) {
+                            //retireTrip();
                             Intent fntr = new Intent(ActivityWelcome.this, ActivityRentEnded.class);
                             startActivity(fntr);
+                        }
+
+                        if (status.equals("TO")) {
+                            ShowPopup(7);
                         }
 
                     }
@@ -214,64 +410,104 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
 
+        // response on hitting auth-trip-get-info API
         if (id == 2) {
             String st = response.getString("st");
-            if (st.equals("PD")) {
-                String price = response.getString("price");
-                String time = response.getString("time");
-                String dist = response.getString("dist");
-                String speed = response.getString("speed");
-                SharedPreferences pref = getApplicationContext().getSharedPreferences(PREFS_LOCATIONS, MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.remove(PREFS_LOCATIONS);
-                editor.apply();
+            String rtype = response.getString("rtype");
+            if (rtype.equals("0")) {
+                if (st.equals("PD")) {
+                    String price = response.getString("price");
+                    SharedPreferences pref = getApplicationContext().getSharedPreferences(PREFS_LOCATIONS, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.remove(PREFS_LOCATIONS);
+                    editor.apply();
 
-                SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
-                SharedPreferences.Editor editor1 = prefBuzz.edit();
-                editor1.remove(BUSS_FLAG);
-                editor1.apply();
-                /*Intent summary = new Intent(ActivityWelcome.this, ActivityTripSummary.class);
-                summary.putExtra("PRICE", price);
-                summary.putExtra("TIME", time);
-                summary.putExtra("DIST", dist);
-                summary.putExtra("SPEED", speed);
-                startActivity(summary);
-                finish();*/
+                    SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
+                    SharedPreferences.Editor editor1 = prefBuzz.edit();
+                    editor1.remove(BUSS_FLAG);
+                    editor1.apply();
+
+
+                }
+
+                if (st.equals("DN")) {
+                    ShowPopup(3);
+                }
+                if (st.equals("TO")) {
+                    ShowPopup(4);
+                }
+                if (st.equals("FL")) {
+                    ShowPopup(5);
+                }
+                if (st.equals("CN")) {
+                    ShowPopup(6);
+                }
+                retireTrip();
             }
-            if (st.equals("FL")) {
-                Toast.makeText(this, "RIDE FAILED ! \nSORRY FOR THE INCONVENIENCE CAUSED !", Toast.LENGTH_LONG).show();
+            if (rtype.equals("1")) {
+                if (st.equals("PD")) {
+                    //String price = response.getString("price");
+
+                    SharedPreferences pref = getApplicationContext().getSharedPreferences(PREFS_LOCATIONS, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.remove(LOCATION_PICK);
+                    editor.remove(LOCATION_DROP);
+                    editor.remove(LOCATION_DROP_ID);
+                    editor.remove(LOCATION_PICK_ID);
+                    editor.apply();
+
+                    SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
+                    SharedPreferences.Editor editor1 = prefBuzz.edit();
+                    editor1.remove(BUSS_FLAG);
+                    editor1.apply();
+                    retireTrip();
+                }
+                if (st.equals("FN")) {
+                    retireTrip();
+                }
+                if (st.equals("CN")) {
+                    retireTrip();
+                }
+                retireTrip();
+
             }
-            if (st.equals("CN")) {
-                Toast.makeText(this, "RIDE WAS CANCELED BY YOU !", Toast.LENGTH_LONG).show();
-            }
-            if (st.equals("DN")) {
-                Toast.makeText(this, "DRIVER DENIED PICKUP", Toast.LENGTH_LONG).show();
-            }
-            if (st.equals("TO")) {
-                Toast.makeText(this, "RIDE TIMED OUT ", Toast.LENGTH_LONG).show();
-            }
-            retireTrip();
+            //retireTrip();
 
         }
         //response on hitting user-trip-retire API
         if (id == 3) {
             SharedPreferences preferences = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.remove(TRIP_ID);
+            editor.clear();
             editor.apply();
 
-            Log.d(TAG, "tripID= " + TRIP_ID);
-            checkStatus();
+
+            Log.d(TAG, "tripID= " + TRIP_ID + DRIVER_NAME + DRIVER_PHN);
+
+            SharedPreferences prefLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editorLoc = prefLoc.edit();
+            editorLoc.remove(VAN_PICK);
+            editorLoc.remove(DST_NAME);
+            editorLoc.remove(SRC_NAME);
+            editorLoc.remove(OTP_PICK);
+            editorLoc.apply();
+
+            sendLocation();
+        }
+
+        //response on hitting auth-location-update API
+        if (id == 4) {
+            Intent i = new Intent(this, UtilityPollingService.class);
+            i.setAction("00");
+            startService(i);
         }
     }
 
     private void retireTrip() {
-        String auth = stringAuth;
-        Map<String, String> params = new HashMap();
+
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -287,8 +523,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     }
 
     private void tripInfo(String tripID) {
-        String auth = stringAuth;
-        Map<String, String> params = new HashMap();
+
         params.put("auth", auth);
         params.put("tid", tripID);
         JSONObject parameters = new JSONObject(params);
@@ -324,11 +559,5 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                 Intent deliverIntent = new Intent(ActivityWelcome.this, ActivityDeliverHome.class);
                 startActivity(deliverIntent);
         }
-    }
-
-    public void nextActivity(View view) {
-        Intent intent = new Intent(ActivityWelcome.this, MapsActivity2.class);
-        startActivity(intent);
-
     }
 }

@@ -27,8 +27,8 @@ public class ActivityWelcome extends AppCompatActivity {
     ImageView zippe_iv, zippe_iv_below;
     SharedPreferences cookie;
     String strAuth, strToken;
-    public static final String AUTH_COOKIE = "com.driver.cookie";
-    public static final String COOKIE = "Cookie";
+    public static final String AUTH_KEY = "Auth";
+    public static final String AUTH_COOKIE = "com.agent.cookie";
     public static final String PICTURE_UPLOAD_STATUS = "com.driver.pictureUploadStatus";
     public static final String VERIFICATION_TOKEN = "Token";
 
@@ -42,7 +42,7 @@ public class ActivityWelcome extends AppCompatActivity {
         zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
 
         cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
-        strAuth = cookie.getString(COOKIE, "");
+        strAuth = cookie.getString(AUTH_KEY, "");
         SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(VERIFICATION_TOKEN, "");
         String auth = strAuth;
@@ -65,7 +65,7 @@ public class ActivityWelcome extends AppCompatActivity {
                     Intent intent = new Intent(ActivityWelcome.this, ActivityHome.class);
                     startActivity(intent);
                 }
-            }, 500);
+            }, 1000);
         }
         moveit();//animation of zbee
     }

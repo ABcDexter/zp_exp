@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.client.rent.ActivityRentHome;
-import com.client.rent.ActivityRentInProgress;
+import com.client.rent.ActivityUpdateInfo;
 import com.client.ride.ActivityRideHome;
 
 import java.util.List;
@@ -23,13 +23,15 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
     private List<HubListData> hub_list_data;
     private Context context;
     private int intentValue;
-
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String LOCATION_PICK = "PickLocation";
     public static final String LOCATION_DROP = "DropLocation";
     public static final String LOCATION_PICK_ID = "PickLocationID";
     public static final String LOCATION_DROP_ID = "DropLocationID";
-
+    public static final String LOCATION_PICK_LAT = "PickLocationLat";
+    public static final String LOCATION_PICK_LNG = "PickLocationLng";
+    public static final String LOCATION_DROP_LAT = "DropLocationLat";
+    public static final String LOCATION_DROP_LNG = "DropLocationLng";
 
     public MyHubListAdapter(List<HubListData> hub_list_data, Context context, int i) {
         this.hub_list_data = hub_list_data;
@@ -52,9 +54,12 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
         HubListData listData = hub_list_data.get(position);
         holder.txtName.setText(listData.getHubName());
         holder.txtID.setText(listData.getIdPlace());
+        holder.txtLat.setText(listData.getLatitude());
+        holder.txtLng.setText(listData.getLongitude());
         String strValue = listData.getHubName();
         String strID = listData.getIdPlace();
-
+        String strLat = listData.getLatitude();
+        String strLng = listData.getLongitude();
 
         holder.txtName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +71,8 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
 
                     directoryLocation.edit().putString(LOCATION_PICK, strValue).apply();
                     directoryLocation.edit().putString(LOCATION_PICK_ID, strID).apply();
+                    directoryLocation.edit().putString(LOCATION_PICK_LAT, strLat).apply();
+                    directoryLocation.edit().putString(LOCATION_PICK_LNG, strLng).apply();
                     Log.d("MyHubListAdapter", "Pick Location Saved" + directoryLocation);
 
                     Intent intent = new Intent(context, ActivityRideHome.class);
@@ -77,6 +84,8 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
                 if (intentValue == 2) {
                     directoryLocation.edit().putString(LOCATION_DROP, strValue).apply();
                     directoryLocation.edit().putString(LOCATION_DROP_ID, strID).apply();
+                    directoryLocation.edit().putString(LOCATION_DROP_LAT, strLat).apply();
+                    directoryLocation.edit().putString(LOCATION_DROP_LNG, strLng).apply();
                     Log.d("MyHubListAdapter", "Drop Location Saved" + directoryLocation);
 
                     Intent intent = new Intent(context, ActivityRideHome.class);
@@ -87,6 +96,8 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
                 if (intentValue == 3) {
                     directoryLocation.edit().putString(LOCATION_PICK, strValue).apply();
                     directoryLocation.edit().putString(LOCATION_PICK_ID, strID).apply();
+                    directoryLocation.edit().putString(LOCATION_PICK_LAT, strLat).apply();
+                    directoryLocation.edit().putString(LOCATION_PICK_LNG, strLng).apply();
                     Log.d("MyHubListAdapter", "Rental Pick Location Saved" + directoryLocation);
 
                     Intent intent = new Intent(context, ActivityRentHome.class);
@@ -98,6 +109,8 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
                 if (intentValue == 4) {
                     directoryLocation.edit().putString(LOCATION_DROP, strValue).apply();
                     directoryLocation.edit().putString(LOCATION_DROP_ID, strID).apply();
+                    directoryLocation.edit().putString(LOCATION_DROP_LAT, strLat).apply();
+                    directoryLocation.edit().putString(LOCATION_DROP_LNG, strLng).apply();
                     Log.d("MyHubListAdapter", "Rental Drop Location Saved" + directoryLocation);
 
                     Intent intent = new Intent(context, ActivityRentHome.class);
@@ -108,17 +121,17 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
                 if (intentValue == 5) {
                     directoryLocation.edit().putString(LOCATION_DROP, strValue).apply();
                     directoryLocation.edit().putString(LOCATION_DROP_ID, strID).apply();
+                    directoryLocation.edit().putString(LOCATION_DROP_LAT, strLat).apply();
+                    directoryLocation.edit().putString(LOCATION_DROP_LNG, strLng).apply();
                     Log.d("MyHubListAdapter", "Rental Drop Location Saved" + directoryLocation);
 
-                    Intent intent = new Intent(context, ActivityRentInProgress.class);
+                    Intent intent = new Intent(context, ActivityUpdateInfo.class);
                     context.startActivity(intent);
                     Log.d("MyHubListAdapter", "Rental Drop Location " + strValue + " Send from  MyHubListAdapter");
                     ((Activity) context).finish();
                 }
             }
         });
-
-
     }
 
 
@@ -134,6 +147,8 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
             super(itemView);
             txtName = itemView.findViewById(R.id.text_name);
             txtID = itemView.findViewById(R.id.pidName);
+            txtLat = itemView.findViewById(R.id.text_lat);
+            txtLng = itemView.findViewById(R.id.text_lng);
 
         }
     }

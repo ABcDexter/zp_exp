@@ -29,10 +29,8 @@ import java.util.Map;
 public class VehicleList extends AppCompatActivity {
     private static final String TAG = "VehicleList.class";
 
-    public static final String AUTH_COOKIE = "com.driver.cookie";
-    public static final String COOKIE = "Cookie";
-    public static final String BUSS = "Buss";
-    public static final String BUSS_FLAG = "com.client.ride.BussFlag";
+    public static final String AUTH_KEY = "Auth";
+    public static final String AUTH_COOKIE = "com.agent.cookie";
     Vibrator vibrator;
     Dialog myDialog;
     private static VehicleList instance;
@@ -42,12 +40,105 @@ public class VehicleList extends AppCompatActivity {
     private VehicleListAdapter adapter;
     String TID;
     public static final String TRIP_DETAILS = "com.driver.tripDetails";
+    public static final String DAY_VAN = "com.driver.Van";
+    public static final String VAN = "Van";
     public static final String TRIP_ID = "TripId";
     public static final String TRIP_NAME = "TripName";
     public static final String TRIP_SRC = "TripSrc";
     public static final String TRIP_DST = "TripDst";
     public static final String TRIP_PHN = "TripPhn";
+    String auth;
+    Map<String, String> params = new HashMap();
+    VehicleList a = VehicleList.this;
 
+
+    //When an Activity first call or launched then onCreate(Bundle savedInstanceState) method is responsible to create the activity.
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_vehicle_list);
+        instance = this;
+        SharedPreferences prefPLoc = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
+        String stringAuth = prefPLoc.getString(AUTH_KEY, "");
+        auth = stringAuth;
+        //initializing variables
+        rv = findViewById(R.id.recycler_view);
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        myDialog = new Dialog(this);
+
+        //getting value of tid from previous activity ActivityHome
+        Intent intent = getIntent();
+        TID = intent.getStringExtra("TID");
+
+        //loading list view item with this function
+        rv.setHasFixedSize(true);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        list_data = new ArrayList<>();
+        adapter = new VehicleListAdapter(list_data, VehicleList.this);
+
+        //enter this only if this activity is called from VehicleListAdapter
+        try {
+            Intent values = getIntent();
+            String van = values.getStringExtra("VAN");
+            SharedPreferences prefVan = getSharedPreferences(DAY_VAN, Context.MODE_PRIVATE);
+            prefVan.edit().putString(VAN, van).apply();
+
+            assert van != null;
+            if (!van.isEmpty()) {
+                Log.d(TAG, "VAN=" + van);
+                vehicleSet(van);
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error:" + e.getMessage());
+            getData();//method to hit auth-vehicle-get-avail API
+        }
+    }
+
+    public static VehicleList getInstance() {
+        return instance;
+    }
+    //method to initiate and populate dialog box
+    private void ShowPopup() {
+        myDialog.setContentView(R.layout.popup_text);
+        //vibrate device for 1000 milliseconds
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            vibrator.vibrate(1000);
+        }
+    }
+
+    //method to check if vehicles are available near the location of driver
+    protected void getData() {
+        params.put("auth", auth);
+        JSONObject parameters = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d("CONTROL", "Control moved to to UtilityApiRequestPost auth-vehicle-get-avail");
+        UtilityApiRequestPost.doPOST(a, "auth-vehicle-get-avail", parameters, 30000, 0, response -> {
+            try {
+                a.onSuccess(response, 1);// call this method if api was hit successfully
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, a::onFailure);// call this method if api was hit unsuccessfully
+
+    }
+    protected void vehicleSet(String van) {
+
+        params.put("auth", auth);
+        params.put("van", van);
+        JSONObject parameters = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + auth+" van="+van);
+        Log.d("CONTROL", "Control moved to to UtilityApiRequestPost driver-vehicle-set");
+        UtilityApiRequestPost.doPOST(a, "driver-vehicle-set", parameters, 30000, 0, response -> {
+            try {
+                a.onSuccess(response, 2);// call this method if api was hit successfully
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, a::onFailure);// call this method if api was hit unsuccessfully
+
+    }
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG + "jsArrayRequest", "RESPONSE:" + response.toString());
@@ -69,30 +160,17 @@ public class VehicleList extends AppCompatActivity {
                     }
                     rv.setAdapter(adapter);// setting adapter to recycler view
                     ShowPopup();
-                    SharedPreferences pref = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.remove(BUSS);
-                    editor.apply();// clearing the buss flag
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (id == 2) {
-            // getting data from server
-            String name = response.getString("name");
-            String phone = response.getString("phone");
-            String src = response.getString("srcname");
-            String dst = response.getString("dstname");
-            //saving data locally
-            SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
-            sp_cookie.edit().putString(TRIP_NAME, name).apply();
-            sp_cookie.edit().putString(TRIP_PHN, phone).apply();
-            sp_cookie.edit().putString(TRIP_SRC, src).apply();
-            sp_cookie.edit().putString(TRIP_DST, dst).apply();
-            // calling ActivityRideAccepted Activity
-            Intent accepted = new Intent(VehicleList.this, ActivityRideAccepted.class);
-            startActivity(accepted);
+        //response on hitting driver-vehicle-set API
+        if (id==2){
+
+            Intent home = new Intent(VehicleList.this, ActivityHome.class);
+            startActivity(home);
             finish();
         }
     }
@@ -102,99 +180,4 @@ public class VehicleList extends AppCompatActivity {
         Toast.makeText(this, "CHECK YOUR INTERNET CONNECTION!", Toast.LENGTH_LONG).show();
     }
 
-    //When an Activity first call or launched then onCreate(Bundle savedInstanceState) method is responsible to create the activity.
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vehicle_list);
-        instance = this;
-        //initializing variables
-        rv = findViewById(R.id.recycler_view);
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        myDialog = new Dialog(this);
-
-        //getting value of tid from previous activity ActivityHome
-        Intent intent = getIntent();
-        TID = intent.getStringExtra("TID");
-
-        //loading list view item with this function
-        rv.setHasFixedSize(true);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        list_data = new ArrayList<>();
-        adapter = new VehicleListAdapter(list_data, VehicleList.this);
-
-        //enter this only if this activity is called from VehicleListAdapter
-        try {
-            Intent values = getIntent();
-            String van = values.getStringExtra("VAN");
-            assert van != null;
-            if (!van.isEmpty()) {
-                Log.d(TAG, "VAN=" + van);
-                driverRideAccept(van);// method to hit driver-ride-accept API
-            }
-        } catch (Exception e) {
-            Log.d(TAG, "Error:" + e.getMessage());
-            getData();//method to hit auth-vehicle-get-avail API
-        }
-    }
-
-    public static VehicleList getInstance() {
-        return instance;
-    }
-
-    //method to check if vehicles are available near the location of driver
-    protected void getData() {
-        Map<String, String> params = new HashMap();
-        SharedPreferences prefPLoc = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
-        String stringAuth = prefPLoc.getString(COOKIE, "");
-        params.put("auth", stringAuth);
-        JSONObject parameters = new JSONObject(params);
-        VehicleList a = VehicleList.this;
-        Log.d(TAG, "Values: auth=" + stringAuth);
-        Log.d("CONTROL", "Control moved to to UtilityApiRequestPost auth-vehicle-get-avail");
-        UtilityApiRequestPost.doPOST(a, "auth-vehicle-get-avail", parameters, 30000, 0, response -> {
-            try {
-                a.onSuccess(response, 1);// call this method if api was hit successfully
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }, a::onFailure);// call this method if api was hit unsuccessfully
-
-    }
-
-    //method to accept ride request of user by driver
-    private void driverRideAccept(String van) {
-        Map<String, String> params = new HashMap();
-        //retrieve stored values stored locally
-        SharedPreferences prefPLoc = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
-        String stringAuth = prefPLoc.getString(COOKIE, "");
-        SharedPreferences pref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
-        String tid = pref.getString(TRIP_ID, "");
-        params.put("auth", stringAuth);
-        params.put("tid", tid);
-        params.put("van", van);
-
-        JSONObject parameters = new JSONObject(params);
-        VehicleList a = VehicleList.this;
-        Log.d(TAG, "Values: auth=" + stringAuth + " tid=" + tid + " van=" + van);
-        Log.d("CONTROL", "Control moved to to UtilityApiRequestPost driver-ride-accept");
-        UtilityApiRequestPost.doPOST(a, "driver-ride-accept", parameters, 30000, 0, response -> {
-            try {
-                a.onSuccess(response, 2);// call this method if api was hit successfully
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }, a::onFailure);// call this method if api was hit unsuccessfully
-    }
-
-    //method to initiate and populate dialog box
-    private void ShowPopup() {
-        myDialog.setContentView(R.layout.popup_text);
-        //vibrate device for 1000 milliseconds
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-        } else {
-            vibrator.vibrate(1000);
-        }
-    }
 }

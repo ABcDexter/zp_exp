@@ -7,115 +7,147 @@
         android:id="@+id/scrollView_ride_OTP"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        android:layout_margin="10dp"
+        android:fillViewport="true">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"
-                android:text="your ride has ended\nwith"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="23sp" />
-
-
-            <include
-                layout="@layout/zippe_logo"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="50dp" />
-
-            <RelativeLayout
-                android:id="@+id/rl_cost"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="25dp"
-                android:background="@drawable/rect_box_outline"
-                android:padding="5dp">
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/txtc"
+                    android:id="@+id/txt"
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:gravity="center|start"
-                    android:text="please pay -"
-                    android:textAllCaps="true"
-                    android:textSize="23sp" />
-
-                <TextView
-                    android:id="@+id/payment"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_toEndOf="@+id/txtc"
-                    android:drawableStart="@drawable/ic_rupee"
-                    android:gravity="center|start"
-                    android:text="250 "
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:text="you have reached your \ndestination with"
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textSize="23sp" />
 
-            </RelativeLayout>
 
+                <include
+                    layout="@layout/zippe_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="50dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="15dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <TextView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:id="@+id/rl_cost"
+                    android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
+                    android:layout_marginTop="25dp"
                     android:background="@drawable/rect_box_outline"
-                    android:drawableEnd="@drawable/ic_rupee"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="cash"
-                    android:textAllCaps="true"
-                    android:textSize="23sp" />
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/txtc"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="please pay"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center|start"
+                        android:text=":"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/payment"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_toEndOf="@+id/txtc"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="250 "
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textSize="23sp" />
+
+                </LinearLayout>
 
 
-                <TextView
-                    android:id="@+id/upi"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/rect_box_outline"
-                    android:drawableEnd="@drawable/ic_bhim"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="upi"
-                    android:textAllCaps="true"
-                    android:textSize="23sp" />
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/cash"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/rect_box_outline"
+                        android:drawableEnd="@drawable/money"
+                        android:gravity="center"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="15dp"
+                        android:text="cash"
+                        android:textAllCaps="true"
+                        android:textSize="23sp" />
+
+                    <TextView
+                        android:id="@+id/upi"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/rect_box_outline"
+                        android:drawableEnd="@drawable/ic_bhim"
+                        android:gravity="center"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:text="upi"
+                        android:textAllCaps="true"
+                        android:textSize="23sp" />
+
+                </LinearLayout>
+
+                <!-- <Button
+                     android:id="@+id/confirm_btn"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="center|bottom"
+                     android:layout_marginTop="50dp"
+                     android:background="@drawable/rect_box_solid"
+                     android:text="DONE"
+                     android:textSize="25sp" />-->
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/done_btn"
+            <ImageButton
+                android:id="@+id/pay_now"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|bottom"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/rect_box_solid"
-                android:text="DONE"
-                android:textSize="25sp" />
-        </LinearLayout>
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/btn_bkg"
+                android:padding="15dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/paynow" />
+        </RelativeLayout>
     </ScrollView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

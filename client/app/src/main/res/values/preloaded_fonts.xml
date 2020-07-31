@@ -3,6 +3,8 @@
     <array name="preloaded_fonts" translatable="false">
         <item>@font/orbitron</item>
         <item>@font/orbitron_medium</item>
+        <item>@font/rajdhani</item>
+        <item>@font/rajdhani_medium</item>
         <item>@font/sarpanch</item>
     </array>
 </resources>

@@ -12,16 +12,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
-import com.client.ride.ActivityRideHome;
 import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
@@ -35,18 +35,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ActivityRentRequest extends ActivityDrawer implements View.OnClickListener {
-
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
+    private static final String TAG = "ActivityRentRequest";
 
     public static final String AUTH_KEY = "AuthKey";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    private static final String TAG = "ActivityRideRequest";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String LOCATION_PICK = "PickLocation";
     public static final String LOCATION_DROP = "DropLocation";
-    public static final String COST_DROP = "CostDrop";
-    public static final String SPEED_DROP = "SpeedDrop";
+    public static final String COST_DROP = "";
+    // public static final String SPEED_DROP = "00";
     public static final String OTP_PICK = "OTPPick";
     public static final String VAN_PICK = "VanPick";
 
@@ -56,15 +54,16 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     public static final String NO_HOURS = "NoHours";
     public static final String RENT_RIDE = "RentRide";
     public static final String PAYMENT_MODE = "PaymentMode";
-    ImageButton next, speedInfo, PaymentInfo;
-    TextView /*pick, drop,*/ vSpeed, advPay, pickPlaceInfo, dropPlaceInfo, vChosen;
+
+    ImageButton next, speedInfo, paymentInfo, PickInfo, DropInfo;
+    TextView vSpeed, advPay, pickPlaceInfo, dropPlaceInfo;
     ScrollView scrollView;
-    String stringAuth;
-    ImageView zbeeR, zbeeL;
+    String stringAuth, stringPick, stringDrop;
+    ImageView scootyUp, scootyDown;
     SharedPreferences prefAuth;
     ActivityRentRequest a;
     Dialog myDialog;
-    String rideInfo, vTypeInfo, noRiderInfo, pModeInfo, dropInfo, pickInfo, pickPlace, dropPlace, hrs;
+    String rideInfo, vTypeInfo, pModeInfo, dropInfo, pickInfo, speedDrop, costDrop, hrs;
     Map<String, String> params = new HashMap();
 
     private static ActivityRentRequest instance;
@@ -80,11 +79,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                 String price = response.getString("price");
                 String speed = response.getString("speed");
 
-                vSpeed.setText(speed);
-                advPay.setText(price);
-                SharedPreferences sp_cookie = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                vSpeed.setText(speed + " km/hr");
+                advPay.setText("₹ "+price);
+                /*SharedPreferences sp_cookie = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
                 sp_cookie.edit().putString(SPEED_DROP, speed).apply();
-                sp_cookie.edit().putString(COST_DROP, price).apply();
+                sp_cookie.edit().putString(COST_DROP, price).apply();*/
 
                 Log.d(TAG, "price:" + price + " speed:" + speed);
 
@@ -107,16 +106,17 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                     String status = response.getString("st");
                     String tid = response.getString("tid");
                     String rtype = response.getString("rtype");
-                    if (rtype.equals("0")) {
-                        Intent ride = new Intent(ActivityRentRequest.this, ActivityRideHome.class);
+                    /*if (rtype.equals("0")) {
+                        Intent ride = new Intent(ActivityRentRequest.this, ActivityWelcome.class);
                         startActivity(ride);
                         finish();
-                    } else {
+                    } else*/
+                    if (rtype.equals("1")) {
                         SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                         sp_cookie.edit().putString(TRIP_ID, tid).apply();
                         if (status.equals("RQ")) {
                             Snackbar snackbar = Snackbar
-                                    .make(scrollView, "CHECKING VEHICLE STATUS...", Snackbar.LENGTH_INDEFINITE)
+                                    .make(scrollView, "CHECKING VEHICLE AVAILABILITY...", Snackbar.LENGTH_INDEFINITE)
                                     .setAction("CANCEL", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -133,15 +133,15 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                             startService(intent);
                         }
                         if (status.equals("AS")) {
-                            String otp = response.getString("otp");
-                            String van = response.getString("vno");
+                            /*String otp = response.getString("otp");
+                            //String van = response.getString("vno");
                             Intent as = new Intent(ActivityRentRequest.this, ActivityRentOTP.class);
-                            /*as.putExtra("OTP", otp);
-                            as.putExtra("VAN", van);*/
                             startActivity(as);
                             SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                            sp_otp.edit().putString(OTP_PICK, otp).apply();
-                            sp_otp.edit().putString(VAN_PICK, van).apply();
+                            sp_otp.edit().putString(OTP_PICK, otp).apply();*/
+                            //sp_otp.edit().putString(VAN_PICK, van).apply();
+                            Intent as = new Intent(ActivityRentRequest.this, ActivityRentOTP.class);
+                            startActivity(as);
                         }
                     }
                 } else {
@@ -184,52 +184,66 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         stringAuth = prefAuth.getString(AUTH_KEY, "");
 
         SharedPreferences prefPLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-        String stringPick = prefPLoc.getString(LOCATION_PICK, "");
-        String stringDrop = prefPLoc.getString(LOCATION_DROP, "");
+        stringPick = prefPLoc.getString(LOCATION_PICK, "");
+        stringDrop = prefPLoc.getString(LOCATION_DROP, "");
         dropInfo = prefPLoc.getString(LOCATION_DROP_ID, "");
         pickInfo = prefPLoc.getString(LOCATION_PICK_ID, "");
         rideInfo = prefPLoc.getString(RENT_RIDE, "");
         vTypeInfo = prefPLoc.getString(VEHICLE_TYPE, "");
         pModeInfo = prefPLoc.getString(PAYMENT_MODE, "");
         hrs = prefPLoc.getString(NO_HOURS, "");
+        // speedDrop = prefPLoc.getString(SPEED_DROP, "");
+        costDrop = prefPLoc.getString(COST_DROP, "");
 
         vSpeed = findViewById(R.id.vehicle_speed);
         advPay = findViewById(R.id.adv_payment);
         pickPlaceInfo = findViewById(R.id.pick_hub);
         dropPlaceInfo = findViewById(R.id.drop_hub);
-        vChosen = findViewById(R.id.vehicle_chosen);
         scrollView = findViewById(R.id.scrollView_rent_request);
         next = findViewById(R.id.confirm_rent_book);
-        zbeeR = findViewById(R.id.image_zbee);
-        zbeeL = findViewById(R.id.image_zbee_below);
+        scootyUp = findViewById(R.id.image_scooty_up);
+        scootyDown = findViewById(R.id.image_scooty_below);
         speedInfo = findViewById(R.id.infoSpeed);
-        PaymentInfo = findViewById(R.id.infoPayment);
+        paymentInfo = findViewById(R.id.infoPayment);
+        PickInfo = findViewById(R.id.infoPick);
+        DropInfo = findViewById(R.id.infoDrop);
 
         a = ActivityRentRequest.this;
 
-        int pickSpace = (stringPick.contains(" ")) ? stringPick.indexOf(" ") : stringPick.length() - 1;
-        String pickCutName = stringPick.substring(0, pickSpace);
-        pickPlaceInfo.setText(pickCutName);
+        try {
 
-        int dropSpace = (stringDrop.contains(" ")) ? stringDrop.indexOf(" ") : stringDrop.length() - 1;
-        String dropCutName = stringDrop.substring(0, dropSpace);
-        dropPlaceInfo.setText(dropCutName);
+            String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 20));
+            pickPlaceInfo.setText(upToNCharacters);
+            //Log.d(TAG, "qwertyuiop"+upToNCharacters);
+        } catch (Exception e) {
+            pickPlaceInfo.setText(stringPick);
+            e.printStackTrace();
+        }
 
-        vChosen.setText(vTypeInfo);
-
-        rideEstimate();
-
+        try {
+            String upToNCharacters = stringDrop.substring(0, Math.min(stringDrop.length(), 20));
+            dropPlaceInfo.setText(upToNCharacters);
+        } catch (Exception e) {
+            dropPlaceInfo.setText(stringDrop);
+            e.printStackTrace();
+        }
         next.setOnClickListener(this);
-        PaymentInfo.setOnClickListener(this);
+        paymentInfo.setOnClickListener(this);
         speedInfo.setOnClickListener(this);
+        PickInfo.setOnClickListener(this);
+        DropInfo.setOnClickListener(this);
 
         myDialog = new Dialog(this);
+
+        rideEstimate();
+        if (!costDrop.equals("")) {
+            advPay.setText("₹ " + costDrop);
+        }
 
     }
 
     private void cancelRequest() {
         String auth = stringAuth;
-        Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -246,7 +260,6 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
     public void checkStatus() {
         String auth = stringAuth;
-        Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -265,25 +278,51 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
-        LinearLayout ll = myDialog.findViewById(R.id.layout_btn);
-        TextView reject = myDialog.findViewById(R.id.reject_request);
-        TextView accept = myDialog.findViewById(R.id.accept_request);
+
         if (id == 1) {
-            infoText.setText("THIS IS THE MAXIMUM SPEED OF THE VEHICLE. YOU CANNOT GO OVER THE LIMIT. IT IS FOR YOUR OWN SAFETY");
+            infoText.setText("Max speed of this vehicle has been set to 25 km/hr (as per government norms) for your own safety.");
+            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+            //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+            //wmlp.x = 100;   //x position
+            wmlp.y = 80;   //y position
+
         }
         if (id == 2) {
-            infoText.setText("PAYMENT TO BE MADE BEFORE WE ALLOT YOU THE VEHICLE. BALANCE (IF ANY) WILL BE COLLECTED AT THE TIME OF DROPPING THE VEHICLE");
-        }
-        if (id == 3) {
-            ll.setVisibility(View.VISIBLE);
-            infoText.setText("NOTIFY ME WHEN RIDE IS AVAILABLE");
+            infoText.setText("Cost calculated as per your rental time. Please pay full amount to begin your trip.");
+            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
-            reject.setOnClickListener(this);
-            accept.setOnClickListener(this);
+            //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+            //wmlp.x = 100;   //x position
+            wmlp.y = 80;   //y position
         }
-        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        if (id == 3) {
+            infoText.setText(stringPick);
+            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+            //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+            //wmlp.x = 100;   //x position
+            wmlp.y = 76;   //y position
+        }
+        if (id == 5) {
+            infoText.setText(stringDrop);
+            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+            //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+            //wmlp.x = 100;   //x position
+            wmlp.y = 76;   //y position
+        }
+
         myDialog.show();
+        Window window = myDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         myDialog.setCanceledOnTouchOutside(true);
+
     }
 
     public static ActivityRentRequest getInstance() {
@@ -291,13 +330,13 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     }
 
     private void moveit() {
-        zbeeL.setVisibility(View.VISIBLE);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zbeeL, "translationX", 1500, 0f);
+        scootyDown.setVisibility(View.VISIBLE);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scootyDown, "translationX", 1500, 0f);
         objectAnimator.setDuration(1500);
         objectAnimator.start();
         objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
 
-        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zbeeR, "translationX", 0f, 1500);
+        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(scootyUp, "translationX", 0f, 1500);
         objectAnimator1.setDuration(1500);
         objectAnimator1.start();
         objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
@@ -306,14 +345,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.reject_request:
-                Intent home = new Intent(ActivityRentRequest.this, ActivityRideHome.class);
-                startActivity(home);
-                finish();
-                break;
-            case R.id.accept_request:
-                //TODO
-                break;
+
             case R.id.confirm_rent_book:
                 moveit();
                 userRequestRide();
@@ -324,11 +356,19 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
             case R.id.infoSpeed:
                 ShowPopup(1);
                 break;
+            case R.id.infoPick:
+                ShowPopup(3);
+                break;
+            case R.id.infoDrop:
+                ShowPopup(5);
+                break;
         }
     }
 
     private void rideEstimate() {
-        params.put("auth", stringAuth);
+        String auth = stringAuth;
+        params.put("auth", auth);
+        params.put("srcid", pickInfo);
         params.put("dstid", dropInfo);
         params.put("rtype", rideInfo);
         params.put("vtype", vTypeInfo);
@@ -336,7 +376,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         params.put("hrs", hrs);
 
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + stringAuth + " dstid= " + dropInfo
+        Log.d(TAG, "Values: auth=" + auth + " srcid= " + pickInfo + " dstid= " + dropInfo
                 + " rtype= " + rideInfo + " vtype=" + vTypeInfo + " pmode=" + pModeInfo + " hrs= " + hrs);
         Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-trip-estimate");
 
@@ -350,7 +390,8 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     }
 
     protected void userRequestRide() {
-        params.put("auth", stringAuth);
+        String auth = stringAuth;
+        params.put("auth", auth);
         params.put("srcid", pickInfo);
         params.put("dstid", dropInfo);
         params.put("hrs", hrs);
@@ -359,16 +400,23 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         params.put("pmode", pModeInfo);
 
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: npas=" + noRiderInfo + " srcid = " + pickInfo + " dstid = "
-                + dropInfo + " rtype = " + rideInfo + " vtype = " + vTypeInfo + " pmode = " + pModeInfo);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-trip-request");
+        Log.d(TAG, "Values: auth=" + auth + " srcid = " + pickInfo + " dstid = " + dropInfo + " hrs" + hrs +
+                " rtype = " + rideInfo + " vtype = " + vTypeInfo + " pmode = " + pModeInfo);
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-rent-request");
 
-        UtilityApiRequestPost.doPOST(a, "user-trip-request", parameters, 2000, 0, response -> {
+        UtilityApiRequestPost.doPOST(a, "user-rent-request", parameters, 2000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }, a::onFailure);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ActivityRentRequest.this, ActivityRentHome.class));
+        finish();
     }
 }

@@ -35,17 +35,17 @@ public class ActivityProfileReview extends AppCompatActivity implements View.OnC
     EditText nameEdit;
     RelativeLayout rl;
     private ImageButton btnConfirm;
-    public static final String AUTH_KEY = "AuthKey";
-    public static final String AGE_KEY = "AgeKey";
-    public static final String GDR_KEY = "GdrKey";
-    public static final String NAME_KEY = "NameKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     String name;
     Button btn_gender;
     ImageButton saveName;
     PopupWindow popupWindow;
     SharedPreferences prefUserDetails;
     String strAuth, strName, strAge, strGdr;
+    public static final String AUTH_KEY = "AuthKey";
+    public static final String AGE_KEY = "AgeKey";
+    public static final String GDR_KEY = "GdrKey";
+    public static final String NAME_KEY = "NameKey";
+    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
 
     public void onSuccess(int id) {
         if (id == 1) {
@@ -161,7 +161,6 @@ public class ActivityProfileReview extends AppCompatActivity implements View.OnC
 
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         String stringAuth = prefPLoc.getString(AUTH_KEY, "");
-        Log.d(TAG, " stringAuth auth = " + stringAuth);
 
         Map<String, String> params = new HashMap();
 

@@ -1,27 +1,33 @@
 package com.client.rent;
 
-import android.os.Bundle;
-
-import com.client.ActivityDrawer;
-import com.client.ActivityWelcome;
-import com.client.R;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.client.ActivityDrawer;
+import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,19 +38,22 @@ import java.util.Map;
 
 public class ActivityRentEnded extends ActivityDrawer implements View.OnClickListener {
 
+    private static final String TAG = "ActivityRentEnded";
+
     TextView upiPayment, cost;
     final int UPI_PAYMENT = 0;
     String stringAuthCookie;
+    private static ActivityRentEnded instance;
     public static final String AUTH_KEY = "AuthKey";
-    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
-    private static final String TAG = "ActivityRentEnded";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    private static ActivityRentEnded instance;
-
-    Button done;
+    //Button done;
+    ImageButton payNow, info;
     ActivityRentEnded a = ActivityRentEnded.this;
-
+    ScrollView scrollView;
+    String CostOnly;
+    Dialog myDialog;
+Button dummy;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,20 +69,28 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
 
         upiPayment = findViewById(R.id.upi);
         cost = findViewById(R.id.payment);
-
-        getPrice();
+        dummy = findViewById(R.id.dummy);
+        dummy.setOnClickListener(this);
+        //cost.setText("₹ 100.00");
+        //getPrice();
         upiPayment.setOnClickListener(this);
-        checkStatus();
-        done = findViewById(R.id.done_btn);
-        done.setOnClickListener(this);
+        info = findViewById(R.id.infoCost);
+        info.setOnClickListener(this);
+        /*done = findViewById(R.id.confirm_btn);
+        done.setOnClickListener(this);*/
+        payNow = findViewById(R.id.pay_now);
+        payNow.setOnClickListener(this);
+        scrollView = findViewById(R.id.scrollView_ride_OTP);
+        myDialog = new Dialog(this);
 
+        checkStatus();
     }
 
     public static ActivityRentEnded getInstance() {
         return instance;
     }
 
-    private void getPrice() {
+    private void getInfo() {
         SharedPreferences prefTripDetails = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
         String tid = prefTripDetails.getString(TRIP_ID, "");
         String auth = stringAuthCookie;
@@ -82,7 +99,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
         params.put("tid", tid);
         JSONObject parameters = new JSONObject(params);
 
-        Log.d(TAG, "Values: auth=" + auth + " tid="+tid);
+        Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");
         UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 30000, 0, response -> {
             try {
@@ -98,27 +115,39 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
 
         //response on hitting auth-trip-get-info API
         if (id == 1) {
-            String actualPrice = response.getString("price");
-            cost.setText(actualPrice);
+            Intent rate = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
+            startActivity(rate);
+            finish();
         }
         //response on hitting user-trip-get-status API
         if (id == 2) {
             try {
                 String active = response.getString("active");
                 if (active.equals("false")) {
-                    Intent home = new Intent(ActivityRentEnded.this, ActivityWelcome.class);
+                    getInfo();
+                    /*Intent home = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
                     startActivity(home);
-                    finish();
+                    finish();*/
 
                 } else if (active.equals("true")) {
                     String status = response.getString("st");
                     if (status.equals("TR") || status.equals("FN")) {
+                        String price = response.getString("price");
+                        cost.setText("₹ "+price);
+                        CostOnly = price;
+                        if (price.equals("0.00")) {
+                            Intent rate = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
+                            startActivity(rate);
+                            finish();
+                        }
+
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("15");
                         startService(intent);
                     }
-                }else{
-                    Intent homePage = new Intent(ActivityRentEnded.this, ActivityWelcome.class);
+
+                } else {
+                    Intent homePage = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
@@ -129,7 +158,10 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
             }
         }
         //response on hitting user-give-otp API
-        if (id == 3){
+        if (id == 6) {
+            Intent rate = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
+            startActivity(rate);
+            finish();
             //TODO remove later
             Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         }
@@ -143,19 +175,54 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.dummy:
+                rentPay();
+                break;
+
             case R.id.upi:
-                String amount = cost.getText().toString();
+                String amount = CostOnly;
                 String note = "Payment for rental service";
                 String name = "Zipp-E";
                 String upiId = "9084083967@ybl";
                 payUsingUpi(amount, upiId, name, note);
                 break;
 
-            case R.id.done_btn:
-                paymentMade();
-
+            /*case R.id.confirm_btn:
+                paymentMade();*/
+            case R.id.pay_now:
+                Snackbar snackbar = Snackbar
+                        .make(scrollView, "Please make your payment, before booking your next ride.", Snackbar.LENGTH_INDEFINITE);
+                View sbView = snackbar.getView();
+                TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
+                textView.setTextColor(Color.YELLOW);
+                snackbar.show();
+                break;
+            case R.id.infoCost:
+                ShowPopup();
+                break;
         }
     }
+
+    private void ShowPopup() {
+
+        myDialog.setContentView(R.layout.popup_new_request);
+        TextView infoText = myDialog.findViewById(R.id.info_text);
+
+        infoText.setText("Balance amount as per extended rental time. Please pay to end your trip.");
+
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 55;   //y position
+        myDialog.show();
+        Window window = myDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        myDialog.setCanceledOnTouchOutside(true);
+    }
+
 
     private void paymentMade() {
         String auth = stringAuthCookie;
@@ -174,7 +241,24 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
             }
         }, a::onFailure);
     }
-
+    private void rentPay() {
+        String auth = stringAuthCookie;
+        Map<String, String> params = new HashMap();
+        params.put("auth", auth);
+        //params.put("otp", OTP.getText().toString());
+        JSONObject parameters = new JSONObject(params);
+        ActivityRentEnded a = ActivityRentEnded.this;
+        Log.d(TAG, "Values: auth=" + auth /*+ " otp=" + OTP.getText().toString()*/);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-pay");
+        UtilityApiRequestPost.doPOST(a, "user-rent-pay", parameters, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 6);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+    }
 
     public void checkStatus() {
         String auth = stringAuthCookie;
@@ -269,6 +353,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
                 Toast.makeText(ActivityRentEnded.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
+                rentPay();
                 Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(ActivityRentEnded.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();

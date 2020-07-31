@@ -4,5 +4,18 @@
     <string name="Open">open</string>
     <string name="Close">close</string>
     <string name="hi">HI!\u0020</string>
-    <string name="disclaimer">By confirming I accept this order does not contain illegal / restricted items (as per Indian Court of Law). ZIPP-E partner may ask to verify the contents of the package and could choose to refuse the task if the items are not verified.</string>
+    <string name="disclaimer">I accept that this package does not contain any illegal / restricted items (as per The Indian Court of Law). ZIPP-E partner may ask to verify the contents of the package and has the liberty to refuse the delivery if the items are not verified.</string>
+    <string name="qwerty">THIS IS AN APPROXIMATE COST. MAY CHANGE DEPENDING ON RIDE TIME.</string>
+    <string name="_1_hr">1 hr (60 min) @ ₹ 1.00/min = ₹ 60</string>
+    <string name="_2_hr">2 hr (120 min) @ ₹ 0.90/min = ₹ 108</string>
+    <string name="_3_hr">3 hr (180 min) @ ₹ 0.80/min = ₹ 144</string>
+    <string name="_4_hr">4 hr (240 min) @ ₹ 0.75/min = ₹ 180</string>
+    <string name="_5_hr">5 hr (300 min) @ ₹ 0.70/min = ₹ 210</string>
+    <string name="_6_hr">6 hr (360 min) @ ₹ 0.65/min = ₹ 234</string>
+    <string name="_7_hr">7 hr (420 min) @ ₹ 0.60/min = ₹ 252</string>
+    <string name="_8_hr">8 hr (480 min) @ ₹ 0.55/min = ₹ 264</string>
+    <string name="_9_hr">9 hr (540 min) @ ₹ 0.50/min = ₹ 270</string>
+    <string name="_10_hr">10 hr (600 min) @ ₹ 0.50/min = ₹ 300</string>
+    <string name="_11_hr">11 hr (660 min) @ ₹ 0.50/min = ₹ 330</string>
+    <string name="_12_hr">12 hr (1440 min) @ ₹ 0.50/min = ₹ 360</string>
 </resources>

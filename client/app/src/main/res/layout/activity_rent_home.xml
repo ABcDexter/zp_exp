@@ -12,83 +12,129 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp">
+            android:layout_height="match_parent">
 
-            <TextView
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="YOU have selected \nRENT"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="20sp" />
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
 
-            <Spinner
-                android:id="@+id/vehicle_type"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_below="@id/layoutZippeee"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/rect_box_outline"
-                android:entries="@array/vehicle_array_sans_zbee"
-                android:gravity="center"
-                android:spinnerMode="dropdown"
-                android:textAlignment="center"
-                android:textAllCaps="true" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="YOU have selected \nRENT"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_v"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/layoutZippeee"
+                    android:layout_marginTop="50dp">
+
+                    <Button
+                        android:id="@+id/vehicle_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/rect_box_outline"
+                        android:text="VEHICLE TYPE"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_arrow_up" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_h"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/rl_v"
+                    android:layout_marginTop="20dp">
+
+                    <Button
+                        android:id="@+id/no_hours"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/rect_box_outline"
+                        android:text="NO OF HOURS"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_arrow_up" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/schedule_rent"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/rl_h"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/rect_box_outline"
+                    android:gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Schedule rental"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+
+                <include
+                    android:id="@+id/layoutZippeee"
+                    layout="@layout/zippe_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_centerInParent="true" />
+
+                <TextView
+                    android:id="@+id/txt_pick_hub"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_above="@+id/txt_drop_point"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/rect_box_outline"
+                    android:drawableStart="@drawable/ic_three_forward_arrow"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="PICK UP POINT / Z-HUB"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/txt_drop_point"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_above="@+id/layoutZippeee"
+                    android:layout_marginBottom="50dp"
+                    android:background="@drawable/rect_box_outline"
+                    android:drawableEnd="@drawable/ic_three_back_arrow"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="DROP POINT / Z-HUB"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
 
 
-            <Spinner
-                android:id="@+id/no_hours"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_below="@id/vehicle_type"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/rect_box_outline"
-                android:entries="@array/hours_array"
-                android:gravity="center"
-                android:spinnerMode="dropdown"
-                android:textAlignment="center"
-                android:textAllCaps="true" />
-
-            <include
-                android:id="@+id/layoutZippeee"
-                layout="@layout/zippe_logo"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_centerInParent="true" />
-
-            <TextView
-                android:id="@+id/txt_pick_hub"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_above="@+id/txt_drop_point"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/rect_box_outline"
-                android:drawableStart="@drawable/ic_three_forward_arrow"
-                android:gravity="end|center"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="PICK UP POINT"
-                android:textAllCaps="true"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/txt_drop_point"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_above="@+id/layoutZippeee"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/rect_box_outline"
-                android:drawableEnd="@drawable/ic_three_back_arrow"
-                android:gravity="center|start"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="DROP POINT"
-                android:textAllCaps="true"
-                android:textSize="20sp" />
+            </RelativeLayout>
 
             <ImageButton
                 android:id="@+id/confirm_rent"
@@ -96,12 +142,13 @@
                 android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="0dp"
                 android:background="@drawable/btn_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/confirm"
+                android:src="@drawable/letsgo"
                 android:textAllCaps="true" />
         </RelativeLayout>
-
     </ScrollView>
 </androidx.drawerlayout.widget.DrawerLayout>

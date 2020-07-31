@@ -54,7 +54,9 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
     public static final String AADHAR = "Aadhar";
     public static final String MOBILE = "Mobile";
     public static final String PICTURE_UPLOAD_STATUS = "com.driver.pictureUploadStatus";
-    String mobile, aadhar_f, aadhar_b, dl_b, dl_f, mVerificationId;
+    public static final String AUTH_KEY = "Auth";
+    public static final String AUTH_COOKIE = "com.agent.cookie";
+    String mobile, aadhar_f, aadhar_b, dl_b, dl_f;
     Bitmap bitmap;
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
@@ -77,6 +79,18 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
             startActivity(next);
             finish();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            String auth = response.getString("auth");
+            SharedPreferences pref_uploadStatus = this.getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
+            pref_uploadStatus.edit().putString(AUTH_KEY, auth).apply();
+
+            Intent signIn = new Intent(ActivityMain.this, ActivityWelcome.class);
+            startActivity(signIn);
+            finish();
+
+        }catch (Exception e){
             System.out.println(e.getMessage());
         }
         Snackbar snackbar = Snackbar.make(scrollView, "UPLOAD SUCCESSFUL!", Snackbar.LENGTH_LONG);
@@ -244,7 +258,7 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
 
                 simpleProgressBar.setVisibility(View.VISIBLE);
                 Map<String, String> params = new HashMap();
-                params.put("phone", mobile);
+                params.put("phone", etMobile.getText().toString().trim() );
                 params.put("aadhaarFront", aadharF);
                 params.put("aadhaarBack", aadharB);
                 params.put("licenseFront", dl_f);

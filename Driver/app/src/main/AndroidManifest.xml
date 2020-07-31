@@ -55,7 +55,7 @@
         <activity
             android:name=".ActivityRideAccepted"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".ActivityHome"></activity>
+        <activity android:name=".ActivityHome"/>
         <activity android:name=".ActivityMain">
 
         </activity>
@@ -69,6 +69,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ActivityNewRide" />
+        <activity android:name=".ActivityInProgress" />
+        <activity android:name=".MapsReachUser" />
+        <activity android:name=".MapsActivity2" />
 
         <service android:name=".UtilityPollingService" />
     </application>

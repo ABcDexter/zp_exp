@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".deliver.ActivityDeliveryOrders">
+
+    <ScrollView
+        android:id="@+id/scrollView_ride_OTP"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:text="delivery status"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="25sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <include
+                layout="@layout/zippe_logo"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp" />
+
+            <TextView
+                android:id="@+id/txtInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text=""
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="23sp" />
+
+            <TextView
+                android:id="@+id/track_delivery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:drawableEnd="@drawable/ic_location"
+                android:text="Track your delivery"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

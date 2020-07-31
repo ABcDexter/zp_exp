@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#B2FD00"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:background="#D7FB05"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp">
 
     <TextView
         android:id="@+id/info_text"
@@ -12,17 +12,18 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:text="dfghjklp[ouytfghjklpoiuytfcbjkl;oiuyfdxvn,"
-        android:textAllCaps="true"
+        android:text="text appears here"
+        android:textAllCaps="false"
         android:textColor="#000"
-        android:textSize="18sp" />
+        android:textSize="20sp"
+        android:padding="15dp" />
 
     <LinearLayout
         android:id="@+id/layout_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/info_text"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="30dp"
         android:orientation="horizontal"
         android:visibility="gone"
         android:weightSum="2">
@@ -31,6 +32,7 @@
             android:id="@+id/reject_request"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:drawableTop="@drawable/ic_close"
             android:text="NO"
@@ -42,6 +44,7 @@
             android:id="@+id/accept_request"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_check_black"
