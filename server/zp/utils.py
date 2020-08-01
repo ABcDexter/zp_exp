@@ -764,6 +764,7 @@ def getDelPrice(deli, hs):
     # vehicle = Vehicle.objects.filter(an=deli.van)[0]
     # home state of user
     print(" TIP IS : ", deli.tip)
+    exp = '1' if deli.express is True else '0'
     return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, deli.express, hs, deli.tip)
 
 ###########################################
