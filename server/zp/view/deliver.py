@@ -208,7 +208,7 @@ def userDeliveryEstimate(dct, user):
     # NOPE add price of the closest agent
     tip = float(dct['tip']) if 'tip' in dct else 0.00
     ret = getDeliveryPrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'],
-                           dct['idim'], dct['pmode'], dct['express'], user.hs, tip )
+                           dct['idim'], dct['pmode'], dct['express'], user.hs, 0)
 
     return HttpJSONResponse(ret)
 
