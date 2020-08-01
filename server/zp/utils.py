@@ -1035,7 +1035,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
         price += 30.00
 
     price += tip
-
+    print( "PRICE : ", price)
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes

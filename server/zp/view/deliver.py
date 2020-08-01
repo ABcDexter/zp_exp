@@ -449,7 +449,7 @@ def authDeliveryDATA(dct, entity):
         else:
             dctRet.update({str(key): str(val)})
 
-    return HttpJSONResponse({'deli': dctRet})
+    return HttpJSONResponse(dctRet)  # {'deli': dctRet})
 
 
 # ============================================================================
