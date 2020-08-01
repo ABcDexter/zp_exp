@@ -325,7 +325,7 @@ def userDeliveryPay(dct, user, delivery):
             scid
     '''
     print(delivery.scid, delivery.id)
-    delivery = Delivery.objects.filter(scid=dct['scid'])
+    delivery = Delivery.objects.filter(scid=dct['scid'])[0]
     user.did = ''  # retire the user, #TODO move this logic to userDeliveryRetire() and comment this out
     user.save()
 
