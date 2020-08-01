@@ -21,7 +21,8 @@ from ..utils import handleException, extractParams, checkAuth, retireDelEntity, 
 from ..utils import checkDeliveryStatus
 import googlemaps
 from ..utils import extract_name_from_pin
-
+from django.forms.models import model_to_dict
+import json
 ###########################################
 # Types
 Filename = str
@@ -316,13 +317,15 @@ def userDeliveryRequest(dct, user): #, _delivery):
 @transaction.atomic
 @checkAuth()
 @checkDeliveryStatus(['SC'])
-def userDeliveryPay(_dct, user, delivery):
+def userDeliveryPay(dct, user, delivery):
     '''
         Pay for the Delivery for a user after scheduled
         Https args:
-            auth
+            auth,
+            scid
     '''
     print(delivery.scid, delivery.id)
+    delivery = Delivery.objects.filter(scid=dct['scid'])
     user.did = ''  # retire the user, #TODO move this logic to userDeliveryRetire() and comment this out
     user.save()
 
@@ -423,7 +426,7 @@ def userDeliveryRetire(dct, user, _deli):
 @checkAuth()
 def authDeliveryDATA(dct, entity):
     '''
-    Returns a list of places data corresponding to zbee stations.
+    Returns athe data of a delivery
         Https:
             auth, scid
     '''
@@ -432,8 +435,21 @@ def authDeliveryDATA(dct, entity):
         'atime', 'stime', 'etime', 'picktime', 'droptime',#: datetime.datetime(2020, 7, 29, 15, 10, tzinfo=<UTC>),
         'srcpin', 'srclat', 'srclng', 'dstpin', 'dstlat', 'dstlng', 'itype', 'idim', 'srcper', 'dstper',
         'srcadd', 'dstadd', 'srcland','dstland', 'srcphone', 'dstphone','pmode', 'det', 'srcdet', 'dstdet', 'tip')
-    lstDeli = [str(i) for i in deli]
-    return HttpJSONResponse({'deli': lstDeli})
+
+    lstDeli = list(deli)
+    print("VAL : ", lstDeli[0], type(lstDeli[0]))#, lstDeli[1]) 1 mein empty hai()
+    dctDeli = lstDeli[0]
+    dctRet = {}
+    for key, val in dctDeli.items():
+        # print(key, val)
+        if 'picktime' in str(key):
+            #print(val.hour, val.minute)
+            dctRet.update({str("pickdate"): str(val.day) + "/" + str(val.month) + "/" + str(val.year)})
+            dctRet.update({str("picktime"): str(val.hour) + ":" + str(val.minute)})
+        else:
+            dctRet.update({str(key): str(val)})
+
+    return HttpJSONResponse({'deli': dctRet})
 
 
 # ============================================================================
