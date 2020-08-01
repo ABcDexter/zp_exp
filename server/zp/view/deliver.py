@@ -445,7 +445,7 @@ def authDeliveryDATA(dct, entity):
         if 'picktime' in str(key):
             #print(val.hour, val.minute)
             dctRet.update({str("pickdate"): str(val.day) + "/" + str(val.month) + "/" + str(val.year)})
-            dctRet.update({str("picktime"): str(val.hour) + ":" + str(val.minute)})
+            dctRet.update({str("picktime"): str(val.hour+6) + ":" + str(val.minute)})
         else:
             dctRet.update({str(key): str(val)})
 
