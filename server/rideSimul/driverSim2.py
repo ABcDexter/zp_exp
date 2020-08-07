@@ -53,7 +53,8 @@ class Driver(Entity):
         if st in ['FN', 'TR']:
             t = int(ret['time']) / 60
             d = int(ret['dist']) / 1000
-            self.log('Waiting for payment: Cost: %.2f, Dist %.2f km' % (ret['price'], d))
+            self.log('Waiting for payment: Cost: %.2f, Dist %.2f km' % (float(ret['price']), d))
+            # self.log('Waiting for payment: Cost: %.2f' % (float(ret['price'])))
 
             pay = self.tryReadFileData('money.%d' % self.sTID, 'payment')
             if pay is not None:
@@ -102,7 +103,7 @@ class Driver(Entity):
             ret = self.callAPI('driver-ride-check')
             if not self.logIfErr(ret):
                 if 'tid' in ret:
-                    bChoose = prob(0.9)
+                    bChoose = prob(0.99)
                     self.log('Trip available - %s' % ('accepting...' if bChoose else 'rejecting...') )
                     if bChoose:
                         print("Ae hi gaddi chaahidi : ", self.iVan)
