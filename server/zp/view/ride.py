@@ -471,11 +471,11 @@ def userIsDriverAv(dct, user):
             gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
             nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
-            if nTime or nDist:
-                if nDist < 10_000 : # 10 kms
-                    print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
-                    drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
-
+            #if nTime or nDist:
+            if nDist < 10_000:  # 10 kms
+                print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
+                drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
+    print("drivers found in 10km radius : ", len(drivers))
     ret.update({'count': len(drivers)}) # {'drivers': drivers})
     return HttpJSONResponse(ret)
 
