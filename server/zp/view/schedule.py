@@ -188,24 +188,24 @@ def userDeliverySchedule(dct, user):
         16. itype,
         17. idim,
         18. det,
-        19. srcdet,
-        20. dstdet,
+        # 19. srcdet,
+        # 20. dstdet,
         21. fr,
         22. br,
         23. li,
         24. kc,
         25. kw,
         26. pe,
-        # 27. no (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable)
-        28. tip
-        29. express 0 or 1
-        30-34. picktime:
+        #  (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable)
+        27. tip
+        28. express 0 or 1
+        29-33. picktime:
                     date, month, year,
                     hour, minute.
-        35-39. droptime
+        34-38. droptime
                     date, month, year,
                     hour, minute.
-
+        39-3 = 36
     '''
     """
     params = {'fr': dct['fr'] if 'fr' in dct else 0, 'br': dct['br'] if 'br' in dct else 0,
@@ -304,17 +304,17 @@ def userDeliverySchedule(dct, user):
     delivery.dstper, delivery.dstadd, delivery.dstland, delivery.dstphone = dct['dstper'], dct['dstadd'], \
                                                                             dct['dstland'], dct['dstphone']
     # 15,16,17,18
-    delivery.br = dct['br'] if 'br' in dct else 0
+    # delivery.br = dct['br'] if 'br' in dct else 0
     delivery.fr = dct['fr'] if 'fr' in dct else 0
     delivery.kc = dct['kc'] if 'kc' in dct else 0
     delivery.kw = dct['kw'] if 'kw' in dct else 0
     delivery.li = dct['li'] if 'li' in dct else 0
     delivery.pe = dct['pe'] if 'pe' in dct else 0
-    # 19,20,21,22,23,24
+    # 20,21,22,23, 24 # 19 is missing
     delivery.det = dct['det'] if 'det' in dct else ''
-    delivery.srcdet = dct['srcdet'] if 'srcdet' in dct else ''
-    delivery.dstdet = dct['dstdet'] if 'dstdet' in dct else ''
-    # 25, 26, 28 #    27th is missed deliveratty
+    # delivery.srcdet = dct['srcdet'] if 'srcdet' in dct else ''
+    # delivery.dstdet = dct['dstdet'] if 'dstdet' in dct else ''
+    # 25,  # 26, 28,   27th is missed deliveratty
     delivery.tip = int(float(dct['tip'])) if 'tip' in dct else 0
     # 29
 
@@ -325,25 +325,25 @@ def userDeliverySchedule(dct, user):
     pMinute = int(dct['pMinute'])
     # 30, 31, 32, 33, 34
 
-
     if pMinute  < 30:
         pDinaank = datetime(pYear, pMonth, pDate, pHour - 6, (pMinute + 30) % 60, 00)
     else:
         pDinaank = datetime(pYear, pMonth, pDate, pHour - 5, (pMinute - 30) % 60, 00)
     print("DATETIME for RQ is : ", pDinaank)
 
-    dYear = int(dct['dYear'])
-    dMonth = int(dct['dMonth'])
-    dDate = int(dct['dDate'])
-    dHour = int(dct['dHour'])
-    dMinute = int(dct['dMinute'])
-    # 30, 31, 32, 33, 34
+    dYear = int(dct['pYear'])
+    dMonth = int(dct['pMonth'])
+    dDate = int(dct['pDate'])
+    dHour = int(dct['pHour']) + 1
+    dMinute = int(dct['pMinute'])
+    # 30, 31, 32, 33, 33
 
     dDinaank = datetime(dYear, dMonth, dDate, dHour, dMinute, 00)  # 6 hours ago
 
     delivery.picktime = datetime.strptime(str(pDinaank), '%Y-%m-%d %H:%M:%S')  # .%f')
     delivery.droptime = datetime.strptime(str(dDinaank), '%Y-%m-%d %H:%M:%S')  # .%f')
-    # 35, 36, 37, 38, 39
+    # 34, 35, 36, 37, 38,
+    delivery.express = dct['express']
 
     delivery.save()
     scid = getSCID(user.an, delivery.id, delivery.rtime)

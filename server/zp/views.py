@@ -325,7 +325,7 @@ def userTripGetStatus(_dct, user):
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
             if trip.rtype == '0':
-                price = getTripPrice(trip)
+                price = getTripPrice(trip)['price']
             else : #rental
                 #vehicle = Vehicle.objects.filter(an=trip.van)[0]
                 #currTime = datetime.now(timezone.utc)

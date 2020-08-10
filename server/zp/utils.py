@@ -763,7 +763,9 @@ def getDelPrice(deli, hs):
     '''
     # vehicle = Vehicle.objects.filter(an=deli.van)[0]
     # home state of user
-    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, deli.express, hs, deli.tip)
+    print(" TIP IS : ", deli.tip)
+    exp = '1' if deli.express is True else '0'
+    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, exp, hs, deli.tip)
 
 ###########################################
 
@@ -1018,7 +1020,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
         print(fDist, ceil((fDist - 5000) / 1000), price )
     #if iPayMode == Trip.UPI:
     #    price *= 0.9
-
+    print("EXPRESS : ", express)
     if express == '1':
         price += 20.00  # 20 Rs extra for express
         print('Expresss okay############')
@@ -1035,7 +1037,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
         price += 30.00
 
     price += tip
-
+    print( "PRICE : ", price)
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
