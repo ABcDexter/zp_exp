@@ -50,6 +50,67 @@ makeView.APP_NAME = 'zp'
 # General Views
 ##############################################################################
 
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
+def registerUserNoAadhaar(_, dct: Dict):
+    '''
+    User registration
+    Creates a user record for the aadhar number OCR'd from the image via Google Vision
+    Aadhaar scans are archived in settings.AADHAAR_DIR as
+    <aadhaar>_front.jpg and <aadhaar>_back.jpg
+
+    HTTP Args:
+        name: name of the user
+        phone; phone number of the user without the ISD code
+        home: home state of the user
+        gender: gender of the user
+
+    Notes:
+        Registration is done atomically since we also need to save aadhar scans after DB write
+    '''
+
+    log('User Registration request. Dct : %s ' % (str(dct)))
+
+    sPhone = str(dct['phone'])
+    sAn = str(91) + sPhone
+    sAuth = getClientAuth(sAn, sPhone)
+
+    qsUser = User.objects.filter(an=int(sAn))
+    bUserExists = len(qsUser) != 0
+    if not bUserExists:
+        sAuth = getClientAuth(sAn, sPhone)
+        user = User()
+        user.name = dct['name']
+        # user.age = int(clientDetails['age'])
+        user.gdr = dct['gender']
+        user.auth = sAuth
+        user.an = int(sAn)
+        user.pn = sPhone
+        user.hs = dct['home']
+        user.save()
+        log('New user registered: %s' % user.name)
+    else:
+        # modile exists, check what has been changed
+        user = qsUser[0]
+        if user.pn != sPhone:
+            sAuth = getClientAuth(str(qsUser[0].sAn), str(qsUser[0].pn))
+            user.pn = sPhone
+            user.auth = sAuth
+            user.save()
+            log('Auth changed for: %s' % user.name)
+        else:
+            # Aadhaar exists, phone unchanged, just return existing auth
+            sAuth = user.auth
+            log('Auth exists for: %s' % user.name)
+
+    # return the whole user record
+    return HttpJSONResponse(model_to_dict(user))
+
+
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
@@ -91,16 +152,17 @@ def registerUser(_, dct: Dict):
         raise ZPException(501, 'Aadhaar number front doesn\'t match Aadhaar number back!')
 
     # Check if aadhaar has been registered before
-    qsUser = User.objects.filter(an=int(sAadhaar))
+    qsUser = User.objects.filter(adhar=int(sAadhaar))
     bUserExists = len(qsUser) != 0
     if not bUserExists:
         sAuth = getClientAuth(sAadhaar, sPhone)
         user = User()
         user.name = clientDetails['name']
+        user.an = str(91) + sPhone
         user.age = int(clientDetails['age'])
         user.gdr = clientDetails['gender']
         user.auth = sAuth
-        user.an = int(sAadhaar)
+        user.adhar = int(sAadhaar)
         user.pn = sPhone
         user.hs = clientDetails2['hs']
         user.save()

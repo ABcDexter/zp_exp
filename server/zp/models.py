@@ -34,6 +34,8 @@ class User(models.Model):
     dl   = models.CharField(null=True, max_length=20)
     hs   = models.CharField(db_index=True,null=True, max_length=50)
     mark = models.FloatField(db_index=True, default=0.0)
+    adhar= models.BigIntegerField(db_index=True, null=True)
+    email= models.CharField(db_index=True, null=True, max_length=100)
     class Meta:
         db_table = 'user'
         managed = True
