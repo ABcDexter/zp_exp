@@ -14,6 +14,7 @@ from ..utils import ZPException, HttpJSONResponse
 from ..utils import getOTP
 from ..utils import getTripPrice, getRentPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
+from django.db.utils import IntegrityError
 
 ###########################################
 # Types
@@ -345,15 +346,17 @@ def supRentCheck(_dct, sup):
     '''
     Returns a list of requested trips
     Only trips which start from this Supervisors PID are returned
-    No trips are returned if there are no vehicles there
+    # No trips are returned if there are no vehicles there
+    # This ^ is wrong and should be used in another API TODO
     '''
     # Get available vehicles at this hub, if none return empty
-    qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
-    if len(qsVehicles) == 0:
-        return HttpJSONResponse({'count':0}) # making it easy for Volley to handle JSONArray and JSONObject
-    #aasdf
+    # qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
+    # if len(qsVehicles) == 0:
+    #    return HttpJSONResponse({'count':0}) # making it easy for Volley to handle JSONArray and JSONObject
+    # print("vehicle found...")
     # Get the first requested trip from Supervisors place id
-    qsTrip = Trip.objects.filter(srcid=sup.pid, st__in=['RQ', 'AS', 'TR', 'FN']).order_by('-rtime')
+    qsTrip = Trip.objects.filter(rtype=1, srcid=sup.pid, st__in=['RQ', 'AS', 'TR', 'FN']).order_by('-rtime')
+    print("%d trips found" % (len(qsTrip)))
     rentals = []
     for trip in qsTrip :
         uName = User.objects.filter(an=trip.uan)[0].name
@@ -600,3 +603,65 @@ def supRentRetire(dct, _sup):
     vehicle.tid = Vehicle.AVAILABLE
     vehicle.save()
     return HttpJSONResponse({})
+
+
+# ============================================================================
+# Admin views
+# ============================================================================
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Transaction error', 500)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def adminVehicleAssign(dct):
+    '''
+    Checks for rentals in RQ state and assign the vehicle from that hub.
+
+    HTTP args:
+
+    Note:
+        assigns one of the free vehciles, ideally the vehicles should have enough charge for the trip.
+    '''
+    # Get the deliveries and look for RQ ones
+    qsTrip = Trip.objects.filter(st__in=['RQ'], rtype=1) # get the trip
+    if not len(qsTrip):
+        return HttpJSONResponse({})
+    else:
+        print("%d trips found" % (len(qsTrip)))
+    trip = qsTrip[0]
+    # get the vehicles with no drivers and which are not on trip
+    qsVeh = Vehicle.objects.filter(dan='-1', tid='-1', vtype=trip.rvtype)
+    if not len(qsVeh):
+        return HttpJSONResponse({'tid': trip.id})
+    else:
+        print("%d vehicles found" % (len(qsVeh)))
+
+    vehicle = qsVeh[0]
+    vid = 0
+
+    if trip.st == 'RQ':
+        trip.st = 'AS'
+        sup = Supervisor.objects.filter(pid=trip.srcid)[0]
+        trip.dan = sup.an  # dan is sup.an
+        trip.van = vehicle.an
+        trip.atime = datetime.now(timezone.utc)
+        trip.save()
+
+        # Make the progress
+        progress = Progress()
+        progress.tid = trip.id
+        progress.pct = 0
+        progress.save()
+
+        # set the vehicles tid
+        vehicle.tid = trip.id
+        vehicle.save()
+        vid = vehicle.an
+    else:
+        raise ZPException(400, 'Trip already assigned')
+
+    return HttpJSONResponse({'vid': vid, 'tid': trip.id})
