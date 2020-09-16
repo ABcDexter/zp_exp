@@ -342,12 +342,37 @@ def userRentPay(dct, _user, trip):
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def supRentCheck(_dct, sup):
+def supVehicleCheck(_dct, sup):
+    '''
+    Only vehicles which are parked at this Supervisors PID are returned
+    '''
+    # Get available vehicles at this hub, if none return empty
+    qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
+    if len(qsVehicles) == 0:
+        return HttpJSONResponse({'count': 0}) # making it easy for Volley to handle JSONArray and JSONObject
+    # print("vehicle found...")
+    vehicles = []
+    for veh in qsVehicles :
+        vehicles.append({'id': veh.id, 'regn': veh.regn})
+
+    ret = {} if not len(qsVehicles) else {'vehicles': vehicles}
+    return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Trip/User/Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def supRentCheck(dct, sup):
     '''
     Returns a list of requested trips
     Only trips which start from this Supervisors PID are returned
     # No trips are returned if there are no vehicles there
-    # This ^ is wrong and should be used in another API TODO
+
+    HTTP args :
+        state : for rentals are required
     '''
     # Get available vehicles at this hub, if none return empty
     # qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
@@ -355,12 +380,23 @@ def supRentCheck(_dct, sup):
     #    return HttpJSONResponse({'count':0}) # making it easy for Volley to handle JSONArray and JSONObject
     # print("vehicle found...")
     # Get the first requested trip from Supervisors place id
-    qsTrip = Trip.objects.filter(rtype=1, srcid=sup.pid, st__in=['RQ', 'AS', 'TR', 'FN']).order_by('-rtime')
+    qsTrip = Trip.objects.filter(rtype=1, srcid=sup.pid, st=dct['state'])#__in=['\''+dct['state']+'\'']).order_by('-rtime')
     print("%d trips found" % (len(qsTrip)))
     rentals = []
     for trip in qsTrip :
         uName = User.objects.filter(an=trip.uan)[0].name
-        rentals.append({'tid': trip.id, 'st': trip.st, 'rvtype': trip.rvtype, 'uname': uName})
+        vals = {'tid': trip.id, 'st': trip.st, 'uname': uName}
+
+        if trip.rvtype == 0:
+            vals['rvtype'] = 'CYCLE'
+        elif trip.rvtype == 1:
+            vals['rvtype'] = 'SCOOTY'
+        elif trip.rvtype == 2:
+            vals['rvtype'] = 'BIKE'
+        elif trip.rvtype == 3:
+            vals['rvtype'] = 'ZBEE'
+        rentals.append(vals)
+
     ret = {} if not len(qsTrip) else {'rentals': rentals}
     return HttpJSONResponse(ret)
 
