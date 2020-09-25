@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "8ee0edfb6206.ngrok.io", "159.65.144.72","86d9a981a121.ngrok.io" ] # ngrok http http://127.0.0.1:9999
 
-
+PROFILE_PHOTO_DIR = '/srv/data/dp/'
 AADHAAR_DIR = '/srv/data/aadhaar/'
 DL_DIR = '/srv/data/dl/'
 GOOGLE_APPLICATION_CREDENTIALS="/srv/zp/server/google-cloud/MyFirstProject.json"

@@ -1251,3 +1251,30 @@ def authTripRate(dct, entity, trip):
     # NOPE as per 30/7/2020
 
     return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def authProfilePhotoSave(dct, entity):
+    '''
+    entity sends and saves his/her profile photo
+
+    HTTP Args:
+        auth
+        aadhaarFront base 64 encoded
+    Notes:
+        needs production settings
+    '''
+    entityAdhar = str(entity.an)
+    sProfilePhoto = saveTmpImgFile(settings.PROFILE_PHOTO_DIR, dct['profilePhoto'], 'dp')
+    log('Profile photo saved for - %s saved as %s' % (entityAdhar, sProfilePhoto))
+    dpFileName = 'dp_' + entityAdhar + '_.jpg'
+    os.rename(sProfilePhoto, os.path.join(settings.PROFILE_PHOTO_DIR, dpFileName))
+    log('New photo saved: %s' % dpFileName)
+    return HttpJSONResponse({})
+
+
