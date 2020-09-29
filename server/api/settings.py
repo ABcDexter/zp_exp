@@ -150,6 +150,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/srv/data/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/srv/data/static/dp/'
+
+#STATICFILES_DIRS = [
+#    BASE_DIR / "static",
+#    '/srv/data/dp/',
+#]
 
 LOGGING = {
     'version': 1,

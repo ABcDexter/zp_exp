@@ -1277,4 +1277,3 @@ def authProfilePhotoSave(dct, entity):
     log('New photo saved: %s' % dpFileName)
     return HttpJSONResponse({})
 
-
