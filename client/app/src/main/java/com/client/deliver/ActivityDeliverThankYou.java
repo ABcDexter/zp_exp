@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.client.ActivityWelcome;
 import com.client.R;
 
 
@@ -22,11 +23,18 @@ public class ActivityDeliverThankYou extends AppCompatActivity {
         details.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent viewDetails = new Intent(ActivityDeliverThankYou.this, ActivityDeliveryOrders.class);
+                Intent viewDetails = new Intent(ActivityDeliverThankYou.this, ActivityDeliveryHistoryList.class);
                 startActivity(viewDetails);
                 finish();
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ActivityDeliverThankYou.this, ActivityWelcome.class));
+        finish();
     }
 }

@@ -16,7 +16,7 @@
         android:layout_centerHorizontal="true"
         android:background="#605D5D"
         android:gravity="center"
-        android:text="VEHICLE TYPES"
+        android:text="@string/vehicle_type"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="#fff"

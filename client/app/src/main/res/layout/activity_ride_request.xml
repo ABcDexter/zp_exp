@@ -23,13 +23,13 @@
                 android:layout_height="40dp"
                 android:layout_above="@+id/layoutZippeee"
                 android:src="@drawable/zbee_right" />
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/scooty_up"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_above="@id/layoutZippeee"
                 android:src="@drawable/scooty_left"
-                android:visibility="gone"/>
+                android:visibility="gone"/>-->
             <include
                 android:id="@+id/layoutZippeee"
                 layout="@layout/zippe_logo"
@@ -66,8 +66,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:gravity="center|start"
-                    android:text="cost estimate"
-                    android:textAlignment="center"
+                    android:text="@string/cost_estimate"
+                    android:paddingStart="15dp"
                     android:textAllCaps="true"
                     android:textSize="20sp"
                     android:layout_weight="1" />
@@ -75,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textSize="20sp"
@@ -85,7 +85,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:gravity="center|start"
-                    android:text="xxx"
+                    android:text=""
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textSize="20sp"
@@ -95,8 +95,6 @@
                     android:id="@+id/infoCost"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
                     android:layout_marginEnd="5dp"
                     android:background="@drawable/ic_info" />
 
@@ -117,8 +115,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:gravity="center|start"
-                    android:text="RIDE TIME"
-                    android:textAlignment="center"
+                    android:text="@string/ride_time"
+                    android:paddingStart="15dp"
                     android:textAllCaps="true"
                     android:textSize="20sp"
                     android:layout_weight="1"/>
@@ -127,7 +125,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textSize="20sp"
@@ -138,7 +136,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:gravity="center|start"
-                    android:text="XX"
+                    android:text=""
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textSize="20sp"
@@ -169,7 +167,7 @@
                     android:gravity="center"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:text="pick POINT"
+                    android:text="@string/pick_point"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -209,7 +207,7 @@
                     android:gravity="center"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:text="DROP POINT"
+                    android:text="@string/drop_point"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 

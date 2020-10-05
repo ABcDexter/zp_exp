@@ -208,7 +208,7 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         }
 
         if (stringPick.isEmpty()) {
-            origin.setText("PICK UP POINT");
+            origin.setText(R.string.pick_point);
         } else {
             try {
                 String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 25));

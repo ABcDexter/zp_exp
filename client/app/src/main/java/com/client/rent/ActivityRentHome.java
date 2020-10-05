@@ -60,6 +60,8 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     public static final String PAYMENT_MODE = "PaymentMode";
     public static final String VEHICLE_TYPE = "VehicleType";
     public static final String NO_HOURS = "NoHours";
+    public static final String TRIP_ID = "TripID";
+    public static final String VAN_PICK = "VanPick";
 
     SharedPreferences prefAuth, prefBuss;
     ScrollView scrollView;
@@ -73,8 +75,83 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     String stringAuth, stringBuss, bussFlag, stringAN;
     String Rent, pMode, pickID, dropID, pickPoint, dropPoint;
     String imgBtnConfirm = "";
+    Map<String, String> params = new HashMap();
+    ActivityRentHome a = ActivityRentHome.this;
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
+//response on hitting user-trip-get-status API
+        if (id == 1) {
+            try {
+                String active = response.getString("active");
+                if (active.equals("true")) {
+                    String rtype = response.getString("rtype");
+                    String status = response.getString("st");
+                    String tid = response.getString("tid");
+                    SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+                    sp_cookie.edit().putString(TRIP_ID, tid).apply();
+                    if (rtype.equals("1")) {
+                        if (status.equals("RQ")) {
+                            Intent rq = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
+                            startActivity(rq);
+                        }
+                        if (status.equals("AS")) {
+                            /*String otp = response.getString("otp");
+                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                            sp_otp.edit().putString(OTP_PICK, otp).apply();*/
+                            Intent as = new Intent(ActivityRentHome.this, ActivityRentOTP.class);
+                            startActivity(as);
+                        }
+                        if (status.equals("ST")) {
+                            String van = response.getString("vno");
+                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                            sp_otp.edit().putString(VAN_PICK, van).apply();
+                            Intent as = new Intent(ActivityRentHome.this, ActivityRentInProgress.class);
+                            startActivity(as);
+                        }
+                        if (status.equals("FN") || status.equals("TR")) {
+                            //retireTrip();
+                            /*Intent fntr = new Intent(ActivityWelcome.this, ActivityRentEnded.class);
+                            startActivity(fntr);*/
+                            Intent fntr = new Intent(ActivityRentHome.this, ActivityRentEnded.class);
+                            startActivity(fntr);
+                        }
+
+                        if (status.equals("TO")) {
+                            ShowPopup(7);
+                        }
+
+                    }
+                } else {
+                    Log.d(TAG, "active=" + active);
+                    try {
+                        String tid = response.getString("tid");
+                        if (!tid.equals("-1")) {
+                            Intent rateFirst = new Intent(ActivityRentHome.this, ActivityRateRent.class);
+                            startActivity(rateFirst);
+                        } /*else {
+                            tripInfo(tid);
+                        }*/
+                    } catch (Exception e) {
+                        Log.d(TAG, " tid does not exist");
+                        e.printStackTrace();
+                        //getAvailableVehicle();
+                    }
+
+                    SharedPreferences prefTripDetails = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+                    String tripIDExists = prefTripDetails.getString(TRIP_ID, "");
+                    if (!tripIDExists.equals("")) {
+                        /*Intent homePage = new Intent(ActivityWelcome.this, ActivityRideHome.class);
+                        homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(homePage);
+                        finish();*/
+                        tripInfo(tripIDExists);
+                    }
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
         if (id == 2) {
             Log.d(TAG + "jsArrayRequest", "RESPONSE:" + response.toString());
@@ -109,9 +186,62 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject vehicle = array.getJSONObject(i);
                     String an = vehicle.getString("an");
+
                 }
+                Intent rideIntent = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
+                startActivity(rideIntent);
+
             }
         }
+
+        // response on hitting auth-trip-get-info API
+        if (id == 3) {
+            String st = response.getString("st");
+            String rtype = response.getString("rtype");
+            if (rtype.equals("1")) {
+                if (st.equals("PD")) {
+                    //String price = response.getString("price");
+
+                    /*SharedPreferences pref = getApplicationContext().getSharedPreferences(PREFS_LOCATIONS, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.remove(LOCATION_PICK);
+                    editor.remove(LOCATION_DROP);
+                    editor.remove(LOCATION_DROP_ID);
+                    editor.remove(LOCATION_PICK_ID);
+                    editor.apply();
+
+                    SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
+                    SharedPreferences.Editor editor1 = prefBuzz.edit();
+                    editor1.remove(BUSS_FLAG);
+                    editor1.apply();*/
+                    retireTrip();
+                }
+                if (st.equals("FN")) {
+                    retireTrip();
+                }
+                if (st.equals("CN")) {
+                    retireTrip();
+                }
+                retireTrip();
+
+            }
+            //retireTrip();
+
+        }
+
+        //response on hitting user-trip-retire API
+        if (id == 4) {
+            SharedPreferences preferences = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+
+            SharedPreferences prefLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editorLoc = prefLoc.edit();
+            editorLoc.remove(VAN_PICK);
+            editorLoc.apply();
+        }
+
     }
 
     public void onFailure(VolleyError error) {
@@ -132,18 +262,18 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         frameLayout.addView(activityView);
         instance = this;
         //initializing views
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         scrollView = findViewById(R.id.scrollViewRentRide);
         vehicle = findViewById(R.id.vehicle_type);
-        vehicle.setOnClickListener(this);
         hours = findViewById(R.id.no_hours);
-        hours.setOnClickListener(this);
         confirmRentButton = findViewById(R.id.confirm_rent);
         pick = findViewById(R.id.txt_pick_hub);
         drop = findViewById(R.id.txt_drop_point);
         scheduleRent = findViewById(R.id.schedule_rent);
-        scheduleRent.setOnClickListener(this);
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
+        scheduleRent.setOnClickListener(this);
+        vehicle.setOnClickListener(this);
+        hours.setOnClickListener(this);
         confirmRentButton.setOnClickListener(this);
         pick.setOnClickListener(this);
         drop.setOnClickListener(this);
@@ -159,12 +289,14 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
         pMode = pref.getString(PAYMENT_MODE, "");
 
+
         if (imgBtnConfirm.equals("false")) {
             Log.d(TAG, "confirmRentButton.setEnabled(false)");
-        } else
+        } else {
             Log.d(TAG, "confirmRentButton.setEnabled(true)");
+        }
         if (stringPick.isEmpty()) {
-            pick.setText("PICK UP POINT");
+            pick.setText(R.string.pick_up_point_z_hub);
             Log.d(TAG, "Pick Location  is " + stringPick);
         } else {
             pick.setText(stringPick);
@@ -173,7 +305,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             Log.d(TAG, "Pick Location  is " + stringPick + " ID is " + stringPickID);
         }
         if (stringDrop.isEmpty()) {
-            drop.setText("DROP POINT");
+            drop.setText(R.string.drop_point_z_hub);
             Log.d(TAG, "Drop Location  is " + stringDrop);
         } else {
             drop.setText(stringDrop);
@@ -183,10 +315,12 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         }
 
         myDialog = new Dialog(this);
-        getAvailableVehicle();
+        //getAvailableVehicle();
 
         imageDialog = new Dialog(this);
         imageDialog2 = new Dialog(this);
+        checkStatus();
+
     }
 
     private void ShowPopup(int id) {
@@ -214,7 +348,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
 
         }
         if (id == 3) {
-            dialog_txt.setText("This feature shall be active soon.");
+            dialog_txt.setText(R.string.coming_soon);
 
             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
@@ -233,11 +367,9 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     }
 
     public void getAvailableVehicle() {
-        Map<String, String> params = new HashMap();
         String auth = stringAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        ActivityRentHome a = ActivityRentHome.this;
 
         Log.d(TAG, "Values: auth=" + params);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-vehicle-get-avail");
@@ -261,8 +393,8 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                 break;
             case R.id.confirm_rent:
                 Log.d(TAG, "confirm_rent button clicked!");
-                if (/*RentRide == null ||*/ VehicleType.equals("") || NoHours.equals("") || pick.getText().equals("PICK UP POINT")
-                        || drop.getText().equals("DROP POINT")/*|| PaymentMode == null*/) {
+                if (/*RentRide == null ||*/ VehicleType.equals("") || NoHours.equals("") || pick.getText().equals("PICK UP POINT / Z-HUB")
+                        || drop.getText().equals("DROP POINT / Z-HUB")/*|| PaymentMode == null*/) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                     } else {
@@ -276,12 +408,12 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                             PaymentMode);
                 } else {
                     storeData();
-                    Intent rideIntent = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
-
+                    getAvailableVehicle();
+                    /*Intent rideIntent = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
+                    startActivity(rideIntent);*/
                     Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
                             RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
                             PaymentMode + "srcid:" + pickID + "dstid:" + dropID);
-                    startActivity(rideIntent);
                 }
                 break;
 
@@ -312,77 +444,131 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                 Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
                 startActivity(drop);
                 break;
-            case R.id.txt1:
+            /*case R.id.txt1:
                 NoHours = "1";
                 imageDialog2.dismiss();
                 hours.setText("1 hr (60 mins) @ ₹ 1.00 / min");
-                break;
+                break;*/
             case R.id.txt2:
                 NoHours = "2";
                 imageDialog2.dismiss();
-                hours.setText("2 hrs (120 mins) @ ₹ 0.95 / min");
+                hours.setText("2 hrs (120 mins) @ ₹ 108");
                 break;
             case R.id.txt3:
                 NoHours = "3";
                 imageDialog2.dismiss();
-                hours.setText("3 hrs (180 mins) @ ₹ 0.90 / min");
+                hours.setText("3 hrs (180 mins) @ ₹ 144");
                 break;
             case R.id.txt4:
                 NoHours = "4";
                 imageDialog2.dismiss();
-                hours.setText("4 hrs (240 mins) @ ₹ 0.85 / min");
+                hours.setText("4 hrs (240 mins) @ ₹ 180");
                 break;
             case R.id.txt5:
                 NoHours = "5";
                 imageDialog2.dismiss();
-                hours.setText("5 hrs (300 mins) @ ₹ 0.80 / min");
+                hours.setText("5 hrs (300 mins) @ ₹ 210");
                 break;
             case R.id.txt6:
                 NoHours = "6";
                 imageDialog2.dismiss();
-                hours.setText("6 hrs (360 mins) @ ₹ 0.75 / min");
+                hours.setText("6 hrs (360 mins) @ ₹ 234");
                 break;
             case R.id.txt7:
                 NoHours = "7";
                 imageDialog2.dismiss();
-                hours.setText("7 hrs (420 mins) @ ₹ 0.70 / min");
+                hours.setText("7 hrs (420 mins) @ ₹ 252");
                 break;
             case R.id.txt8:
                 NoHours = "8";
                 imageDialog2.dismiss();
-                hours.setText("8 hrs (480 mins) @ ₹ 0.65 / min");
+                hours.setText("8 hrs (480 mins) @ ₹ 264");
                 break;
             case R.id.txt9:
                 NoHours = "9";
                 imageDialog2.dismiss();
-                hours.setText("9 hrs (540 mins) @ ₹ 0.60 / min");
+                hours.setText("9 hrs (540 mins) @ ₹ 270");
                 break;
             case R.id.txt10:
                 NoHours = "10";
                 imageDialog2.dismiss();
-                hours.setText("10 hrs (600 mins) @ ₹ 0.55 / min");
+                hours.setText("10 hrs (600 mins) @ ₹ 300");
                 break;
             case R.id.txt11:
+                NoHours = "11";
+                imageDialog2.dismiss();
+                hours.setText("11 hrs (660 mins) @ ₹ 330");
+                break;
+            case R.id.txt12:
                 NoHours = "12";
                 imageDialog2.dismiss();
-                hours.setText("11 hrs (660 mins) @ ₹ 0.50 / min");
+                hours.setText("11 hrs (1440 mins) @ ₹ 360");
                 break;
             case R.id.rent_rl_1:
                 VehicleType = "0";
                 imageDialog.dismiss();
-                vehicle.setText("E-CYCLE");
+                vehicle.setText(R.string.e_cycle);
                 break;
             case R.id.rent_rl_2:
                 VehicleType = "1";
                 imageDialog.dismiss();
-                vehicle.setText("E-SCOOTY");
+                vehicle.setText(R.string.e_scooty);
                 break;
             case R.id.rent_rl_3:
                 VehicleType = "2";
                 imageDialog.dismiss();
-                vehicle.setText("E-BIKE");
+                vehicle.setText(R.string.e_bike);
                 break;
         }
+    }
+
+    public void checkStatus() {
+        String auth = stringAuth;
+        params.put("auth", stringAuth);
+        JSONObject parameters = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
+        UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 1);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+    }
+
+    private void tripInfo(String tripID) {
+
+        params.put("auth", stringAuth);
+        params.put("tid", tripID);
+        JSONObject parameters = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + stringAuth + " tid=" + tripID);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");
+        UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 3);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+    }
+
+    private void retireTrip() {
+
+        params.put("auth", stringAuth);
+        JSONObject parameters = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-retire");
+        UtilityApiRequestPost.doPOST(a, "user-trip-retire", parameters, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 4);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
     }
 
     private void storeData() {
@@ -408,9 +594,9 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.rent_rl_2);
         RelativeLayout rl3 = (RelativeLayout) imageDialog.findViewById(R.id.rent_rl_3);
 
-        txt1.setText("E-CYCLE");
-        txt2.setText("E-SCOOTY");
-        txt3.setText("E-BIKE");
+        txt1.setText(R.string.e_cycle);
+        txt2.setText(R.string.e_scooty);
+        txt3.setText(R.string.e_bike);
 
         rl1.setOnClickListener(this);
         rl2.setOnClickListener(this);
@@ -434,7 +620,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     private void ImagePopup2() {
 
         imageDialog2.setContentView(R.layout.popup_hours);
-        TextView txt1 = (TextView) imageDialog2.findViewById(R.id.txt1);
+        //TextView txt1 = (TextView) imageDialog2.findViewById(R.id.txt1);
         TextView txt2 = (TextView) imageDialog2.findViewById(R.id.txt2);
         TextView txt3 = (TextView) imageDialog2.findViewById(R.id.txt3);
         TextView txt4 = (TextView) imageDialog2.findViewById(R.id.txt4);
@@ -447,8 +633,8 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         TextView txt11 = (TextView) imageDialog2.findViewById(R.id.txt11);
         TextView txt12 = (TextView) imageDialog2.findViewById(R.id.txt12);
 
-       // txt1.setText(getText(R.string._1_hr));
-        txt1.setOnClickListener(this);
+        // txt1.setText(getText(R.string._1_hr));
+        //txt1.setOnClickListener(this);
         txt2.setOnClickListener(this);
         txt3.setOnClickListener(this);
         txt4.setOnClickListener(this);

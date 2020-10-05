@@ -21,7 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="your rental is \nconfirmed"
+                android:text="@string/your_rental_is_nconfirmed"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="23sp" />
@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:text="Pick point contact"
+                    android:text="@string/pick_point_contact"
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
@@ -103,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="20dp"
-                        android:text="Vehicle :"
+                        android:text="@string/vehicle"
                         android:textAllCaps="true"
                         android:textSize="18sp" />
 
@@ -134,7 +134,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="20dp"
-                        android:text="OTP  :"
+                        android:text="@string/otp"
                         android:textAllCaps="true"
                         android:textSize="18sp" />
 
@@ -182,7 +182,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:gravity="center|start"
-                    android:text="Pick point"
+                    android:text="@string/pick_point"
                     android:textAllCaps="true"
                     android:paddingStart="10dp"
                     android:textSize="20sp" />
@@ -192,7 +192,7 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="25dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp" />
 
@@ -231,7 +231,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:gravity="center|start"
-                    android:text="Drop point"
+                    android:text="@string/drop_point"
                     android:textAllCaps="true"
                     android:paddingStart="10dp"
                     android:textSize="20sp" />
@@ -241,7 +241,7 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="25dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp" />
 
@@ -283,7 +283,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:gravity="center|start"
-                    android:text="Please Pay"
+                    android:text="@string/please_pay"
                     android:textAllCaps="true"
                     android:paddingStart="10dp"
                     android:textSize="20sp" />
@@ -293,7 +293,7 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="25dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp" />
 
@@ -305,7 +305,7 @@
                     android:gravity="center|start"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:text="₹ 204.00"
+                    android:text="@string/rs"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -328,7 +328,7 @@
                 android:gravity="center|start"
                 android:paddingStart="18dp"
                 android:paddingEnd="5dp"
-                android:text="make payment using upi"
+                android:text="@string/make_payment_using_upi"
                 android:textAllCaps="true"
                 android:textSize="23sp" />
             <!--<TextView

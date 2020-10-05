@@ -3,7 +3,6 @@ package com.client.rent;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -23,12 +22,10 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
-import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
@@ -76,26 +73,41 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
             remainingHours.setText(time);
 
             int t = Integer.parseInt(time);
-            if (t == 10) {
+            if (time.equals("10")) {
                 PopupColor(1);
             }
-            if (t == 5) {
+            if (time.equals("5")) {
                 PopupColor(2);
             }
-            if (t == 0) {
+            if (time.equals("0")) {
                 ShowPopup(2);
             }
             if (t < 0) {
                 t = -t;
-                txt.setText("extended mins :");
+                txt.setText(R.string.extended_min);
                 String timePositive = Integer.toString(t);
                 remainingHours.setText(timePositive);
+                if (timePositive.equals("60")) {
+                    PopupColor(3);
+                }
+                if (timePositive.equals("120")) {
+                    ShowPopup(3);
+                }
+                if (timePositive.equals("180")) {
+                    ShowPopup(3);
+                }
+                if (timePositive.equals("240")) {
+                    ShowPopup(3);
+                }
+                if (timePositive.equals("300")) {
+                    ShowPopup(3);
+                }
             }
 
         }
 
         //response on hitting user-rent-get-sup API
-        if (id ==2){
+        if (id == 2) {
             String name = response.getString("name");
             String phn = response.getString("pn");
 
@@ -117,27 +129,58 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("14");
                         startService(intent);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                timeRemaining();
+                        try {
+                            String time = response.getString("time");
+                            remainingHours.setText(time);
+                            int t = Integer.parseInt(time);
+                            if (time.equals("10")) {
+                                PopupColor(1);
                             }
-                        }, 45000);
+                            if (time.equals("5")) {
+                                PopupColor(2);
+                            }
+                            if (time.equals("0")) {
+                                ShowPopup(2);
+                            }
+                            if (t < 0) {
+                                t = -t;
+                                txt.setText(R.string.extended_min);
+                                String timePositive = Integer.toString(t);
+                                remainingHours.setText(timePositive);
+                                if (timePositive.equals("60")) {
+                                    PopupColor(3);
+                                }
+                                if (timePositive.equals("120")) {
+                                    ShowPopup(3);
+                                }
+                                if (timePositive.equals("180")) {
+                                    ShowPopup(3);
+                                }
+                                if (timePositive.equals("240")) {
+                                    ShowPopup(3);
+                                }
+                                if (timePositive.equals("300")) {
+                                    ShowPopup(3);
+                                }
+                            }
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
 
                     }
                     if (status.equals("FN") || status.equals("TR")) {
-                        String price = response.getString("price");
+                        //String price = response.getString("price");
 
                         Intent payment = new Intent(ActivityRentInProgress.this, ActivityRentEnded.class);
                         startActivity(payment);
                         finish();
                     }
-                } else {
+                } /*else {
                     Intent homePage = new Intent(ActivityRentInProgress.this, ActivityWelcome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
-                }
+                }*/
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -202,7 +245,7 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         phone.setOnClickListener(this);
 
         checkStatus();
-        timeRemaining();
+        //timeRemaining();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityRentInProgress.this);
         myDialog = new Dialog(this);
         colorDialog = new Dialog(this);
@@ -216,12 +259,13 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         TextView infoText = myDialog.findViewById(R.id.info_text);
 
         if (id == 1) {
-            infoText.setText("This feature shall be active soon.");
+            infoText.setText(R.string.coming_soon);
         }
-        if (id == 2) {
-            infoText.setText("Your rental time has been extended. Next hourly rental charge is now applicable.");
 
+        if (id == 2) {
+            infoText.setText(R.string.time_extended);
         }
+
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
@@ -240,16 +284,21 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         TextView infoText = colorDialog.findViewById(R.id.info_text);
 
         if (id == 1) {
-            infoText.setText("Your rental time will be over in 10 mins. Please return the vehicle to avoid any extra rental charge.");
+            infoText.setText(R.string.return_veh);
             myDialog.show();
-            myDialog.setCanceledOnTouchOutside(false);
+            myDialog.setCanceledOnTouchOutside(true);
 
         }
         if (id == 2) {
-            infoText.setText("Your rental time will be over in 5 mins. Please return the vehicle to avoid any extra rental charge.");
+            infoText.setText(R.string.return_veh);
             myDialog.show();
-            myDialog.setCanceledOnTouchOutside(false);
+            myDialog.setCanceledOnTouchOutside(true);
 
+        }
+        if (id == 3) {
+            infoText.setText(R.string.time_extended_by_hour);
+            myDialog.show();
+            myDialog.setCanceledOnTouchOutside(true);
         }
         colorDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = colorDialog.getWindow().getAttributes();
@@ -282,32 +331,17 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
                 ShowPopup(1);
                 break;
             case R.id.drop_hub:
-            case R.id.hours:
                 Intent drop = new Intent(ActivityRentInProgress.this, ActivityUpdateInfo.class);
                 startActivity(drop);
+                break;
+            case R.id.hours:
+                Intent hour = new Intent(ActivityRentInProgress.this, ActivityUpdateHours.class);
+                startActivity(hour);
                 break;
             case R.id.end_rent:
                 Intent nearest = new Intent(ActivityRentInProgress.this, ActivityNearestHub.class);
                 startActivity(nearest);
         }
-    }
-
-    private void timeRemaining() {
-        String stringAuth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
-        params.put("auth", stringAuth);
-        JSONObject param = new JSONObject(params);
-        ActivityRentInProgress a = ActivityRentInProgress.this;
-        Log.d(TAG, "Values: auth=" + stringAuth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-time-remaining");
-        UtilityApiRequestPost.doPOST(a, "auth-time-remaining", param, 20000, 0, response -> {
-            try {
-                a.onSuccess(response, 1);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-        }, a::onFailure);
     }
 
     private void getDropSup() {
@@ -366,33 +400,6 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
             return;
         }
         startActivity(intent);
-    }
-
-
-    private void selectAction(Context context) {
-        final CharSequence[] options = {"SEND SMS", "VIDEO CALL", "Cancel"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-
-                if (options[item].equals("SEND SMS")) {
-                    String messageBody = "TRACK MY RIDE HERE";
-                    Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                    sendIntent.setData(Uri.parse("sms:"));
-                    sendIntent.putExtra("sms_body", messageBody);
-                    startActivity(sendIntent);
-
-                } else if (options[item].equals("VIDEO CALL")) {
-                    Intent whatsappLaunch = getPackageManager().getLaunchIntentForPackage("com.whatsapp");
-                    startActivity(whatsappLaunch);
-
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
     }
 
 }

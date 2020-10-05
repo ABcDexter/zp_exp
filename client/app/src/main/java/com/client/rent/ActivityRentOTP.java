@@ -31,7 +31,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
-import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
@@ -82,7 +81,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
         //response on hitting user-trip-cancel API
         if (id == 1) {
-            Intent home = new Intent(ActivityRentOTP.this, ActivityWelcome.class);
+            Intent home = new Intent(ActivityRentOTP.this, ActivityRentHome.class);
             startActivity(home);
             finish();
         }
@@ -113,7 +112,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                         startActivity(st);
                     }
                 } else {
-                    Intent homePage = new Intent(ActivityRentOTP.this, ActivityWelcome.class);
+                    Intent homePage = new Intent(ActivityRentOTP.this, ActivityRentHome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
@@ -221,13 +220,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         origin.setOnClickListener(this);
         if (!vType.isEmpty()) {
             if (vType.equals("0")) {
-                vtype.setText("e-cycle");
+                vtype.setText(R.string.e_cycle);
             }
             if (vType.equals("1")) {
-                vtype.setText("e-scooty");
+                vtype.setText(R.string.e_scooty);
             }
             if (vType.equals("2")) {
-                vtype.setText("e-bike");
+                vtype.setText(R.string.e_bike);
             }
         }
 
@@ -247,14 +246,14 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         supDetails();
 
         if (stringDrop.isEmpty()) {
-            destination.setText("DROP POINT");
+            destination.setText(R.string.drop_point);
         } else {
             String upToNCharacters = stringDrop.substring(0, Math.min(stringDrop.length(), 10));
             destination.setText(upToNCharacters);
         }
 
         if (stringPick.isEmpty()) {
-            origin.setText("PICK UP");
+            origin.setText(R.string.pick_point);
         } else {
             String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 10));
             origin.setText(upToNCharacters);
@@ -290,13 +289,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         TextView accept = myDialog.findViewById(R.id.accept_request);
 
         if (id == 1) {
-            infoText.setText("Cost calculated as per your rental time. Please pay full amount to begin your trip and to unlock OTP.");
+            infoText.setText(R.string.cost_calc_as_per_time);
         }
         if (id == 2) {
-            infoText.setText("Make payment only after checking the condition of vehicle");
+            infoText.setText(R.string.check_condi_before_paying);
         }
         if (id == 3) {
-            infoText.setText("Make payment only after checking the condition of vehicle");
+            infoText.setText(R.string.check_condi_before_paying);
         }
         /*if (id == 4) {
             infoText.setText("HOLD VEHICLE FOR 1 HOUR?");
@@ -312,7 +311,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             infoText.setText(stringDrop);
         }
         if (id == 7) {
-            infoText.setText("Please pay full amount to unlock your OTP");
+            infoText.setText(R.string.pay_to_unlock_otp);
         }
         if (id == 8) {
             infoText.setText("Open Map. Work in Progress");
@@ -400,7 +399,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                 String amount = PriceOnly;
                 String note = "Payment for rental service";
                 String name = "Zipp-E";
-                String upiId = "9084083967@ybl";
+                String upiId = "rajnilakshmi@ybl";
                 payUsingUpi(amount, upiId, name, note);
                 break;
 

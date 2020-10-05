@@ -16,14 +16,14 @@
         android:layout_centerHorizontal="false"
         android:background="#605D5D"
         android:gravity="center"
-        android:text="Choose rental package"
+        android:text="@string/choose_rental_package"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="#fff"
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <TextView
+    <!--<TextView
         android:id="@+id/txt1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -33,14 +33,14 @@
         android:text="@string/_1_hr"
         android:textAlignment="center"
         android:textColor="#fff"
-        android:textSize="20sp" />
+        android:textSize="20sp" />-->
 
 
     <TextView
         android:id="@+id/txt2"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@id/txt1"
+        android:layout_below="@id/txt_head"
         android:background="@drawable/rect_orange"
         android:gravity="center"
         android:text="@string/_2_hr"
@@ -85,13 +85,26 @@
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="#fff"
-        android:textSize="20sp"/>
-
+        android:textSize="20sp"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/milage40"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/txt5"
+        android:background="#605D5D"
+        android:gravity="center"
+        android:text="@string/_2_4_hr_rental_ride_up_to_40km"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:textStyle="bold" />
     <TextView
         android:id="@+id/txt6"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@id/txt5"
+        android:layout_below="@id/milage40"
         android:background="@drawable/rect_orange"
         android:gravity="center"
         android:text="@string/_6_hr"
@@ -137,13 +150,26 @@
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="#fff"
-        android:textSize="20sp" />
-
+        android:textSize="20sp"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/milage80"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/txt8"
+        android:background="#605D5D"
+        android:gravity="center"
+        android:text="@string/_6_8_hr_rental_ride_up_to_80km"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:textStyle="bold" />
     <TextView
         android:id="@+id/txt10"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@id/txt9"
+        android:layout_below="@id/milage80"
         android:background="@drawable/rect_orange"
         android:gravity="center"
         android:text="@string/_10_hr"
@@ -176,5 +202,17 @@
         android:textAllCaps="false"
         android:textColor="#fff"
         android:textSize="20sp" />
-
+    <TextView
+        android:id="@+id/milage"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/txt12"
+        android:background="#605D5D"
+        android:gravity="center"
+        android:text="@string/charge_vehicle_upon_exceeding_80km"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 </RelativeLayout>

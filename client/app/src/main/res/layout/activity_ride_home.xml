@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="let's get you a \nride"
+                android:text="@string/let_s_get_you_a_nride"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
@@ -62,7 +62,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/rect_box_outline"
-                    android:text="VEHICLE TYPE"
+                    android:text="@string/vehicle_type"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -86,7 +86,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:background="@drawable/rect_box_outline"
-                    android:text="NO OF RIDERS"
+                    android:text="@string/no_of_riders"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -106,34 +106,6 @@
                 android:layout_height="70dp"
                 android:layout_centerInParent="true" />
 
-            <!--<TextView
-                android:id="@+id/txt_pick_point"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_above="@+id/txt_drop_point"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/rect_box_outline"
-                android:drawableStart="@drawable/ic_three_forward_arrow"
-                android:gravity="end|center"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="PICK UP POINT"
-                android:textAllCaps="true"
-                android:textSize="20sp" />-->
-            <!--<TextView
-                android:id="@+id/txt_drop_point"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_above="@+id/layoutZippeee"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/rect_box_outline"
-                android:drawableEnd="@drawable/ic_three_back_arrow"
-                android:gravity="center|start"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="DROP POINT"
-                android:textAllCaps="true"
-                android:textSize="20sp" />-->
             <RelativeLayout
                 android:id="@+id/rl_pick"
                 android:layout_width="match_parent"

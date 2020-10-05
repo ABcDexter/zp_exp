@@ -28,7 +28,7 @@
             android:layout_centerHorizontal="true"
             android:background="#A90E0E0E"
             android:padding="5dp"
-            android:text="Click/Choose Picture"
+            android:text="@string/click_choose_picture"
             android:textAllCaps="true"
             android:textSize="20sp" />
 
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/containerProfilePic"
         android:layout_marginTop="20dp"
-        android:text="Your Name"
+        android:text="@string/your_name"
         android:textAllCaps="true"
         android:textSize="25sp" />
 
@@ -71,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_name"
-        android:text="User Mobile"
+        android:text="@string/your_mobile"
         android:textAllCaps="true"
         android:textSize="25sp" />
 
@@ -90,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/txt_mobile"
-        android:text="Change Language"
+        android:text="@string/change_language"
         android:textAllCaps="true"
         android:textSize="25sp" />
 
@@ -110,7 +110,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textLC"
         android:paddingRight="8dp"
-        android:text="Night Mode"
+        android:text="@string/night_mode"
         android:textAllCaps="true"
         android:textSize="25sp" />
 

@@ -14,6 +14,8 @@ import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -68,7 +70,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
     ActivityRideRequest a = ActivityRideRequest.this;
 
     private static ActivityRideRequest instance;
-
+    Animation animMoveL2R, animMoveR2L;
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG, "RESPONSE:" + response);
 
@@ -216,6 +218,10 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         scooty_up = findViewById(R.id.scooty_up);
         scooty_down = findViewById(R.id.scooty_down);
 
+        animMoveL2R = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r);
+
+        animMoveR2L = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_r2l);
+
         dropInfo.setOnClickListener(this);
         pickInfo.setOnClickListener(this);
         try {
@@ -338,7 +344,11 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
     }
 
     private void moveit() {
-        zbeeL.setVisibility(View.VISIBLE);
+        scooty_down.setVisibility(View.VISIBLE);
+        zbeeR.startAnimation(animMoveL2R);
+        scooty_down.startAnimation(animMoveR2L);
+
+        /*zbeeL.setVisibility(View.VISIBLE);
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zbeeL, "translationX", 1500, 0f);
         objectAnimator.setDuration(1500);
         objectAnimator.start();
@@ -347,7 +357,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zbeeR, "translationX", 0f, 1500);
         objectAnimator1.setDuration(1500);
         objectAnimator1.start();
-        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
+        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
     }
 
     @Override

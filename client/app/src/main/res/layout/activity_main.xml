@@ -41,7 +41,8 @@
             android:layout_marginTop="30dp"
             android:background="@drawable/rect_box_outline"
             android:cursorVisible="true"
-            android:hint="ENTER MOBILE"
+            android:maxLength="10"
+            android:hint="@string/enter_mobile"
             android:inputType="phone"
             android:padding="5dp"
             android:textAlignment="center"
@@ -57,7 +58,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/btn_bkg"
             android:padding="5dp"
-            android:text="request otp"
+            android:text="@string/request_otp"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textSize="23sp" />
@@ -71,7 +72,7 @@
             android:layout_marginTop="7dp"
             android:background="@drawable/rect_box_outline"
             android:digits="0123456789"
-            android:hint="ENTER OTP TO VERIFY"
+            android:hint="@string/enter_otp_to_verify"
             android:inputType="phone"
             android:padding="5dp"
             android:textAlignment="center"
@@ -107,7 +108,7 @@
                 android:layout_centerHorizontal="true"
                 android:background="#A90E0E0E"
                 android:padding="5dp"
-                android:text="upload aadhar front"
+                android:text="@string/upload_aadhar_front"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
 
@@ -134,7 +135,7 @@
                 android:layout_centerHorizontal="true"
                 android:background="#A90E0E0E"
                 android:padding="5dp"
-                android:text="upload aadhar back"
+                android:text="@string/upload_aadhar_back"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
         </RelativeLayout>
@@ -151,7 +152,7 @@
             android:padding="15dp"
             android:scaleType="centerInside"
             android:src="@drawable/login"
-            android:text="NEXT"
+            android:text="@string/next"
             android:textAllCaps="true" />
 
         <ProgressBar
@@ -166,7 +167,7 @@
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
             android:layout_below="@id/containerAadharBack"
-            android:text="I AGREE TO TERMS &amp; conditions "
+            android:text="@string/i_agree_to_terms_amp_conditions"
             android:textSize="12sp"
             android:textAllCaps="true"
             android:textColor="@color/txtColor"

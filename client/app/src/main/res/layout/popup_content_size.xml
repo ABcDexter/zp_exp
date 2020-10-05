@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginStart="21dp"
     android:layout_marginEnd="21dp"
     android:background="@drawable/rect_box_outline"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:backgroundTint="#ffffff">
 
     <RelativeLayout
         android:id="@+id/rl_head"
@@ -21,8 +22,8 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/rect_blue_white"
             android:gravity="center|start"
-            android:paddingStart="20dp"
-            android:text="Package Size"
+            android:paddingStart="10dp"
+            android:text="@string/package_size"
             android:textAllCaps="true"
             android:textColor="#fff"
             android:textSize="20sp"
@@ -32,27 +33,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:orientation="horizontal"
-            android:layout_marginEnd="30dp"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:orientation="horizontal">
 
             <Switch
-                android:layout_width="65dp"
-                android:textSize="12sp"
+                android:id="@+id/size_switch"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:text="cm"
+                android:checked="false"
+                android:text="@string/cm"
                 android:textAllCaps="false"
                 android:textColor="#fff"
-                android:checked="false"
-                android:id="@+id/size_switch"
-                android:theme="@style/ThemeOverlay.MySwitchCompat"/>
+                android:textSize="16sp"
+                android:theme="@style/ThemeOverlay.MySwitchCompat" />
+
             <TextView
+                android:id="@+id/inch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="inch"
-                android:id="@+id/inch"
+                android:text="@string/inch"
+                android:textSize="16sp"
                 android:textAllCaps="false"
-                android:textColor="#fff"/>
+                android:textColor="#fff" />
         </LinearLayout>
     </RelativeLayout>
 
@@ -60,201 +63,294 @@
         android:id="@+id/s_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rl_head"
-        android:background="@drawable/rect_grey">
+        android:background="#7E7574"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp">
 
         <TextView
             android:id="@+id/txt1"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:gravity="center"
-            android:text="Small"
+            android:text="@string/s"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <TextView
+            android:id="@+id/size1"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="42dp"
-            android:gravity="center"
+            android:layout_marginStart="29dp"
             android:layout_toEndOf="@id/txt1"
-            android:text="(35 x 25 x 13 cm)"
+            android:gravity="center"
+            android:text="@string/_35_x_25_x_13_cm"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="18sp"
-            android:id="@+id/size1"/>
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/weight1"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="91dp"
+            android:gravity="center"
+            android:text="@string/_0_2_kg"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="18sp" />
         <ImageView
             android:id="@+id/img1"
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="30dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/box2" />
-    </RelativeLayout>
 
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#ffffff" />
     <RelativeLayout
         android:id="@+id/s_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/s_1"
-        android:background="@drawable/rect_grey">
+        android:background="#7E7574"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp">
 
         <TextView
             android:id="@+id/txt2"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:gravity="center"
-            android:text="Medium"
+            android:text="@string/m"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <TextView
+            android:id="@+id/size2"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="23dp"
-            android:gravity="center"
+            android:layout_marginStart="26dp"
             android:layout_toEndOf="@id/txt2"
-            android:text="(70 x 50 x 26 cm)"
+            android:gravity="center"
+            android:text="@string/_70_x_50_x_26_cm"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="18sp"
-            android:id="@+id/size2"/>
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/weight2"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="91dp"
+            android:gravity="center"
+            android:text="@string/_2_4_kg"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="18sp" />
         <ImageView
             android:id="@+id/img2"
             android:layout_width="31dp"
             android:layout_height="31dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="30dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/box1" />
     </RelativeLayout>
-
+    <View
+        android:id="@+id/divide1"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#ffffff" />
     <RelativeLayout
         android:id="@+id/s_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/s_2"
-        android:background="@drawable/rect_grey">
+        android:background="#7E7574"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp">
 
         <TextView
             android:id="@+id/txt3"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:gravity="center"
-            android:text="Large"
+            android:text="@string/l"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <TextView
+            android:id="@+id/size3"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="42dp"
-            android:gravity="center"
+            android:layout_marginStart="32dp"
             android:layout_toEndOf="@id/txt3"
-            android:text="(105 x 75 x 39 cm)"
+            android:gravity="center"
+            android:text="@string/_105_x_75_x_39_cm"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="18sp"
-            android:id="@+id/size3"/>
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/weight3"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="90dp"
+            android:gravity="center"
+            android:text="@string/_4_6_kg"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="18sp" />
         <ImageView
             android:id="@+id/img3"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="30dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/box3" />
     </RelativeLayout>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#ffffff" />
     <RelativeLayout
         android:id="@+id/s_4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/s_3"
-        android:background="@drawable/rect_grey">
+        android:background="#7E7574"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp">
 
         <TextView
             android:id="@+id/txt4"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:gravity="center"
-            android:text="X-Large"
+            android:text="@string/xl"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <TextView
+            android:id="@+id/size4"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="25dp"
-            android:gravity="center"
+            android:layout_marginStart="20dp"
             android:layout_toEndOf="@id/txt4"
-            android:text="(104 x 100 x 52 cm)"
+            android:gravity="center"
+            android:text="@string/_104_x_100_x_52_cm"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="18sp"
-            android:id="@+id/size4"/>
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/weight4"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="90dp"
+            android:gravity="center"
+            android:text="@string/_6_8_kg"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="18sp" />
         <ImageView
             android:id="@+id/img4"
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="30dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/box4" />
     </RelativeLayout>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#ffffff" />
     <RelativeLayout
         android:id="@+id/s_5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/s_4"
-        android:background="@drawable/rect_grey">
+        android:background="#7E7574"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp">
 
         <TextView
             android:id="@+id/txt5"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:gravity="center"
-            android:text="XX-Large"
+            android:text="@string/xxl"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <TextView
+            android:id="@+id/size5"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginStart="15dp"
-            android:gravity="center"
+            android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/txt5"
-            android:text="(175 x 125 x 65 cm)"
+            android:gravity="center"
+            android:text="@string/_175_x_125_x_65_cm"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="18sp"
-            android:id="@+id/size5"/>
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/weight5"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="85dp"
+            android:gravity="center"
+            android:text="@string/_8_10_kg"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="18sp" />
         <ImageView
             android:id="@+id/img5"
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="30dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/box" />
     </RelativeLayout>
 
-
-</RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#ffffff" />
+</LinearLayout>

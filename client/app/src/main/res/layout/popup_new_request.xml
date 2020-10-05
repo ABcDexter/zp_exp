@@ -35,7 +35,7 @@
             android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:drawableTop="@drawable/ic_close"
-            android:text="NO"
+            android:text="@string/no"
             android:textAlignment="center"
             android:textColor="#000"
             android:textSize="18sp" />
@@ -48,7 +48,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_check_black"
-            android:text="YES"
+            android:text="@string/yes"
             android:textAlignment="center"
             android:textColor="#000"
             android:textSize="18sp" />

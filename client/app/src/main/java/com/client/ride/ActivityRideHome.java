@@ -143,7 +143,6 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         next = findViewById(R.id.letsGo_ride);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-
         next.setOnClickListener(this);
         vehicle.setOnClickListener(this);
         riders.setOnClickListener(this);
@@ -267,7 +266,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
             ln.setVisibility(View.GONE);
             next.setEnabled(true);
             //TODO send push notification
-            dialog_txt.setText("Drivers are available.");
+            dialog_txt.setText(R.string.drivers_available);
             myDialog.setCanceledOnTouchOutside(true);
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -284,9 +283,9 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.ride_rl_2);
         RelativeLayout rl3 = (RelativeLayout) imageDialog.findViewById(R.id.ride_rl_3);
 
-        txt1.setText("E-SCOOTY");
-        txt2.setText("E-BIKE");
-        txt3.setText("ZBEE");
+        txt1.setText(R.string.e_scooty);
+        txt2.setText(R.string.e_bike);
+        txt3.setText(R.string.zbee);
 
         rl1.setOnClickListener(this);
         rl2.setOnClickListener(this);
@@ -399,17 +398,17 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 ImagePopup2();
                 break;
             case R.id.ride_rl_1:
-                vehicle.setText("E-SCOOTY");
+                vehicle.setText(R.string.e_scooty);
                 imageDialog.dismiss();
                 VehicleType = "1";
                 break;
             case R.id.ride_rl_2:
-                vehicle.setText("E-BIKE");
+                vehicle.setText(R.string.e_bike);
                 VehicleType = "2";
                 imageDialog.dismiss();
                 break;
             case R.id.ride_rl_3:
-                vehicle.setText("ZBEE");
+                vehicle.setText(R.string.zbee);
                 VehicleType = "3";
                 imageDialog.dismiss();
                 break;

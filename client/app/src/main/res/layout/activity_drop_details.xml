@@ -19,42 +19,50 @@
             android:layout_marginEnd="10dp"
             android:orientation="vertical">
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/viewPager"
+            <include
+                android:id="@+id/layoutZippeee"
+                layout="@layout/sliding_image_layout"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:clipToPadding="false"
-                android:foregroundGravity="center"
-                android:overScrollMode="never" />
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp" />
 
             <TextView
-                android:id="@+id/txt_pick_address"
+                android:id="@+id/drop_details"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
                 android:background="@drawable/rect_box_outline"
                 android:drawableEnd="@drawable/ic_arrow_drop_down"
                 android:gravity="center"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="PICK UP DETAILS"
+                android:text="@string/drop_details"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/txt_drop_address"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="@drawable/rect_box_outline"
-                android:drawableEnd="@drawable/ic_arrow_drop_down"
-                android:gravity="center"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="DROP DETAILS"
-                android:textAllCaps="true"
-                android:textSize="20sp" />
+                android:layout_marginTop="20dp">
 
+                <Button
+                    android:id="@+id/standard_drop_delv"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/rect_box_outline"
+                    android:text="@string/delivery"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_arrow_drop_down" />
+            </RelativeLayout>
             <include
                 android:id="@+id/layoutZippeee"
                 layout="@layout/zippe_logo"
@@ -63,64 +71,49 @@
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="50dp" />
 
-            <RelativeLayout
-                android:id="@+id/rl_content"
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
 
-                <Button
-                    android:id="@+id/content_type"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/rect_box_outline"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="15dp"
+                    android:text="@string/additional_details_optional"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/drop_add_details"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/rect_box_outline"
-                    android:text="Package Contents"
+                    android:gravity="center"
+                    android:hint="@string/eg_beware_of_dogs"
+                    android:inputType="textMultiLine"
+                    android:maxLength="150"
+                    android:maxLines="2"
+                    android:paddingStart="10dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="10dp"
+                    android:scrollHorizontally="false"
                     android:textAllCaps="true"
+                    android:textColor="@color/txtColor"
+                    android:textColorHint="#9C9999"
                     android:textSize="20sp" />
+            </LinearLayout>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_arrow_up" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="20dp">
-
-                <Button
-                    android:id="@+id/content_size"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="@drawable/rect_box_outline"
-                    android:text="Package Size"
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_arrow_up" />
-            </RelativeLayout>
-
-
-            <TextView
-                android:layout_width="match_parent"
+            <CheckBox
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_marginTop="35dp"
-                android:justificationMode="inter_word"
-                android:paddingStart="2dp"
-                android:paddingEnd="2dp"
+                android:buttonTint="@color/colorAccent"
                 android:text="@string/disclaimer"
-                android:textSize="12sp"
-                android:id="@+id/disclaimer"/>
+                android:textColor="@color/txtColor" />
 
             <ImageButton
                 android:id="@+id/next_deliver"

@@ -44,7 +44,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/rect_box_outline"
-                        android:text="VEHICLE TYPE"
+                        android:text="@string/vehicle_type"
                         android:textAllCaps="true"
                         android:textSize="20sp" />
 
@@ -69,7 +69,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:background="@drawable/rect_box_outline"
-                        android:text="NO OF HOURS"
+                        android:text="@string/no_of_hours"
                         android:textAllCaps="true"
                         android:textSize="20sp" />
 
@@ -92,7 +92,7 @@
                     android:gravity="center"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:text="Schedule rental"
+                    android:text="@string/schedule_rental"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -114,7 +114,7 @@
                     android:gravity="end|center"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:text="PICK UP POINT / Z-HUB"
+                    android:text="@string/pick_up_point_z_hub"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -129,7 +129,7 @@
                     android:gravity="center|start"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:text="DROP POINT / Z-HUB"
+                    android:text="@string/drop_point_z_hub"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
