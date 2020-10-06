@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/swipeRefresh"
     tools:context=".deliver.ActivityDeliveryOrders">
 
     <ScrollView
@@ -24,14 +25,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
-                android:text="delivery status"
+                android:text="@string/delivery_status"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="25sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
             <include
                 layout="@layout/zippe_logo"
@@ -57,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:drawableEnd="@drawable/ic_location"
-                android:text="Track your delivery"
+                android:text="@string/track_your_delivery"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="20sp"
@@ -66,4 +63,4 @@
 
     </ScrollView>
 
-</RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

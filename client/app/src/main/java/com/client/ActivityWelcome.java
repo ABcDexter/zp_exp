@@ -14,6 +14,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,12 +26,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
-import com.client.deliver.ActivityDeliverHome;
-import com.client.rent.ActivityRentEnded;
+import com.client.deliver.ActivityPackageDetails;
 import com.client.rent.ActivityRentHome;
-import com.client.rent.ActivityRentInProgress;
-import com.client.rent.ActivityRentOTP;
-import com.client.rent.ActivityRentRequest;
 import com.client.ride.ActivityRideEnded;
 import com.client.ride.ActivityRideHome;
 import com.client.ride.ActivityRideInProgress;
@@ -88,6 +86,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             android.Manifest.permission.CALL_PHONE};
     String lat, lng, stringAN;
 
+    Animation animMoveL2R, animMoveR2L;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,12 +113,21 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
         scooty_up = findViewById(R.id.scooty_up);
         scooty_down = findViewById(R.id.scooty_down);
-        moveZbee();
+        //moveZbee();
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityWelcome.this);
         getLastLocation();
         checkStatus();
         myDialog = new Dialog(this);
+
+        animMoveL2R = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r);
+        animMoveR2L = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_r2l);
+        //animMoveL2R_scooty = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r_scooty);
+        //zippe_iv.startAnimation(animMoveL2R);
+        //animMoveR2L_zbee = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_r2l_zbee);
+        //scooty_down.startAnimation(animMoveR2L);
+        zippe_iv.startAnimation(animMoveL2R);
+        scooty_down.startAnimation(animMoveR2L);
 
     }
 
@@ -132,45 +140,52 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         scooty_down.setVisibility(View.VISIBLE);
         zippe_iv_below.setVisibility(View.GONE);
         zippe_iv.setVisibility(View.VISIBLE);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scooty_down, "translationX", 1800, 0f);
+
+        zippe_iv.startAnimation(animMoveL2R);
+        scooty_down.startAnimation(animMoveR2L);
+        /*ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scooty_down, "translationX", 1800, 0f);
         objectAnimator.setDuration(1700);
         objectAnimator.start();
 
-        /*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*/
+        *//*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*//*
 
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zippe_iv, "translationX", 0f, 1500);
         objectAnimator1.setDuration(1700);
-        objectAnimator1.start();
+        objectAnimator1.start();*/
         /*objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
-        new Handler().postDelayed(new Runnable() {
+
+        /*new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 moveScooty();
             }
-        }, 1600);
+        }, 1100);*/
     }
 
-    private void moveScooty() {
+    /*private void moveScooty() {
         scooty_up.setVisibility(View.VISIBLE);
         scooty_down.setVisibility(View.GONE);
         zippe_iv_below.setVisibility(View.VISIBLE);
         zippe_iv.setVisibility(View.GONE);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zippe_iv_below, "translationX", 1800, 0f);
+
+        zippe_iv_below.startAnimation(animMoveR2L_zbee);
+        scooty_up.startAnimation(animMoveL2R_scooty);
+        *//*ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zippe_iv_below, "translationX", 1800, 0f);
         objectAnimator.setDuration(1700);
         objectAnimator.start();
-        /*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*/
+        *//**//*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*//**//*
 
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(scooty_up, "translationX", 0f, 1500);
         objectAnimator1.setDuration(1700);
-        objectAnimator1.start();
+        objectAnimator1.start();*//*
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 moveZbee();
             }
-        }, 1600);
-        /* objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
-    }
+        }, 1100);
+        *//* objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*//*
+    }*/
 
     public void sendLocation() {
         Log.d(TAG, "inside sendLocation()");
@@ -220,22 +235,22 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             dialog_txt.setText("No ride available currently.\nNotify me when available.");
         }
         if (id == 2) {
-            dialog_txt.setText("Drivers are available.");
+            dialog_txt.setText(R.string.drivers_available);
         }
         if (id == 3) {
-            dialog_txt.setText("We are sorry ! Your Ride was cancelled due to unavoidable circumstances. Please try again.");
+            dialog_txt.setText(R.string.ride_cancelled_by_you);
         }
         if (id == 4) {
-            dialog_txt.setText("Your RIDE request has timed out. Please try again.");
+            dialog_txt.setText(R.string.ride_timed_out);
         }
         if (id == 5) {
-            dialog_txt.setText("We were unable to complete your ride. Any inconvenience deeply regretted.");
+            dialog_txt.setText(R.string.unable_to_complete_your_ride);
         }
         if (id == 6) {
-            dialog_txt.setText("Ride canceled by you.");
+            dialog_txt.setText(R.string.ride_canceled_by_you);
         }
         if (id == 7) {
-            dialog_txt.setText("Sorry ! All our vehicles are currently rented out. Please try again later.");
+            dialog_txt.setText(R.string.vehicles_rented_out);
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
@@ -248,7 +263,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         dialog_txt = myDialog.findViewById(R.id.info_text);
 
         if (id == 2) {
-            dialog_txt.setText("Drivers are available.");
+            dialog_txt.setText(R.string.drivers_available);
         }
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -318,8 +333,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     };
 
 
-    public void
-    onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
+    public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG, "RESPONSE:" + response);
         //response on hitting user-trip-get-status API
         if (id == 1) {
@@ -364,15 +378,18 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                             Log.d(TAG, "error");
                         }
                     }
-                    if (rtype.equals("1")) {
+
+                    /*if (rtype.equals("1")) {
                         if (status.equals("RQ")) {
                             Intent rq = new Intent(ActivityWelcome.this, ActivityRentRequest.class);
                             startActivity(rq);
                         }
                         if (status.equals("AS")) {
-                            /*String otp = response.getString("otp");
+                            */
+                    /*String otp = response.getString("otp");
                             SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
                             sp_otp.edit().putString(OTP_PICK, otp).apply();*/
+                    /*
                             Intent as = new Intent(ActivityWelcome.this, ActivityRentOTP.class);
                             startActivity(as);
                         }
@@ -385,7 +402,11 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                         }
                         if (status.equals("FN") || status.equals("TR")) {
                             //retireTrip();
-                            Intent fntr = new Intent(ActivityWelcome.this, ActivityRentEnded.class);
+                            */
+                    /*Intent fntr = new Intent(ActivityWelcome.this, ActivityRentEnded.class);
+                            startActivity(fntr);*/
+                    /*
+                            Intent fntr = new Intent(ActivityWelcome.this, ActivityRateZippe.class);
                             startActivity(fntr);
                         }
 
@@ -393,7 +414,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                             ShowPopup(7);
                         }
 
-                    }
+                    }*/
                 } else {
                     Log.d(TAG, "active=" + active);
 
@@ -500,9 +521,10 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
         //response on hitting auth-location-update API
         if (id == 4) {
-            Intent i = new Intent(this, UtilityPollingService.class);
+            /*Intent i = new Intent(this, UtilityPollingService.class);
             i.setAction("00");
-            startService(i);
+            startService(i);*/
+
         }
     }
 
@@ -556,7 +578,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                 startActivity(rideIntent);
                 break;
             case R.id.btn_deliver:
-                Intent deliverIntent = new Intent(ActivityWelcome.this, ActivityDeliverHome.class);
+                Intent deliverIntent = new Intent(ActivityWelcome.this, ActivityPackageDetails.class);
                 startActivity(deliverIntent);
         }
     }

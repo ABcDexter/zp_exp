@@ -27,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Enjoy your ride\nwith"
+                    android:text="@string/enjoy_your_ride_nwith"
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textSize="23sp" />
@@ -35,7 +35,6 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/layoutZippeee"
                     android:layout_marginBottom="60dp">
 
                     <ImageView
@@ -94,7 +93,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="5dp"
                         android:layout_toEndOf="@id/photo_driver"
-                        android:text="VEH. NO."
+                        android:text="@string/veh_no"
                         android:textAllCaps="true"
                         android:textSize="18sp" />
 
@@ -107,7 +106,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="5dp"
                         android:layout_toEndOf="@id/txtv"
-                        android:text="UK 04 B2632"
+                        android:text=""
                         android:textAllCaps="true"
                         android:textSize="18sp" />
 
@@ -120,7 +119,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="5dp"
                         android:layout_toEndOf="@id/photo_driver"
-                        android:text="Ride OTP"
+                        android:text="@string/ride_otp"
                         android:textAllCaps="true"
                         android:textSize="18sp" />
 
@@ -133,7 +132,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_toEndOf="@id/txto"
-                        android:text="Ride OTP 2056"
+                        android:text=""
                         android:textAllCaps="true"
                         android:textSize="18sp" />
 
@@ -157,7 +156,7 @@
                     android:gravity="center|start"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:text="track your ride"
+                    android:text="@string/track_your_ride"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -172,7 +171,7 @@
                     android:gravity="center|start"
                     android:paddingStart="10dp"
                     android:paddingEnd="12dp"
-                    android:text="emergency support"
+                    android:text="@string/emergency_support"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -187,7 +186,7 @@
                     android:gravity="center|start"
                     android:paddingStart="10dp"
                     android:paddingEnd="12dp"
-                    android:text="share ride details"
+                    android:text="@string/share_ride_details"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
                 <TextView
@@ -201,7 +200,7 @@
                     android:gravity="center|start"
                     android:paddingStart="10dp"
                     android:paddingEnd="12dp"
-                    android:text="share live location"
+                    android:text="@string/share_live_location"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
             </LinearLayout>

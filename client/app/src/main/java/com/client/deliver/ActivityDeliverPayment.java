@@ -26,7 +26,6 @@ import com.client.ActivityDrawer;
 import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
-import com.client.UtilityPollingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +38,7 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
 
     TextView upiPayment, cost;
     final int UPI_PAYMENT = 0;
-    String strAuth, DID,costOnly;
+    String strAuth, DID, costOnly;
 
     private static final String TAG = "ActivityDeliverPayment";
     private static final String DELIVERY_OTP = "DeliveryOtp";
@@ -48,10 +47,34 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
 
     public static final String DELIVERY_DETAILS = "com.client.delivery.details";
     public static final String DELIVERY_ID = "DeliveryID";
-
+    public static final String DROP_LAT = "com.client.delivery.PickLatitude";
+    public static final String DROP_LNG = "com.client.delivery.DropLongitude";
+    public static final String ADDRESS_DROP = "com.client.ride.AddressDrop";
+    public static final String DROP_LANDMARK = "com.client.ride.DropLandmark";
+    public static final String DROP_PIN = "com.client.ride.DropPin";
+    public static final String DROP_MOBILE = "com.client.ride.DropMobile";
+    public static final String DROP_NAME = "com.client.ride.DropName";
+    public static final String ADDRESS_PICK = "com.client.ride.AddressPick";
+    public static final String PICK_LAT = "com.client.delivery.PickLatitude";
+    public static final String PICK_LNG = "com.client.delivery.PickLongitude";
+    public static final String PICK_LANDMARK = "com.client.ride.PickLandmark";
+    public static final String PICK_PIN = "com.client.ride.PickPin";
+    public static final String PICK_MOBILE = "com.client.ride.PickMobile";
+    public static final String PICK_NAME = "com.client.ride.PickName";
+    public static final String REVIEW = "com.delivery.Review";//TODO find better way
+    public static final String R_C_TYPE = "CTYPE";
+    public static final String R_C_SIZE = "CSIZE";
+    public static final String R_C_FRAGILE = "CFRAGILE";
+    public static final String R_C_LIQUID = "CLIQUID";
+    public static final String R_C_COLD = "CCOLD";
+    public static final String R_C_WARM = "CWARM";
+    public static final String R_C_PERISHABLE = "CPERISHABLE";
+    public static final String R_C_NONE = "CNONE";
+    public static final String R_EXP_DELVY = "R_EXP_DELVY";//TODO find better way
+    public static final String R_STND_DELVY = "R_STND_DELVY";//TODO find better way
     private static ActivityDeliverPayment instance;
     Dialog myDialog;
-ImageView infoCost;
+    ImageView infoCost;
     Button dummy;
     ActivityDeliverPayment a = ActivityDeliverPayment.this;
     Map<String, String> params = new HashMap();
@@ -75,7 +98,7 @@ ImageView infoCost;
         upiPayment = findViewById(R.id.upi);
         cost = findViewById(R.id.payment);
         dummy = findViewById(R.id.dummy);
-        infoCost=findViewById(R.id.infoCost);
+        infoCost = findViewById(R.id.infoCost);
         infoCost.setOnClickListener(this);
         upiPayment.setOnClickListener(this);
         dummy.setOnClickListener(this);
@@ -83,12 +106,13 @@ ImageView infoCost;
         myDialog = new Dialog(this);
 
     }
+
     private void ShowPopup() {
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
-        infoText.setText("Please pay " + cost.getText().toString());
+        infoText.setText(getString(R.string.please_pay) + cost.getText().toString());
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
@@ -100,6 +124,7 @@ ImageView infoCost;
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         myDialog.setCanceledOnTouchOutside(true);
     }
+
     public static ActivityDeliverPayment getInstance() {
         return instance;
     }
@@ -109,12 +134,11 @@ ImageView infoCost;
 
         //response on hitting user-delivery-pay API
         if (id == 1) {
-            String otp = response.getString("otp");
-            SharedPreferences sp_price = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
-            sp_price.edit().putString(DELIVERY_OTP, otp).apply();
+            /*SharedPreferences sp_price = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+            sp_price.edit().putString(DELIVERY_OTP, otp).apply();*/
             checkStatus();
         }
-        //response on hitting user-trip-get-status API
+        //response on hitting user-delivery-get-status API
         if (id == 2) {
             try {
                 String active = response.getString("active");
@@ -124,14 +148,50 @@ ImageView infoCost;
                     startActivity(home);
                     finish();
 
+                    SharedPreferences preferencesD = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor1 = preferencesD.edit();
+                    editor1.remove(DELIVERY_ID);
+                    editor1.apply();
+                    SharedPreferences pref = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.remove(PICK_LAT);
+                    editor.remove(PICK_LNG);
+                    editor.remove(ADDRESS_PICK);
+                    editor.remove(PICK_PIN);
+                    editor.remove(PICK_LANDMARK);
+                    editor.remove(PICK_MOBILE);
+                    editor.remove(PICK_NAME);
+                    editor.remove(DROP_LAT);
+                    editor.remove(DROP_LNG);
+                    editor.remove(ADDRESS_DROP);
+                    editor.remove(DROP_PIN);
+                    editor.remove(DROP_LANDMARK);
+                    editor.remove(DROP_MOBILE);
+                    editor.remove(DROP_NAME);
+                    editor.apply();
+
+                    SharedPreferences review = getSharedPreferences(REVIEW, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor reditor = review.edit();
+                    reditor.remove(R_C_COLD);
+                    reditor.remove(R_C_FRAGILE);
+                    reditor.remove(R_C_LIQUID);
+                    reditor.remove(R_C_NONE);
+                    reditor.remove(R_C_WARM);
+                    reditor.remove(R_C_PERISHABLE);
+                    reditor.remove(R_C_TYPE);
+                    reditor.remove(R_C_SIZE);
+                    reditor.remove(R_EXP_DELVY);
+                    reditor.remove(R_STND_DELVY);
+                    reditor.apply();
+
                 } else if (active.equals("true")) {
                     String status = response.getString("st");
-                    if (status.equals("AS")) {
+                    if (status.equals("SC")) {
                         String price = response.getString("price");
-                        cost.setText("₹ "+price);
+                        cost.setText(getString(R.string.rs) + price);
                         costOnly = price;
                     }
-                    if (status.equals("FN")) {
+                    /*if (status.equals("FN")) {
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("32");
                         startService(intent);
@@ -145,7 +205,7 @@ ImageView infoCost;
                         editor1.clear();
                         editor1.apply();
 
-                    }
+                    }*/
                 } else {
                     Intent homePage = new Intent(ActivityDeliverPayment.this, ActivityWelcome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -172,7 +232,7 @@ ImageView infoCost;
                 String amount = costOnly;
                 String note = "Payment for rental service";
                 String name = "Zipp-E";
-                String upiId = "9084083967@ybl";
+                String upiId = "rajnilakshmi@ybl";
                 payUsingUpi(amount, upiId, name, note);
                 break;
 
@@ -186,11 +246,11 @@ ImageView infoCost;
 
     private void paymentMade() {
         String auth = strAuth;
-        String did =DID;
+        String did = DID;
         params.put("auth", auth);
-        params.put("did", did);
+        params.put("scid", did);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth + " price=" + cost.getText().toString());
+        Log.d(TAG, "Values: auth=" + auth + " scid=" + did);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-delivery-pay");
         UtilityApiRequestPost.doPOST(a, "user-delivery-pay", parameters, 20000, 0, response -> {
             try {
@@ -205,9 +265,9 @@ ImageView infoCost;
 
     public void checkStatus() {
         String auth = strAuth;
-        String did =DID;
+        String did = DID;
         params.put("auth", auth);
-        params.put("did", did);
+        params.put("scid", did);
         JSONObject parameters = new JSONObject(params);
 
         Log.d(TAG, "Values: auth=" + auth);

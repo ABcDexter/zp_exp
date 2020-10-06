@@ -9,8 +9,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.client.deliver.ActivityDeliverConfirm;
-import com.client.deliver.ActivityDeliverFillAddress;
-import com.client.deliver.ActivityDeliveryOrders;
 import com.client.rent.ActivityRentEnded;
 import com.client.rent.ActivityRentHome;
 import com.client.rent.ActivityRentInProgress;
@@ -23,8 +21,8 @@ import com.client.ride.ActivityRideOTP;
 import com.client.ride.ActivityRideRequest;
 
 public class UtilityPollingService extends Service {
-   // private int secondsActLocSel;
-   // private boolean stopTimerActLocSel;
+    // private int secondsActLocSel;
+    // private boolean stopTimerActLocSel;
 
     private int secondsActLocSel;
     private boolean stopTimerActLocSel;
@@ -47,7 +45,7 @@ public class UtilityPollingService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 //polling for auth-location-update API in ride section
         if (intent != null && intent.getAction() != null && intent.getAction().equals("00")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -79,7 +77,7 @@ public class UtilityPollingService extends Service {
 //polling for user-is-driver-av in RIDE section
         if (intent != null && intent.getAction() != null && intent.getAction().equals("01")) {
 
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -113,7 +111,7 @@ public class UtilityPollingService extends Service {
         }
 //polling for user-trip-get-status API in RIDE section
         if (intent != null && intent.getAction() != null && intent.getAction().equals("02")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -149,7 +147,7 @@ public class UtilityPollingService extends Service {
         }
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("03")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -183,7 +181,7 @@ public class UtilityPollingService extends Service {
         }
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("04")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -217,7 +215,7 @@ public class UtilityPollingService extends Service {
         }
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("05")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -254,7 +252,7 @@ public class UtilityPollingService extends Service {
 
 //polling for auth-vehicle-get-avail in rent section
         if (intent != null && intent.getAction() != null && intent.getAction().equals("11")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -289,7 +287,7 @@ public class UtilityPollingService extends Service {
 
 //polling for user-trip-get-status API in rent section
         if (intent != null && intent.getAction() != null && intent.getAction().equals("12")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -323,7 +321,7 @@ public class UtilityPollingService extends Service {
         }
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("13")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -357,7 +355,7 @@ public class UtilityPollingService extends Service {
         }
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("14")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -391,7 +389,7 @@ public class UtilityPollingService extends Service {
         }
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("15")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -425,31 +423,31 @@ public class UtilityPollingService extends Service {
         }
 
         //polling for user-is-agent-av in DELIVERY section
-        if (intent != null && intent.getAction() != null && intent.getAction().equals("31")) {
-            final int fixedTimeUpdateLoc = 60;
+        /*if (intent != null && intent.getAction() != null && intent.getAction().equals("31")) {
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
-/*
+*//*
             if (stop) {
-*/
+*//*
             final Handler handler = new Handler();
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d("ActivityDeliverFillAddress.getInstance().getAgent() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+                        Log.d("ActivityFillDropAddress.getInstance().getAgent() in seconds < 0", "Value of seconds: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
-                        ActivityDeliverFillAddress.getInstance().getAgent();
+                        ActivityFillDropAddress.getInstance().getAgent();
 
                     } else {
                         stopTimerActLocSel = false;
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d("ActivityDeliverFillAddress.getInstance().getAgent() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+                        Log.d("ActivityFillDropAddress.getInstance().getAgent() in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -458,10 +456,10 @@ public class UtilityPollingService extends Service {
                 }
             });
         }
-
+*/
         //polling for user-delivery-get-status API in DELIVERY section
         if (intent != null && intent.getAction() != null && intent.getAction().equals("32")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -495,14 +493,14 @@ public class UtilityPollingService extends Service {
         }
 
 //polling for user-delivery-get-status API in DELIVERY section
-        if (intent != null && intent.getAction() != null && intent.getAction().equals("33")) {
-            final int fixedTimeUpdateLoc = 60;
+       /* if (intent != null && intent.getAction() != null && intent.getAction().equals("33")) {
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
-/*
+*//*
             if (stop) {
-*/
+*//*
             final Handler handler = new Handler();
             handler.post(new Runnable() {
                 @Override
@@ -528,7 +526,7 @@ public class UtilityPollingService extends Service {
                 }
             });
         }
-
+*/
         return START_STICKY;
     }
 

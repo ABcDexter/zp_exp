@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,6 @@ import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
-import com.client.UtilityPollingService;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
@@ -38,22 +38,37 @@ import java.util.Map;
 
 public class ActivityRentEnded extends ActivityDrawer implements View.OnClickListener {
 
-    private static final String TAG = "ActivityRentEnded";
-
-    TextView upiPayment, cost;
-    final int UPI_PAYMENT = 0;
-    String stringAuthCookie;
-    private static ActivityRentEnded instance;
     public static final String AUTH_KEY = "AuthKey";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
+    private static final String TAG = "ActivityRentEnded";
+    private static ActivityRentEnded instance;
+    final int UPI_PAYMENT = 0;
+    TextView upiPayment, cost;
+    String stringAuthCookie;
     //Button done;
     ImageButton payNow, info;
     ActivityRentEnded a = ActivityRentEnded.this;
     ScrollView scrollView;
     String CostOnly;
     Dialog myDialog;
-Button dummy;
+    Button dummy;
+
+    public static ActivityRentEnded getInstance() {
+        return instance;
+    }
+
+    public static boolean isConnectionAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+            return netInfo != null && netInfo.isConnected()
+                    && netInfo.isConnectedOrConnecting()
+                    && netInfo.isAvailable();
+        }
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,10 +99,6 @@ Button dummy;
         myDialog = new Dialog(this);
 
         checkStatus();
-    }
-
-    public static ActivityRentEnded getInstance() {
-        return instance;
     }
 
     private void getInfo() {
@@ -133,25 +144,32 @@ Button dummy;
                     String status = response.getString("st");
                     if (status.equals("TR") || status.equals("FN")) {
                         String price = response.getString("price");
-                        cost.setText("₹ "+price);
+                        cost.setText("₹ " + price);
                         CostOnly = price;
-                        if (price.equals("0.00")) {
-                            Intent rate = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
+                        /*if (price.equals("0.00")) {
+                            *//*Intent rate = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
                             startActivity(rate);
-                            finish();
-                        }
+                            finish();*//*
+                            getInfo();
+                        }*/
 
-                        Intent intent = new Intent(this, UtilityPollingService.class);
+                        /*Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("15");
-                        startService(intent);
+                        startService(intent);*/
                     }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            checkStatus();
+                        }
+                    }, 30000);
 
-                } else {
+                }/* else {
                     Intent homePage = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
-                }
+                }*/
             } catch (JSONException e) {
                 e.printStackTrace();
                 // Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -193,7 +211,7 @@ Button dummy;
                 Snackbar snackbar = Snackbar
                         .make(scrollView, "Please make your payment, before booking your next ride.", Snackbar.LENGTH_INDEFINITE);
                 View sbView = snackbar.getView();
-                TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
+                TextView textView = sbView.findViewById(R.id.snackbar_text);
                 textView.setTextColor(Color.YELLOW);
                 snackbar.show();
                 break;
@@ -208,7 +226,7 @@ Button dummy;
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
 
-        infoText.setText("Balance amount as per extended rental time. Please pay to end your trip.");
+        infoText.setText(R.string.balance_amount_as_per_selection);
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
@@ -222,7 +240,6 @@ Button dummy;
 
         myDialog.setCanceledOnTouchOutside(true);
     }
-
 
     private void paymentMade() {
         String auth = stringAuthCookie;
@@ -241,6 +258,7 @@ Button dummy;
             }
         }, a::onFailure);
     }
+
     private void rentPay() {
         String auth = stringAuthCookie;
         Map<String, String> params = new HashMap();
@@ -336,9 +354,9 @@ Button dummy;
             if (str == null) str = "discard";
             String status = "";
             String approvalRefNo = "";
-            String response[] = str.split("&");
+            String[] response = str.split("&");
             for (int i = 0; i < response.length; i++) {
-                String equalStr[] = response[i].split("=");
+                String[] equalStr = response[i].split("=");
                 if (equalStr.length >= 2) {
                     if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
                         status = equalStr[1].toLowerCase();
@@ -363,19 +381,6 @@ Button dummy;
         } else {
             Toast.makeText(ActivityRentEnded.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public static boolean isConnectionAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnected()
-                    && netInfo.isConnectedOrConnecting()
-                    && netInfo.isAvailable()) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

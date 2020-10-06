@@ -4,6 +4,7 @@ public class DeliveryListData {
     private String deliveryID;
     private String deliveryPrice;
     private String deliveryStatus;
+    private String deliveryTip;
 
 
     public String getDeliveryID() {
@@ -17,10 +18,14 @@ public class DeliveryListData {
     public String getDeliveryStatus() {
         return deliveryStatus;
     }
+    public String getDeliveryTip() {
+        return deliveryTip;
+    }
 
-    public DeliveryListData(String deliveryID, String deliveryPrice, String deliveryStatus) {
+    public DeliveryListData(String deliveryID, String deliveryPrice, String deliveryStatus, String deliveryTip) {
         this.deliveryID = deliveryID;
         this.deliveryPrice = deliveryPrice;
         this.deliveryStatus = deliveryStatus;
+        this.deliveryTip = deliveryTip;
     }
 }

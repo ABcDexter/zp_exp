@@ -11,6 +11,8 @@
         <item name="android:textColor">#F1EAEA</item>
         <item name="android:windowBackground">@drawable/black_background1</item>
         <item name="windowActionBar">false</item>
+        <item name="android:textColorPrimary">#F4F3F3</item>
+
     </style>
     
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">

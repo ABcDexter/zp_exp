@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:text="GENDER"
+        android:text="@string/gender"
         android:textAlignment="center"
         android:textColor="#fff"
         android:textSize="23sp"
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:text="FEMALE"
+        android:text="@string/female"
         android:textAlignment="center"
         android:textColor="#fff"
         android:textSize="23sp" />
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:text="MALE"
+        android:text="@string/male"
         android:textAlignment="center"
         android:textColor="#fff"
         android:textSize="23sp" />
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:text="NON BINARY"
+        android:text="@string/non_binary"
         android:textAlignment="center"
         android:textColor="#fff"
         android:textSize="23sp" />

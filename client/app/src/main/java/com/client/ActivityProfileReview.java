@@ -131,15 +131,15 @@ public class ActivityProfileReview extends AppCompatActivity implements View.OnC
 
             case R.id.female:
                 popupWindow.dismiss();
-                btn_gender.setText("FEMALE");
+                btn_gender.setText(R.string.female);
                 break;
             case R.id.male:
                 popupWindow.dismiss();
-                btn_gender.setText("MALE");
+                btn_gender.setText(R.string.male);
                 break;
             case R.id.non_binary:
                 popupWindow.dismiss();
-                btn_gender.setText("NON BINARY");
+                btn_gender.setText(R.string.non_binary);
                 break;
         }
     }

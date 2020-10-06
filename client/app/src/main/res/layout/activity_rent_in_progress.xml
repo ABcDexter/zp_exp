@@ -27,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Enjoy your trip"
+                    android:text="@string/enjoy_your_trip"
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textSize="23sp" />
@@ -36,18 +36,16 @@
                     android:id="@+id/txtsupern"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/txtE"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
-                    android:text="Drop point contact"
+                    android:text="@string/drop_point_contact"
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/layoutZippeee">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/photo_sup"
@@ -118,7 +116,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_toEndOf="@id/photo_sup"
-                        android:text="VEH. NO. :"
+                        android:text="@string/veh_no"
                         android:textAllCaps="true"
                         android:textSize="18sp" />
 
@@ -131,7 +129,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_toEndOf="@+id/photo_sup"
-                        android:text="REMAINING MINS :"
+                        android:text="@string/remaining_mins"
                         android:textAllCaps="true"
                         android:textSize="18sp" />
 
@@ -144,7 +142,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="5dp"
                         android:layout_toEndOf="@id/txt"
-                        android:text="60"
+                        android:text=""
                         android:textAllCaps="true"
                         android:textSize="18sp" />
 
@@ -162,7 +160,6 @@
                     android:id="@+id/txt_drop"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_below="@id/layoutZippeee"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/rect_box_outline"
                     android:orientation="horizontal">
@@ -175,7 +172,7 @@
                         android:gravity="center|start"
                         android:paddingEnd="12dp"
                         android:paddingStart="10dp"
-                        android:text="change DROP POINT"
+                        android:text="@string/change_drop_point"
                         android:textAllCaps="true"
                         android:textSize="20sp" />
 
@@ -185,7 +182,6 @@
                     android:id="@+id/rl_cost"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_below="@id/txt_drop"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/rect_box_outline"
                     android:weightSum="2">
@@ -198,7 +194,7 @@
                         android:gravity="center|start"
                         android:paddingEnd="10dp"
                         android:paddingStart="10dp"
-                        android:text="Extend no of Hours"
+                        android:text="@string/extend_no_of_hours"
                         android:textAllCaps="true"
                         android:textSize="20sp" />
                 </LinearLayout>
@@ -208,14 +204,13 @@
                     android:id="@+id/emergency"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_below="@id/rl_cost"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/rect_box_outline"
                     android:drawableEnd="@drawable/ic_emergency_call"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
                     android:paddingEnd="12dp"
-                    android:text="emergency support"
+                    android:text="@string/emergency_support"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -238,14 +233,13 @@
                     android:id="@+id/share_location"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_below="@+id/emergency"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/rect_box_outline"
                     android:drawableEnd="@drawable/ic_location"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
                     android:paddingEnd="12dp"
-                    android:text="share live location"
+                    android:text="@string/share_live_location"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
             </LinearLayout>
