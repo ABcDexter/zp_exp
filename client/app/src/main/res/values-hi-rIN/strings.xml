@@ -283,9 +283,9 @@
     <string name="thanks_for_renting">Thanks for renting ZIPP-E</string>
     <string name="rate_exp">RATE YOUR EXPERIENCE</string>
     <string name="balance_amount_as_per_selection">Balance amount as per extended rental time. Please pay to end your trip.</string>
-    <string name="e_cycle">E-CYCLE</string>
-    <string name="e_scooty">E-SCOOTY</string>
-    <string name="e_bike">E-BIKE</string>
+    <string name="e_cycle">ई-साइकिल</item>
+    <string name="e_scooty">ई-स्कूटी</string>
+    <string name="e_bike">ई-बाइक</string>
     <string name="coming_soon">This feature shall be active soon.</string>
     <string name="time_extended_by_hour">Your rental time has been extended by 1 hour. Rental charge applicable accordingly.</string>
     <string name="return_veh">Please return the vehicle in time to avoid any extra charge.</string>
@@ -296,7 +296,7 @@
     <string name="cost_calc_as_per_time">Cost calculated as per your rental time. Please pay full amount to begin your trip and to unlock OTP.</string>
     <string name="max_speed_25">Max speed of this vehicle has been set to 25 km/घंटे (as per government norms) for your own safety.</string>
     <string name="pay_to_begin">Cost as per rental time. Please pay full amount to begin your trip.</string>
-    <string name="zbee">ZBEE</string>
+    <string name="zbee">ज़ीबी</string>
     <string name="drivers_available">Drivers are available.</string>
     <string name="thanks_for_zippe">ज़िप्पी के साथ सवारी करने के लिए धन्यवाद</string>
     <string name="att_driver">Attitude of driver</string>
