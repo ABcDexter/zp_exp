@@ -319,8 +319,7 @@ def userDeliverySchedule(dct, user):
     if 'tip' not in dct:
         delivery.tip = 0
     else:
-        delivery.tip = int(float(dct['tip'])) if len(dct['tip']) > 0 in dct else 0
-        print("tip is : ", delivery.tip)
+        delivery.tip = int(float(dct['tip'])) if len(dct['tip']) > 0 else 0
     # 29
 
     pYear = int(dct['pYear'])
@@ -330,7 +329,7 @@ def userDeliverySchedule(dct, user):
     pMinute = int(dct['pMinute'])
     # 30, 31, 32, 33, 34
 
-    if pMinute  < 30:
+    if pMinute < 30:
         pDinaank = datetime(pYear, pMonth, pDate, pHour - 6, (pMinute + 30) % 60, 00)
     else:
         pDinaank = datetime(pYear, pMonth, pDate, pHour - 5, (pMinute - 30) % 60, 00)
@@ -357,6 +356,7 @@ def userDeliverySchedule(dct, user):
     delivery.save()
     params = {"scid": scid}
 
+    ### Scheduler logic ####
     global sched
     sched.pause()
     sched.add_job(callAPI, 'date', run_date=pDinaank,
