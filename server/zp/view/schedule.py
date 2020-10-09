@@ -315,7 +315,12 @@ def userDeliverySchedule(dct, user):
     # delivery.srcdet = dct['srcdet'] if 'srcdet' in dct else ''
     # delivery.dstdet = dct['dstdet'] if 'dstdet' in dct else ''
     # 25,  # 26, 28,   27th is missed deliveratty
-    delivery.tip = int(float(dct['tip'])) if 'tip' in dct else 0
+
+    if 'tip' not in dct:
+        delivery.tip = 0
+    else:
+        delivery.tip = int(float(dct['tip'])) if len(dct['tip']) > 0 in dct else 0
+        print("tip is : ", delivery.tip)
     # 29
 
     pYear = int(dct['pYear'])
