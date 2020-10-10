@@ -107,7 +107,7 @@ DATABASES = {
     # Setup mysql doin
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('ZP_DB_NAME'),
+        'NAME': os.environ.get('ZP_DB_NAME'), #moved to a new database named "zippe" for utf-8 encdoing
         'USER': os.environ.get('ZP_DB_USER'),
         'PASSWORD': os.environ.get('ZP_DB_PASSWD'),
         'HOST': 'localhost', #os.environ.get('ZP_DB_HOST'),
