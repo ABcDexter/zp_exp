@@ -395,8 +395,9 @@ def supRentCheck(dct, sup):
             vals['rvtype'] = 'BIKE'
         elif trip.rvtype == 3:
             vals['rvtype'] = 'ZBEE'
+        vals['price'] = getRentPrice(trip.hrs)['price']
         rentals.append(vals)
-
+        
     ret = {} if not len(qsTrip) else {'rentals': rentals}
     return HttpJSONResponse(ret)
 
