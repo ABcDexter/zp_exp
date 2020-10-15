@@ -396,7 +396,7 @@ def supRentCheck(dct, sup):
         elif trip.rvtype == 3:
             vals['rvtype'] = 'ZBEE'
         vals['price'] = getRentPrice(trip.hrs)['price']
-        vals['vno'] = trip.vno
+        vals['van'] = trip.van
         rentals.append(vals)
         
     ret = {} if not len(qsTrip) else {'rentals': rentals}
