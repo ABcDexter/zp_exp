@@ -395,7 +395,14 @@ def supRentCheck(dct, sup):
             vals['rvtype'] = 'BIKE'
         elif trip.rvtype == 3:
             vals['rvtype'] = 'ZBEE'
-        vals['price'] = getRentPrice(trip.hrs)['price']
+
+        if trip.st == 'ST':
+            vals['price'] = getTripPrice(trip)
+        elif trip.st == 'FN':
+            vals['price'] = getTripPrice(trip)
+        else:
+            vals['price'] = getRentPrice(trip.hrs)['price']
+
         vals['van'] = trip.van
         rentals.append(vals)
         
