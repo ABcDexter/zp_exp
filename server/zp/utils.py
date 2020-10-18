@@ -753,7 +753,7 @@ def getTripPrice(trip):
     if trip.rtype == '0':
         return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
     else :
-        hrs = datetime.now() - trip.stime if trip.st == 'ST' else trip.etime- trip.stime
+        hrs = datetime.now(utc) - trip.stime if trip.st == 'ST' else trip.etime- trip.stime
         return getRentPrice(trip.hrs, hrs.seconds//60) #convert seconds to minutes
 
 
