@@ -64,7 +64,7 @@ class Agent(Entity):
         if st == 'AS':
             self.log('Going to the user for pickup...')
 
-            if prob(0.0001): # only 1 % chance of cancelling a delivery
+            if prob(0.0000): # only 1 % chance of cancelling a delivery
                 self.log('Canceling delivery!')
                 ret = self.callAPI('agent-delivery-cancel')
                 self.logIfErr(ret)
@@ -94,7 +94,7 @@ class Agent(Entity):
                 ret = self.callAPI('agent-delivery-done')
                 self.logIfErr(ret)
 
-            if prob(0.001):
+            if prob(0.000):
                 self.log('Failing delivery!')
                 ret = self.callAPI('auth-delivery-fail')
                 self.logIfErr(ret)
