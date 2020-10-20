@@ -1284,13 +1284,63 @@ def authProfilePhotoSave(dct, entity):
     Notes:
         needs production settings
     '''
-    from codecs import encode
-    entityAdhar = encode(str(entity.auth), 'rot13')
-    entityAdhar = encode(entityAdhar, 'rot13') #could be removed
+    #from codecs import encode
+    #entityAdhar = encode(str(entity.auth), 'rot13')
+    #entityAdhar = encode(entityAdhar, 'rot13') #could be removed
+    entityAdhar = str(entity.auth)
     sProfilePhoto = saveTmpImgFile(settings.PROFILE_PHOTO_DIR, dct['profilePhoto'], 'dp')
     log('Profile photo saved for - %s saved as %s' % (entityAdhar, sProfilePhoto))
     dpFileName = 'dp_' + entityAdhar + '_.jpg'
     os.rename(sProfilePhoto, os.path.join(settings.PROFILE_PHOTO_DIR, dpFileName))
     log('New photo saved: %s' % dpFileName)
     return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def authAadhaarSave(dct, entity):
+    '''
+    entity sends and saves his/her profile photo
+
+    HTTP Args:
+        auth
+        Aadhaar photo base 64 encoded
+            aadhaarFront, aadhaarBack
+    Notes:
+        needs production settings
+    '''
+    
+    sAadharFrontTemp = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarFront'], 'front-tmp')
+    sAadharBackTemp = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarBack'], 'back-tmp')
+    entityAdhar = str(entity.an)
+    log('Aadhaar photo saved for - %s saved as %s' % (entityAdhar, sAadharFrontTemp))
+    
+    # Get aadhaar as 3 groups of 4 digits at a time via google vision api
+    clientDetails = doOCR(sAadharFrontTemp)
+    sAadhaar = clientDetails['an']
+    log('Aadhaar number read from %s - %s' % (sAadharFrontTemp, sAadhaar))
+    clientDetails2 = doOCRback(sAadharBackTemp)
+    sAadhaar2 = clientDetails2['an']
+    log('Aadhaar number read from %s - %s' % (sAadharBackTemp, sAadhaar2))
+
+    # verify aadhaar number via Verhoeff algorithm
+    if not aadhaarNumVerify(sAadhaar):
+        raise ZPException(501,'Aadhaar number not valid!')
+    log('Aadhaar is valid')
+
+    if sAadhaar != sAadhaar2:
+        raise ZPException(501, 'Aadhaar number front doesn\'t match Aadhaar number back!')
+
+    sAdharFrontFileName = 'ad_' + entityAdhar + '_front.jpg'
+    sAdharBackFileName = 'ad_' + entityAdhar + '_back.jpg'
+
+    os.rename(sAadharFrontTemp, os.path.join(settings.AADHAAR_DIR, sAdharFrontFileName))
+    os.rename(sAadharBackTemp, os.path.join(settings.AADHAAR_DIR, sAdharBackFileName))
+    log('New photo saved: front %s | back %s' % (sAdharFrontFileName, sAdharBackFileName))
+    return HttpJSONResponse({})
+
 

@@ -49,6 +49,9 @@ RENT_AS_TIMEOUT = 3600  # 60 minutes
 
 DEL_SC_TIMEOUT = 900   # 15 minutes
 DEL_AS_TIMEOUT = 1800  # 30 minutes
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2621440 # 25 MB
+
 # Application definition
 
 INSTALLED_APPS = [
