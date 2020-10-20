@@ -1274,7 +1274,9 @@ def authProfilePhotoSave(dct, entity):
     Notes:
         needs production settings
     '''
-    entityAdhar = str(entity.an)
+    from codecs import encode
+    entityAdhar = encode(str(entity.auth), 'rot13')
+    entityAdhar = encode(entityAdhar, 'rot13') #could be removed
     sProfilePhoto = saveTmpImgFile(settings.PROFILE_PHOTO_DIR, dct['profilePhoto'], 'dp')
     log('Profile photo saved for - %s saved as %s' % (entityAdhar, sProfilePhoto))
     dpFileName = 'dp_' + entityAdhar + '_.jpg'
