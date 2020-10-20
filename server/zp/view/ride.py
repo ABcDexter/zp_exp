@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from url_magic import makeView
-from ..models import Place, Trip, Progress
+from ..models import Place, Trip, Progress, Rate
 from ..models import User, Vehicle, Driver, Location
 from ..utils import ZPException, HttpJSONResponse, googleDistAndTime
 from ..utils import getOTP
@@ -122,6 +122,10 @@ def driverRideGetStatus(_dct, driver):
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
             ret = getTripPrice(trip)
+            # get the acutal price for TRminated trips
+            if trip.st in ['TR'] : 
+                rate = Rate.objects.filter(id='ride'+str(trip.id))[0]
+                ret['price'] = rate.money
 
         ret['active'] = trip.st in Trip.DRIVER_ACTIVE
         ret['st'] = trip.st
@@ -564,6 +568,16 @@ def userRideRequest(dct, user):#, _trip):
     # getRoutePrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
     ret = getRiPrice(trip)
     ret['tid'] = trip.id
+
+    # to get the exact price even if the user TRminated the ride en route.
+    if trip.rtype=='0':
+        rate = Rate()
+        rate.id = 'ride' + str(trip.id)
+        rate.type = 'ride' if trip.rtype == '0' else 'rent'
+        rate.rev = ''
+        rate.money = float(getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)['price'])
+        rate.save()        
+
 
     return HttpJSONResponse(ret)
 
