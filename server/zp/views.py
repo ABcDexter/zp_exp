@@ -33,7 +33,7 @@ from url_magic import makeView
 from zp.view import rent, ride, deliver, pwa
 from .utils import googleDistAndTime
 from zp.view import schedule
-from .models import Rate
+from .models import Rate, Supervisor
 
 ###########################################
 # Types
@@ -403,6 +403,9 @@ def userTripGetStatus(_dct, user):
                 price = str(remPrice) + '.00' if remPrice >=0 else '0.00'
 
             ret['price'] = price
+        
+        dAuth = Driver.objects.filter(an=trip.dan)[0].auth if trip.rtype == '0' else Supervisor.objects.filter(an=trip.dan)[0].auth
+        ret['photourl'] = "https://media.villageapps.in:8090/media/dp_" + dAuth + "_.jpg"
     else:
         ret = {'active': False, 'st': 'NONE', 'tid': -1}
 
@@ -1270,7 +1273,7 @@ def authProfilePhotoSave(dct, entity):
 
     HTTP Args:
         auth
-        aadhaarFront base 64 encoded
+        Display photo base 64 encoded
     Notes:
         needs production settings
     '''
