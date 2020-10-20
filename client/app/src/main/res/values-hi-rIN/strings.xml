@@ -1,21 +1,359 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Zipp-e</string>
-    <string name="Open">open</string>
-    <string name="Close">close</string>
-    <string name="hi">HI!\u0020 </string>
-    <string name="disclaimer">I accept that this package does not contain any illegal / restricted items (as per The Indian Court of Law). ZIPP-E partner may ask to verify the contents of the package and has the liberty to refuse the delivery if the items are not verified.</string>
-    <string name="qwerty">THIS IS AN APPROXIMATE COST. MAY CHANGE DEPENDING ON RIDE TIME.</string>
-    <string name="_1_hr">1 hr (60 min) @ ₹ 1.00/min = ₹ 60</string>
-    <string name="_2_hr">2 hr (120 min) @ ₹ 0.90/min = ₹ 108</string>
-    <string name="_3_hr">3 hr (180 min) @ ₹ 0.80/min = ₹ 144</string>
-    <string name="_4_hr">4 hr (240 min) @ ₹ 0.75/min = ₹ 180</string>
-    <string name="_5_hr">5 hr (300 min) @ ₹ 0.70/min = ₹ 210</string>
-    <string name="_6_hr">6 hr (360 min) @ ₹ 0.65/min = ₹ 234</string>
-    <string name="_7_hr">7 hr (420 min) @ ₹ 0.60/min = ₹ 252</string>
-    <string name="_8_hr">8 hr (480 min) @ ₹ 0.55/min = ₹ 264</string>
-    <string name="_9_hr">9 hr (540 min) @ ₹ 0.50/min = ₹ 270</string>
-    <string name="_10_hr">10 hr (600 min) @ ₹ 0.50/min = ₹ 300</string>
-    <string name="_11_hr">11 hr (660 min) @ ₹ 0.50/min = ₹ 330</string>
-    <string name="_12_hr">12 hr (1440 min) @ ₹ 0.50/min = ₹ 360</string>
+    <string name="app_name">Zipp-e(ज़िप्पी)</string>
+    <string name="Open">खोलें</string>
+    <string name="Close">बंद करें</string>
+    <string name="hi">प्रणाम!\u0020 </string>
+    <string name="disclaimer">मैं कन्फर्म करता/करती हूँ कि इस पार्सल में भारतीय न्यायालय के नियम अनुसार कोई भी अवैध तथा प्रतिबंधित चीज नहीं है। डिलीवरी एजेंट पार्सल की सामग्री जाँच सकता है और चीज के नियमानुसार नहीं होने पर डिलीवरी से मना कर सकता है।</string>
+    <string-array name="gender_array">
+        <item>लिंग</item>
+        <item>स्त्री</item>
+        <item>पुरुष</item>
+        <item>अन्य</item>
+    </string-array>
+    <string-array name="vehicle_array_sans_zbee">
+        <item>गाड़ी का चुनाव</item>
+        <item>ई-स्कूटी</item>
+        <item>ई-बाइक</item>
+        <item>ई-साइकिल</item>
+    </string-array>
+    <string-array name="vehicle_array_sans_cycle">
+        <item>गाड़ी का चुनाव</item>
+        <item>ई-स्कूटी</item>
+        <item>ई-बाइक</item>
+        <item>ज़ीबी</item>
+    </string-array>
+
+    <string-array name="hours_array">
+        <item>कितने घंटों के लिए</item>
+        <item>1 घंटा / Rs. 1 प्रति मिनट </item>
+        <item>2 घंटे / Rs. 0.9 प्रति मिनट</item>
+        <item>3 घंटे / Rs. 0.8 प्रति मिनट</item>
+        <item>4 घंटे / Rs. 0.7 प्रति मिनट</item>
+        <item>5 घंटे / Rs. 0.6 प्रति मिनट</item>
+        <item>6 घंटे / Rs. 0.5 प्रति मिनट</item>
+        <item>8 घंटे / Rs. 0.5 प्रति मिनट</item>
+        <item>12 घंटे / Rs. 0.5 प्रति मिनट</item>
+        <item>24 घंटे / Rs. 0.5 प्रति मिनट</item>
+    </string-array>
+    <string-array name="content_array">
+        <item>पार्सल की सामग्री</item>
+        <item>दस्तावेज /  पुस्तकें</item>
+        <item>कपड़े / वस्त्र</item>
+        <item>खाना / भोजन</item>
+        <item>घरेलू सामान</item>
+        <item>इलेक्ट्रॉनिक्स / इलेक्ट्रिकल आइटम</item>
+        <item>अन्य</item>
+    </string-array>
+    <string-array name="size_array">
+        <item>पार्सल का आकार</item>
+        <item>छोटा (35 x 25 x 13 सेंटी)</item>
+        <item>मध्यम (70 x 50 x 26 सेंटी)</item>
+        <item>थोड़ा  बड़ा (105 x 75 x 39 सेंटी)</item>
+        <item>बड़ा (104 x 100 x 52 सेंटी)</item>
+        <item>बहुत बड़ा (175 x 125 x 65 सेंटी)</item>
+    </string-array>
+    <string-array name="rider_no_array">
+        <item>सवारियों की संख्या</item>
+        <item>1</item>
+        <item>2</item>
+        <item> (5 साल तक के एक बच्चे को मुफ़्त सवारी)</item>
+    </string-array>
+
+    <string name="qwerty">यह एक अनुमानित शुल्क है।  राइड के समय के अनुसार बदल सकती है। </string>
+    <string name="_1_hr">1 घंटा (60 मिनट) @ ₹ 1.00/मिनट = ₹ 60</string>
+    <string name="_2_hr">2 घंटे (120 मिनट) @ ₹ 0.90/मिनट = ₹ 108</string>
+    <string name="_3_hr">3 घंटे (180 मिनट) @ ₹ 0.80/मिनट = ₹ 144</string>
+    <string name="_4_hr">4 घंटे (240 मिनट) @ ₹ 0.75/मिनट = ₹ 180</string>
+    <string name="_5_hr">5 घंटे (300 मिनट) @ ₹ 0.70/मिनट = ₹ 210</string>
+    <string name="_6_hr">6 घंटे (360 मिनट) @ ₹ 0.65/मिनट = ₹ 234</string>
+    <string name="_7_hr">7 घंटे (420 मिनट) @ ₹ 0.60/मिनट = ₹ 252</string>
+    <string name="_8_hr">8 घंटे (480 मिनट) @ ₹ 0.55/मिनट = ₹ 264</string>
+    <string name="_9_hr">9 घंटे (540 मिनट) @ ₹ 0.50/मिनट = ₹ 270</string>
+    <string name="_10_hr">10 घंटे (600 मिनट) @ ₹ 0.50/मिनट = ₹ 300</string>
+    <string name="_11_hr">11 घंटे (660 मिनट) @ ₹ 0.50/मिनट = ₹ 330</string>
+    <string name="_12_hr">12 घंटे (960 मिनट) @ ₹ 0.50/मिनट = ₹ 360</string>
+    <string name="_name">नाम</string>
+    <string name="_mobile">मोबाइल</string>
+    <string name="are_you_ready_to_confirm_your_delivery">कृपया अपनी डिलीवरी की जानकारी \nकन्फर्म करें</string>
+    <string name="delivery_charge">डिलीवरी का शुल्क</string>
+    <string name="rs">₹</string>
+    <string name="thank_your_agent">अपने एजेंट का शुक्रिया करें</string>
+    <string name="enter_tip">कृपया टिप दें</string>
+    <string name="colon">:</string>
+    <string name="please_make_payment_to_nconfirm_your_delivery">कृपया इस डिलीवरी के लिए \nभुगतान करें</string>
+    <string name="your_agent_will_be_assigned_shortly_please_keep_you_your_package_ready_nthank_you_for_choosing">आपका डिलीवरी एजेंट जल्द ही नियुक्त किया जाएगा। कृपया आप अपना पार्सल तैयार रखें।</string>
+    <string name="thank_you_for_choosing">ज़िप्पी को चुनने के लिए धन्यवाद</string>
+    <string name="to_view_your_order">अपने आर्डर को देखने के लिए</string>
+    <string name="click_here">यहाँ क्लिक करें</string>
+    <string name="delivery_status">डिलीवरी की स्थिति</string>
+    <string name="track_your_delivery">अपनी डिलीवरी का पता करें</string>
+    <string name="review_your_delivery_before_confirming">कन्फर्म करें करने से पहले अपनी डिलीवरी की समीक्षा करें</string>
+    <string name="pickup_point_details">पिक-अप पॉइंट की जानकारी</string>
+    <string name="drop_point_details">ड्रॉप पॉइंट की जानकारी</string>
+    <string name="package_details">पार्सल की जानकारी</string>
+    <string name="time_slot">टाइम स्लॉट</string>
+    <string name="delivery_type">डिलीवरी का प्रकार</string>
+    <string name="pick_up_time">पार्सल उठाने का समय</string>
+    <string name="pick_up_date">डिलीवरी की तारीख</string>
+    <string name="choose_delivery_type">डिलीवरी का प्रकार चुनें</string>
+    <string name="express">एक्सप्रेस</string>
+    <string name="standard">स्टैण्डर्ड</string>
+    <string name="additional_details_optional">अन्य जानकारी (वैकल्पिक)</string>
+    <string name="click_to_choose">चुनने के लिए क्लिक करें</string>
+    <string name="drop_details">ड्रॉप विवरण</string>
+    <string name="delivery">डिलीवरी</string>
+    <string name="eg_beware_of_dogs">जैसे कि कुत्तों से सावधान रहे</string>
+    <string name="enter_pin_code">पिन कोड डालिए</string>
+    <string name="landmark">आस-पास की कोई जानी-मानी जगह</string>
+    <string name="receiver_name">प्राप्तकर्ता का नाम</string>
+    <string name="receiver_mobile">प्राप्तकर्ता का मोबाइल</string>
+    <string name="if_our_agent_finds_that_your_area_is_not_serviceable_by_road_you_will_be_asked_to_pick_your_delivery_from_a_hub">यदि हमारे एजेंट को पता चलता है कि आपका क्षेत्र दुर्गम है या वहाँ तक सड़क नहीं जाती है, तो आपको एक हब से अपनी डिलीवरी (पार्सल) लेने के लिए कहा जाएगा।</string>
+    <string name="your_name">भेजने वाले का नाम</string>
+    <string name="your_mobile">भेजने वाले का मोबाइल</string>
+    <string name="if_our_agent_finds_that_your_area_is_not_serviceable_by_road_you_will_be_asked_to_drop_your_delivery_at_a_hub">यदि हमारे एजेंट को पता चलता है कि आपका क्षेत्र दुर्गम है या वहाँ तक सड़क नहीं जाती है, तो आपको एक हब तक अपनी डिलीवरी (पार्सल) देने के लिए कहा जाएगा।</string>
+    <string name="enter_mobile">मोबाइल नंबर डालें</string>
+    <string name="request_otp">otp (ओ. टी. पी.) का अनुराध करें</string>
+    <string name="enter_otp_to_verify">सत्यापित करने के लिए  OTP (ओ. टी. पी.) दर्ज करें</string>
+    <string name="upload_aadhar_front">आधार कार्ड के सामने की फ़ोटो अपलोड करें</string>
+    <string name="upload_aadhar_back">आधार कार्ड के पीछे की फ़ोटो अपलोड करें</string>
+    <string name="next">आगे</string>
+    <string name="i_agree_to_terms_amp_conditions"><![CDATA[मैं नियमों और शर्तों से सहमत हूँ]]></string>
+    <string name="pinch_to_zoom">उँगलियों से पिंच करके ज़ूम (बड़ा) करें </string>
+    <string name="please_go_to_the_nearest_drop_point_to_end_your_rental">कृपया अपना रेंटल समाप्त करने के लिए नज़दीकी ड्रॉप- पॉइंट / हब पर जाएं</string>
+    <string name="km">कि.मी.</string>
+    <string name="care_instructions">देखभाल की सूचना</string>
+    <string name="pick_up_details">पिक अप विवरण</string>
+    <string name="express_delivery">एक्सप्रेस डिलीवरी (वितरण)</string>
+    <string name="standard_delivery">स्टैण्डर्ड डिलीवरी (वितरण)</string>
+    <string name="your_rental_time_is_over_nwith">रेंट का समय खत्म \nहो गया है</string>
+    <string name="please_pay">कृपया शुल्क चुकायें\u0020</string>
+    <string name="make_payment_using_upi">यू.पी.आई. का उपयोग करके भुगतान करें</string>
+    <string name="pick_up_point_z_hub">पपिक-अप पॉइंट / ज़ी-हब</string>
+    <string name="drop_point_z_hub">ड्राप-पॉइंट / ज़ी-हब</string>
+    <string name="no_of_hours">कृपया घंटे चुनें</string>
+    <string name="schedule_rental">वाहन को पहले से तय करें</string>
+    <string name="enjoy_your_trip">अपनी यात्रा का आनंद लें</string>
+    <string name="drop_point_contact">ड्रॉप प्वाइंट का संपर्क</string>
+    <string name="veh_no">गाड़ी नम्बर :</string>
+    <string name="remaining_mins">बचे हुए मिनट :</string>
+    <string name="your_rental_is_nconfirmed">आपकी रेंटल (किराये) की गाड़ी \nपक्की हो गयी है</string>
+    <string name="pick_point_contact">पिक-अप स्थल का सम्पर्क</string>
+    <string name="vehicle">गाड़ी :</string>
+    <string name="otp">ओ.टी.पी. :</string>
+    <string name="pick_point">पिक-अप पॉइंट / स्थान</string>
+    <string name="drop_point">ड्राप पॉइंट / स्थान</string>
+    <string name="vehicle_speed">गाड़ी की गति</string>
+    <string name="pick_hub">पिक हब</string>
+    <string name="drop_hub">ड्रॉप हब</string>
+    <string name="you_have_reached_your_ndestination_with">आप अपने चुने हुए स्थान पर पहुँच गए</string>
+    <string name="cash">नकद</string>
+    <string name="upi">यू.पी.आई.</string>
+    <string name="let_s_get_you_a_nride">ज़िप्पी राइड करलो</string>
+    <string name="vehicle_type">कृपया वाहन चुनें</string>
+    <string name="enjoy_your_ride_nwith">ज़िप्पी राइड का आनंद लें</string>
+    <string name="ride_otp">राइड ओ.टी.पी.</string>
+    <string name="delivery_summary">डिलीवरी का ब्यौरा</string>
+    <string name="track_your_ride">अपनी राइड को ट्रैक करें</string>
+    <string name="emergency_support">आपातकालीन सहायता</string>
+    <string name="share_ride_details">राइड की जानकारी दें</string>
+    <string name="share_live_location">लोकेशन की जानकारी दें</string>
+    <string name="your_ride_is_confirmed_nwith">आपकी राइड पक्की हो गयी है</string>
+    <string name="ride_time">राइड की अवधि</string>
+    <string name="min">\u0020मिनट</string>
+    <string name="cost_estimate">अनुमानित शुल्क</string>
+    <string name="driver_arriving_in">ड्राइवर के आने में समय</string>
+    <string name="mins">मिनट</string>
+    <string name="disclaimer_delay_due_to_traffic_can_occur">घोषणा: ट्रैफ़िक के कारण देरी हो सकती है।</string>
+    <string name="confirm">कन्फर्म करें</string>
+    <string name="cancel">कैंसल करें</string>
+    <string name="thank_you_for_nriding_with_zippe">ज़िप्पी के साथ राइड \nकरने के लिए धन्यवाद</string>
+    <string name="please_note">कृपया ध्यान दें</string>
+    <string name="you_will_be_charged_extra_if_you_extend_your_rental_time">यदि आप अपना रेंटल समय बढ़ाते हैं तो आपसे अतिरिक्त शुल्क लिया जाएगा।</string>
+    <string name="extend_no_of_hours">समय बढ़ाएं </string>
+    <string name="no_extra_charge_applicable_on_updating_drop_point">ड्राप पॉइंट बदलने पर कोई अतिरिक्त शुल्क नहीं लिया जाएगा।</string>
+    <string name="change_drop_point">ड्रॉप पॉइंट बदलें</string>
+    <string name="click_choose_picture">फ़ोटो खींचें या चुनें</string>
+    <string name="change_language">भाषा बदलें</string>
+    <string name="night_mode">नाईट मोड</string>
+    <string name="delivery_order_no">डिलीवरी आर्डर संख्या</string>
+    <string name="gender">लिंग</string>
+    <string name="female">स्त्री</string>
+    <string name="male">पुरुष</string>
+    <string name="non_binary">अन्य</string>
+    <string name="fragile_breakable">नाजुक / टूटने-फूटने वाला</string>
+    <string name="contains_liquid">तरल वस्तु</string>
+    <string name="perishable">जल्दी खराब होने वाला</string>
+    <string name="keep_cold">ठंडा रखिए</string>
+    <string name="keep_warm">गर्म रखिए</string>
+    <string name="none_of_the_above">इन में से कोई भी नहीं</string>
+    <string name="beware_of_dogs">कुत्तों से सावधान</string>
+    <string name="knock_on_my_door">मेरे दरवाजे पर दस्तक दें</string>
+    <string name="ring_the_doorbell">डोरबेल (दरवाजे) की घंटी बजाएं</string>
+    <string name="i_m_home_all_day">मैं पूरे दिन घर पर ही हूँ</string>
+    <string name="package_size">पार्सल का नाप</string>
+    <string name="cm">सेंटी</string>
+    <string name="inch">इंच</string>
+    <string name="s">S</string>
+    <string name="_35_x_25_x_13_cm">(35 x 25 x 13 सेंटी)</string>
+    <string name="_0_2_kg">0 – 2 किलो</string>
+    <string name="m">M</string>
+    <string name="_70_x_50_x_26_cm">(70 x 50 x 26 सेंटी)</string>
+    <string name="_2_4_kg">2 – 4 किलो</string>
+    <string name="l">L</string>
+    <string name="_105_x_75_x_39_cm">(105 x 75 x 39 सेंटी)</string>
+    <string name="_4_6_kg">4 – 6 किलो</string>
+    <string name="xl">XL</string>
+    <string name="_104_x_100_x_52_cm">(104 x 100 x52 सेंटी)</string>
+    <string name="_6_8_kg">6 – 8 किलो</string>
+    <string name="xxl">XXL</string>
+    <string name="_175_x_125_x_65_cm">(175 x 125 x65 सेंटी)</string>
+    <string name="_8_10_kg">8 – 10 किलो</string>
+    <string name="package_contents">पार्सल में वस्तु</string>
+    <string name="documents_books">दस्तावेज / पुस्तकें</string>
+    <string name="medicines">दवाइयाँ</string>
+    <string name="restaurant_orders">रेस्टोरेंट से खाना</string>
+    <string name="household_items">घरेलु सामान</string>
+    <string name="electronics_electrical">इलेक्ट्रानिक्स / एलेट्रिकल्स</string>
+    <string name="clothes_accessories">कपड़े आदि</string>
+    <string name="other">अन्य</string>
+    <string name="please_specify">कृपया जानकारी दीजिये</string>
+    <string name="choose_rental_package">कृपया घंटे चुनें</string>
+    <string name="_2_4_hr_rental_ride_up_to_40km">2–4 घंटे का रेंटल : 40 किलोमीटर तक सवारी</string>
+    <string name="_6_8_hr_rental_ride_up_to_80km">6–8 घंटे का रेंटल : 80 किलोमीटर तक सवारी</string>
+    <string name="charge_vehicle_upon_exceeding_80km">80 किलोमीटर से अधिक होने पर वाहन चार्ज करें</string>
+    <string name="no">ना</string>
+    <string name="yes">हाँ</string>
+    <string name="no_of_riders">सवारियों की संख्या</string>
+    <string name="child_up_to_5_years">\u0020( 5 साल तक का बच्चा )</string>
+    <string name="package_pick_up_time">पार्सल को उठाने का समय</string>
+    <string name="today">आज</string>
+    <string name="tomorrow">कल</string>
+    <string name="first_order_at_8_00am_nlast_order_at_8_00pm_nwithin_2_hours_upto_10km">सुबह 8:00 बजे पहला ऑर्डर \nरात 8:00 बजे अंतिम ऑर्डर  \n10 किमी तक के आर्डर २ घंटे के भीतर</string>
+    <string name="log_out">लॉग आउट</string>
+    <string name="profile">प्रोफ़ाइल</string>
+    <string name="home">होम</string>
+    <string name="delivery_orders">डिलीवरी के आर्डर</string>
+    <string name="ride_history">राइड की हिस्ट्री</string>
+    <string name="terms_and_conditions">नियम और शर्तें</string>
+    <string name="the_amount_shall_be_directly_credited_to_our_agent_account">राशि सीधे हमारे एजेंट के खाते में जमा की जाएगी।</string>
+    <string name="base_price">आधार मूल्य : </string>
+    <string name="distance">दूरी : \u0020</string>
+    <string name="your_agent_will_be_assigned_shortly">आप को डिलीवरी एजेंट जल्द ही नियुक्त किया जाएगा। कृपया अपना पार्सल तैयार रखें।</string>
+    <string name="the_package_is_en_route">पार्सल रस्ते में है। आपका डिलीवरी एजेंट गंतव्य तक पहुंचने पर फ़ोन करेगा।</string>
+    <string name="your_delivery_agent_will_arrive_shortly">आपका डिलीवरी एजेंट शीघ्र ही आ जाएगा। \n आपका OTP(ओ.टी.पी.) है: </string>
+    <string name="we_are_sorry">हमें खेद है ! अपरिहार्य परिस्थितियों के कारण आपकी डिलीवरी रद्द हो गई। हमारे अधिकारी शीघ्र ही आपसे संपर्क करेंगे।</string>
+    <string name="delivery_denied_by_your_agent">आपके एजेंट द्वारा डिलीवरी (वितरण) से इनकार किया गया।</string>
+    <string name="delivery_was_cancelled_by_you">आपके द्वारा डिलीवरी (वितरण) रद्द कर दिया गया।</string>
+    <string name="delivery_timed_out">डिलीवरी का समय समाप्त हो गया।</string>
+    <string name="delivery_was_completed_successfully">डिलीवरी सफलतापूर्वक हो गया।</string>
+    <string name="agent_has_arrived">आपका डिलीवरी एजेंट आ गया है। \n आपका OTP(ओ.टी.पी.) है: </string>
+    <string name="small">स्मॉल (छोटा)</string>
+    <string name="medium">मीडियम (मध्यम)</string>
+    <string name="large">लार्ज (बड़ा)</string>
+    <string name="x_large">एक्स-एल (और बड़ा)</string>
+    <string name="x_x_large">एक्स-एक्स-एल (सबसे बड़ा)</string>
+    <string name="pin_not_serviceable">अभी हमारी सेवा इस पिन कोड के क्षेत्र तक नहीं पहुँची है।</string>
+    <string name="click_to_view">देखने के लिए क्लिक करें</string>
+    <string name="thanks_for_feedback">आपकी फ़ीडबैक के लिए धन्यवाद। हम उचित कार्यवाई करने का वादा करते हैं।</string>
+    <string name="any_other">कोई और</string>
+    <string name="veh_clean">वाहन की स्वच्छता</string>
+    <string name="veh_condi">वाहन की स्थिति</string>
+    <string name="att_contact_person">सम्पर्क व्यक्ति का रवैया</string>
+    <string name="thanks_for_renting">ज़िप्पी रेंट (किराए) पर लेने के लिए धन्यवाद</string>
+    <string name="rate_exp">आपका अनुभव कैसा रहा</string>
+    <string name="balance_amount_as_per_selection">रेंटल (किराये) के समय के अनुसार शेष राशि। कृपया अपनी यात्रा समाप्त करने के लिए भुगतान करें।</string>
+    <string name="e_cycle">ई-साइकिल</string>
+    <string name="e_scooty">ई-स्कूटी</string>
+    <string name="e_bike">ई-बाइक</string>
+    <string name="coming_soon">यह सुविधा जल्द ही आ रही है।</string>
+    <string name="time_extended_by_hour">आपके रेंटल (किराये) का समय 1 घंटे बढ़ा दिया गया है। इसके अनुसार अगला किराया-शुल्क लागू।</string>
+    <string name="return_veh">कृपया किसी भी शुल्क से बचने के लिए वाहन समय पर वापस करें।</string>
+    <string name="time_extended">आपके रेंटल (किराये) का समय बढ़ा दिया गया है। इसके अनुसार अगले घंटे का किराया-शुल्क लागू।</string>
+    <string name="extended_min">अतिरिक्त मिनट :</string>
+    <string name="pay_to_unlock_otp">कृपया अपने OTP(ओ.टी.पी.) को अनलॉक करने के लिए ₹</string>
+    <string name="unlock_otp">\u0020का भुगतान करें।</string>
+    <string name="check_condi_before_paying">वाहन की स्थिति की जाँच के बाद ही भुगतान करें</string>
+    <string name="cost_calc_as_per_time">आपके रेंटल समय के अनुसार शुल्क तय किया गया है। कृपया अपनी यात्रा शुरू करने और ओ.टी.पी. को अनलॉक करने के लिए शुल्क का भुगतान करें।</string>
+    <string name="max_speed_25">इस वाहन की अधिकतम गति आपकी सुरक्षा के लिए 25 किमी / घंटा (सरकारी मानदंडों के अनुसार) निर्धारित की गई है।</string>
+    <string name="pay_to_begin">रेंटल समय के अनुसार लागत। कृपया अपनी यात्रा शुरू करने के लिए पूरी राशि का भुगतान करें।</string>
+    <string name="zbee">ज़ीबी</string>
+    <string name="drivers_available">ड्राइवर उपलब्ध हैं</string>
+    <string name="thanks_for_zippe">ज़िप्पी राइड करने के लिए धन्यवाद </string>
+    <string name="att_driver">ड्राइवर का बर्ताव</string>
+    <string name="vehicles_rented_out">माफ़ करना! हमारे सभी वाहन वर्तमान में किराए पर हैं। थोड़ी देर बाद में कोशिश करें।</string>
+    <string name="ride_canceled_by_you">आपने राइड कैंसल की।</string>
+    <string name="unable_to_complete_your_ride">आपकी राइड पूरी नहीं हो पाई। किसी भी प्रकार की असुविधा के लिए के लिए हमें खेद है।</string>
+    <string name="ride_timed_out">आपके राइड के अनुरोध का समय समाप्त हो गया है। कृपया पुन: प्रयास करें।</string>
+    <string name="ride_cancelled_by_you">हमें खेद है ! अपरिहार्य परिस्थितियों के कारण आपकी राइड रद्द हो गई। कृपया पुन: प्रयास करें।</string>
+    <string name="searching_for_ride">आपकी राइड के लिए खोज जारी है…</string>
+    <string name="google_part1">यह\u0020</string>
+    <string name="google_part2">गूगल मैप्स (दूरी और लिया गया समय)\u0020</string>
+    <string name="google_part3">के अनुसार अनुमानित शुल्क है। असल समय के अनुसार शुल्क बदल सकता है।</string>
+    <string name="google_time_part1">यह\u0020</string>
+    <string name="google_time_part2">गूगल मैप्स\u0020</string>
+    <string name="google_time_part3">के अनुसार अनुमानित समय है। ट्रैफ़िक के अनुसार समय बदल सकता है।</string>
+    <string name="end_ride_before_destination">राइड चुने हुए स्थान तक पहुँचने से पहले समाप्त करने पर शुल्क में कोई भी अंतर नहीं आएगा।
+क्या आप अब भी अपनी राइड पक्की करना चाहते हैं ?</string>
+
+    <string name="cancel_ride">राइड कैंसल करें क्योंकि…</string>
+    <string name="driver_denied">ड्राइवर ने पिक-अप से मना कर दिया</string>
+    <string name="driver_denied_destination">ड्राइवर ने ड्रॉप स्थान पर जाने से मना कर दिया</string>
+    <string name="wait_time_too_long">प्रतीक्षा का समय ज़्यादा था</string>
+    <string name="driver_no_contact">ड्राइवर से सम्पर्क नहीं हुआ</string>
+    <string name="reason_not_listed">इनमें से कोई भी नहीं</string>
+    <string name="dont_cancel">कैंसल न करें</string>
+    <string name="ride_not_complete">आपकी राइड अभी पूरी नहीं हुई है। राइड चुने हुए स्थान तक पहुँचने से पहले समाप्त करने पर अनुमानित शुल्क में कोई भी अंतर नहीं आएगा।
+क्या आप अब भी अपनी राइड समाप्त करना चाहते हैं ?</string>
+    <string name="ride_not_ended">राइड समाप्त नहीं हुयी है</string>
+    <string name="ride_ended">राइड समाप्त करें</string>
+    <string name="you_have_chosen_to_end">आपने अपनी ज़िप्पी राइड को समाप्त कर दिया है</string>
+    <string name="pay_cash">कृपया नकद दें \u0020</string>
+    <string name="no_upi_found">कोई भी यू.पी.आई. ऍप नहीं मिला, कृपया जारी रखने के लिए एक यू.पी.आई. ऍप को डाउनलोड करें</string>
+    <string name="transaction_successful">सौदा सफल हुआ</string>
+    <string name="payment_cancelled_by_user">यूजर द्वारा भुगतान कैंसिल किया गया</string>
+    <string name="transaction_failed">सौदा विफल हुआ। कृपया पुनः प्रयास करें</string>
+    <string name="no_internet">इंटरनेट की सुविधा नहीं है।  कृपया अपने कनेक्शन जाँचे और पुनः प्रयास करें</string>
+    <string name="make_payment_to_continue">कृपया अगली राइड बुक करने से पहले बकाया राशि का भुगतान करें।</string>
+    <string name="driving_licence">आपको वाहन किराए पर देने से पहले ज़िप्पी हब में एक वैध ड्राइविंग लाइसेंस की एक कॉपी जमा करने के लिए कहा जाएगा ।</string>
+    <string name="agree">मंज़ूर</string>
+    <string name="disagree">नामंज़ूर </string>
+    <string name="no_vehicle_av">वर्तमान में कोई वाहन उपलब्ध नहीं है !</string>
+    <string name="checking_veh_av">वाहन की उपलब्धता जाँच रहे हैं …</string>
+    <string name="details_updated">जानकारी सफलतापूर्वक बदल दिया गया !</string>
+    <string name="check_internet">अपना इंटरनेट कनेक्शन जाँचें !</string>
+    <string name="make_selection">कृपया चयन करें ।</string>
+    <string name="invalid_selection">समय का अमान्य चयन</string>
+    <string name="drop_to">पार्सल कहाँ पर छोड़ना है</string>
+    <string name="pick_from">पार्सल कहाँ से लेना है (पता)</string>
+    <string name="no_driver_av">कोई भी ड्राइवर ऑनलाइन नहीं है।
+उपलब्ध होने पर मुझे सूचित करें।</string>
+    <string name="mandatory_fields">सब जानकारी ज़रूरी है</string>
+    <string name="this_mandatory_field">यह भरना जरूरी है</string>
+    <string name="rate_your_ride">आपको राइड कैसी लगी?</string>
+    <string name="i_am_not_satisfied_because">मेरी असन्तोष  का कारण</string>
+    <string name="submit">भेजें</string>
+    <string name="you_have_selected_nrent">आइए आपको ज़िप्पी रेंट कराएं</string>
+    <string name="delivery_sch_tommorrow">आपकी डिलीवरी कल के लिए निर्धारित की जाएगी</string>
+    <string name="agree_to_terms">कृपया हमारे नियम और शर्तों से सहमत होंं</string>
+    <string name="make_payment_ride">कृपया अगली राइड बुक करने से पहले बकाया राशि का भुगतान करें।</string>
+    <string name="state">HOME STATE</string>
+    <string name="uttarakhand">UTTARAKHAND</string>
+    <string name="rajasthan">RAJASTHAN</string>
+    <string name="enter_name">ENTER NAME</string>
+    <string name="address_alert">कृपया यह सुनिश्चित कर लें कि आपके द्वारा दिए गए पिक-अप और ड्रॉप-स्थान सड़क द्वारा पहुँचने योग्य हैं।
+        यदि ऐसा नहीं है तो आपको अपना पार्सल हमारे सबसे नज़दीकी ऑफिस या हब से लेना पड़ेगा।
+        इस स्थिति में आपको कोई भी शुल्क वापस नहीं किया जाएगा और किसी भी ख़राब होने वाली वस्तु के लिए डिलीवरी सर्विस जिम्मेदार नहीं होगी।</string>
+    <string name="ok">ओके</string>
+    <string name="pick_point_pin">कृपया उस स्थान का पिन कोड डालिये जहाँ से पार्सल लेना है</string>
+    <string name="pick_point_place">कृपया उस स्थान का पता बतायें जहाँ से पार्सल लेना है</string>
+    <string name="pick_point_land">कृपया पिक-अप पते के पास की कोई जानी-मानी जगह बताइए</string>
+    <string name="pick_point_name">कृपया उस व्यक्ति का नाम बतायें, जिससे पार्सल लेना है</string>
+    <string name="pick_point_mobile">कृपया उस व्यक्ति का मोबाइल नम्बर बतायें, जिससे पार्सल लेना है</string>
+    <string name="drop_point_pin">कृपया उस स्थान का पिन कोड डालिये जहाँ पर पार्सल देना है</string>
+    <string name="drop_point_place">कृपया उस स्थान का पता बतायें जहाँ पर पार्सल देना है</string>
+    <string name="drop_point_land">कृपया ड्रॉप पते के पास की कोई जानी-मानी जगह बताइए</string>
+    <string name="drop_point_name">कृपया उस व्यक्ति का नाम बतायें, जिस को पार्सल देना है</string>
+    <string name="drop_point_mobile">कृपया उस व्यक्ति का मोबाइल नम्बर बतायें, जिस को जिससे पार्सल देना है</string>
+    <string name="terms_amp_conditions"><![CDATA[" TERMS & CONDITIONS"]]></string>
 </resources>

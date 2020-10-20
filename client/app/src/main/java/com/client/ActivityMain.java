@@ -192,7 +192,7 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 simpleProgressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
+                simpleProgressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
                 String code = etOTP.getText().toString().trim();
                 if (code.isEmpty() || code.length() < 6) {
                     Log.d(TAG, "Error in OTP");

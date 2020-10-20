@@ -1,30 +1,38 @@
 package com.client.deliver;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
+import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
@@ -38,12 +46,12 @@ import java.util.Objects;
 
 public class ActivityFillPickDetails extends ActivityDrawer implements View.OnClickListener {
     TextView txtAddress;
-    EditText pinCode, landmark, mobile, name;
+    EditText pinCode, edPickAddress, mobile, name;
     String choose = "";
     ImageButton confirm, nextPin;
     private static final String TAG = "ActivityFillDropAddress";
 
-     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
+    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     public static final String AN_KEY = "AadharKey";
     public static final String AUTH_KEY = "AuthKey";
     public static final String PREFS_ADDRESS = "com.client.ride.Address";
@@ -54,7 +62,6 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
     public static final String PICK_PIN = "com.client.ride.PickPin";
     public static final String PICK_MOBILE = "com.client.ride.PickMobile";
     public static final String PICK_NAME = "com.client.ride.PickName";
-
     public static final String BUSS = "Buss";
     public static final String BUSS_FLAG = "com.client.delivery.BussFlag";
 
@@ -70,6 +77,7 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
     LinearLayout addressDetails;
     Map<String, String> params = new HashMap();
     ActivityFillPickDetails a = ActivityFillPickDetails.this;
+    ImageButton info_pin, info_name, info_place, info_landmark, info_mobile;
 
     @Override
 
@@ -91,9 +99,19 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
         nextPin = findViewById(R.id.next_pin);
         nextPin.setOnClickListener(this);
         name = findViewById(R.id.name_person);
-        landmark = findViewById(R.id.landmark);
+        edPickAddress = findViewById(R.id.ed_pick_address);
         mobile = findViewById(R.id.mobile);
         confirm = findViewById(R.id.confirm_address);
+        info_pin = findViewById(R.id.infoPickPin);
+        info_place = findViewById(R.id.infoPickAddress);
+        info_landmark = findViewById(R.id.infoLand);
+        info_name = findViewById(R.id.infoName);
+        info_mobile = findViewById(R.id.infoMobile);
+        info_pin.setOnClickListener(this);
+        info_place.setOnClickListener(this);
+        info_landmark.setOnClickListener(this);
+        info_name.setOnClickListener(this);
+        info_mobile.setOnClickListener(this);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         simpleProgressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
         addressDetails = findViewById(R.id.address_details);
@@ -119,7 +137,7 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
         //autocompleteFragment.setHint("FLAT, FLOOR, BUILDING NAME");
 
         EditText etPlace = autocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
-        etPlace.setHint("PICK FROM");
+        etPlace.setHint(R.string.landmark);
         etPlace.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         etPlace.setTextColor(Color.WHITE);
         etPlace.setPadding(0, 0, 150, 0);
@@ -155,26 +173,146 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.confirm_address:
+                String str_name = name.getText().toString();
+                String str_mobile = mobile.getText().toString();
+                String str_landmark = edPickAddress.getText().toString();
+                if (TextUtils.isEmpty(placeName)) {
+                    Toast.makeText(instance, R.string.mandatory_fields, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (TextUtils.isEmpty(str_landmark)) {
+                    edPickAddress.setError(getString(R.string.this_mandatory_field));
+                    return;
+                }
+                if (TextUtils.isEmpty(str_name)) {
+                    name.setError(getString(R.string.this_mandatory_field));
+                    return;
+                }
 
-                SharedPreferences pref = this.getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putString(PICK_LAT, lat);
-                editor.putString(PICK_LNG, remainder);
-                editor.putString(ADDRESS_PICK, placeName);
-                editor.putString(PICK_PIN, pinCode.getText().toString());
-                editor.putString(PICK_LANDMARK, landmark.getText().toString());
-                editor.putString(PICK_MOBILE, mobile.getText().toString());
-                editor.putString(PICK_NAME, name.getText().toString());
-                editor.apply();
-                Intent intent = new Intent(ActivityFillPickDetails.this, ActivityFillDropAddress.class);
-                startActivity(intent);
-                finish();
+                if (TextUtils.isEmpty(str_mobile)) {
+                    mobile.setError(getString(R.string.this_mandatory_field));
+                    return;
+                }
+                if (lat.isEmpty()) {
+                    Toast.makeText(this, R.string.pick_point_land, Toast.LENGTH_SHORT).show();
+                } else {
+                    SharedPreferences pref = this.getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString(PICK_LAT, lat);
+                    editor.putString(PICK_LNG, remainder);
+                    editor.putString(ADDRESS_PICK, edPickAddress.getText().toString());
+                    editor.putString(PICK_PIN, pinCode.getText().toString());
+                    editor.putString(PICK_LANDMARK, placeName);
+                    editor.putString(PICK_MOBILE, mobile.getText().toString());
+                    editor.putString(PICK_NAME, name.getText().toString());
+                    Log.d(TAG, "&&&&&&&" + "PICK_LANDMARK: " + placeName + " ADDRESS_PICK:" + edPickAddress.getText().toString());
+                    editor.apply();
+                    Intent intent = new Intent(ActivityFillPickDetails.this, ActivityFillDropAddress.class);
+                    startActivity(intent);
+                    finish();
+                }
                 break;
             case R.id.next_pin:
-                locationName();
+                String pin_code = pinCode.getText().toString();
+                if (TextUtils.isEmpty(pin_code)) {
+                    pinCode.setError(getString(R.string.this_mandatory_field));
+                    return;
+                } else {
+                    addressAlert();
+                }
+                break;
+            case R.id.infoPickPin:
+                ShowPopup(1);
+                break;
+            case R.id.infoPickAddress:
+                ShowPopup(2);
+                break;
+            case R.id.infoLand:
+                ShowPopup(3);
+                break;
+            case R.id.infoName:
+                ShowPopup(4);
+                break;
+            case R.id.infoMobile:
+                ShowPopup(5);
                 break;
         }
 
+    }
+
+    private void ShowPopup(int id) {
+
+        myDialog.setContentView(R.layout.popup_new_request);
+        TextView infoText = myDialog.findViewById(R.id.info_text);
+
+        if (id == 1) {
+            infoText.setText(R.string.pick_point_pin);
+        }
+        if (id == 2) {
+            infoText.setText(R.string.pick_point_place);
+        }
+        if (id == 3) {
+            infoText.setText(R.string.pick_point_land);
+        }
+        if (id == 4) {
+            infoText.setText(R.string.pick_point_name);
+        }
+        if (id == 5) {
+            infoText.setText(R.string.pick_point_mobile);
+        }
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+        myDialog.setCanceledOnTouchOutside(true);
+    }
+
+    private void addressAlert() {
+        // Create the object of
+        // AlertDialog Builder class
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityFillPickDetails.this);
+        // Set the message show for the Alert time
+        builder.setMessage(R.string.address_alert);
+        // Set Alert Title
+        builder.setTitle(R.string.please_note);
+        // Set Cancelable false
+        // for when the user clicks on the outside
+        // the Dialog Box then it will remain show
+        builder.setCancelable(false);
+        // Set the positive button with ok name
+        // OnClickListener method is use of
+        // DialogInterface interface.
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                locationName();
+                dialog.cancel();
+            }
+        });
+
+        // Set the Negative button with No name
+        // OnClickListener method is use
+        // of DialogInterface interface.
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // If user click cancel
+                // then user goes to the previous window
+                Intent back = new Intent(ActivityFillPickDetails.this, ActivityWelcome.class);
+                startActivity(back);
+                finish();
+            }
+        });
+
+        // Create the Alert dialog
+        AlertDialog alertDialog = builder.create();
+
+        // Show the Alert Dialog box
+        alertDialog.show();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
+        Button buttonPositive = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        buttonPositive.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        Button buttonNegative = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        buttonNegative.setTextColor(ContextCompat.getColor(this, R.color.Black));
     }
 
     public void locationName() {

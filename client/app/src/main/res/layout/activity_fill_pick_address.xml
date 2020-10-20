@@ -22,7 +22,7 @@
                 android:id="@+id/txt_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="40dp"
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="@string/pickup_point_details"
@@ -30,35 +30,79 @@
                 android:textAllCaps="true"
                 android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/pin_code"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@drawable/rect_box_outline"
-                android:gravity="center"
-                android:hint="@string/enter_pin_code"
-                android:inputType="phone"
-                android:maxLength="6"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAllCaps="true"
-                android:textColor="@color/txtColor"
-                android:textSize="20sp" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
+                <EditText
+                    android:id="@+id/pin_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/rect_box_outline"
+                    android:gravity="center"
+                    android:hint="@string/enter_pin_code"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textAllCaps="true"
+                    android:textColor="@color/txtColor"
+                    android:textSize="20sp" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoPickPin"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/ic_info" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/textPlace"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="20dp"
+                android:text="" />
+
             <LinearLayout
                 android:id="@+id/address_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="50dp">
+
+                    <EditText
+                        android:id="@+id/ed_pick_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:autofillHints="null"
+                        android:background="@drawable/rect_box_outline"
+                        android:gravity="center"
+                        android:hint="@string/pick_from"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/txtColor"
+                        android:textSize="20sp"
+                        android:inputType="textLongMessage"/>
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/infoPickAddress"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/ic_info" />
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -76,38 +120,47 @@
                         android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/infoLand"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/ic_info" />
                 </RelativeLayout>
 
-                <EditText
-                    android:id="@+id/landmark"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="50dp"
-                    android:autofillHints="null"
-                    android:background="@drawable/rect_box_outline"
-                    android:gravity="center"
-                    android:hint="@string/landmark"
-                    android:inputType="textPersonName"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textAllCaps="true"
-                    android:textColor="@color/txtColor"
-                    android:textSize="20sp" />
 
-                <EditText
-                    android:id="@+id/name_person"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="50dp"
-                    android:background="@drawable/rect_box_outline"
-                    android:gravity="center"
-                    android:hint="@string/your_name"
-                    android:inputType="textPersonName"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textAllCaps="false"
-                    android:textColor="@color/txtColor"
-                    android:textSize="20sp" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="50dp">
+
+                    <EditText
+                        android:id="@+id/name_person"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/rect_box_outline"
+                        android:gravity="center"
+                        android:hint="@string/your_name"
+                        android:inputType="textPersonName"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/txtColor"
+                        android:textSize="20sp" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/infoName"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/ic_info" />
+                </RelativeLayout>
+
 
                 <ProgressBar
                     android:id="@+id/simpleProgressBar"
@@ -116,30 +169,47 @@
                     android:layout_gravity="center"
                     android:visibility="gone" />
 
-
-                <EditText
-                    android:id="@+id/mobile"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="50dp"
-                    android:background="@drawable/rect_box_outline"
-                    android:gravity="center"
-                    android:hint="@string/your_mobile"
-                    android:inputType="phone"
-                    android:maxLength="10"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textAllCaps="true"
-                    android:textColor="@color/txtColor"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
+                <RelativeLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:gravity="center"
-                    android:justificationMode="inter_word"
-                    android:text="@string/if_our_agent_finds_that_your_area_is_not_serviceable_by_road_you_will_be_asked_to_drop_your_delivery_at_a_hub"/>
+                    android:layout_marginBottom="50dp">
+
+
+
+                    <EditText
+                        android:id="@+id/mobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/rect_box_outline"
+                        android:gravity="center"
+                        android:hint="@string/your_mobile"
+                        android:inputType="phone"
+                        android:maxLength="10"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/txtColor"
+                        android:textSize="20sp" />
+
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/infoMobile"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/ic_info" />
+                </RelativeLayout>
+
+
+                <!-- <TextView
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:gravity="center"
+                     android:justificationMode="inter_word"
+                     android:text="@string/if_our_agent_finds_that_your_area_is_not_serviceable_by_road_you_will_be_asked_to_drop_your_delivery_at_a_hub"
+                     android:textSize="16sp" />-->
 
                 <ImageButton
                     android:id="@+id/confirm_address"

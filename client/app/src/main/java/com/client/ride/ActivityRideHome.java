@@ -163,7 +163,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment_pick);
 
         etPlace = (EditText) srcAutocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
-        etPlace.setHint("PICK UP POINT");
+        //etPlace.setHint("PICK UP POINT");
+        etPlace.setHint(getString(R.string.pick_point));
         etPlace.setHintTextColor(Color.parseColor("#DFDDDD"));
         etPlace.setTextColor(Color.parseColor("#DFDDDD"));
         etPlace.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -172,7 +173,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         dstAutocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment_drop);
         etDst = (EditText) dstAutocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
-        etDst.setHint("DROP POINT");
+        //etDst.setHint("DROP POINT");
+        etDst.setHint(getString(R.string.drop_point));
         etDst.setHintTextColor(Color.parseColor("#DFDDDD"));
         etDst.setTextColor(Color.parseColor("#DFDDDD"));
         etDst.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -257,7 +259,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 vibrator.vibrate(1000);
             }
             ln.setVisibility(View.VISIBLE);
-            dialog_txt.setText("No drivers currently online.\nNotify me when available.");
+            dialog_txt.setText(R.string.no_driver_av);
             reject_rq.setOnClickListener(this);
             accept_rq.setOnClickListener(this);
             myDialog.setCanceledOnTouchOutside(false);
@@ -371,7 +373,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                     } else {
                         vibrator.vibrate(1000);
                     }
-                    Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
+                    Snackbar snackbar = Snackbar.make(scrollView, R.string.mandatory_fields, Snackbar.LENGTH_LONG);
                     snackbar.show();
                 } else {
                     storeData();

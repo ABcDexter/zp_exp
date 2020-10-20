@@ -56,7 +56,7 @@ public class ActivityDeliveryHistoryList extends AppCompatActivity {
     public void onFailure(VolleyError error) {
         Log.d("ActivityDeliveryHistoryList class", Objects.requireNonNull(error.getMessage()));
 
-        Toast.makeText(this, "CHECK YOUR INTERNET CONNECTION!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.check_internet, Toast.LENGTH_LONG).show();
 
     }
 

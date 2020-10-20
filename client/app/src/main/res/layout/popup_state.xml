@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorSpinnerBck"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="30dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="@string/state"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/uk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="@string/uttarakhand"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp" />
+
+    <TextView
+        android:id="@+id/raj"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="@string/rajasthan"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp" />
+
+</LinearLayout>

@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
@@ -53,6 +54,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
     Map<String, String> params = new HashMap();
     ScrollView scrollView;
     TextView txt;
+    Button dummy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +84,8 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         paynow = findViewById(R.id.pay_now);
         paynow.setOnClickListener(this);
         scrollView = findViewById(R.id.scrollView_ride_OTP);
+        dummy = findViewById(R.id.dummy);
+        dummy.setOnClickListener(this);
     }
 
     public static ActivityRideEnded getInstance() {
@@ -131,7 +135,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("05");
                         startService(intent);
-                        txt.setText("you have chosen to end \nyour ride with");
+                        txt.setText(R.string.you_have_chosen_to_end);
                     }
                     if (status.equals("FN")) {
                         Intent intent = new Intent(this, UtilityPollingService.class);
@@ -178,11 +182,14 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
                 break;
             case R.id.pay_now:
                 Snackbar snackbar = Snackbar
-                        .make(scrollView, "Please make your payment, before booking your next ride.", Snackbar.LENGTH_INDEFINITE);
+                        .make(scrollView, R.string.make_payment_ride, Snackbar.LENGTH_INDEFINITE);
                 View sbView = snackbar.getView();
                 TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
                 textView.setTextColor(Color.YELLOW);
                 snackbar.show();
+                break;
+            case R.id.dummy:
+                paymentMade();
                 break;
         }
     }
@@ -192,7 +199,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
-        infoText.setText("Please pay cash " + cost.getText().toString());
+        infoText.setText(getString(R.string.pay_cash) + cost.getText().toString());
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
@@ -257,7 +264,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         if (null != chooser.resolveActivity(getPackageManager())) {
             startActivityForResult(chooser, UPI_PAYMENT);
         } else {
-            Toast.makeText(ActivityRideEnded.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityRideEnded.this, R.string.no_upi_found, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -314,16 +321,16 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
 
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
-                Toast.makeText(ActivityRideEnded.this, "Transaction successful.", Toast.LENGTH_LONG).show();
+                Toast.makeText(ActivityRideEnded.this, R.string.transaction_successful, Toast.LENGTH_LONG).show();
                 paymentMade();
                 Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
-                Toast.makeText(ActivityRideEnded.this, "Payment cancelled by user.", Toast.LENGTH_LONG).show();
+                Toast.makeText(ActivityRideEnded.this, R.string.transaction_successful, Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(ActivityRideEnded.this, "Transaction failed.Please try again", Toast.LENGTH_LONG).show();
+                Toast.makeText(ActivityRideEnded.this, R.string.transaction_failed, Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(ActivityRideEnded.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityRideEnded.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
     }
 

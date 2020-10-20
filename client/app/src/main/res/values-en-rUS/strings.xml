@@ -1,11 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Zipp-e</string>
-    <string name="Open">open</string>
-    <string name="Close">close</string>
+    <string name="Open">OPEN</string>
+    <string name="Close">CLOSE</string>
     <string name="hi">HI!\u0020</string>
-    <string name="disclaimer">I accept that this package does not contain any illegal / restricted items (as per The Indian Court of Law). ZIPP-E partner may ask to verify the contents of the package and has the liberty to refuse the delivery if the items are not verified.</string>
+    <string name="disclaimer">By confirming, I accept that this package does not contain any illegal / restricted items (as per The Indian Court of Law). ZIPP-E partner may ask to verify the contents of the package and has the liberty to refuse the delivery if the items are not verified.</string>
+
+    <string-array name="gender_array">
+        <item>GENDER</item>
+        <item>FEMALE</item>
+        <item>MALE</item>
+        <item>NON BINARY</item>
+    </string-array>
+    <!--<string-array name="vehicle_array">
+        <item>VEHICLE TYPE</item>
+        <item>E-CYCLE</item>
+        <item>E-SCOOTY</item>
+        <item>E-BIKE</item>
+        <item>ZBEE</item>
+    </string-array>-->
+    <string-array name="vehicle_array_sans_zbee">
+        <item>VEHICLE TYPE</item>
+        <item>E-SCOOTY</item>
+        <item>E-BIKE</item>
+        <item>E-CYCLE</item>
+    </string-array>
+    <string-array name="vehicle_array_sans_cycle">
+        <item>VEHICLE TYPE</item>
+        <item>E-SCOOTY</item>
+        <item>E-BIKE</item>
+        <item>ZBEE</item>
+    </string-array>
+
+    <string-array name="hours_array">
+        <item>NO OF HOURS</item>
+        <item>1 hr / Rs. 1 per min </item>
+        <item>2 hr / Rs. 0.9 per min</item>
+        <item>3 hr / Rs. 0.8 per min</item>
+        <item>4 hr / Rs. 0.7 per min</item>
+        <item>5 hr / Rs. 0.6 per min</item>
+        <item>6 hr / Rs. 0.5 per min</item>
+        <item>8 hr / Rs. 0.5 per min</item>
+        <item>12 hr / Rs. 0.5 per min</item>
+        <item>24 hr / Rs. 0.5 per min</item>
+    </string-array>
+    <string-array name="content_array">
+        <item>PACKAGE CONTENTS</item>
+        <item>DOCUMENTS / BOOKS</item>
+        <item>CLOTHES / ACCESSORIES</item>
+        <item>FOOD</item>
+        <item>HOUSEHOLD</item>
+        <item>ELECTRONICS / ELECTRICAL ITEMS</item>
+        <item>OTHER</item>
+    </string-array>
+    <string-array name="size_array">
+        <item>PACKAGE SIZE</item>
+        <item>S (35 x 25 x 13 cm)</item>
+        <item>M (70 x 50 x 26 cm)</item>
+        <item>L (105 x 75 x 39 cm)</item>
+        <item>XL (104 x 100 x 52 cm)</item>
+        <item>XXL (175 x 125 x 65 cm)</item>
+    </string-array>
+    <string-array name="rider_no_array">
+        <item>NO OF RIDERS</item>
+        <item>1</item>
+        <item>2</item>
+        <item>(1 CHILD UPTO 5 YRS RIDES FREE)</item>
+    </string-array>
+    <string name="title_activity_maps2" translatable="false">Map</string>
+    <string name="rupee" translatable="false">&#8377;</string>
     <string name="qwerty">THIS IS AN APPROXIMATE COST. MAY CHANGE DEPENDING ON RIDE TIME.</string>
+    <string name="title_activity_maps_hub" translatable="false">Map</string>
     <string name="_1_hr">1 hr (60 min) @ ₹ 1.00/min = ₹ 60</string>
     <string name="_2_hr">2 hr (120 min) @ ₹ 0.90/min = ₹ 108</string>
     <string name="_3_hr">3 hr (180 min) @ ₹ 0.80/min = ₹ 144</string>
@@ -17,5 +82,289 @@
     <string name="_9_hr">9 hr (540 min) @ ₹ 0.50/min = ₹ 270</string>
     <string name="_10_hr">10 hr (600 min) @ ₹ 0.50/min = ₹ 300</string>
     <string name="_11_hr">11 hr (660 min) @ ₹ 0.50/min = ₹ 330</string>
-    <string name="_12_hr">12 hr (1440 min) @ ₹ 0.50/min = ₹ 360</string>
+    <string name="_12_hr">12 hr (960 min) @ ₹ 0.50/min = ₹ 360</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="are_you_ready_to_confirm_your_delivery">Are you ready to confirm \nyour delivery?</string>
+    <string name="delivery_charge">delivery charge</string>
+    <string name="rs">₹</string>
+    <string name="thank_your_agent">Thank your agent</string>
+    <string name="enter_tip">Enter Tip</string>
+    <string name="colon">:</string>
+    <string name="please_make_payment_to_nconfirm_your_delivery">Please make payment to \nconfirm your delivery</string>
+    <string name="please_pay">Please Pay \u0020</string>
+    <string name="make_payment_using_upi">make payment using upi</string>
+    <string name="your_agent_will_be_assigned_shortly_please_keep_you_your_package_ready_nthank_you_for_choosing">Your agent will be assigned shortly. Please keep you your package ready.</string>
+    <string name="thank_you_for_choosing">Thank you for choosing</string>
+    <string name="to_view_your_order">to view your order</string>
+    <string name="click_here">click here</string>
+    <string name="delivery_status">delivery status</string>
+    <string name="track_your_delivery">Track your delivery</string>
+    <string name="review_your_delivery_before_confirming">Kindly confirm your delivery details</string>
+    <string name="pickup_point_details">Pickup Point Details</string>
+    <string name="drop_point_details">Drop Point Details</string>
+    <string name="package_details">Package Details</string>
+    <string name="time_slot">Time Slot</string>
+    <string name="delivery_type">Delivery Type</string>
+    <string name="pick_up_time">Pick Up Time</string>
+    <string name="pick_up_date">Pick Up Date</string>
+    <string name="delivery_summary">Delivery Summary</string>
+    <string name="choose_delivery_type">Choose Delivery Type</string>
+    <string name="express">Express</string>
+    <string name="standard">Standard</string>
+    <string name="additional_details_optional">Additional details (optional)</string>
+    <string name="click_to_choose">click to choose</string>
+    <string name="drop_details">Drop Details</string>
+    <string name="delivery">Delivery</string>
+    <string name="eg_beware_of_dogs">eg. Beware of Dogs</string>
+    <string name="enter_pin_code">ENTER PIN CODE</string>
+    <string name="landmark">LANDMARK</string>
+    <string name="receiver_name">RECEIVER NAME</string>
+    <string name="receiver_mobile">RECEIVER MOBILE</string>
+    <string name="if_our_agent_finds_that_your_area_is_not_serviceable_by_road_you_will_be_asked_to_pick_your_delivery_from_a_hub">If our agent finds that your area is not serviceable by road, you will be asked to pick your delivery from a hub.</string>
+    <string name="your_name">SENDER NAME</string>
+    <string name="your_mobile">SENDER MOBILE</string>
+    <string name="if_our_agent_finds_that_your_area_is_not_serviceable_by_road_you_will_be_asked_to_drop_your_delivery_at_a_hub">If our delivery agent finds that your area is not serviceable by road, you will be asked to drop your package at a hub.</string>
+    <string name="enter_mobile">ENTER MOBILE</string>
+    <string name="request_otp">request otp</string>
+    <string name="enter_otp_to_verify">ENTER OTP TO VERIFY</string>
+    <string name="upload_aadhar_front">upload aadhar front</string>
+    <string name="upload_aadhar_back">upload aadhar back</string>
+    <string name="next">NEXT</string>
+    <string name="i_agree_to_terms_amp_conditions"><![CDATA[I AGREE TO]]></string>
+    <string name="pinch_to_zoom">Pinch to zoom</string>
+    <string name="please_go_to_the_nearest_drop_point_to_end_your_rental">please go to the nearest drop point to end your rental</string>
+    <string name="km">km</string>
+    <string name="care_instructions">Care Instructions</string>
+    <string name="pick_up_details">PICK-UP DETAILS</string>
+    <string name="express_delivery">Express Delivery</string>
+    <string name="standard_delivery">Standard Delivery</string>
+    <string name="your_rental_time_is_over_nwith">your rental time is over\nwith</string>
+    <string name="pick_up_point_z_hub">PICK-UP POINT / Z-HUB</string>
+    <string name="drop_point_z_hub">DROP POINT / Z-HUB</string>
+    <string name="no_of_hours">NO. OF HOURS</string>
+    <string name="schedule_rental">Schedule rental</string>
+    <string name="enjoy_your_trip">Enjoy your trip</string>
+    <string name="drop_point_contact">Drop point details</string>
+    <string name="veh_no">VEH. NO. :</string>
+    <string name="remaining_mins">REMAINING MINS :</string>
+    <string name="emergency_support">emergency support</string>
+    <string name="extend_no_of_hours">Extend no. of Hours</string>
+    <string name="your_rental_is_nconfirmed">your rental is \nconfirmed</string>
+    <string name="pick_point_contact">Pick-up point details</string>
+    <string name="vehicle">Vehicle :</string>
+    <string name="otp">OTP :</string>
+    <string name="pick_point">Pick-up  point</string>
+    <string name="drop_point">Drop point</string>
+    <string name="vehicle_speed">VEHICLE SPEED</string>
+    <string name="pick_hub">pick hub</string>
+    <string name="drop_hub">DROP HUB</string>
+    <string name="you_have_reached_your_ndestination_with">you have reached your \ndestination with</string>
+    <string name="cash">cash</string>
+    <string name="upi">upi</string>
+    <string name="let_s_get_you_a_nride">let\'s get you a \nride</string>
+    <string name="vehicle_type">VEHICLE TYPE</string>
+    <string name="no_of_riders">NO. OF RIDERS</string>
+    <string name="enjoy_your_ride_nwith">Enjoy your ride\nwith</string>
+    <string name="ride_otp">Ride OTP</string>
+    <string name="track_your_ride">track your ride</string>
+    <string name="share_ride_details">share ride details</string>
+    <string name="share_live_location">share live location</string>
+    <string name="your_ride_is_confirmed_nwith">your ride is confirmed \nwith</string>
+    <string name="ride_time">ride time</string>
+    <string name="min">\u0020min</string>
+    <string name="cost_estimate">cost estimate</string>
+    <string name="driver_arriving_in">driver arriving in</string>
+    <string name="mins">mins</string>
+    <string name="disclaimer_delay_due_to_traffic_can_occur">Disclaimer: Delay due to traffic can occur.</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="cancel">CANCEL</string>
+    <string name="thank_you_for_nriding_with_zippe">THANK YOU FOR \nRIDING WITH ZIPPE</string>
+    <string name="please_note">PLEASE NOTE</string>
+    <string name="you_will_be_charged_extra_if_you_extend_your_rental_time">You will be charged extra if you extend your rental time.</string>
+    <string name="no_extra_charge_applicable_on_updating_drop_point">No extra charge applicable on updating drop point.</string>
+    <string name="change_drop_point">change DROP POINT</string>
+    <string name="click_choose_picture">Click/Choose Picture</string>
+    <string name="change_language">Change Language</string>
+    <string name="night_mode">Dark Mode</string>
+    <string name="delivery_order_no">Delivery Order No</string>
+    <string name="gender">GENDER</string>
+    <string name="female">FEMALE</string>
+    <string name="male">MALE</string>
+    <string name="non_binary">NON BINARY</string>
+    <string name="fragile_breakable">FRAGILE / BREAKABLE</string>
+    <string name="contains_liquid">CONTAINS LIQUID</string>
+    <string name="perishable">PERISHABLE</string>
+    <string name="keep_cold">KEEP COLD</string>
+    <string name="keep_warm">KEEP WARM</string>
+    <string name="none_of_the_above">None of the above</string>
+    <string name="beware_of_dogs">Beware of dogs</string>
+    <string name="knock_on_my_door">Knock on my door</string>
+    <string name="ring_the_doorbell">Ring the doorbell</string>
+    <string name="i_m_home_all_day">I\'m home all day</string>
+    <string name="package_size">Package Size</string>
+    <string name="cm">cm</string>
+    <string name="inch">inch</string>
+    <string name="s">S</string>
+    <string name="_35_x_25_x_13_cm">(35 x 25 x 13 cm)</string>
+    <string name="_0_2_kg">0 – 2 kg</string>
+    <string name="m">M</string>
+    <string name="_70_x_50_x_26_cm">(70 x 50 x 26 cm)</string>
+    <string name="_2_4_kg">2 – 4 kg</string>
+    <string name="l">L</string>
+    <string name="_105_x_75_x_39_cm">(105 x 75 x 39 cm)</string>
+    <string name="_4_6_kg">4 – 6 kg</string>
+    <string name="xl">XL</string>
+    <string name="_104_x_100_x_52_cm">(104 x 100 x 52 cm)</string>
+    <string name="_6_8_kg">6 – 8 kg</string>
+    <string name="xxl">XXL</string>
+    <string name="_175_x_125_x_65_cm">(175 x 125 x 65 cm)</string>
+    <string name="_8_10_kg">8 – 10 kg</string>
+    <string name="package_contents">Package Contents</string>
+    <string name="documents_books">Documents / Books</string>
+    <string name="medicines">Medicines</string>
+    <string name="restaurant_orders">Restaurant Orders</string>
+    <string name="household_items">Household Items</string>
+    <string name="electronics_electrical">Electronics / electricals</string>
+    <string name="clothes_accessories">Clothes / Accessories</string>
+    <string name="other">OTHER</string>
+    <string name="please_specify">Please Specify</string>
+    <string name="choose_rental_package">Choose rental package</string>
+    <string name="_2_4_hr_rental_ride_up_to_40km">2–4 hr rental : ride up to 40km</string>
+    <string name="_6_8_hr_rental_ride_up_to_80km">6–8 hr rental : ride up to 80km</string>
+    <string name="charge_vehicle_upon_exceeding_80km">Charge vehicle upon exceeding 80km</string>
+    <string name="no">NO</string>
+    <string name="yes">YES</string>
+    <string name="child_up_to_5_years">\u0020( child up to 5 years )</string>
+    <string name="package_pick_up_time">Package Pick up time</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="first_order_at_8_00am_nlast_order_at_8_00pm_nwithin_2_hours_upto_10km">First order at 8:00am\nlast order at 8:00pm\nWithin 2 hours up to 10km</string>
+    <string name="log_out">LOG OUT</string>
+    <string name="profile">PROFILE</string>
+    <string name="home">HOME</string>
+    <string name="delivery_orders">Delivery Orders</string>
+    <string name="ride_history">RIDE HISTORY</string>
+    <string name="terms_and_conditions">TERMS AND CONDITIONS</string>
+    <string name="the_amount_shall_be_directly_credited_to_our_agent_account">This is optional. The amount shall be directly credited to our  agent\'s account.</string>
+    <string name="base_price">Base price : </string>
+    <string name="distance">Distance : \u0020</string>
+    <string name="your_agent_will_be_assigned_shortly">Your agent will be assigned shortly. Please keep your package ready.</string>
+    <string name="the_package_is_en_route">The package is en route. Your delivery agent will call on reaching destination.</string>
+    <string name="your_delivery_agent_will_arrive_shortly">Your delivery agent will arrive shortly.\nYour OTP is: </string>
+    <string name="we_are_sorry">We are sorry ! Your Delivery was cancelled due to unavoidable circumstances. Our executives will get in touch with you shortly.</string>
+    <string name="delivery_denied_by_your_agent">Delivery denied by your agent.</string>
+    <string name="delivery_was_cancelled_by_you">delivery was cancelled by you.</string>
+    <string name="delivery_timed_out">Delivery timed out.</string>
+    <string name="delivery_was_completed_successfully">Delivery was completed successfully.</string>
+    <string name="agent_has_arrived">Your Delivery Agent has arrived.\nYour OTP is: </string>
+    <string name="small">Small</string>
+    <string name="medium">Medium</string>
+    <string name="large">Large</string>
+    <string name="x_large">X-Large</string>
+    <string name="x_x_large">XX-Large</string>
+    <string name="pin_not_serviceable">This PIN code is not serviceable yet.</string>
+    <string name="click_to_view">CLICK TO VIEW</string>
+    <string name="thanks_for_feedback">Thank you for your feedback. We promise to take appropriate action.</string>
+    <string name="any_other">Any other</string>
+    <string name="veh_clean">Vehicle cleanliness</string>
+    <string name="veh_condi">Vehicle condition</string>
+    <string name="att_contact_person">Attitude of contact person</string>
+    <string name="thanks_for_renting">Thanks for renting ZIPP-E</string>
+    <string name="rate_exp">RATE YOUR EXPERIENCE</string>
+    <string name="balance_amount_as_per_selection">Balance amount as per extended rental time. Please pay to end your trip.</string>
+    <string name="e_cycle">E-CYCLE</string>
+    <string name="e_scooty">E-SCOOTY</string>
+    <string name="e_bike">E-BIKE</string>
+    <string name="coming_soon">This feature shall be active soon.</string>
+    <string name="time_extended_by_hour">Your rental time has been extended by 1 hour. Rental charge applicable accordingly.</string>
+    <string name="return_veh">Please return the vehicle in time to avoid any extra charge.</string>
+    <string name="time_extended">Your rental time has been extended. Next hourly rental charge is now applicable.</string>
+    <string name="extended_min">extended mins :</string>
+    <string name="pay_to_unlock_otp">Please pay ₹</string>
+    <string name="unlock_otp">\u0020to unlock your OTP</string>
+    <string name="check_condi_before_paying">Make payment only after checking the condition of vehicle</string>
+    <string name="cost_calc_as_per_time">Cost estimated as per your rental time. Please pay the stated amount to begin your trip and to unlock OTP.</string>
+    <string name="max_speed_25">Max speed of this vehicle has been set to 25 km/hr (as per government norms) for your own safety.</string>
+    <string name="pay_to_begin">Cost as per rental time. Please pay full amount to begin your trip.</string>
+    <string name="zbee">ZBEE</string>
+    <string name="drivers_available">Drivers are available.</string>
+    <string name="thanks_for_zippe">Thank you for riding with ZIPP-E</string>
+    <string name="att_driver">Attitude of driver</string>
+    <string name="vehicles_rented_out">Sorry ! All our vehicles are currently rented out. Please try again later.</string>
+    <string name="ride_canceled_by_you">Ride canceled by you.</string>
+    <string name="unable_to_complete_your_ride">Sorry ! We were unable to complete your ride. Any inconvenience is regretted.</string>
+    <string name="ride_timed_out">Your RIDE request has timed out. Please try again.</string>
+    <string name="ride_cancelled_by_you">We are sorry ! Your Ride was cancelled due to unavoidable circumstances. Please try again.</string>
+    <string name="searching_for_ride">SEARCHING FOR YOUR RIDE…</string>
+    <string name="google_part1">This is an approximate cost as per\u0020</string>
+    <string name="google_part2">Google Maps (distance and time taken)</string>
+    <string name="google_part3">. May change depending on ride time.</string>
+    <string name="google_time_part1">Approximate time as per\u0020 </string>
+    <string name="google_time_part2">Google Maps</string>
+    <string name="google_time_part3">. May change depending on traffic.</string>
+    <string name="end_ride_before_destination">You will be charged as per your chosen destination even if you end your ride earlier.
+Are you sure you want to continue ?</string>
+    <string name="cancel_ride">CANCEL RIDE Because :</string>
+    <string name="driver_denied">DRIVER DENIED PICKUP</string>
+    <string name="driver_denied_destination">DRIVER DENIED DESTINATION</string>
+    <string name="wait_time_too_long">EXPECTED A SHORTER WAIT TIME</string>
+    <string name="driver_no_contact">UNABLE TO CONTACT DRIVER</string>
+    <string name="reason_not_listed">MY REASON IS NOT LISTED</string>
+    <string name="dont_cancel">Don\'t Cancel</string>
+    <string name="ride_not_complete">Your ride is not yet complete. Your cost estimate will remain the same if you end your ride before reaching your chosen destination.
+Are you sure you want to end your ride now?</string>
+    <string name="ride_not_ended">RIDE NOT ENDED</string>
+    <string name="ride_ended">END RIDE</string>
+    <string name="you_have_chosen_to_end">you have chosen to end
+your ride with</string>
+    <string name="pay_cash">Please pay cash </string>
+    <string name="no_upi_found">No UPI app found, please install one to continue</string>
+    <string name="transaction_successful">Transaction successful.</string>
+    <string name="payment_cancelled_by_user">Payment cancelled by user.</string>
+    <string name="transaction_failed">Transaction failed.Please try again</string>
+    <string name="no_internet">Internet connection is not available. Please check and try again</string>
+    <string name="make_payment_to_continue">Please make your payment, before booking your next ride.</string>
+    <string name="driving_licence">It is compulsory to submit a copy of your valid DRIVING LICENSE at the PICK UP POINT / Z-HUB.</string>
+    <string name="agree">AGREE</string>
+    <string name="disagree">DISAGREE</string>
+    <string name="no_vehicle_av">No Vehicles Available Currently!</string>
+    <string name="checking_veh_av">CHECKING VEHICLE AVAILABILITY…</string>
+    <string name="details_updated">Details Updated Successfully!</string>
+    <string name="check_internet">CHECK YOUR INTERNET CONNECTION!</string>
+    <string name="make_selection">Please make a selection.</string>
+    <string name="invalid_selection">Invalid selection.</string>
+    <string name="drop_to">DROP TO</string>
+    <string name="pick_from">PICK-UP ADDRESS</string>
+    <string name="mandatory_fields">All Fields Mandatory</string>
+    <string name="this_mandatory_field">This field is mandatory</string>
+    <string name="no_driver_av">No drivers currently online.
+Notify me when available.</string>
+    <string name="rate_your_ride">rate your ride</string>
+    <string name="i_am_not_satisfied_because">I am not satisfied with</string>
+    <string name="submit">Submit</string>
+    <string name="you_have_selected_nrent">LET\'S RENT YOU A ZIPP-E</string>
+    <string name="delivery_sch_tommorrow">Your Delivery will be scheduled for tomorrow</string>
+    <string name="agree_to_terms">Please agree to our terms and conditions </string>
+    <string name="make_payment_ride">Please make your payment, before booking your next ride.</string>
+    <string name="state">HOME STATE</string>
+    <string name="uttarakhand">UTTARAKHAND</string>
+    <string name="rajasthan">RAJASTHAN</string>
+    <string name="enter_name">ENTER NAME</string>
+    <string name="address_alert">Kindly make sure that the pick up and drop address provided by you is serviceable by road.
+In case you fail to do so, you may collect your package from our nearest hub / office. Please be informed that there will be no refund of the delivery charges in this case and we will not be responsible if your package contains any perishable items.</string>
+    <string name="ok">OK</string>
+    <string name="pick_point_pin">Please enter pin code of the location where the package is to be picked from.</string>
+    <string name="pick_point_place">Please enter the address of the place where the package is to be picked from.</string>
+    <string name="pick_point_land">Please enter a famous landmark near the pick-up address.</string>
+    <string name="pick_point_name">Please enter the full name of the person from whom the package is to be picked up.</string>
+    <string name="pick_point_mobile">Please enter the mobile number of the person from whom the package is to be picked up.</string>
+
+    <string name="drop_point_pin">Please enter pin code of the location where the package needs to be dropped.</string>
+    <string name="drop_point_place">Please enter the address of the place where the package is to be dropped.</string>
+    <string name="drop_point_land">Please enter a famous landmark near the drop address.</string>
+    <string name="drop_point_name">Please enter the full name of the person to whom the package is to be delivered.</string>
+    <string name="drop_point_mobile">Please enter the mobile number of the person to whom the package is to be delivered.</string>
+    <string name="terms_amp_conditions"><![CDATA[" TERMS & CONDITIONS"]]></string>
 </resources>

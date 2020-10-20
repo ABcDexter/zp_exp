@@ -45,14 +45,7 @@
         <activity android:name=".deliver.ActivitySlidingFullPage" />
         <activity android:name=".deliver.ActivityDeliveryReview"
             android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".deliver.ActivityDeliveryTimeSlot" />
-        <activity android:name=".deliver.ActivityStandardPickDelivery" />
-        <activity
-            android:name=".deliver.ActivityDropDetails"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".deliver.ActivityPickDetails"
-            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".deliver.ActivityDeliveryTimeSlot" ></activity>
         <activity
             android:name=".deliver.ActivityPackageDetails"
             android:windowSoftInputMode="stateHidden" />
@@ -117,6 +110,9 @@
         <activity
             android:name=".ActivityMain"
             android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".ActivityRegistration"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".ActivityDrawer" />
         <activity
             android:name=".ride.ActivityRideHome"
@@ -125,7 +121,6 @@
         <activity android:name=".rent.MapsHubLocation" />
         <activity android:name=".deliver.ActivityFillPickDetails"
             android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".deliver.ActivityStandardDropDelivery" />
 
         <uses-library
             android:name="org.apache.http.legacy"

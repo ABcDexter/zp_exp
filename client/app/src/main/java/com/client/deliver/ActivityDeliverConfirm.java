@@ -38,9 +38,9 @@ import java.util.Map;
 public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnClickListener {
 
     TextView cost;
-    EditText edTip;
+    //EditText edTip;
     ScrollView scrollView;
-    ImageButton infoPayment, infoTip;
+    ImageButton infoPayment; //infoTip;
     private static final String TAG = "ActivityDeliverConfirm";
 
     public static final String AUTH_KEY = "AuthKey";
@@ -161,9 +161,9 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
 
 
         cost = findViewById(R.id.payment);
-        edTip = findViewById(R.id.tip);
+        //edTip = findViewById(R.id.tip);
         infoPayment = findViewById(R.id.infoPayment);
-        infoTip = findViewById(R.id.infoTip);
+        //infoTip = findViewById(R.id.infoTip);
         done = findViewById(R.id.confirm_btn);
         scrollView = findViewById(R.id.scrollViewDC);
         //cancel = findViewById(R.id.cancelRequest);
@@ -171,7 +171,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         //checkStatus();
         done.setOnClickListener(this);
         infoPayment.setOnClickListener(this);
-        infoTip.setOnClickListener(this);
+        //infoTip.setOnClickListener(this);
 
         myDialog = new Dialog(this);
         //deliveryEstimate();
@@ -180,6 +180,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
 
         Intent intent = getIntent();
         String price = intent.getStringExtra("PRICE");
+        distance = intent.getStringExtra("DISTANCE");
         cost.setText("₹ " + price);
         animMoveL2R = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r);
         animMoveR2L = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_r2l);
@@ -199,9 +200,9 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
                 moveit();
                 userDeliverySchedule();
                 break;
-            case R.id.infoTip:
+            /*case R.id.infoTip:
                 ShowPopup(1);
-                break;
+                break;*/
             case R.id.infoPayment:
                 ShowPopup(2);
                 break;
@@ -263,7 +264,12 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         params.put("pHour", "17");
         params.put("pMinute", "30");
         params.put("pmode", "1");
-        params.put("tip", edTip.getText().toString());
+        /*if (edTip.getText().toString().isEmpty()){
+            params.put("tip", "0");
+        }else{
+            params.put("tip", edTip.getText().toString());
+        }*/
+
 
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth + " srclat= " + pLat
@@ -272,9 +278,9 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
                 + " dstadd=" + dAddress + " srcpin=" + pPin + " dstpin=" + dPin + " srcland=" + pLand
                 + " dstland=" + dLand + " det= none" + detailsPackage
                 + " express=" + express + " pYear=" + pYear + " pMonth=" + pMonth + " pDate=" + pDay
-                + " pHour=" + pHour + " pMinute=" + pMinute + " tip=" + edTip.getText().toString()
-                + " itype= " + conType + " idim= " + conSize + " fr= " + fr + " br= " + br
-                + " li= " + li + " pe= " + pe + " kc= " + kc + " kw= " + kw + " no= " + no);
+                + " pHour=" + pHour + " pMinute=" + pMinute + " itype= " + conType + " idim= "
+                + conSize + " fr= " + fr + " br= " + br + " li= " + li + " pe= " + pe + " kc= "
+                + kc + " kw= " + kw + " no= " + no);
         Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-delivery-schedule");
 
         UtilityApiRequestPost.doPOST(a, "user-delivery-schedule", parameters, 2000, 0, response -> {
@@ -329,7 +335,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
             infoText.setText(R.string.the_amount_shall_be_directly_credited_to_our_agent_account);
         }
         if (id == 2) {
-            infoText.setText(getString(R.string.base_price) + "₹ 15" + "\nDistance : " + distance + " km");
+            infoText.setText(getString(R.string.base_price) + " ₹ 15" + "\n"+ getString(R.string.distance) + distance + " km");
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();

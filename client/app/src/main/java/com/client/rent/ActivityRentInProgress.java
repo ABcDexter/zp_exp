@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+import com.bumptech.glide.Glide;
 import com.client.ActivityDrawer;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
@@ -59,7 +61,7 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
     Dialog myDialog, colorDialog;
 
     String stringAuthCookie;
-
+ImageView supPhoto;
     public static ActivityRentInProgress getInstance() {
         return instance;
     }
@@ -110,9 +112,11 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         if (id == 2) {
             String name = response.getString("name");
             String phn = response.getString("pn");
+            String photo = response.getString("photourl");
 
             nameD.setText(name);
             phone.setText(phn);
+            Glide.with(this).load(photo).into(supPhoto);
         }
         //response on hitting user-trip-get-status API
         if (id == 3) {
@@ -218,6 +222,8 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         String stringDPhn = tripPref.getString(DRIVER_PHN, "");
         shareLocation = findViewById(R.id.share_location);
         shareLocation.setOnClickListener(this);
+
+        supPhoto = findViewById(R.id.photo_sup);
         vNum = findViewById(R.id.v_no);
         hours = findViewById(R.id.hours);
         txt = findViewById(R.id.txt);

@@ -90,7 +90,7 @@ public class UserProfileActivity extends ActivityDrawer {
         String stringPhone = prefPLoc.getString(USER_PHONE, "");
 
         if (stringPhone.isEmpty())
-            mobiletxt.setText("XXXXXXXXXX");
+            mobiletxt.setText("7895623415");
         else {
             mobiletxt.setText(stringPhone);
             Log.d(TAG, "phone no:" + stringPhone);

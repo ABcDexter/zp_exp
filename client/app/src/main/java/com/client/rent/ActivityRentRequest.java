@@ -114,8 +114,8 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                         sp_cookie.edit().putString(TRIP_ID, tid).apply();
                         if (status.equals("RQ")) {
                             Snackbar snackbar = Snackbar
-                                    .make(scrollView, "CHECKING VEHICLE AVAILABILITY...", Snackbar.LENGTH_INDEFINITE)
-                                    .setAction("CANCEL", new View.OnClickListener() {
+                                    .make(scrollView, R.string.checking_veh_av, Snackbar.LENGTH_INDEFINITE)
+                                    .setAction(R.string.cancel, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             cancelRequest();

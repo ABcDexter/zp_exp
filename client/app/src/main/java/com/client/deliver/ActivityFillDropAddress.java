@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
@@ -24,7 +27,6 @@ import com.client.UtilityApiRequestPost;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
@@ -38,7 +40,7 @@ import java.util.Objects;
 
 public class ActivityFillDropAddress extends ActivityDrawer implements View.OnClickListener {
     TextView txtAddress;
-    EditText pinCode, landmark, mobile, name;
+    EditText pinCode, edDropAddress, mobile, name;
     ImageButton confirm, nextPin;
     private static final String TAG = "ActivityFillDropAddress";
 
@@ -54,7 +56,7 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
     public static final String DROP_MOBILE = "com.client.ride.DropMobile";
     public static final String DROP_NAME = "com.client.ride.DropName";
 
-    String stringAuth,  stringAN;
+    String stringAuth, stringAN;
     SharedPreferences prefAuth;
     String imgBtnConfirm = "";
     Dialog myDialog;
@@ -66,6 +68,7 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
     LinearLayout addressDetails;
     Map<String, String> params = new HashMap();
     ActivityFillDropAddress a = ActivityFillDropAddress.this;
+    ImageButton info_pin, info_name, info_place, info_landmark, info_mobile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +89,7 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
         nextPin.setOnClickListener(this);
         pinCode = findViewById(R.id.pin_code);
         name = findViewById(R.id.name_person);
-        landmark = findViewById(R.id.landmark);
+        edDropAddress = findViewById(R.id.ed_drop_address);
         mobile = findViewById(R.id.mobile);
         confirm = findViewById(R.id.confirm_address);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -97,6 +100,16 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
         stringAuth = prefAuth.getString(AUTH_KEY, "");
         stringAN = prefAuth.getString(AN_KEY, "");
 
+        info_pin = findViewById(R.id.infoPickPin);
+        info_place = findViewById(R.id.infoDropAddress);
+        info_landmark = findViewById(R.id.infoLand);
+        info_name = findViewById(R.id.infoName);
+        info_mobile = findViewById(R.id.infoMobile);
+        info_pin.setOnClickListener(this);
+        info_place.setOnClickListener(this);
+        info_landmark.setOnClickListener(this);
+        info_name.setOnClickListener(this);
+        info_mobile.setOnClickListener(this);
 
         if (imgBtnConfirm.equals("false")) {
             Log.d(TAG, "confirm.setEnabled(false)");
@@ -114,7 +127,7 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
         //autocompleteFragment.setHint("FLAT, FLOOR, BUILDING NAME");
 
         EditText etPlace = (EditText) autocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
-        etPlace.setHint("DROP TO");
+        etPlace.setHint(R.string.landmark);
         etPlace.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         etPlace.setTextColor(Color.WHITE);
         etPlace.setPadding(0, 0, 150, 0);
@@ -151,25 +164,93 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
         switch (v.getId()) {
 
             case R.id.confirm_address:
+                String str_name = name.getText().toString();
+                String str_mobile = mobile.getText().toString();
+                String str_landmark = edDropAddress.getText().toString();
+                if (TextUtils.isEmpty(placeName)) {
+                    Toast.makeText(instance, R.string.mandatory_fields, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (TextUtils.isEmpty(str_landmark)) {
+                    edDropAddress.setError(getString(R.string.this_mandatory_field));
+                    return;
+                }
+                if (TextUtils.isEmpty(str_name)) {
+                    name.setError(getString(R.string.this_mandatory_field));
+                    return;
+                }
 
-                SharedPreferences pref = this.getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putString(DROP_LAT, lat);
-                editor.putString(DROP_LNG, remainder);
-                editor.putString(ADDRESS_DROP, placeName);
-                editor.putString(DROP_PIN, pinCode.getText().toString());
-                editor.putString(DROP_LANDMARK, landmark.getText().toString());
-                editor.putString(DROP_MOBILE, mobile.getText().toString());
-                editor.putString(DROP_NAME, name.getText().toString());
-                editor.apply();
-
-                Intent addIntent = new Intent(ActivityFillDropAddress.this, ActivityDeliveryTimeSlot.class);
-                startActivity(addIntent);
+                if (TextUtils.isEmpty(str_mobile)) {
+                    mobile.setError(getString(R.string.this_mandatory_field));
+                    return;
+                }
+                if (lat.isEmpty()) {
+                    Toast.makeText(this, R.string.drop_point_land, Toast.LENGTH_SHORT).show();
+                } else {
+                    SharedPreferences pref = this.getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString(DROP_LAT, lat);
+                    editor.putString(DROP_LNG, remainder);
+                    editor.putString(ADDRESS_DROP, edDropAddress.getText().toString());
+                    editor.putString(DROP_PIN, pinCode.getText().toString());
+                    editor.putString(DROP_LANDMARK, placeName);
+                    editor.putString(DROP_MOBILE, mobile.getText().toString());
+                    editor.putString(DROP_NAME, name.getText().toString());
+                    editor.apply();
+                    Log.d(TAG, "DROP_LANDMARK: " + placeName + " ADDRESS_DROP:" + edDropAddress.getText().toString());
+                    Intent addIntent = new Intent(ActivityFillDropAddress.this, ActivityDeliveryTimeSlot.class);
+                    startActivity(addIntent);
+                }
                 break;
             case R.id.next_pin:
-                locationName();
+                String pin_code = pinCode.getText().toString();
+                if (TextUtils.isEmpty(pin_code)) {
+                    pinCode.setError(getString(R.string.this_mandatory_field));
+                    return;
+                } else
+                    locationName();
+                break;
+            case R.id.infoPickPin:
+                ShowPopup(1);
+                break;
+            case R.id.infoDropAddress:
+                ShowPopup(2);
+                break;
+            case R.id.infoLand:
+                ShowPopup(3);
+                break;
+            case R.id.infoName:
+                ShowPopup(4);
+                break;
+            case R.id.infoMobile:
+                ShowPopup(5);
                 break;
         }
+    }
+
+    private void ShowPopup(int id) {
+
+        myDialog.setContentView(R.layout.popup_new_request);
+        TextView infoText = myDialog.findViewById(R.id.info_text);
+
+        if (id == 1) {
+            infoText.setText(R.string.drop_point_pin);
+        }
+        if (id == 2) {
+            infoText.setText(R.string.drop_point_place);
+        }
+        if (id == 3) {
+            infoText.setText(R.string.drop_point_land);
+        }
+        if (id == 4) {
+            infoText.setText(R.string.drop_point_name);
+        }
+        if (id == 5) {
+            infoText.setText(R.string.drop_point_mobile);
+        }
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+        myDialog.setCanceledOnTouchOutside(true);
     }
 
     public void locationName() {

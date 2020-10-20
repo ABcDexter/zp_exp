@@ -42,7 +42,7 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
 
     private static final String TAG = "ActivityUpdateInfo";
     TextView destination;
-    Button update;
+    ImageButton update;
     ScrollView scrollView;
     PopupWindow popupWindow;
     String dropID;
@@ -70,7 +70,7 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
 
         //response on hitting user-rental-update API
         if (id == 2) {
-            Toast.makeText(this, "Details Updated Successfully!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.details_updated, Toast.LENGTH_LONG).show();
             SharedPreferences pref = this.getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
             editor.putString(LOCATION_DROP, stringDrop);
