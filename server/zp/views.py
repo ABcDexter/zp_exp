@@ -405,7 +405,7 @@ def userTripGetStatus(_dct, user):
             ret['price'] = price
         
         dAuth = Driver.objects.filter(an=trip.dan)[0].auth if trip.rtype == '0' else Supervisor.objects.filter(an=trip.dan)[0].auth
-        ret['photourl'] = "https://media.villageapps.in:8090/media/dp_" + dAuth + "_.jpg"
+        ret['photourl'] = "https://api.villageapps.in:8090/media/dp_" + dAuth + "_.jpg"
     else:
         ret = {'active': False, 'st': 'NONE', 'tid': -1}
 
