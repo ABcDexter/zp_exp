@@ -590,6 +590,11 @@ def authTripGetInfo(dct, entity):
         remPrice = int(float(getTripPrice(trip)['price']) - float(getRentPrice(trip.hrs)['price']))
         price = str(remPrice) + '.00' if remPrice >= 0 else '0.00'
         ret.update({'price': price})
+
+    if trip.st == 'TR' and trip.rtype=='0':
+        rate = Rate.objects.filter(id='ride'+str(trip.id))[0]
+        ret['price'] = rate.money
+
     return HttpJSONResponse(ret)
 
 
