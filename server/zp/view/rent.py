@@ -336,6 +336,24 @@ def userRentPay(dct, _user, trip):
 # ============================================================================
 
 
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Sup Not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+def supRentLogin(_, dct):
+    '''
+    Makes the supervisor login 
+    HTTPS args:
+        pn : phone number,
+        sa : super auth
+    '''
+    sup = Supervisor.objects.filter(pn=dct['pn'], auth=dct['sa'])[0]
+    ret = {'auth': sup.auth, 'redirect':True,"redirect_url": "index.html"}
+    return HttpJSONResponse(ret)
+
+
 @makeView()
 @csrf_exempt
 @handleException(IndexError, 'Trip/User/Vehicle not found', 404)
