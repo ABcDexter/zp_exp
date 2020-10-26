@@ -1149,9 +1149,16 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
 
     # Calculate price
     price = fBaseFare + (fDist / 1000) * vehiclePricePerKM * avgWt
-    if iPayMode == Trip.UPI:
+    if iPayMode == Trip.UPI:  # UPI has 10% off
         price *= 0.9
 
+    #if str(hs) == 'UK': # 50% off for natives
+    #	price *= 0.5
+
+    #if str(hs) == 'UK': # 50% off for natives
+    #   price *= 0.5
+
+ 
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
         'time': int('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes

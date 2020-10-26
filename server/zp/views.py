@@ -90,7 +90,7 @@ def registerUserNoAadhaar(_, dct: Dict):
         user.auth = sAuth
         user.an = int(sAn)
         user.pn = sPhone
-        user.hs = dct['home']
+        user.hs = dct['home'].lower()
         user.save()
         log('New user registered: %s' % user.name)
     else:
@@ -1335,8 +1335,12 @@ def authAadhaarSave(dct, entity):
     if sAadhaar != sAadhaar2:
         raise ZPException(501, 'Aadhaar number front doesn\'t match Aadhaar number back!')
 
+    entity.hs = clientDetails2['hs']
+    entity.save()   
+
     sAdharFrontFileName = 'ad_' + entityAdhar + '_front.jpg'
     sAdharBackFileName = 'ad_' + entityAdhar + '_back.jpg'
+    log('HS updated for : %s | %s' % (entity.an, entity.hs))
 
     os.rename(sAadharFrontTemp, os.path.join(settings.AADHAAR_DIR, sAdharFrontFileName))
     os.rename(sAadharBackTemp, os.path.join(settings.AADHAAR_DIR, sAdharBackFileName))
