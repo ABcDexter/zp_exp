@@ -864,6 +864,7 @@ class checkAuth(object):
 
             # If auth key checks out, then return JSON, else Unauthorized
             auth = dct.get('auth', '')
+            print("auth is :", auth, "...")
             if isUser or isAuth:
                 qsUser = User.objects.filter(auth=auth)
                 if (qsUser is not None) and len(qsUser) > 0:
@@ -871,7 +872,7 @@ class checkAuth(object):
 
             if isDriver or isAuth:
                 qsDriver = Driver.objects.filter(auth=auth)
-
+                print("driver : ", qsDriver)
                 # Ensure we have a confirmed driver
                 if (qsDriver is not None) and (len(qsDriver) > 0) and qsDriver[0].mode != 'RG':
                     # Ensure the driver is in the desired state if any
@@ -880,7 +881,7 @@ class checkAuth(object):
 
             if isAgent or isAuth:
                 qsAgent = Agent.objects.filter(auth=auth)
-                print(qsAgent)
+                print("agents : ", qsAgent)
                 # Ensure we have a confirmed Agent
                 if (qsAgent is not None) and (len(qsAgent) > 0) and qsAgent[0].mode != 'RG':
                     # Ensure the agent is in the desired state if any
