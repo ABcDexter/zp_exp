@@ -549,6 +549,42 @@ def adminAgentAssign(dct):
 # Agent views
 # ============================================================================
 
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
+def loginAgent(_, dct):
+    '''
+    Agent login
+    makes the agent login with phone number
+    
+    HTTP Args:
+        pno: phone number of the agent without the ISD code
+        key: auth rot 13 of agent
+        
+
+    Notes:
+        Rot 13 is important
+    '''
+
+    sPhone = str(dct['pn'])
+    from codecs import encode
+    sAuth = encode(str(dct['key']), 'rot13')
+    
+    qsAgent = Agent.objects.filter(auth=sAuth, pn=sPhone)
+    bAgentExists = len(qsAgent) != 0
+    if not bAgentExists:
+        log('Agent not registered with phone : %s' % (dct['pn']))
+        return HttpJSONResponse({'status':'false'})
+    else:
+        log('Auth exists for: %s' % (dct['pn']))
+        ret = {'status': True, 'auth':qsAgent[0].auth, 'an':qsAgent[0].an}    
+        return HttpJSONResponse(ret)
+
+
+
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
