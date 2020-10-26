@@ -11,7 +11,7 @@ from url_magic import makeView
 from ..models import Place, Trip, Progress, Rate
 from ..models import User, Vehicle, Driver, Location
 from ..utils import ZPException, HttpJSONResponse, googleDistAndTime
-from ..utils import getOTP
+from ..utils import getOTP, log
 from ..utils import getRoutePrice, getTripPrice, getRidePrice, getRiPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 
@@ -33,6 +33,44 @@ makeView.APP_NAME = 'zp'
 # ============================================================================
 # Driver views
 # ============================================================================
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
+def loginDriver(_, dct):
+    '''
+    Driver login
+    makes the driver logun with phone number
+    
+    HTTP Args:
+        pno: phone number of the driver without the ISD code
+        key: auth rot 13 of driver
+        
+
+    Notes:
+        Rot 13 is important
+    '''
+
+    log('Driver login request. Dct : %s ' % (str(dct)))
+
+    sPhone = str(dct['pn'])
+    from codecs import encode
+    sAuth = encode(str(dct['key']), 'rot13')
+    log('Driver login key request. Dct : %s ' % (str(sAuth)))
+    qsDriver = Driver.objects.filter(auth=sAuth, pn=sPhone)
+    bDriverExists = len(qsDriver) != 0
+    if not bDriverExists:
+        log('Driver not registered with phone : %s' % (dct['pn']))
+        return HttpJSONResponse({'status':'false'})
+    else:
+        log('Auth exists for: %s' % (dct['pn']))
+        ret = {'status': True, 'auth':qsDriver[0].auth, 'an':qsDriver[0].an}    
+        return HttpJSONResponse(ret)
+
 
 
 @makeView()
