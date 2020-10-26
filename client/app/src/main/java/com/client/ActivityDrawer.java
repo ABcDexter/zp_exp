@@ -155,7 +155,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
                 Intent intent = new Intent(ActivityDrawer.this, ActivityMain.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-
+                break;
             case R.id.nav_profile:
                 Intent lang = new Intent(ActivityDrawer.this, UserProfileActivity.class);
                 startActivity(lang);

@@ -284,7 +284,7 @@
     <string name="return_veh">Please return the vehicle in time to avoid any extra charge.</string>
     <string name="time_extended">Your rental time has been extended. Next hourly rental charge is now applicable.</string>
     <string name="extended_min">extended mins :</string>
-    <string name="pay_to_unlock_otp">Please pay ₹</string>
+    <string name="pay_to_unlock_otp">Please pay </string>
     <string name="unlock_otp">\u0020to unlock your OTP</string>
     <string name="check_condi_before_paying">Make payment only after checking the condition of vehicle</string>
     <string name="cost_calc_as_per_time">Cost estimated as per your rental time. Please pay the stated amount to begin your trip and to unlock OTP.</string>
@@ -376,4 +376,5 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="supervisor_photo" translatable="false">Supervisor Photo</string>
     <string name="supervisor_phone" translatable="false">Supervisor Phone</string>
     <string name="otp_unlock" translatable="false">Otp Unlock</string>
+    <string name="upload_aadhar_card">Upload Aadhar Card</string>
 </resources>

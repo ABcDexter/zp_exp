@@ -26,11 +26,11 @@ public class ActivityWelcome extends AppCompatActivity {
 
     ImageView zippe_iv, zippe_iv_below;
     SharedPreferences cookie;
-    String strAuth, strToken;
+    String strAuth /*strToken*/;
     public static final String AUTH_KEY = "Auth";
     public static final String AUTH_COOKIE = "com.agent.cookie";
     public static final String PICTURE_UPLOAD_STATUS = "com.driver.pictureUploadStatus";
-    public static final String VERIFICATION_TOKEN = "Token";
+   // public static final String VERIFICATION_TOKEN = "Token";
 
 //When an Activity first call or launched then onCreate(Bundle savedInstanceState) method is responsible to create the activity.
     @Override
@@ -44,20 +44,20 @@ public class ActivityWelcome extends AppCompatActivity {
         cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, "");
         SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
-        strToken = sharedPreferences.getString(VERIFICATION_TOKEN, "");
+       // strToken = sharedPreferences.getString(VERIFICATION_TOKEN, "");
         String auth = strAuth;
-        String token = strToken;
+        //String token = strToken;
         //checking if the user is registered or not.
         if (auth.isEmpty()) {
-            if (token.equals("")){
-                Intent registerUser = new Intent(ActivityWelcome.this, ActivityMain.class);
+            /*if (token.equals("")){
+                Intent registerUser = new Intent(ActivityWelcome.this, ActivityLogin.class);
                 startActivity(registerUser);
                 finish();
-            }else {
-                Intent registerUser = new Intent(ActivityWelcome.this, ActivityVerifyDLDetails.class);
+            }else {*/
+                Intent registerUser = new Intent(ActivityWelcome.this, ActivityLogin.class);
                 startActivity(registerUser);
                 finish();
-            }
+           /* }*/
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override

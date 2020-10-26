@@ -109,6 +109,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
     String format = "AM";
     String StringMinute;
     int exp_date = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -274,13 +275,13 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                                     vibrator.vibrate(1000);
                                 }
                                 Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else if (currentHour >= 8) {
+                            } else /*if (currentHour >= 8)*/ {
                                 standardDialog.dismiss();
                                 saveStandardTime("8:00-10:00 am");
                             }
                             break;
                         case "10":
-                            if (currentHour >= 12) //False if after 10am
+                            if (currentHour >= 12) //False if after 12pm
                             {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -288,7 +289,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                                     vibrator.vibrate(1000);
                                 }
                                 Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else if (currentHour >= 10) {
+                            } else /*if (currentHour >= 10)*/ {
                                 standardDialog.dismiss();
                                 saveStandardTime("10:00-12:00 pm");
                             }
@@ -299,7 +300,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                                 saveStandardTime("12:00-14:00 ");
                             }
                             else */
-                            if (currentHour >= 14) //False if after 10am
+                            if (currentHour >= 14) //False if after 2pm
                             {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -307,13 +308,13 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                                     vibrator.vibrate(1000);
                                 }
                                 Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else if (currentHour >= 12) {
+                            } else /*if (currentHour >= 12) */ {
                                 standardDialog.dismiss();
                                 saveStandardTime("12:00-14:00 ");
                             }
                             break;
                         case "14":
-                            if (currentHour >= 16) //False if after 10am
+                            if (currentHour >= 16) //False if after 4pm
                             {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -321,13 +322,13 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                                     vibrator.vibrate(1000);
                                 }
                                 Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else if (currentHour >= 14) {
+                            } else /*if (currentHour >= 14)*/ {
                                 standardDialog.dismiss();
                                 saveStandardTime("14:00-16:00");
                             }
                             break;
                         case "16":
-                            if (currentHour >= 18) //False if after 10am
+                            if (currentHour >= 18) //False if after 6pm
                             {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -335,13 +336,13 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                                     vibrator.vibrate(1000);
                                 }
                                 Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else if (currentHour >= 16) {
+                            } else /*if (currentHour >= 16)*/ {
                                 standardDialog.dismiss();
                                 saveStandardTime("16:00-18:00");
                             }
                             break;
                         case "18":
-                            if (currentHour >= 20) //False if after 10am
+                            if (currentHour >= 20) //False if after 8pm
                             {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -349,7 +350,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                                     vibrator.vibrate(1000);
                                 }
                                 Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else if (currentHour >= 18) {
+                            } else /*if (currentHour >= 18)*/ {
                                 standardDialog.dismiss();
                                 saveStandardTime("18:00-20:00");
                             }
@@ -359,9 +360,12 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                     /*if (exp_date == 1) {
                         TodayDate();
                     }*/
-                    if (exp_date == 2) {
-                        TomorrowDate();
-                    }
+                if (exp_date == 2) {
+                    Toast.makeText(ActivityDeliveryTimeSlot.this, R.string.delivery_sch_tommorrow, Toast.LENGTH_LONG).show();
+                    TomorrowDate();
+                    standardDialog.dismiss();
+                    saveStandardTime(timeSlot);
+                }
                     /*standardDialog.dismiss();
                     saveStandardTime(timeSlot);*/
                 /*}*/
@@ -375,7 +379,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 //saveData();
                 //deliveryEstimate();
                 if (expTime.getText().toString().equals("") && stndTime.getText().toString().equals("")) {
-                    Log.d(TAG,"expTime="+expTime.getText().toString()+"stndTime="+stndTime.getText().toString());
+                    Log.d(TAG, "expTime=" + expTime.getText().toString() + "stndTime=" + stndTime.getText().toString());
                     Toast.makeText(a, "Please choose time", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent next = new Intent(ActivityDeliveryTimeSlot.this, ActivityDeliveryReview.class);
@@ -422,6 +426,8 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         slot5 = standardDialog.findViewById(R.id.slot5);
         slot6 = standardDialog.findViewById(R.id.slot6);
         stndDay = standardDialog.findViewById(R.id.stnd_day_switch);
+        stndDay.setChecked(false);
+        exp_date=1;
         stndDay.setOnCheckedChangeListener(this);
         stndtomorrow = standardDialog.findViewById(R.id.tomorrow);
 
@@ -644,7 +650,6 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         startActivity(new Intent(ActivityDeliveryTimeSlot.this, ActivityFillDropAddress.class));
         finish();
     }
-
 
 
     @Override

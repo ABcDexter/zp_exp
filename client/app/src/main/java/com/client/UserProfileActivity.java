@@ -34,7 +34,7 @@ public class UserProfileActivity extends ActivityDrawer {
     Locale myLocale;
     String currentLanguage = "en", currentLang;
 
-    TextView mobiletxt;
+    TextView mobiletxt, uploadAadhar;
     public static final String AUTH_KEY = "AuthKey";
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     public static final String USER_DATA = "com.client.UserData";
@@ -85,6 +85,8 @@ public class UserProfileActivity extends ActivityDrawer {
         });
         mobiletxt = findViewById(R.id.mobile);
         nameText = findViewById(R.id.user_name);
+        uploadAadhar = findViewById(R.id.upload_aadhar);
+
 
         SharedPreferences prefPLoc = getSharedPreferences(USER_DATA, Context.MODE_PRIVATE);
         String stringPhone = prefPLoc.getString(USER_PHONE, "");
@@ -155,5 +157,11 @@ public class UserProfileActivity extends ActivityDrawer {
         } else {
             Toast.makeText(UserProfileActivity.this, "Language already selected!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    //method to upload aadhar card pictures to the server
+    public void uploadAadhar(View view) {
+        Intent upload = new Intent(UserProfileActivity.this,  AadharCardUpload.class);
+        startActivity(upload);
     }
 }

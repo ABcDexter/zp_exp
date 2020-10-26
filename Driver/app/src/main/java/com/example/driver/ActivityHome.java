@@ -2,7 +2,6 @@ package com.example.driver;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -25,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
@@ -104,6 +102,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
+
+
         SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
         aadhar = sharedPreferences.getString(AADHAR, "");// retrieve aadhaar value stored locally and assign it to String aadhar
 
@@ -111,9 +111,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         String stringStatus = pref.getString(STATUS, "");
 
         SharedPreferences delPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
-        String strDid = delPref.getString(TID, "");
 
-        tripID = strDid;
+        tripID = delPref.getString(TID, "");
         //initializing variables
         status_duty = findViewById(R.id.dutyStatus);
         scrollView = findViewById(R.id.scrollLayout);
@@ -129,6 +128,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         //totalEarnings.setOnClickListener(this);
 
         myDialog = new Dialog(this);
+        auth = strAuth;
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityHome.this);// needed for gsp tracking
 
@@ -202,7 +202,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
         if (id == 2) {
-            infoText.setText("ARE YOU OFFLINE");
+            infoText.setText("YOU ARE OFFLINE");
         }
         if (id == 3) {
             //vibrate the device for 1000 milliseconds
@@ -335,7 +335,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     private void driverSetMode(String mode) {
-        auth = strAuth;
         params.put("auth", auth);
         params.put("st", mode);
         JSONObject parameters = new JSONObject(params);
@@ -351,8 +350,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         }, a::onFailure);
 
     }
+
     private void vehicleRetire() {
-        auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
 
@@ -369,7 +368,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void sendLocation() {
-        auth = strAuth;
         params.put("an", aadhar);
         params.put("auth", auth);
         params.put("lat", lat);
@@ -389,7 +387,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void getStatus() {
-        auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -405,10 +402,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void driverRideCheck() {
-        auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-
         Log.d(TAG, "auth = " + auth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST driver-ride-check");
         UtilityApiRequestPost.doPOST(a, "driver-ride-check", parameters, 30000, 0, response -> {
@@ -422,11 +417,9 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void rideGetInfo() {
-        auth = strAuth;
         params.put("auth", auth);
         params.put("tid", tripID);
         JSONObject parameters = new JSONObject(params);
-
         Log.d(TAG, "auth = " + auth + " tid=" + tripID);
         Log.d(TAG, "UtilityApiRequestPost.doPOST auth-trip-get-info");
         UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 30000, 0, response -> {
@@ -440,7 +433,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void retireRide() {
-        String auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -456,7 +448,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void isVehicleSet() {
-        String auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -543,7 +534,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                         startActivity(st);
 
                     }
-                    if (status.equals("FN")||status.equals("TR")) {
+                    if (status.equals("FN") || status.equals("TR")) {
                         Intent pd = new Intent(ActivityHome.this, ActivityRideCompleted.class);
                         startActivity(pd);
 
@@ -619,7 +610,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             editor.apply();
         }
         //response on hitting driver-delivery-retire API
-        if (id==8){
+        if (id == 8) {
             status_duty.setChecked(false);
             Log.d(TAG, "vehicle retired successfully");
         }
@@ -628,5 +619,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(instance, "Something went wrong! Please try again later.", Toast.LENGTH_SHORT).show();
     }
 }

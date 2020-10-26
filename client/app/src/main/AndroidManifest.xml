@@ -40,12 +40,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".deliver.ActivityDeliverySummery"/>
+        <activity android:name=".AadharCardUpload"></activity>
+        <activity android:name=".deliver.ActivityDeliverySummery" />
         <activity android:name=".rent.ActivityUpdateHours" />
         <activity android:name=".deliver.ActivitySlidingFullPage" />
-        <activity android:name=".deliver.ActivityDeliveryReview"
-            android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".deliver.ActivityDeliveryTimeSlot" ></activity>
+        <activity
+            android:name=".deliver.ActivityDeliveryReview"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".deliver.ActivityDeliveryTimeSlot" />
         <activity
             android:name=".deliver.ActivityPackageDetails"
             android:windowSoftInputMode="stateHidden" />
@@ -75,8 +77,9 @@
             android:name=".ride.MapsActivity2"
             android:label="@string/title_activity_maps2" />
         <activity android:name=".deliver.ActivityDeliverPayment" />
-        <activity android:name=".deliver.ActivityFillDropAddress"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".deliver.ActivityFillDropAddress"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".rent.ActivityRentEnded" />
         <activity android:name=".rent.ActivityRentInProgress" />
         <activity android:name=".rent.ActivityRentOTP" />
@@ -119,8 +122,9 @@
             android:launchMode="singleTop" />
         <activity android:name=".rent.ActivityRateRent" />
         <activity android:name=".rent.MapsHubLocation" />
-        <activity android:name=".deliver.ActivityFillPickDetails"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".deliver.ActivityFillPickDetails"
+            android:windowSoftInputMode="stateHidden" />
 
         <uses-library
             android:name="org.apache.http.legacy"

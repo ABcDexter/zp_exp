@@ -21,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -94,6 +95,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
+        auth = strAuth;
         SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
         aadhar = sharedPreferences.getString(AADHAR, "");// retrieve aadhaar value stored locally and assign it to String aadhar
 
@@ -299,7 +301,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     private void agentSetMode(String mode) {
-        auth = strAuth;
+
         params.put("auth", auth);
         params.put("st", mode);
         JSONObject parameters = new JSONObject(params);
@@ -317,7 +319,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void sendLocation() {
-        auth = strAuth;
+
         params.put("an", aadhar);
         params.put("auth", auth);
         params.put("lat", lat);
@@ -337,7 +339,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void getStatus() {
-        auth = strAuth;
+
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -353,7 +355,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void agentDelCheck() {
-        auth = strAuth;
+
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
 
@@ -370,7 +372,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void delvyGetInfo() {
-        auth = strAuth;
+
         params.put("auth", auth);
         params.put("did", deliveryID);
         JSONObject parameters = new JSONObject(params);
@@ -388,7 +390,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void retireDelvy() {
-        String auth = strAuth;
+
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -536,5 +538,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(instance, "Something went wrong! Please try again later.", Toast.LENGTH_SHORT).show();
     }
 }

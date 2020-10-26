@@ -1,4 +1,4 @@
-package com.example.driver;
+package com.deliverpartner;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,7 +10,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -40,10 +39,6 @@ import com.google.android.material.navigation.NavigationView;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,8 +53,8 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
     String currentLanguage = "en", currentLang;
     NavigationView nv;
     TextView mobiletxt;
-    public static final String AUTH_KEY = "Auth";
     public static final String AUTH_COOKIE = "com.agent.cookie";
+    public static final String AUTH_KEY = "Auth";
 
     private ImageView imgProfilePic;
     private TextView upload;
@@ -75,7 +70,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
 
     public void onSuccess(JSONObject response) {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
-        //response on hitting auth-aadhaar-save API
+        //response on hitting auth-profile-photo-save API
         /*Intent home = new Intent(ActivityUserProfile.this, ActivityWelcome.class);
         startActivity(home);
         finish();*/
@@ -172,6 +167,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         upload = findViewById(R.id.upload_file_txt);
         imgProfilePic = findViewById(R.id.profile_picture);
         imgProfilePic.setOnClickListener(this);
+
         String imageURL = "https://api.villageapps.in:8090/media/dp_"+stringAuth+"_.jpg";
 
         try {
@@ -260,7 +256,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void nextActivity(String photo) {
+    private void nextActivity(String profilePic) {
 
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,10 +268,10 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
                 Map<String, String> params = new HashMap();
                 String auth = stringAuth;
                 params.put("auth", auth);
-                params.put("profilePhoto", photo);
+                params.put("profilePhoto", profilePic);
                 JSONObject parameters = new JSONObject(params);
                 ActivityUserProfile a = ActivityUserProfile.this;
-                Log.d(TAG, "Values: auth=" + auth + " profilePhoto=" + photo);
+                Log.d(TAG, "Values: profilePhoto=" + profilePic + " auth=" + auth);
                 Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-photo-save");
                 UtilityApiRequestPost.doPOST(a, "auth-profile-photo-save", parameters, 30000, 0, a::onSuccess, a::onFailure);
             }

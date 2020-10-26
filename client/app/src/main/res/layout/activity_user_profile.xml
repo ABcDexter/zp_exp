@@ -181,4 +181,17 @@
         android:checked="false"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:theme="@style/SCBSwitch"/>
+
+    <TextView
+        android:id="@+id/upload_aadhar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtNightMode"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:paddingRight="8dp"
+        android:text="@string/upload_aadhar_card"
+        android:textAllCaps="true"
+        android:textSize="22sp"
+        android:onClick="uploadAadhar"/>
 </RelativeLayout>

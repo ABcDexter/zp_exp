@@ -271,7 +271,7 @@
     <string name="return_veh">कृपया किसी भी शुल्क से बचने के लिए वाहन समय पर वापस करें।</string>
     <string name="time_extended">आपके रेंटल (किराये) का समय बढ़ा दिया गया है। इसके अनुसार अगले घंटे का किराया-शुल्क लागू।</string>
     <string name="extended_min">अतिरिक्त मिनट :</string>
-    <string name="pay_to_unlock_otp">कृपया अपने OTP(ओ.टी.पी.) को अनलॉक करने के लिए ₹</string>
+    <string name="pay_to_unlock_otp">कृपया अपने OTP(ओ.टी.पी.) को अनलॉक करने के लिए </string>
     <string name="unlock_otp">\u0020का भुगतान करें।</string>
     <string name="check_condi_before_paying">वाहन की स्थिति की जाँच के बाद ही भुगतान करें</string>
     <string name="cost_calc_as_per_time">आपके रेंटल समय के अनुसार शुल्क तय किया गया है। कृपया अपनी यात्रा शुरू करने और ओ.टी.पी. को अनलॉक करने के लिए शुल्क का भुगतान करें।</string>
@@ -356,4 +356,5 @@
     <string name="drop_point_name">कृपया उस व्यक्ति का नाम बतायें, जिस को पार्सल देना है</string>
     <string name="drop_point_mobile">कृपया उस व्यक्ति का मोबाइल नम्बर बतायें, जिस को जिससे पार्सल देना है</string>
     <string name="terms_amp_conditions"><![CDATA[" TERMS & CONDITIONS"]]></string>
+    <string name="upload_aadhar_card">Upload Aadhar Card</string>
 </resources>
