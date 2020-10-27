@@ -420,6 +420,8 @@ def supRentCheck(dct, sup):
             vals['price'] = getTripPrice(trip)['price']
         else:
             vals['price'] = getRentPrice(trip.hrs)['price']
+        uAuth = User.objects.filter(an=trip.uan)[0].auth
+        vals['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
 
         vals['van'] = trip.van
         rentals.append(vals)
