@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+import com.bumptech.glide.Glide;
 import com.client.ActivityDrawer;
 import com.client.ActivityWelcome;
 import com.client.R;
@@ -45,6 +47,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     TextView shareDetails, emergencyCall, trackLocation, nameD, phone, otp, vNum;
     TextView liveLocation;
     ImageButton endRide;
+    ImageView driverPhoto;
     ScrollView scrollView;
     private static final String TAG = "ActivityRideInProgress";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
@@ -52,7 +55,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     public static final String AUTH_KEY = "AuthKey";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    public static final String OTP_PICK = "OTPPick";
+    //public static final String OTP_PICK = "OTPPick";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
 
@@ -80,9 +83,11 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
                 if (active.equals("true")) {
                     String status = response.getString("st");
                     String tid = response.getString("tid");
+                    String photo = response.getString("photourl");
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (status.equals("ST")) {
+                        Glide.with(this).load(photo).into(driverPhoto);
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("04");
                         startService(intent);
@@ -128,7 +133,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuthCookie = prefPLoc.getString(AUTH_KEY, "");
         SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-        String stringOtp = pref.getString(OTP_PICK, "");
+        //String stringOtp = pref.getString(OTP_PICK, "");
         String stringVan = pref.getString(VAN_PICK, "");
         String stringDName = pref.getString(DRIVER_NAME, "");
         String stringDPhn = pref.getString(DRIVER_PHN, "");
@@ -139,8 +144,8 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         nameD.setText(stringDName);
         phone = findViewById(R.id.driver_phone);
         phone.setText(stringDPhn);
-        otp = findViewById(R.id.otp_ride);
-        otp.setText(stringOtp);
+        /*otp = findViewById(R.id.otp_ride);
+        otp.setText(stringOtp);*/
         shareDetails = findViewById(R.id.share_ride_details);
         shareDetails.setOnClickListener(this);
         emergencyCall = findViewById(R.id.emergency);
@@ -152,6 +157,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         scrollView = findViewById(R.id.scrollView_ride_OTP);
         liveLocation = findViewById(R.id.share_location);
         liveLocation.setOnClickListener(this);
+        driverPhoto = findViewById(R.id.photo_driver);
 
         checkStatus();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityRideInProgress.this);
@@ -184,21 +190,21 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         Log.d(TAG, " alert Dialog opened");
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
-        dialog.setMessage("Your ride is not yet complete. You will be charged as per your chosen destination.\nAre you sure you want to end your ride?");
-        dialog.setTitle("END RIDE");
-        dialog.setPositiveButton("YES",
+        dialog.setMessage(R.string.ride_not_complete);
+
+        dialog.setTitle(R.string.please_note);
+        dialog.setPositiveButton(R.string.yes,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,
                                         int which) {
-
                         userCancelTrip();
                         Log.d(TAG, "checkStatus invoked");
                     }
                 });
-        dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "RIDE NOT ENDED", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.ride_not_ended, Toast.LENGTH_LONG).show();
             }
         });
         AlertDialog alertDialog = dialog.create();
@@ -305,10 +311,8 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
                 imageDialog.dismiss();
                 break;*/
             case R.id.share_location:
-                Snackbar snackbar = Snackbar.make(scrollView, "COMING SOON", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(scrollView, R.string.coming_soon, Snackbar.LENGTH_LONG);
                 snackbar.show();
         }
     }
-
-
 }

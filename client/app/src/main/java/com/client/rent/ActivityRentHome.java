@@ -1,7 +1,9 @@
 package com.client.rent;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -25,8 +27,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
+import com.client.ActivityWelcome;
 import com.client.HubList;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
@@ -170,7 +175,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                     SharedPreferences.Editor editor1 = prefBuzz.edit();
                     editor1.remove(BUSS_FLAG);
                     editor1.apply();
-                    Toast.makeText(this, "No Vehicles Available Currently!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.no_vehicle_av, Toast.LENGTH_LONG).show();
                 } else if (stringBuss.equals("BussMe")) {
                     Intent intent = new Intent(this, UtilityPollingService.class);
                     intent.setAction("11");
@@ -323,6 +328,57 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
 
     }
 
+    private void dlAlert() {
+        // Create the object of
+        // AlertDialog Builder class
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityRentHome.this);
+        // Set the message show for the Alert time
+        builder.setMessage(R.string.driving_licence);
+        // Set Alert Title
+        builder.setTitle(R.string.please_note);
+        // Set Cancelable false
+        // for when the user clicks on the outside
+        // the Dialog Box then it will remain show
+        builder.setCancelable(false);
+        // Set the positive button with ok name
+        // OnClickListener method is use of
+        // DialogInterface interface.
+        builder.setPositiveButton(R.string.agree, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                storeData();
+                getAvailableVehicle();
+                dialog.cancel();
+            }
+        });
+
+        // Set the Negative button with No name
+        // OnClickListener method is use
+        // of DialogInterface interface.
+        builder.setNegativeButton(R.string.disagree, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // If user click cancel
+                // then user goes to the previous window
+                Intent back = new Intent(ActivityRentHome.this, ActivityWelcome.class);
+                startActivity(back);
+                finish();
+            }
+        });
+
+        // Create the Alert dialog
+        AlertDialog alertDialog = builder.create();
+
+        // Show the Alert Dialog box
+        alertDialog.show();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
+        Button buttonPositive = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        buttonPositive.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        Button buttonNegative = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        buttonNegative.setTextColor(ContextCompat.getColor(this, R.color.Black));
+    }
+
     private void ShowPopup(int id) {
 
         myDialog.setContentView(R.layout.popup_new_request);
@@ -407,8 +463,9 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                             RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
                             PaymentMode);
                 } else {
-                    storeData();
-                    getAvailableVehicle();
+                    dlAlert();//method to alert user to provide valid driving licence at the hub before picking up the vehicle
+                    /*storeData();
+                    getAvailableVehicle();*/
                     /*Intent rideIntent = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
                     startActivity(rideIntent);*/
                     Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
@@ -452,57 +509,57 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             case R.id.txt2:
                 NoHours = "2";
                 imageDialog2.dismiss();
-                hours.setText("2 hrs (120 mins) @ ₹ 108");
+                hours.setText(R.string._2_hr);
                 break;
             case R.id.txt3:
                 NoHours = "3";
                 imageDialog2.dismiss();
-                hours.setText("3 hrs (180 mins) @ ₹ 144");
+                hours.setText(R.string._3_hr);
                 break;
             case R.id.txt4:
                 NoHours = "4";
                 imageDialog2.dismiss();
-                hours.setText("4 hrs (240 mins) @ ₹ 180");
+                hours.setText(R.string._4_hr);
                 break;
             case R.id.txt5:
                 NoHours = "5";
                 imageDialog2.dismiss();
-                hours.setText("5 hrs (300 mins) @ ₹ 210");
+                hours.setText(R.string._5_hr);
                 break;
             case R.id.txt6:
                 NoHours = "6";
                 imageDialog2.dismiss();
-                hours.setText("6 hrs (360 mins) @ ₹ 234");
+                hours.setText(R.string._6_hr);
                 break;
             case R.id.txt7:
                 NoHours = "7";
                 imageDialog2.dismiss();
-                hours.setText("7 hrs (420 mins) @ ₹ 252");
+                hours.setText(R.string._7_hr);
                 break;
             case R.id.txt8:
                 NoHours = "8";
                 imageDialog2.dismiss();
-                hours.setText("8 hrs (480 mins) @ ₹ 264");
+                hours.setText(R.string._8_hr);
                 break;
             case R.id.txt9:
                 NoHours = "9";
                 imageDialog2.dismiss();
-                hours.setText("9 hrs (540 mins) @ ₹ 270");
+                hours.setText(R.string._9_hr);
                 break;
             case R.id.txt10:
                 NoHours = "10";
                 imageDialog2.dismiss();
-                hours.setText("10 hrs (600 mins) @ ₹ 300");
+                hours.setText(R.string._10_hr);
                 break;
             case R.id.txt11:
                 NoHours = "11";
                 imageDialog2.dismiss();
-                hours.setText("11 hrs (660 mins) @ ₹ 330");
+                hours.setText(R.string._11_hr);
                 break;
             case R.id.txt12:
                 NoHours = "12";
                 imageDialog2.dismiss();
-                hours.setText("11 hrs (1440 mins) @ ₹ 360");
+                hours.setText(R.string._12_hr);
                 break;
             case R.id.rent_rl_1:
                 VehicleType = "0";

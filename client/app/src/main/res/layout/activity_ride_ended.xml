@@ -147,6 +147,13 @@
                 android:padding="15dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/paynow" />
+            <Button
+                android:id="@+id/dummy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="dummy"
+                android:layout_alignParentBottom="true"/>
         </RelativeLayout>
     </ScrollView>
 

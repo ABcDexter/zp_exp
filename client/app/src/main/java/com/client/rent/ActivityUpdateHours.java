@@ -257,7 +257,7 @@ String stringDropID;
         if (null != chooser.resolveActivity(getPackageManager())) {
             startActivityForResult(chooser, UPI_PAYMENT);
         } else {
-            Toast.makeText(ActivityUpdateHours.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityUpdateHours.this, R.string.no_upi_found, Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -315,16 +315,16 @@ String stringDropID;
 
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
-                Toast.makeText(ActivityUpdateHours.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityUpdateHours.this, R.string.transaction_successful, Toast.LENGTH_SHORT).show();
                 userUpdateTrip();
                 Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
-                Toast.makeText(ActivityUpdateHours.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityUpdateHours.this, R.string.payment_cancelled_by_user, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(ActivityUpdateHours.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityUpdateHours.this, R.string.transaction_failed, Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(ActivityUpdateHours.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityUpdateHours.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -35,6 +35,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ActivityLogin"/>
         <activity android:name=".ActivityRideInProgress" />
         <activity android:name=".ActivityVerifyDLDetails" />
         <activity android:name=".ActivityPasserby" />
@@ -55,10 +56,8 @@
         <activity
             android:name=".ActivityRideAccepted"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".ActivityHome"/>
-        <activity android:name=".ActivityMain">
-
-        </activity>
+        <activity android:name=".ActivityHome" />
+        <activity android:name=".ActivityMain"/>
         <activity android:name=".ActivityDrawer" />
         <activity android:name=".ActivityUserProfile" />
         <activity android:name=".ActivityProfileReview" />
@@ -66,6 +65,7 @@
         <activity android:name=".ActivityWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

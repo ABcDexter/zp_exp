@@ -209,7 +209,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
                 paymentMade();*/
             case R.id.pay_now:
                 Snackbar snackbar = Snackbar
-                        .make(scrollView, "Please make your payment, before booking your next ride.", Snackbar.LENGTH_INDEFINITE);
+                        .make(scrollView, R.string.make_payment_to_continue, Snackbar.LENGTH_INDEFINITE);
                 View sbView = snackbar.getView();
                 TextView textView = sbView.findViewById(R.id.snackbar_text);
                 textView.setTextColor(Color.YELLOW);
@@ -313,7 +313,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
         if (null != chooser.resolveActivity(getPackageManager())) {
             startActivityForResult(chooser, UPI_PAYMENT);
         } else {
-            Toast.makeText(ActivityRentEnded.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityRentEnded.this, R.string.no_upi_found, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -370,16 +370,16 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
 
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
-                Toast.makeText(ActivityRentEnded.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentEnded.this, R.string.transaction_successful, Toast.LENGTH_SHORT).show();
                 rentPay();
                 Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
-                Toast.makeText(ActivityRentEnded.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentEnded.this, R.string.payment_cancelled_by_user, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(ActivityRentEnded.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentEnded.this, R.string.transaction_failed, Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(ActivityRentEnded.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityRentEnded.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
     }
 

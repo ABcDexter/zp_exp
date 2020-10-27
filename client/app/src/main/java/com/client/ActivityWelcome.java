@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,7 +75,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     SharedPreferences prefAuth;
     String stringAuth;
-    ImageButton btnRent, btnRide, btnDeliver;
+    ImageButton btnRent, btnRide, btnDeliver, btnShop, btnConnect;
     ActivityWelcome a = ActivityWelcome.this;
     Map<String, String> params = new HashMap();
     String auth;
@@ -102,10 +104,14 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         btnRide = findViewById(R.id.btn_ride);
         btnRide.setOnClickListener(this);
         btnDeliver = findViewById(R.id.btn_deliver);
+        btnShop = findViewById(R.id.btn_shop);
+        btnConnect = findViewById(R.id.btn_connect);
         btnDeliver.setOnClickListener(this);
+        btnShop.setOnClickListener(this);
+        btnConnect.setOnClickListener(this);
         auth = stringAuth;
         if (auth.equals("")) {
-            Intent registerUser = new Intent(ActivityWelcome.this, ActivityMain.class);
+            Intent registerUser = new Intent(ActivityWelcome.this, ActivityRegistration.class);
             startActivity(registerUser);
             finish();
         }
@@ -564,6 +570,8 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, "Something went wrong! Please try again later.", Toast.LENGTH_LONG).show();
+
     }
 
     @Override
@@ -580,6 +588,19 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             case R.id.btn_deliver:
                 Intent deliverIntent = new Intent(ActivityWelcome.this, ActivityPackageDetails.class);
                 startActivity(deliverIntent);
+                break;
+            case R.id.btn_shop:
+                String shopUrl = "https://zippe.in/en/shop-by-category/";
+                Intent shopIntent = new Intent(Intent.ACTION_VIEW);
+                shopIntent.setData(Uri.parse(shopUrl));
+                startActivity(shopIntent);
+                break;
+            case R.id.btn_connect:
+                String connectUrl = "https://zippe.in/en/service-categories/";
+                Intent connectIntent = new Intent(Intent.ACTION_VIEW);
+                connectIntent.setData(Uri.parse(connectUrl));
+                startActivity(connectIntent);
+                break;
         }
     }
 }

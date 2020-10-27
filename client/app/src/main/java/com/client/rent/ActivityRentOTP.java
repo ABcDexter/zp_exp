@@ -30,6 +30,7 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+import com.bumptech.glide.Glide;
 import com.client.ActivityDrawer;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
@@ -75,6 +76,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     ImageView lock;
     final int UPI_PAYMENT = 0;
     RelativeLayout rlPhone;
+    ImageView supPhoto;
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG, "RESPONSE:" + response);
@@ -93,11 +95,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                 if (active.equals("true")) {
                     String status = response.getString("st");
                     String tid = response.getString("tid");
+                    String photo = response.getString("photourl");
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (status.equals("AS")) {
                         String timeRem = response.getString("time");
                         String price = response.getString("price");
+                        Glide.with(this).load(photo).into(supPhoto);
                         costEst.setText("₹ " + price);
                         PriceOnly = price;
                        /* if (timeRem.equals("")) {
@@ -189,6 +193,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         String otpPick = prefPLoc.getString(OTP_PICK, "");
         String vType = prefPLoc.getString(VEHICLE_TYPE, "");
 
+        supPhoto = findViewById(R.id.photo_sup);
         costEst = findViewById(R.id.adv_payment_otp);
         vtype = findViewById(R.id.vtype);
         dName = findViewById(R.id.supervisor_name);
@@ -311,7 +316,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             infoText.setText(stringDrop);
         }
         if (id == 7) {
-            infoText.setText(R.string.pay_to_unlock_otp);
+            infoText.setText(getString(R.string.pay_to_unlock_otp) + costEst.getText().toString() + getString(R.string.unlock_otp));
         }
         if (id == 8) {
             infoText.setText("Open Map. Work in Progress");
@@ -459,7 +464,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         if (null != chooser.resolveActivity(getPackageManager())) {
             startActivityForResult(chooser, UPI_PAYMENT);
         } else {
-            Toast.makeText(ActivityRentOTP.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityRentOTP.this, R.string.no_upi_found, Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -517,16 +522,16 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
-                Toast.makeText(ActivityRentOTP.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentOTP.this, R.string.transaction_successful, Toast.LENGTH_SHORT).show();
                 rentPay();
                 Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
-                Toast.makeText(ActivityRentOTP.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentOTP.this, R.string.payment_cancelled_by_user, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(ActivityRentOTP.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentOTP.this, R.string.transaction_failed, Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(ActivityRentOTP.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityRentOTP.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
     }
 

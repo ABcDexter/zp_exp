@@ -26,7 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Objects;
 
 //this activity acts like the base activity for the application. It is responsible for displaying the menu button on top of each activity
-public class ActivityDrawer extends AppCompatActivity {
+public class ActivityDrawer extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawerLayout = null;
     private ActionBarDrawerToggle mDrawerToggle = null;
@@ -47,7 +47,7 @@ public class ActivityDrawer extends AppCompatActivity {
         SharedPreferences prefPLoc = getSharedPreferences(USER_DATA, Context.MODE_PRIVATE);
         String stringName = prefPLoc.getString(USER_NAME, "");
 
-        nameText =findViewById(R.id.nameFrmServer);
+        nameText = findViewById(R.id.nameFrmServer);
 
         if (stringName.isEmpty())
             nameText.setText("");
@@ -62,14 +62,14 @@ public class ActivityDrawer extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         nv = findViewById(R.id.nv);
-
+        nv.setNavigationItemSelectedListener(this);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.Open,R.string.Close);
-
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.Open, R.string.Close);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        //mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,95 +83,24 @@ public class ActivityDrawer extends AppCompatActivity {
         menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ACTION","menuButton clicked");
+                Log.d("ACTION", "menuButton clicked");
                 // If the navigation drawer is not open then open it, if its already open then close it.
-                if (!mDrawerLayout.isDrawerOpen(Gravity.LEFT))mDrawerLayout.openDrawer(Gravity.LEFT);
+                if (!mDrawerLayout.isDrawerOpen(Gravity.LEFT))
+                     mDrawerLayout.openDrawer(Gravity.LEFT);
                 else mDrawerLayout.closeDrawer(Gravity.RIGHT);
-                setNavigationDrawer();
-                Log.d("ACTION","setNavigationDrawer() method called");
+                //setNavigationDrawer();
+                Log.d("ACTION", "setNavigationDrawer() method called");
 
             }
         });
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                switch (id) {
-                    case R.id.nav_logout:
-                        FirebaseAuth.getInstance().signOut();
 
-                        Intent intent = new Intent(ActivityDrawer.this, ActivityMain.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-
-                        /*case R.id.nav_partner:toolbar_back
-                         *//*Intent partner_intent = new Intent(ExperienceHomeActivity.this, BecomePartner.class);
-                        startActivity(partner_intent);*//*
-                        break;*/
-
-                    case R.id.nav_profile:
-                        /*Intent lang = new Intent(ActivityDrawer.this, ActivityUserProfile.class);
-                        startActivity(lang);*/
-                        break;
-                    case R.id.nav_home:
-                        Intent home = new Intent(ActivityDrawer.this, ActivityHome.class);
-                        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(home);
-                        break;
-
-                    default:
-                        return true;
-                }
-                return true;
-            }
-        });
-
-       /* backBtn = findViewById(R.id.toolbar_back);
+        /*backBtn = findViewById(R.id.toolbar_back);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });*/
-
-    }
-
-    private void setNavigationDrawer() {
-// implement setNavigationItemSelectedListener event on NavigationView
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                switch (id) {
-                    case R.id.nav_logout:
-                        FirebaseAuth.getInstance().signOut();
-
-                        Intent intent = new Intent(ActivityDrawer.this, ActivityMain.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-
-                        /*case R.id.nav_partner:toolbar_back
-                         *//*Intent partner_intent = new Intent(ExperienceHomeActivity.this, BecomePartner.class);
-                        startActivity(partner_intent);*//*
-                        break;*/
-
-                    case R.id.nav_profile:
-                        /*Intent lang = new Intent(ActivityDrawer.this, ActivityUserProfile.class);
-                        startActivity(lang);*/
-                        break;
-                    case R.id.nav_home:
-                        Intent home = new Intent(ActivityDrawer.this, ActivityHome.class);
-                        home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(home);
-                        break;
-
-                    default:
-                        return true;
-                }
-                return true;
-            }
-        });
-
 
     }
 
@@ -201,6 +130,7 @@ public class ActivityDrawer extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
     @Override
     public void finish() {
         super.finish();
@@ -213,22 +143,41 @@ public class ActivityDrawer extends AppCompatActivity {
         //overridePendingTransitionEnter();
     }
 
-    /**
-     * Overrides the pending Activity transition by performing the "Enter" animation.
-     */
-    /*protected void overridePendingTransitionEnter() {
-        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
-    }
-
-    *//**
-     * Overrides the pending Activity transition by performing the "Exit" animation.
-     *//*
-    protected void overridePendingTransitionExit() {
-        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
-    }*/
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         //overridePendingTransitionExit();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        switch (id) {
+
+            case R.id.nav_logout:
+                FirebaseAuth.getInstance().signOut();
+
+                Intent intent = new Intent(ActivityDrawer.this, ActivityLogin.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                break;
+            /*case R.id.nav_partner:toolbar_back
+             *//*Intent partner_intent = new Intent(ExperienceHomeActivity.this, BecomePartner.class);
+                        startActivity(partner_intent);*//*
+                        break;*/
+
+            case R.id.nav_profile:
+                Intent profile = new Intent(ActivityDrawer.this, ActivityUserProfile.class);
+                startActivity(profile);
+                break;
+            case R.id.nav_home:
+                Intent home = new Intent(ActivityDrawer.this, ActivityHome.class);
+                home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(home);
+                break;
+            default:
+                return true;
+        }
+        return true;
     }
 }

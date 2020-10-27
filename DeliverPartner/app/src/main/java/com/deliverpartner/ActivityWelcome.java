@@ -36,15 +36,15 @@ public class ActivityWelcome extends AppCompatActivity {
 
         //checking if the user is registered or not.
         if (auth.equals("")) {
-            if (!token.equals("")){
+            /*if (!token.equals("")){
                 Intent verifyUser = new Intent(ActivityWelcome.this, ActivityVerifyDLDetails.class);
                 startActivity(verifyUser);
                 finish();
-            }else {
-                Intent registerUser = new Intent(ActivityWelcome.this, ActivityMain.class);
+            }else {*/
+                Intent registerUser = new Intent(ActivityWelcome.this, ActivityLogin.class);
                 startActivity(registerUser);
                 finish();
-            }
+            /*}*/
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override

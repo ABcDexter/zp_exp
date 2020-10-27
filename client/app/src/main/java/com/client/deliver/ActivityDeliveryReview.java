@@ -75,7 +75,7 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
     String exp;
     String lat, lng, stringAuth, stringAN, pickLat, pickLng, pickLand, pickPin, pickMobile;
 
-    private static final String TAG = "ActivityPickDetails";
+    private static final String TAG = "ActivityDeliveryReview";
 
 
     public static final String PICK_LAT = "com.client.delivery.PickLatitude";
@@ -216,7 +216,7 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
                     } else {
                         vibrator.vibrate(1000);
                     }
-                    Snackbar snackbar1 = Snackbar.make(scrollView, "Please agree to our terms and conditions ", Snackbar.LENGTH_LONG);
+                    Snackbar snackbar1 = Snackbar.make(scrollView, R.string.agree_to_terms, Snackbar.LENGTH_LONG);
                     View sbView1 = snackbar1.getView();
                     TextView textView1 = (TextView) sbView1.findViewById(R.id.snackbar_text);
                     textView1.setTextColor(Color.YELLOW);
@@ -242,9 +242,11 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
         if (id == 1) {
             String price = response.getString("price");
             String time = response.getString("time");
+            String dist = response.getString("dist");
             // String price = response.getString("price");
             Intent confirm = new Intent(ActivityDeliveryReview.this, ActivityDeliverConfirm.class);
             confirm.putExtra("PRICE", price);
+            confirm.putExtra("DISTANCE", dist);
             startActivity(confirm);
         }
     }
