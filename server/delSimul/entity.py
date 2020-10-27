@@ -7,6 +7,7 @@ import time
 import random
 import datetime # DO NOT remove this import
 
+import urllib
 '''
 Simulation entity common code for
 '''
@@ -23,7 +24,7 @@ def prob(fProb):
 FINISHED_STATUS_MSGS = {
     'PD': 'Delivery paid for',
     'CN': 'Delivery was cancelled by user',
-    'DN': 'Delivery was denied by driver',
+    'DN': 'Delivery was denied by agent',
     'FL': 'Delivery failed',
     'TO': 'Delivery timed out',
 }
@@ -34,17 +35,19 @@ class Entity:
         self.sLastMsg = ''
         self.sAuth = ''
         self.sDID = -1
+        self.sSCID = ''
         self.iPID = -1
         self.iDstPID = -1
         self.delay = 3
         self.bPollVehicle = False
         self.bPollRide = False
         self.sAadhaar = ''
+        self.iDelProgressPct = 0
 
 
     ADMIN_AUTH = '437468756c68752066687461676e'
-    SERVER_URL = os.environ.get('ZP_URL', 'http://127.0.0.1:9999/')           # localhost
-    #SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
+    #SERVER_URL = os.environ.get('ZP_URL', 'http://127.0.0.1:9999/')           # localhost
+    SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
 
     def callAPI(self, sAPI, dct={}, auth=None):
         # print(sAPI, dct)
@@ -71,8 +74,16 @@ class Entity:
             return True
         return False
 
+    def showDeliveryProgress(self):
+        try:
+            self.iDelProgressPct += 10
+            self.log('Delivery progress %s%%' % self.iDelProgressPct)
+            return self.iDelProgressPct
+        except urllib.error.HTTPError:
+            self.log('OOps... something went wrong!')
 
-    # Given a trip and a percentage, gives lat and long linearly interpolated based on pctProgress
+
+    # Given a Delivery and a percentage, gives lat and long linearly interpolated based on pctProgress
     def getProgressLocation(self, dctPlaceSrc, dctPlaceDst, pctProgress):
         x1 = dctPlaceSrc['lng']
         x2 = dctPlaceDst['lng']
@@ -85,59 +96,56 @@ class Entity:
 
         return y, x
 
-    def showDeliveryProgress(self):
-        ret = self.callAPI('auth-progress-percent')
-        if not self.logIfErr(ret):
-            self.log('Delivery progress %s%%' % ret['pct'])
-            self.iPID = ret['pid']
-            return ret['pct']
 
     # Only on ST
     def maybeFailDelivery(self, typ, fProb=0.0001):  # p is the probability to cancel, 1% by default
         # once in 10000 fail the delivery
         if prob(fProb):
-            self.log(str(typ) + ' Failing trip!')
-            ret = self.callAPI('auth-ride-fail')
+            self.log(str(typ) + ' Failing delivery!')
+            ret = self.callAPI('auth-delivery-fail')
             self.logIfErr(ret)
             return True
         return False
 
     # Only AS for driver, RQ, AS, ST for user
     def maybeCancelDelivery(self, typ, fProb=0.1):  # p is the probability to cancel, 10% by default
-        # once in 10 cancel the trip
+        # once in 10 cancel the Delivery
         if prob(fProb):
-            self.log('Canceling trip!')
+            self.log('Canceling Delivery!')
             ret = self.callAPI(typ + '-delivery-cancel')
             self.logIfErr(ret)
             return True
         return False
 
-    def rideRetire(self, entity=None, state=None):
+    def delRetire(self, entity=None, state=None):
         '''
-        Retire the trip for good (FL already retire by adminSimul)
+        Retire the delivery for good (FL already retire by adminSimul)
         '''
-        self.log('retiring %s trip for %s' % (state, entity))
+        self.log('retiring %s Delivery for %s' % (state, entity))
         ret = {}
-        if entity == 'driver' and state in ['TO', 'CN']:
-            ret = self.callAPI('driver-ride-retire')
+        if entity == 'agent' and state in ['TO', 'CN']:
+            ret = self.callAPI('agent-delivery-retire')
 
         elif entity == 'user' and state in ['TO', 'DN', 'PD']:
-            ret = self.callAPI('user-ride-retire')
+            ret = self.callAPI('user-delivery-retire')
 
         if not self.logIfErr(ret):
-            self.log('Retired trip')
-            self.sTID = -1
+            self.log('Retired Delivery')
+            self.sDID = -1
 
 
     def handleFinishedDelivery(self, entity=None):
-        ret = self.callAPI('auth-ride-get-info', {'tid': self.sTID})
+        ret = self.callAPI('auth-delivery-get-info', {'did': self.sDID, 'scid': self.sSCID})
         if not self.logIfErr(ret):
             st = ret['st']
             if st != 'FL':
-                sMsg = FINISHED_STATUS_MSGS.get(st, 'Delivery in unexpected state: %s , for : %s' .format(st, entity))
-                self.log(sMsg)
-                if st in FINISHED_STATUS_MSGS.keys(): # TO, CN, DN, PD # FL is retired by adminHandleFailedDelivery()
-                    self.rideRetire(entity, st)
+                if st == 'FN':
+                    sMsg = FINISHED_STATUS_MSGS.get(st, 'Delivery in state: %s , for : %s' .format(st, entity))
+                    self.log(sMsg)
+                    self.delRetire(entity, st)
+
+                elif st in FINISHED_STATUS_MSGS.keys(): # TO, CN, DN, PD # FL is retired by adminHandleFailedDelivery()
+                    self.delRetire(entity, st)
             else:
                 self.log('Please wait for admin to run!!!')
                 time.sleep(self.delay)

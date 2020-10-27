@@ -23,7 +23,7 @@ def prob(fProb):
 FINISHED_STATUS_MSGS = {
     'PD': 'Trip ended successfully',
     'CN': 'Trip was cancelled by user',
-    'DN': 'Trip was denied by driver',
+    'DN': 'Trip was denied by supervisor',
     'FL': 'Trip failed',
     'TO': 'Trip timed out',
 }
@@ -38,16 +38,17 @@ class Entity:
         self.iDstPID = -1
         self.delay = 3
         self.bPollVehicle = False
-        self.bPollRide = False
+        self.bPollrent = False
         self.sAadhaar = ''
+        self.iHrs = 0
 
 
     ADMIN_AUTH = '437468756c68752066687461676e'
-    SERVER_URL = os.environ.get('ZP_URL', 'http://127.0.0.1:9999/')           # localhost
-    #SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
+    #SERVER_URL = os.environ.get('ZP_URL', 'http://127.0.0.1:9999/')           # localhost
+    SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
 
     def callAPI(self, sAPI, dct={}, auth=None):
-        # print(sAPI, dct)
+        #print(sAPI, dct, auth, self.sAuth)
         if sAPI.startswith('admin'):
             dct['auth'] = Entity.ADMIN_AUTH
         else:
@@ -55,13 +56,14 @@ class Entity:
             #print(sAPI.startswith('auth-admin'))
             if sAPI.startswith('auth-admin'): # needed for authAdminEntityUpdate
                 dct['adminAuth'] = Entity.ADMIN_AUTH
-        #print("### new  :::", sAPI, dct)
+        #print(" new  :::", sAPI, dct)
         sUrl = Entity.SERVER_URL + sAPI
         dctHdrs = {'Content-Type': 'application/json'}
         jsonData = json.dumps(dct).encode()
         req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
         jsonResp = urllib.request.urlopen(req, timeout=30).read()
         ret = json.loads(jsonResp)
+        #print("############## ret : ", ret)
         return ret
 
 
@@ -88,7 +90,7 @@ class Entity:
     def showTripProgress(self):
         ret = self.callAPI('auth-progress-percent')
         if not self.logIfErr(ret):
-            self.log('Trip progress %s%%' % ret['pct'])
+            self.log('Trip progress %s hours' % ret['pct'])
             self.iPID = ret['pid']
             return ret['pct']
 
@@ -97,32 +99,32 @@ class Entity:
         # once in 100 fail the trip
         if prob(fProb):
             self.log(str(typ) + ' Failing trip!')
-            ret = self.callAPI('auth-ride-fail')
+            ret = self.callAPI('auth-trip-fail')
             self.logIfErr(ret)
             return True
         return False
 
-    # Only AS for driver, RQ, AS, ST for user
+    # Only AS for supervisor, RQ, AS, ST for user
     def maybeCancelTrip(self, typ, fProb=0.1):  # p is the probability to cancel, 10% by default
         # once in 10 cancel the trip
         if prob(fProb):
             self.log('Canceling trip!')
-            ret = self.callAPI(typ + '-ride-cancel')
+            ret = self.callAPI(typ + '-trip-cancel')
             self.logIfErr(ret)
             return True
         return False
 
-    def rideRetire(self, entity=None, state=None):
+    def rentRetire(self, entity=None, state=None):
         '''
         Retire the trip for good (FL already retire by adminSimul)
         '''
         self.log('retiring %s trip for %s' % (state, entity))
         ret = {}
-        if entity == 'driver' and state in ['TO', 'CN']:
-            ret = self.callAPI('driver-ride-retire')
+        if entity == 'sup' and state in ['TO', 'CN']:
+            ret = self.callAPI('sup-rent-retire')
 
         elif entity == 'user' and state in ['TO', 'DN', 'PD']:
-            ret = self.callAPI('user-ride-retire')
+            ret = self.callAPI('user-trip-retire')
 
         if not self.logIfErr(ret):
             self.log('Retired trip')
@@ -130,14 +132,16 @@ class Entity:
 
 
     def handleFinishedTrip(self, entity=None):
-        ret = self.callAPI('auth-ride-get-info', {'tid': self.sTID})
+        ret = self.callAPI('auth-trip-get-info', {'tid': self.sTID})
         if not self.logIfErr(ret):
             st = ret['st']
             if st != 'FL':
+                # REEEEEEEEEEEEEEEEEEEwork....
+                # since supervisor doesn't affect ST state directly, machine is coming here.
                 sMsg = FINISHED_STATUS_MSGS.get(st, 'Trip in unexpected state: %s , for : %s' .format(st, entity))
                 self.log(sMsg)
                 if st in FINISHED_STATUS_MSGS.keys(): # TO, CN, DN, PD # FL is retired by adminHandleFailedTrip()
-                    self.rideRetire(entity, st)
+                    self.rentRetire(entity, st)
             else:
                 self.log('Please wait for admin to run!!!')
                 time.sleep(self.delay)

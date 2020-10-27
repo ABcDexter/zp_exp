@@ -25,22 +25,32 @@ SECRET_KEY = '+8^8@0w0p1)6yr-g)!3l04&qp-ggjwz@9f_-fvpm_qta0g&36r'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "0891171114b2.ngrok.io", "159.65.144.72"  ] # ngrok http http://127.0.0.1:9999
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "media.villageapps.in", "8ee0edfb6206.ngrok.io", "159.65.144.72","86d9a981a121.ngrok.io" ] # ngrok http http://127.0.0.1:9999
 
-
+PROFILE_PHOTO_DIR = '/srv/data/static/dp'
 AADHAAR_DIR = '/srv/data/aadhaar/'
 DL_DIR = '/srv/data/dl/'
 GOOGLE_APPLICATION_CREDENTIALS="/srv/zp/server/google-cloud/MyFirstProject.json"
 GOOGLE_MAPS_KEY = "AIzaSyBMFQPIDHSPfdiQqjX2ieF4l-qQB2tB61c"
+GOOGLE_PLACES_KEY = "AIzaSyATYNx4G8xXuwss9a_W4owqGgFTeRLiZX8"
 DB_FILE_PATH  = '/srv/data/db'
 ADMIN_AUTH    = '437468756c68752066687461676e'
 M_PER_DEG_LNG = 97220.765  # These values are specific to fleet location
 M_PER_DEG_LAT = 110839.613
 DSQUARE_THRESH = 2500 # 50*50
-TRIP_RQ_TIMEOUT = 180
-TRIP_AS_TIMEOUT = 300
+
+RIDE_RQ_TIMEOUT = 180 # 3 minutes
+RIDE_AS_TIMEOUT = 300 # 5 mintues
 LOG_DIR = '/srv/data/logs/'
 #DRIVER_OF_TIMEOUT = 240
+
+RENT_RQ_TIMEOUT = 1800  # 30 mins
+RENT_AS_TIMEOUT = 3600  # 60 minutes
+
+DEL_SC_TIMEOUT = 900   # 15 minutes
+DEL_AS_TIMEOUT = 1800  # 30 minutes
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 26214400 # 25 MB
 
 # Application definition
 
@@ -143,6 +153,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/srv/data/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/srv/data/static/dp/'
+
+#STATICFILES_DIRS = [
+#    BASE_DIR / "static",
+#    '/srv/data/dp/',
+#]
 
 LOGGING = {
     'version': 1,

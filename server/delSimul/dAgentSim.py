@@ -62,32 +62,39 @@ class Agent(Entity):
                     os.remove('money.%d' % self.sDID)
 
         if st == 'AS':
-            self.log('Waiting for user to arrive')
+            self.log('Going to the user for pickup...')
 
-            if prob(0.01): # only 1 % chance of cancelling a delivery
+            if prob(0.0000): # only 1 % chance of cancelling a delivery
                 self.log('Canceling delivery!')
                 ret = self.callAPI('agent-delivery-cancel')
                 self.logIfErr(ret)
             else:
-                otp = self.tryReadFileData('otp.%d' % self.sDID, 'otp')
-                if otp is not None:
-                    self.log('Received OTP: %d, starting delivery' % otp)
-                    ret = self.callAPI('agent-delivery-start', {'otp': otp})
-                    if not self.logIfErr(ret):
-                        os.remove('otp.%d' % self.sDID)
+                time.sleep(5)
+                self.log('reached address ')
+                ret = self.callAPI('agent-delivery-reached', {})
+
+        if st == 'RC':
+            otp = self.tryReadFileData('otp.%d' % self.sDID, 'otp')
+            if otp is not None:
+                self.log('Received OTP: %d, starting delivery' % otp)
+                ret = self.callAPI('agent-delivery-start', {'otp': otp})
+                if not self.logIfErr(ret):
+                    os.remove('otp.%d' % self.sDID)
+            else:
+                self.log('Waiting for OTP...')
 
         if st == 'ST':
             self.sDID = ret['did']
 
-            pct = self.showTripProgress()
-            self.callAPI('admin-progress-advance', {'did': self.sDID, 'pct' : 10})
+            pct = self.showDeliveryProgress()
+            #self.callAPI('admin-progress-advance', {'did': self.sDID, 'pct' : 10})
 
             if pct == 100:
-                self.log('Trip completed - ending')
-                ret = self.callAPI('agent-delivery-end')
+                self.log('Delivery completed - ending')
+                ret = self.callAPI('agent-delivery-done')
                 self.logIfErr(ret)
 
-            if prob(0.01):
+            if prob(0.000):
                 self.log('Failing delivery!')
                 ret = self.callAPI('auth-delivery-fail')
                 self.logIfErr(ret)
@@ -95,7 +102,7 @@ class Agent(Entity):
 
     def handleInactive(self):
         if self.sDID != -1: # TO, CN, DN, FL, PD
-            self.handleFinishedTrip('agent')
+            self.handleFinishedDelivery('agent')
             self.bChangeStatus = True
         else: #RQ state
             print("here for a request... ")
@@ -117,7 +124,7 @@ class Agent(Entity):
                             self.bChangeStatus = False
 
 
-    def handleTripStatus(self):
+    def handleDeliveryStatus(self):
         ret = self.callAPI('agent-delivery-get-status')
         print(ret)
         if 'active' in ret and ret['active']:
@@ -174,7 +181,7 @@ class Agent(Entity):
                 bOnline = self.handleAgentStatus()
 
             if bOnline:
-                self.handleTripStatus()
+                self.handleDeliveryStatus()
 
             time.sleep(fDelay)
 

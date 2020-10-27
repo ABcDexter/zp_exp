@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from entity import *
 
 '''
-Script simulates  admin behaviour
+Script simulates a drivers behaviour
 Run multiple instances of this to simulate multiple
 '''
 
@@ -36,15 +36,20 @@ class Admin(Entity):
             dctRet = self.callAPI('admin-refresh')
             self.logIfErr(dctRet)
             if not self.logIfErr(dctRet) and prob(0.5):
-            # Fix failed vehicles and super very lazily with 50% probability
+            # Fix failed vehicles and drivers very lazily with 50% probability
                 self.log('Fixing trip failures')
 
                 failedList = self.callAPI('admin-handle-failed-trip')
                 if len(failedList):
+                    self.log('Unlocking %d drivers' % len(failedList))
                     self.log('Recovering %d vehicles' % len(failedList))
                     self.log('Freeing %d users' % len(failedList))
 
                     for failed in failedList:
+                        dctRetDriver = self.callAPI('auth-admin-entity-update', {'auth': failed['dauth'], 'mode': 'OF', 'tid': -1}, failed['dauth'])
+                        if not self.logIfErr(dctRetDriver):
+                            self.log('Unlocked driver with auth : %s' % failed['dauth'] )
+                        time.sleep(fDelay)
 
                         dctRetVehicle = self.callAPI('admin-vehicle-update', {'van': failed['van'], 'tid': -1})
                         if not self.logIfErr(dctRetVehicle):
@@ -55,6 +60,17 @@ class Admin(Entity):
                         if not self.logIfErr(dctRetUser):
                             self.log('Freed user with auth : %s' % failed['uauth'] )
                         time.sleep(fDelay)
+
+            if not self.logIfErr(dctRet) and prob(0.99):
+
+                self.log('Assigning Agents to RQ deliveries')
+
+                resp = self.callAPI('admin-agent-assign')
+                if not self.logIfErr(resp):
+                    did = resp['did']
+                    auth = resp['babua']
+                    print(" values : ", did, "auth of agent closest ", auth)
+                    response = self.callAPI('agent-delivery-accept', {'did': did}, auth)
 
             pass
 

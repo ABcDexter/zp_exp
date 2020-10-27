@@ -23,6 +23,7 @@ class Driver(Entity):
         self.bPollVehicle = False
         self.bChangeStatus = True
         self.fDelay = 1
+        self.iVan = -1
 
     # log a message if its different from the last logged message
     def log(self, sMsg):
@@ -52,7 +53,8 @@ class Driver(Entity):
         if st in ['FN', 'TR']:
             t = int(ret['time']) / 60
             d = int(ret['dist']) / 1000
-            self.log('Waiting for payment: Cost: %.2f, Dist %.2f km' % (ret['price'], d))
+            self.log('Waiting for payment: Cost: %.2f, Dist %.2f km' % (float(ret['price']), d))
+            # self.log('Waiting for payment: Cost: %.2f' % (float(ret['price'])))
 
             pay = self.tryReadFileData('money.%d' % self.sTID, 'payment')
             if pay is not None:
@@ -64,7 +66,7 @@ class Driver(Entity):
         if st == 'AS':
             self.log('Waiting for user to arrive')
 
-            if prob(0.01): # only 1 % chance of cancelling a trip
+            if prob(0.000): # only 1 % chance of cancelling a trip
                 self.log('Canceling trip!')
                 ret = self.callAPI('driver-ride-cancel')
                 self.logIfErr(ret)
@@ -87,9 +89,9 @@ class Driver(Entity):
                 ret = self.callAPI('driver-ride-end')
                 self.logIfErr(ret)
 
-            if prob(0.01):
+            if prob(0.00):
                 self.log('Failing trip!')
-                ret = self.callAPI('auth-ride-fail')
+                ret = self.callAPI('auth-trip-fail')
                 self.logIfErr(ret)
 
 
@@ -100,18 +102,21 @@ class Driver(Entity):
         else: #RQ state
             ret = self.callAPI('driver-ride-check')
             if not self.logIfErr(ret):
-                vehicles = self.waitForVehicles()
                 if 'tid' in ret:
-                    bChoose = prob(0.9)
+                    bChoose = prob(0.99)
                     self.log('Trip available - %s' % ('accepting...' if bChoose else 'rejecting...') )
                     if bChoose:
-                        vehicle = random.choice(vehicles)
-                        params = {'tid': ret['tid'], 'van': vehicle['an'] }
+                        print("Ae hi gaddi chaahidi : ", self.iVan)
+                        params = {'tid': ret['tid'], 'van': self.iVan }
                         ret = self.callAPI('driver-ride-accept', params)
                         if not self.logIfErr(ret):
                             self.sTID = params['tid']
-                            self.iDstPID = ret['dstid']
-                            self.log('Accepted trip %s to PID %d' % (json.dumps(params), self.iDstPID))
+                            #self.iDstPID = ret['dstid']
+                            #self.log('Accepted trip %s to PID %d' % (json.dumps(params), self.iDstPID))
+                            self.iDstPID = 2
+                            #sUserName = params['name']
+                            self.log('Accepted trip %s to location %d for' % (json.dumps(params), self.iDstPID)) #, sUserName))
+
                             self.bChangeStatus = False
 
 
@@ -171,6 +176,17 @@ class Driver(Entity):
                 bOnline = self.handleDriverStatus()
 
             if bOnline:
+                if self.iVan == -1:
+                    #now select a vehicle
+                    vehicles = self.waitForVehicles()
+
+                    vehicle = random.choice(vehicles)
+                    print("OOOO gadddi : ", vehicle)
+                    self.iVan =  vehicle['an']
+
+                    params = {'van': self.iVan}
+                    ret = self.callAPI('driver-vehicle-set', params)
+
                 self.handleTripStatus()
 
             time.sleep(fDelay)
