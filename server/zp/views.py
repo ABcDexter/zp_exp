@@ -490,16 +490,17 @@ def userTripRequest(dct, user, _trip):
 
 @makeView()
 @csrf_exempt
+@handleException(IndexError, 'Driver NOT found', 501)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
 @checkTripStatus('AS')
 def userRideGetDriver(_dct, entity, trip):
     '''
-    Returns aadhaar, name and phone of current assigned driver, TODO: Photo
+    Returns aadhaar, name and phone of current assigned driver
     '''
     driver = Driver.objects.filter(an=trip.dan)[0]
-    ret = {'pn': driver.pn, 'an': driver.an, 'name': driver.name}
+    ret = {'pn': driver.pn, 'an': driver.an, 'name': driver.name, 'photourl' : "https://api.villageapps.in:8090/media/dp_" + driver.auth + "_.jpg"}
     return HttpJSONResponse(ret)
 
 
