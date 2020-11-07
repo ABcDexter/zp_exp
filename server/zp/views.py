@@ -20,17 +20,20 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 
-from .models import Driver, User, Vehicle
+from .models import Driver, User, Vehicle, Delivery
 from .models import Place, Trip, Progress, Location, Route
 
 from .utils import HttpJSONError, ZPException, DummyException, HttpJSONResponse, HttpRecordsResponse, log
-from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renameTmpImgFiles, getOTP
-from .utils import getRoutePrice, getTripPrice, getRentPrice
+from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renameTmpImgFiles, getOTP, doOCRback
+from .utils import getRoutePrice, getTripPrice, getRentPrice, getRidePrice, getRiPrice
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from .utils import headers
 
 from url_magic import makeView
-from zp.view import rent, ride, deliver
+from zp.view import rent, ride, deliver, pwa
+from .utils import googleDistAndTime
+from zp.view import schedule
+from .models import Rate
 
 ###########################################
 # Types
@@ -46,6 +49,67 @@ makeView.APP_NAME = 'zp'
 ##############################################################################
 # General Views
 ##############################################################################
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
+def registerUserNoAadhaar(_, dct: Dict):
+    '''
+    User registration
+    Creates a user record for the aadhar number OCR'd from the image via Google Vision
+    Aadhaar scans are archived in settings.AADHAAR_DIR as
+    <aadhaar>_front.jpg and <aadhaar>_back.jpg
+
+    HTTP Args:
+        name: name of the user
+        phone; phone number of the user without the ISD code
+        home: home state of the user
+        gender: gender of the user
+
+    Notes:
+        Registration is done atomically since we also need to save aadhar scans after DB write
+    '''
+
+    log('User Registration request. Dct : %s ' % (str(dct)))
+
+    sPhone = str(dct['phone'])
+    sAn = str(91) + sPhone
+    sAuth = getClientAuth(sAn, sPhone)
+
+    qsUser = User.objects.filter(an=int(sAn))
+    bUserExists = len(qsUser) != 0
+    if not bUserExists:
+        sAuth = getClientAuth(sAn, sPhone)
+        user = User()
+        user.name = dct['name']
+        # user.age = int(clientDetails['age'])
+        user.gdr = dct['gender']
+        user.auth = sAuth
+        user.an = int(sAn)
+        user.pn = sPhone
+        user.hs = dct['home']
+        user.save()
+        log('New user registered: %s' % user.name)
+    else:
+        # modile exists, check what has been changed
+        user = qsUser[0]
+        if user.pn != sPhone:
+            sAuth = getClientAuth(str(qsUser[0].sAn), str(qsUser[0].pn))
+            user.pn = sPhone
+            user.auth = sAuth
+            user.save()
+            log('Auth changed for: %s' % user.name)
+        else:
+            # Aadhaar exists, phone unchanged, just return existing auth
+            sAuth = user.auth
+            log('Auth exists for: %s' % user.name)
+
+    # return the whole user record
+    return HttpJSONResponse(model_to_dict(user))
+
 
 @makeView()
 @csrf_exempt
@@ -75,24 +139,32 @@ def registerUser(_, dct: Dict):
     clientDetails = doOCR(sAadharFrontFilename)
     sAadhaar = clientDetails['an']
     log('Aadhaar number read from %s - %s' % (sAadharFrontFilename, sAadhaar))
+    clientDetails2 = doOCRback(sAadharBackFilename)
+    sAadhaar2 = clientDetails2['an']
+    log('Aadhaar number read from %s - %s' % (sAadharBackFilename, sAadhaar2))
 
     # verify aadhaar number via Verhoeff algorithm
     if not aadhaarNumVerify(sAadhaar):
         raise ZPException(501,'Aadhaar number not valid!')
     log('Aadhaar is valid')
 
+    if sAadhaar != sAadhaar2:
+        raise ZPException(501, 'Aadhaar number front doesn\'t match Aadhaar number back!')
+
     # Check if aadhaar has been registered before
-    qsUser = User.objects.filter(an=int(sAadhaar))
+    qsUser = User.objects.filter(adhar=int(sAadhaar))
     bUserExists = len(qsUser) != 0
     if not bUserExists:
         sAuth = getClientAuth(sAadhaar, sPhone)
         user = User()
         user.name = clientDetails['name']
+        user.an = str(91) + sPhone
         user.age = int(clientDetails['age'])
         user.gdr = clientDetails['gender']
         user.auth = sAuth
-        user.an = int(sAadhaar)
+        user.adhar = int(sAadhaar)
         user.pn = sPhone
+        user.hs = clientDetails2['hs']
         user.save()
 
         renameTmpImgFiles(settings.AADHAAR_DIR, sAadharFrontFilename, sAadharBackFilename, sAadhaar)
@@ -238,7 +310,8 @@ def isDriverVerified(_, dct):
 
 @makeView()
 @csrf_exempt
-@handleException()
+#@handleException()
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
 @checkAuth()
@@ -268,39 +341,65 @@ def userTripGetStatus(_dct, user):
 
         # For assigned trip send OTP, and 'an' of vehicle and driver
         if trip.st == 'AS':
-            ret['otp'] = getOTP(trip.uan, trip.dan, trip.atime)
-            vehicle = Vehicle.objects.filter(an=trip.van)[0]
-            ret['vno'] = vehicle.regn
-            if trip.rtype == 1:
-                ret['price'] = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
-            
+
+            #print(ret['vno'])
+            locDriver = Location.objects.filter(an=trip.dan)[0]
+            locUser = Location.objects.filter(an=trip.uan)[0]
+            #print(locDriver,locDriver.lat,locDriver.lng, locUser, locUser.lat, locUser.lng)
+
+            srcCoOrds = ['%s,%s' % (locDriver.lat, locDriver.lng)] #Driver ka location
+            dstCoOrds = ['%s,%s' % (locUser.lat, locUser.lng)]
+            # print('################',dstCoOrds)
+
+            # print(srcCoOrds, dstCoOrds)
+            gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+            nDist, nTime = gMapsRet['dist'], gMapsRet['time']
+
+            if trip.rtype == '1': #RENTAL
+                ret['price'] = getRentPrice(trip.hrs)['price']
+                currTime = datetime.now(timezone.utc)
+                #print(currTime, trip.atime)
+                diffTime = (currTime - trip.atime).total_seconds() // 60  # minutes
+                #print(currTime - trip.atime, (currTime - trip.atime).total_seconds())
+                ret['time'] = 30-diffTime
+
+            else:
+                ret['time'] = nTime
+                ret['otp'] = getOTP(trip.uan, trip.dan, trip.atime)
+                # print(trip.van)
+                vehicle = Vehicle.objects.filter(an=trip.van)[0]
+                ret['vno'] = vehicle.regn  # moves to ST state
+
         # For started trips send trip progress percent
         # this is redundant, this functionality is provided by authProgressPercent()
         if trip.st == 'ST':
-            progress = Progress.objects.filter(tid=trip.id)[0]
-            ret['pct'] = progress.pct
-            if trip.rtype == 1:
+            #progress = Progress.objects.filter(tid=trip.id)[0]
+            #ret['pct'] = progress.pct
+            if trip.rtype == '1':
+                vehicle = Vehicle.objects.filter(an=trip.van)[0]
                 currTime = datetime.now(timezone.utc)
-                diffTime = (currTime - trip.stime).total_seconds() / 60 # minutes 
-                remHrs = diffTime - trip.hrs 
-                ret['time'] = remHrs
-                
-            # TODO In case of rental make the rental send the number of minutes remaining .
+                diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
+                remTimeMins = trip.hrs*60 - diffTime
+                ret['time'] = int(remTimeMins)
+                ret['vno'] = vehicle.regn  # moves to ST state
+
 
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
-            if trip.rtype == 0:
-                price = getTripPrice(trip)
-            else : #renta
-                vehicle = Vehicle.objects.filter(an=trip.van)[0]
-                currTime = datetime.now(timezone.utc)
-                diffTime = (currTime - trip.stime).total_seconds() / 60 # minutes 
-                remHrs = diffTime - trip.hrs 
-                price = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, remHrs)
+            if trip.rtype == '0':
+                price = getTripPrice(trip)['price']
+            else : #rental
+                #vehicle = Vehicle.objects.filter(an=trip.van)[0]
+                #currTime = datetime.now(timezone.utc)
+                #diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
+                #remHrs = diffTime - trip.hrs
+                #price = getRentPrice(trip.srcid,  trip.dstid, vehicle.vtype, trip.pmode, remHrs)
+                remPrice = int(float(getTripPrice(trip)['price'])-float(getRentPrice(trip.hrs)['price']))
+                price = str(remPrice) + '.00' if remPrice >=0 else '0.00'
 
-            ret.update(price)
+            ret['price'] = price
     else:
-        ret = {'active': False}
+        ret = {'active': False, 'st': 'NONE', 'tid': -1}
 
     return HttpJSONResponse(ret)
 
@@ -337,13 +436,13 @@ def userTripRequest(dct, user, _trip):
     print("Trip Request param : ", dct)
 
     # Even though we can use IDs directly, look them up in the DB to prevent bogus IDs
-    idSrc = Place.objects.filter(id=dct['srcid'])[0].id
-    idDst = Place.objects.filter(id=dct['dstid'])[0].id
+    placeSrc = Place.objects.filter(id=dct['srcid'])[0]
+    placeDst = Place.objects.filter(id=dct['dstid'])[0]
 
     trip = Trip()
     trip.uan = user.an
-    trip.srcid = user.pid#idSrc #TODO fix this logic
-    trip.dstid = idDst
+    trip.srcid = placeSrc.id
+    trip.dstid = placeDst.id
     if dct['rtype'] == '0': # Ride
         trip.npas = dct['npas']
     else: # Rent
@@ -355,6 +454,11 @@ def userTripRequest(dct, user, _trip):
     trip.rtype = dct['rtype']
     trip.pmode = dct['pmode']
     trip.rtime = datetime.now(timezone.utc)
+    trip.srclat = placeSrc.lat
+    trip.srclng = placeSrc.lng
+    trip.dstlat = placeDst.lat
+    trip.dstlng = placeDst.lng
+
     trip.save()
 
     progress = Progress()
@@ -367,7 +471,8 @@ def userTripRequest(dct, user, _trip):
 
     # we are using only Zbees and Cash only payments right now.
     #ret = getRoutePrice(trip.srcid, trip.dstid, Vehicle.ZBEE, Trip.CASH)
-    ret = getRoutePrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
+    #ret = getRentPrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
+    ret = getRentPrice(dct['hrs'])
     ret['tid'] = trip.id
 
     return HttpJSONResponse(ret)
@@ -442,19 +547,22 @@ def userTripRetire(_dct, user, _trip):
 
 @makeView()
 @csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
 def authVehicleGetAvail(_dct, entity):
     '''
     Returns the available vehicles at the pid of the entity
     '''
-    qsVehicles = Vehicle.objects.filter(pid=entity.pid, tid=-1)
+    # TODO give vehicles from the nearest "hub", say 5 km radius
+    qsVehicles = Vehicle.objects.filter(tid=-1, dan=-1)
     ret = {'vehicles': [model_to_dict(vehicle) for vehicle in qsVehicles]}
     return HttpJSONResponse(ret)
 
 
 @makeView()
 @csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
 def authTripGetInfo(dct, entity):
@@ -467,14 +575,17 @@ def authTripGetInfo(dct, entity):
         raise ZPException('Invalid trip ID', 400)
 
     # get the trip and append pricing info if complete
-    ret = {'st': trip.st}
+    ret = {'st': trip.st, 'rtype':trip.rtype}
     if trip.st in ['FN', 'TR', 'PD']:
-        ret.update(getTripPrice(trip))
+        remPrice = int(float(getTripPrice(trip)['price']) - float(getRentPrice(trip.hrs)['price']))
+        price = str(remPrice) + '.00' if remPrice >= 0 else '0.00'
+        ret.update({'price': price})
     return HttpJSONResponse(ret)
 
 
 @makeView()
 @csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
 def authPlaceGet(_dct, _entity):
@@ -507,7 +618,7 @@ def authTripFail(dct, entity, trip):
     vehicle.tid = Vehicle.FAILED
     vehicle.save()
 
-    if trip.rtype == 0:
+    if trip.rtype == '0':
         # lock the driver
         driver = entity if type(entity) is Driver else Driver.objects.filter(an=trip.dan)[0]
         driver.mode = 'LK'
@@ -567,6 +678,9 @@ def authLocationUpdate(dct, entity):
 
     TODO: Add some sanity checks - check that d/dt delta from previous location is not unreasonably high!
     '''
+    if not dct['lat'] or not dct['lng']:
+        print(type(entity) , " with an :", entity.an , "sent empty lat/lng")
+        return HttpJSONResponse({})
 
     # Get the location object for this entity
     qsLoc = Location.objects.filter(an=entity.an)
@@ -629,13 +743,13 @@ def adminProgressAdvance(dct):
 
     # Update all three entities location, set pid if 100%
     trip = Trip.objects.filter(id=dct['tid'])[0]
-    src = Place.objects.filter(id=trip.srcid)[0]
-    dst = Place.objects.filter(id=trip.dstid)[0]
+    #src = trip. Place.objects.filter(id=trip.srcid)[0]
+    #dst = Place.objects.filter(id=trip.dstid)[0]
 
-    x1 = src.lng
-    x2 = dst.lng
-    y1 = src.lat
-    y2 = dst.lat
+    x1 = trip.srclng #src.lng
+    x2 = trip.dstlng # dst.lng
+    y1 = trip.srclat #src.lat
+    y2 = trip.dstlat #dst.lat
 
     f = currPct / 100
     x = x1 + (x2 - x1) * f
@@ -662,7 +776,7 @@ def adminProgressAdvance(dct):
     user = User.objects.filter(an=trip.uan)[0]
     updateLoc(vehicle, y, x)
     updateLoc(user, y, x)
-    if trip.rtype == 0:
+    if trip.rtype == '0':
         driver = Driver.objects.filter(an=trip.dan)[0]
         updateLoc(driver, y, x)
 
@@ -732,13 +846,18 @@ def adminRefresh(dct):
         # For requested trips if settings.TRIP_RQ_TIMEOUT seconds passed since trip.rtime set to TO (timeout)
         if trip.st == 'RQ':
             tmDelta = datetime.now(timezone.utc) - trip.rtime
-            if tmDelta.total_seconds() > settings.TRIP_RQ_TIMEOUT:
+            if trip.rtype == '0' and tmDelta.total_seconds() > settings.RIDE_RQ_TIMEOUT:
                 trip.st = 'TO'
+            if trip.rtype == '1' and tmDelta.total_seconds() > settings.RENT_RQ_TIMEOUT:
+                trip.st = 'TO'
+
         # For assigned trips if settings.TRIP_AS_TIMEOUT seconds passed since trip.atime set to TO (user times out)
         # this can be differentiated from above by simply looking at atime field, if not NULL, then Trip Timed Out after going into AS
         else:
             tmDelta = datetime.now(timezone.utc) - trip.atime
-            if tmDelta.total_seconds() > settings.TRIP_AS_TIMEOUT:
+            if trip.rtype == '0' and tmDelta.total_seconds() > settings.RIDE_AS_TIMEOUT:
+                trip.st = 'TO'
+            if trip.rtype == '1' and tmDelta.total_seconds() > settings.RENT_AS_TIMEOUT:
                 trip.st = 'TO'
         trip.save()
 
@@ -749,6 +868,22 @@ def adminRefresh(dct):
     for trip in qsTrip:
         loc = Location.objects.filter(an=trip.dan)
         updateTrip(loc, trip)'''
+    qsDel = Delivery.objects.filter(st__in=['AS', 'RQ'])
+    for deli in qsDel:
+
+        # For requested deliveries if settings.DEL_RQ_TIMEOUT seconds passed since del.rtime set to TO (timeout)
+        if deli.st == 'RQ':
+            tmDelta = datetime.now(timezone.utc) - deli.rtime
+            if tmDelta.total_seconds() > settings.DEL_SC_TIMEOUT:
+                deli.st = 'TO'
+
+        # For assigned deliveries if settings.DEL_AS_TIMEOUT seconds passed since deli.atime set to TO (user times out)
+        # this can be differentiated from above by simply looking at atime field, if not NULL, then Delivery Timed Out after going into AS
+        else:
+            tmDelta = datetime.now(timezone.utc) - deli.atime
+            if tmDelta.total_seconds() > settings.DEL_AS_TIMEOUT:
+                deli.st = 'TO'
+        deli.save()
 
     return HttpJSONResponse({})
 
@@ -952,6 +1087,7 @@ def userTripEstimate(dct, user, _trip):
         rtype
         vtype
         npas
+        srcid
         dstid
         pmode
 
@@ -959,10 +1095,14 @@ def userTripEstimate(dct, user, _trip):
     '''
     print("Ride Estimate param : ", dct)
     if dct['rtype'] == '0':
-        ret = getRoutePrice(user.pid, dct['dstid'], dct['vtype'], dct['pmode'])
+        ret =  getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)
+        #getRoutePrice(user.pid, dct['dstid'], dct['vtype'], dct['pmode'])
+
     #should it not allow the prices from point A(source) to point B(destination) instead of taking the pid of user?
     else:
-        ret = getRentPrice(user.pid,  dct['dstid'], dct['vtype'], dct['pmode'], dct['hrs'])
+        #make this ask srcid as well
+        #ret = getRentPrice(dct['srcid'],  dct['dstid'], dct['vtype'], dct['pmode'], dct['hrs'])
+        ret = getRentPrice(dct['hrs'])
 
     return HttpJSONResponse(ret)
 
@@ -992,6 +1132,42 @@ def authProfileUpdate(dct, entity):
 
 @makeView()
 @csrf_exempt
+@handleException()
+@extractParams
+@transaction.atomic
+@checkAuth()
+def authTripHistory(dct, entity):
+    '''
+    returns the history of all Trips for a entity
+    '''
+    qsTrip = Trip.objects.filter(uan=entity.an).values() if type(entity) is User else Trip.objects.filter(dan=entity.an).values()
+    ret = {}
+    #print(qsTrip)
+    if len(qsTrip) :
+        states = []
+
+        for i in qsTrip:
+            # print(str(i['stime'])[:19])
+            strSTime = str(i['stime'])[:21]
+            strETime = str(i['etime'])[:21]
+            sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S.%f').date()
+            if i['st'] in ['FN', 'TR', 'PD']:
+                eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S.%f').date()
+            else :
+                eTime = 'ONGOING'
+            ithTrip = {'id':i['id'],'st':i['st'], 'price':getRiPrice(Trip.objects.filter(id=i['id'])[0])['price'],
+                       'sdate': str(sTime),
+                       'edate': str(eTime)
+                       }
+            states.append(ithTrip)
+        print(states)
+        ret.update({'trips':states})
+
+    return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
@@ -1016,79 +1192,88 @@ def userGiveOtp(dct, user, _trip):
             json.dump({'payment': price}, f)
     return HttpJSONResponse({})
 
-############################################################
-# Extra
 
-#@headers({'Access-Control-Allow-Origin': '*'})
 @makeView()
 @csrf_exempt
-#@headers({'Refresh': '10', 'X-Bender': 'Bite my shiny, metal ass!'})
 @handleException(KeyError, 'Invalid parameters', 501)
-@transaction.atomic
 @extractParams
-def signUser(_, dct: Dict):
+@transaction.atomic
+@checkAuth()
+@checkTripStatus(['PD'])
+def authTripRate(dct, entity, trip):
     '''
-    User registration
-    Creates a user record for the aadhar number OCR'd from the image via Google Vision
-    Aadhaar scans are archived in settings.AADHAAR_DIR as
-    <aadhaar>_front.jpg and <aadhaar>_back.jpg
+    rating system...
+    HTTP args:
+        auth,
+        rate,
+        rev,
+
+    '''
+    print(dct, entity, trip)
+    rate = Rate()
+    bIsUser = True if type(entity) is User else False #user or driver
+    print(bIsUser)
+    if bIsUser :
+        if trip.rtype == '0':
+            driver = Driver.objects.filter(an=trip.dan)[0]
+            numTrips = Trip.objects.filter(dan=driver.an).count()
+            driver.mark = (driver.mark+int(dct['rate']))/(numTrips+1)
+            driver.save()
+        # else :
+        # rate the super visor
+        # give the ratings
+        rate.id = 'trip' + str(trip.id)
+        rate.type = 'ride' if trip.rtype == '0' else 'rent'
+        rate.rev = dct['rev']
+        '''
+        ('attitude', 'attitude'),  # Attitude of contact person (driver/supervisor/delivery agent)
+        ('vehiclecon', 'vehiclecon'),   # Vehicle condition
+        ('cleanliness',  'cleanliness'),  # cleanliness of the vehicle
+        ('OTher'
+        '''
+        if 'attitude' in dct['rev'].lower():
+            rate.rating = 'attitude'
+        elif 'condition' in dct['rev'].lower():
+            rate.rating = 'vehiclecon'
+        elif 'clean' in dct['rev'].lower():
+            rate.rating = 'cleanliness'
+        else:
+            rate.rating = dct['rev']
+        rate.money = getTripPrice(trip)['price']
+        rate.save()
+
+    else :
+        user = User.objects.filter(an=trip.uan)[0]
+        numTrips = Trip.objects.filter(uan=user.an).count()
+        user.mark = (user.mark+int(dct['rate']))/(numTrips+1)
+        user.save()
+    #think maybe mark the trip as RATED, do we need an extra state ...?
+    # NOPE as per 30/7/2020
+
+    return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def authProfilePhotoSave(dct, entity):
+    '''
+    entity sends and saves his/her profile photo
 
     HTTP Args:
-        name, an, phone, age, gender, hs  
-
+        auth
+        aadhaarFront base 64 encoded
     Notes:
-        Registration is done atomically since we also need to save aadhar scans after DB write
+        needs production settings
     '''
-    print("DICT is :", dct)
-    sPhone = str(dct['phone'])
-    sAadhaar = str(dct['an'])
-    sAuth = getClientAuth(sAadhaar, sPhone)
-    sName = dct['name']
-    iAge = int(dct['age'])
-    sGdr = dct['gender']    
-    sHs = dct['hs']    
-    
-    # verify aadhaar number via Verhoeff algorithm
-    if not aadhaarNumVerify(sAadhaar):
-        raise ZPException(501,'Aadhaar number not valid!')
-    log('Aadhaar is valid')
-
-    # Check if aadhaar has been registered before
-    qsUser = User.objects.filter(an=int(sAadhaar))
-    bUserExists = len(qsUser) != 0
-    if not bUserExists:
-        sAuth = getClientAuth(sAadhaar, sPhone)
-        user = User()
-        user.name = sName
-        user.age = iAge
-        user.gdr = sGdr
-        user.auth = sAuth
-        user.an = int(sAadhaar)
-        user.pn = sPhone
-        user.hs = sHs
-        #from the POST request
-
-        user.pid = int('1')
-        user.tid = int('-1')
-        user.dl = 'UK01-AB1234'
-        user.save()
-
-        log('New user registered: %s' % sAadhaar)
-    else:
-        # Aadhaar exists, if mobile has changed, get new auth
-        user = qsUser[0]
-        if user.pn != sPhone:
-            sAuth = getClientAuth(str(qsUser[0].an), str(qsUser[0].pn))
-            user.pn = sPhone
-            user.auth = sAuth
-            user.save()
-            log('Auth changed for: %s' % sAadhaar)
-        else:
-            # Aadhaar exists, phone unchanged, just return existing auth
-            sAuth = user.auth
-            log('Auth exists for: %s' % sAadhaar)
-
-    # return the padding for CORS
-    return HttpJSONResponse({'auth':sAuth, 'callback': dct['callback'],'_': dct['_']})#dct['callback'] + '(' + '{' + '''"result": "success", "ref": "jquery-jsonp-request"''' + '}' + ')'
-
+    entityAdhar = str(entity.an)
+    sProfilePhoto = saveTmpImgFile(settings.PROFILE_PHOTO_DIR, dct['profilePhoto'], 'dp')
+    log('Profile photo saved for - %s saved as %s' % (entityAdhar, sProfilePhoto))
+    dpFileName = 'dp_' + entityAdhar + '_.jpg'
+    os.rename(sProfilePhoto, os.path.join(settings.PROFILE_PHOTO_DIR, dpFileName))
+    log('New photo saved: %s' % dpFileName)
+    return HttpJSONResponse({})
 

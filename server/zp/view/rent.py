@@ -1,6 +1,7 @@
 # imports
 import datetime
 from datetime import datetime, timedelta
+from os import truncate
 
 from django.db import transaction
 from django.utils import timezone
@@ -13,6 +14,7 @@ from ..utils import ZPException, HttpJSONResponse
 from ..utils import getOTP
 from ..utils import getTripPrice, getRentPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
+from django.db.utils import IntegrityError
 
 ###########################################
 # Types
@@ -41,22 +43,28 @@ def userRentalUpdate(dct, user, trip):
     '''
     Update the rental time for a user if requested, assigned or started
     this update the etime for the user
+    HTTP args:
+        hrs,
+        dstid
     '''
     # take time in minutes
     # oldTime = (trip.etime - trip.rtime).total_seconds() / 60
-    iHrs = int(dct['hrs'])
-    #startTime = trip.stime #datetime.now(timezone.utc)
-    #tdISTdelta = timedelta(hours=iHrs, minutes=0)
-    #endTime = startTime + tdISTdelta
-    #trip.etime = endTime
-    #dstId = trip.
-    #if trip.st == 'RQ':
+    # startTime = trip.stime #datetime.now(timezone.utc)
+    # tdISTdelta = timedelta(hours=iHrs, minutes=0)
+    # endTime = startTime + tdISTdelta
+    # trip.etime = endTime
+    # dstId = trip.
+    # if trip.st == 'RQ':
     #    trip.etime = trip.rtime + dct['hrs']
-    #else :
+    # else :
     #    trip.etime = trip.rtime + dct['hrs']
-    
-    #trip.dstid = dct['dstid']
-    trip.hrs = iHrs
+
+    # trip.dstid = dct['dstid']
+    if 'hrs' in dct:
+        iHrs = int(dct['hrs'])
+        trip.hrs += iHrs # increment and not update
+    if 'dstid' in dct:
+        trip.dstid = dct['dstid']
     trip.save()
 
     return HttpJSONResponse({})
@@ -74,7 +82,8 @@ def userRentGetVehicle(_dct, entity, trip):
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)[0]
     ret = {'vno': vehicle.regn, 'otp': str(getOTP(trip.uan, trip.dan, trip.atime)),
-           'price': getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)}
+           #'price': getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)}
+           'price': getRentPrice(trip.hrs)}
     return HttpJSONResponse(ret)
 
 
@@ -83,13 +92,17 @@ def userRentGetVehicle(_dct, entity, trip):
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-@checkTripStatus('AS')
+@checkTripStatus(['AS', 'ST'])
 def userRentGetSup(_dct, _user, trip):
     '''
     Returns aadhaar, name and phone of hub supervisor
     '''
-    sup = Supervisor.objects.filter(an=trip.dan)[0]
-    ret = {'pn': sup.pn, 'name': sup.name}
+    if trip.st == 'AS':
+        sup = Supervisor.objects.filter(pid=trip.srcid)[0]
+        ret = {'pn': sup.pn, 'name': sup.name}
+    else:
+        sup = Supervisor.objects.filter(pid=trip.dstid)[0]
+        ret = {'pn': sup.pn, 'name': sup.name}
     return HttpJSONResponse(ret)
 
 
@@ -99,21 +112,57 @@ def userRentGetSup(_dct, _user, trip):
 @extractParams
 @checkAuth()
 @checkTripStatus('ST')
-def userRentEnd(_dct, _user, trip):
+def userRentEnd(_dct, user, _trip):
     '''
-    Returns aadhaar, name and phone of hub supervisor
+    return nearest hub name, their distance from current location and lat,lng
     '''
-    trip.st = 'FN'
-    trip.etime = datetime.now(timezone.utc)
-    trip.save()
+    qsPrevHubs = Place.objects.raw(
+        'SELECT pl.id, pl.pn, pl.lat, pl.lng FROM place pl WHERE pl.id < (SELECT plcurr.id FROM place plcurr WHERE plcurr.id= %s) ORDER BY pl.id DESC LIMIT 2;',
+        [user.pid])
+    qsCurrHub = Place.objects.raw('SELECT plcurr.id, plcurr.pn, plcurr.lat, plcurr.lng FROM place plcurr WHERE plcurr.id=%s', [user.pid])
 
-    # Get the vehicle
-    # recVehicle = Vehicle.objects.filter(an=trip.van)[0]
-    #
-    # Calculate price
-    # dctPrice = getRentPrice(trip.srcid, trip.dstid,recVehicle.vtype,trip.pmode, trip.etime-trip.stime).seconds//3600)
-    return HttpJSONResponse({}) # dctPrice)
+    qsNextHubs = Place.objects.raw(
+        'SELECT pl.id, pl.pn, pl.lat, pl.lng FROM place pl WHERE pl.id > (SELECT plcurr.id FROM place plcurr WHERE plcurr.id= %s ) ORDER BY pl.id ASC LIMIT 2;',
+        [user.pid])
 
+    #print(len(qsCurrHub), 'CURR HUB : ', qsCurrHub)
+    #print(len(qsPrevHubs), 'PREV HUBS : ', qsPrevHubs)
+    #print(len(qsNextHubs), 'NEXT HUBS : ', qsNextHubs)
+    #print('###############################')
+    #recRoute = Route.getRoute(idSrc, idDst)
+    prev0Dst = round( 2048 / 999, 1)
+    prev1Dst = round(1024 / 999,  1)
+    currDst = round( 512 / 999, 1)
+    next0Dst = round( 2048 / 999, 1)
+    next1Dst = round( 4096 / 999, 1)
+
+    close1 = Place()
+    close2 = Place()
+    #close3 = Place()
+
+    if not len(qsPrevHubs):
+        close1.pn, close1.lat, close1.lng, c1Dst = qsCurrHub[0].pn, qsCurrHub[0].lat,  qsCurrHub[0].lng,  currDst
+        close2.pn, close2.lat, close2.lng, c2Dst = qsNextHubs[0].pn, qsNextHubs[0].lat,  qsNextHubs[0].lng, next0Dst
+        #close3.pn, close3.lat, close3.lng, c3Dst = qsNextHubs[1].pn, qsNextHubs[1].lat,  qsNextHubs[1].lng, next1Dst
+
+    elif not len(qsNextHubs):
+        close1.pn, close1.lat, close1.lng, c1Dst = qsCurrHub[0].pn, qsCurrHub[0].lat, qsCurrHub[0].lng, currDst
+        close2.pn, close2.lat, close2.lng, c2Dst = qsPrevHubs[1].pn, qsPrevHubs[1].lat, qsPrevHubs[1].lng, prev1Dst
+        #close3.pn, close3.lat, close3.lng, c3Dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat, qsPrevHubs[0].lng, prev0Dst
+
+    else:
+        close1.pn, close1.lat, close1.lng, c1Dst = qsCurrHub[0].pn, qsCurrHub[0].lat, qsCurrHub[0].lng, currDst
+        if prev0Dst >= next0Dst:
+            close2.pn, close2.lat, close2.lng, c2Dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat, qsPrevHubs[0].lng, prev0Dst
+            #close3.pn, close3.lat, close3.lng, c3Dst = qsNextHubs[0].pn, qsNextHubs[0].lat,  qsNextHubs[0].lng, next1Dst
+        else:
+            close2.pn, close2.lat, close2.lng, c2Dst = qsNextHubs[0].pn, qsNextHubs[0].lat, qsNextHubs[0].lng, next1Dst
+            #close3.pn, close3.lat, close3.lng, c3Dst = qsPrevHubs[0].pn, qsPrevHubs[0].lat, qsPrevHubs[0].lng, prev0Dst
+
+    return HttpJSONResponse({'close1pn': close1.pn, 'close1lat': close1.lat, 'close1lng': close1.lng, 'close1dst': c1Dst,
+                            'close2pn': close2.pn, 'close2lat': close2.lat, 'close2lng': close2.lng, 'close2dst': c2Dst#,
+                             #'close3pn': close3.pn, 'close3lat': close3.lat, 'close3lng': close3.lng, 'close3dst': c3Dst
+                             })
 
 
 @makeView()
@@ -124,14 +173,13 @@ def userRentEnd(_dct, _user, trip):
 @checkTripStatus('ST')
 def authTimeRemaining(_dct, entity, trip):
     '''
-    Returns aadhaar, name and phone of current assigned supervisor
+    #Obsolete tells the remaining minutes.
     '''
-    currTime = datetime.now(timezone.utc)
-    diffTime = (currTime - trip.stime).total_seconds() / 60 # minutes
-    print(diffTime)
-    remHrs = diffTime - trip.hrs 
     ret = {}
-    ret['time'] = remHrs // 1 # in minutes
+    currTime = datetime.now(timezone.utc)
+    diffTime = (currTime - trip.stime).total_seconds() // 60  # minutes
+    remHrs = trip.hrs * 60 - diffTime
+    ret['time'] = int(remHrs)
     return HttpJSONResponse(ret)
 
 
@@ -149,15 +197,13 @@ def userTimeUpdate(dct, _user, trip):
 
     Returns price
     '''
-    newDropHub =  dct['newdrophub'] if 'newdrophub' in dct else  trip.dstid
-    extraHrs = dct['updatedtime']
-
-    recVehicle = Vehicle.objects.filter(an=trip.van)[0]
-    oldPrice = getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
-    newPrice = getRentPrice(trip.srcid, newDropHub, recVehicle.vtype, trip.pmode, extraHrs)
+    # newDropHub =  dct['newdrophub'] if 'newdrophub' in dct else  trip.dstid
+    extraHrs = int(trip.hrs)+int(dct['updatedtime'])
+    # recVehicle = Vehicle.objects.filter(an=trip.van)[0]
+    oldPrice = getRentPrice(trip.hrs) #= getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
+    newPrice = getRentPrice(extraHrs) #= getRentPrice(trip.srcid, newDropHub, recVehicle.vtype, trip.pmode, extraHrs)
     print(oldPrice, newPrice)
-    ret = {}
-    ret['price'] = max(20, newPrice['price'] - oldPrice['price'])
+    ret = {'price': str(max(20, int(float(newPrice['price']) - float(oldPrice['price'])))) + '.00'}
 
     return HttpJSONResponse(ret)
 
@@ -184,6 +230,107 @@ def authTripUpdate(dct, _entity, trip):
 
     return HttpJSONResponse({})
 
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Vehicle Not Found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+@checkTripStatus('AS')
+def userVehicleHold(_dct, user, trip):
+    '''
+    Returns aadhaar, name and phone of current assigned vehicle,
+    '''
+    vehicle = Vehicle.objects.filter(an=trip.van)[0]
+    #ret = {'price': getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)['price'] + 100}
+    ret = {'price': getRentPrice(trip.hrs)['price'] + 100}
+    return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkTripStatus(['INACTIVE'])
+def userRentRequest(dct, user): #, _trip):
+    '''
+    #Obsolete
+    User calls this to request a rental
+
+    HTTP args:
+        auth
+     Rent :
+        srcid - id of the selected start place
+        dstid - id of the selected destination
+        rtype - rent or ride
+        vtype - vehicle type
+        hrs   - number of hours
+        pmode - 1 from the user
+
+    '''
+    print("Rental Request param : ", dct)
+
+    # Even though we can use IDs directly, look them up in the DB to prevent bogus IDs
+    placeSrc = Place.objects.filter(id=dct['srcid'])[0]
+    placeDst = Place.objects.filter(id=dct['dstid'])[0]
+
+    trip = Trip()
+    trip.uan = user.an
+    trip.srcid = placeSrc.id
+    trip.dstid = placeDst.id
+
+    #trip.npas = 0 #assuming 4 passengers for rental
+    iHrs = int(dct['hrs'])
+    trip.hrs = iHrs
+
+    trip.rtype = dct['rtype']
+    trip.pmode = dct['pmode']
+    trip.rvtype = dct['vtype']
+    trip.rtime = datetime.now(timezone.utc)
+    trip.srclat = placeSrc.lat
+    trip.srclng = placeSrc.lng
+    trip.dstlat = placeDst.lat
+    trip.dstlng = placeDst.lng
+
+    trip.save()
+
+    progress = Progress()
+    progress.tid = trip.id
+    progress.pct = 0
+    progress.save()
+
+    user.tid = trip.id
+    user.save()
+
+    # we are using only Zbees and Cash only payments right now.
+    #ret = getRoutePrice(trip.srcid, trip.dstid, Vehicle.ZBEE, Trip.CASH)
+    #ret = getRentPrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
+    ret = getRentPrice(dct['hrs'])
+    ret['tid'] = trip.id
+
+    return HttpJSONResponse(ret)
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkTripStatus(['AS', 'FN'])
+def userRentPay(dct, _user, trip):
+    '''
+    User calls this to pay for the rental
+
+    HTTP args:
+        auth
+    '''
+    print("Rental payment confirm param : ", dct)
+    return HttpJSONResponse({'otp': getOTP(trip.uan, trip.dan, trip.atime)})
+
+
 # ============================================================================
 # Supervisor views
 # ============================================================================
@@ -191,30 +338,73 @@ def authTripUpdate(dct, _entity, trip):
 
 @makeView()
 @csrf_exempt
-@handleException(IndexError, 'Trip not found', 404)
+@handleException(IndexError, 'Trip/User/Vehicle not found', 404)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def supRentCheck(_dct, sup):
+def supVehicleCheck(_dct, sup):
     '''
-    Returns a list of requested trips
-    Only trips which start from this Supervisors PID are returned
-    No trips are returned if there are no vehicles there
+    Only vehicles which are parked at this Supervisors PID are returned
     '''
     # Get available vehicles at this hub, if none return empty
     qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
     if len(qsVehicles) == 0:
-        return HttpJSONResponse({}) # making it easy for Volley to handle JSONArray and JSONObject
+        return HttpJSONResponse({'count': 0}) # making it easy for Volley to handle JSONArray and JSONObject
+    # print("vehicle found...")
+    vehicles = []
+    for veh in qsVehicles :
+        vehicles.append({'id': veh.id, 'regn': veh.regn})
 
-    # Get the first requested trip from Supervisors place id
-    qsTrip = Trip.objects.filter(srcid=sup.pid, st__in=['RQ', 'AS', 'TR', 'FN']).order_by('-rtime')
-    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'st': qsTrip[0].st}
+    ret = {} if not len(qsVehicles) else {'vehicles': vehicles}
     return HttpJSONResponse(ret)
 
 
 @makeView()
 @csrf_exempt
-@handleException(IndexError, 'Trip not found', 404)
+@handleException(IndexError, 'Trip/User/Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def supRentCheck(dct, sup):
+    '''
+    Returns a list of requested trips
+    Only trips which start from this Supervisors PID are returned
+    # No trips are returned if there are no vehicles there
+
+    HTTP args :
+        state : for rentals are required
+    '''
+    # Get available vehicles at this hub, if none return empty
+    # qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
+    # if len(qsVehicles) == 0:
+    #    return HttpJSONResponse({'count':0}) # making it easy for Volley to handle JSONArray and JSONObject
+    # print("vehicle found...")
+    # Get the first requested trip from Supervisors place id
+    qsTrip = Trip.objects.filter(rtype=1, srcid=sup.pid, st=dct['state'])#__in=['\''+dct['state']+'\'']).order_by('-rtime')
+    print("%d trips found" % (len(qsTrip)))
+    rentals = []
+    for trip in qsTrip :
+        uName = User.objects.filter(an=trip.uan)[0].name
+        vals = {'tid': trip.id, 'st': trip.st, 'uname': uName}
+
+        if trip.rvtype == 0:
+            vals['rvtype'] = 'CYCLE'
+        elif trip.rvtype == 1:
+            vals['rvtype'] = 'SCOOTY'
+        elif trip.rvtype == 2:
+            vals['rvtype'] = 'BIKE'
+        elif trip.rvtype == 3:
+            vals['rvtype'] = 'ZBEE'
+        vals['price'] = getRentPrice(trip.hrs)['price']
+        rentals.append(vals)
+        
+    ret = {} if not len(qsTrip) else {'rentals': rentals}
+    return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Place/Trip/User/Vehicle not found', 404)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
@@ -233,7 +423,9 @@ def supRentVehicleAssign(dct, sup):
         # Ensure that the chosen vehicle is here and not assigned to a trip
         vehicle = Vehicle.objects.filter(an=dct['van'], pid=trip.srcid)[0]
         if vehicle.tid != -1:
-            raise ZPException(400, 'Vehicle already in trip')
+            raise ZPException(400, 'Vehicle already in trip!')
+        elif vehicle.vtype != trip.rvtype:
+            raise ZPException(400, 'Vehicle type not the same as requested!')
 
         # Make the trip
         trip.st = 'AS'
@@ -359,8 +551,7 @@ def supRentStart(dct, _sup):
         tid
     '''
     qsTrip = Trip.objects.filter(id=dct['tid'])
-    if len(qsTrip):
-        trip = qsTrip[0]
+    trip = qsTrip[0]
 
     if str(dct['otp']) == str(getOTP(trip.uan, trip.dan, trip.atime)):
         trip.st = 'ST'
@@ -394,11 +585,12 @@ def supRentEnd(dct, _sup):
     trip.save()
 
     # Get the vehicle
-    recVehicle = Vehicle.objects.filter(an=trip.van)[0]
+    #recVehicle = Vehicle.objects.filter(an=trip.van)[0]
 
     # Calculate price
-    dctPrice = getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
-    return HttpJSONResponse(dctPrice)
+    # dctPrice = getRentPrice(trip.srcid, trip.dstid, recVehicle.vtype, trip.pmode, trip.hrs)
+    #dctPrice = #getRentPrice(trip.hrs, (trip.etime - trip.stime).seconds //60 )
+    return HttpJSONResponse({'price': int(float(getTripPrice(trip)['price']) - float(getRentPrice(trip.hrs)['price']))})
 
 
 @makeView()
@@ -410,19 +602,19 @@ def supRentEnd(dct, _sup):
 @checkAuth()
 def supPaymentConfirm(dct, _sup):
     '''
-    Supervisor calls this to confirm money received
+    #Obsolete Supervisor calls this to confirm money received
     '''
     qsTrip = Trip.objects.filter(id=dct['tid'])
     if len(qsTrip):
         trip = qsTrip[0]
-
-    trip.st = 'PD'
-    trip.save()
+    #TODO upgrade this to admin method
+    #trip.st = 'PD'
+    #trip.save()
 
     # Get the vehicle
-    vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    retireEntity(vehicle)
-
+    #vehicle = Vehicle.objects.filter(an=trip.van)[0]
+    #retireEntity(vehicle)
+    # DO NOT retire here, retire at supRentRetire
     return HttpJSONResponse({})
 
 
@@ -437,13 +629,76 @@ def supRentRetire(dct, _sup):
     '''
     Resets vehicles active trip
     '''
-    # made the driver AV and reset the tid to -1
+    # set the tips state to PD
     # Reset the vehicle tid to available
     qsTrip = Trip.objects.filter(id=dct['tid'])
-    if len(qsTrip):
-        trip = qsTrip[0]
+    trip = qsTrip[0]
+    trip.st = 'PD'
+    trip.save()
 
     vehicle = Vehicle.objects.filter(tid=trip.id)[0]
     vehicle.tid = Vehicle.AVAILABLE
     vehicle.save()
     return HttpJSONResponse({})
+
+
+# ============================================================================
+# Admin views
+# ============================================================================
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Transaction error', 500)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def adminVehicleAssign(dct):
+    '''
+    Checks for rentals in RQ state and assign the vehicle from that hub.
+
+    HTTP args:
+
+    Note:
+        assigns one of the free vehciles, ideally the vehicles should have enough charge for the trip.
+    '''
+    # Get the deliveries and look for RQ ones
+    qsTrip = Trip.objects.filter(st__in=['RQ'], rtype=1) # get the trip
+    if not len(qsTrip):
+        return HttpJSONResponse({})
+    else:
+        print("%d trips found" % (len(qsTrip)))
+    trip = qsTrip[0]
+    # get the vehicles with no drivers and which are not on trip
+    qsVeh = Vehicle.objects.filter(dan='-1', tid='-1', vtype=trip.rvtype)
+    if not len(qsVeh):
+        return HttpJSONResponse({'tid': trip.id})
+    else:
+        print("%d vehicles found" % (len(qsVeh)))
+
+    vehicle = qsVeh[0]
+    vid = 0
+
+    if trip.st == 'RQ':
+        trip.st = 'AS'
+        sup = Supervisor.objects.filter(pid=trip.srcid)[0]
+        trip.dan = sup.an  # dan is sup.an
+        trip.van = vehicle.an
+        trip.atime = datetime.now(timezone.utc)
+        trip.save()
+
+        # Make the progress
+        progress = Progress()
+        progress.tid = trip.id
+        progress.pct = 0
+        progress.save()
+
+        # set the vehicles tid
+        vehicle.tid = trip.id
+        vehicle.save()
+        vid = vehicle.an
+    else:
+        raise ZPException(400, 'Trip already assigned')
+
+    return HttpJSONResponse({'vid': vid, 'tid': trip.id})

@@ -16,18 +16,24 @@ Including another URLconf
 #Original
 
 """
-
 from django.contrib import admin
 from django.urls import include, re_path
-
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from url_magic import makeView
 makeView.APP_NAME = 'zp'
+# from zp.view.schedule import schedule
+
 from zp import views
 
-urlpatterns = [re_path(e[0], e[1]) for e in  makeView.dctUrls.items() ]
+urlpatterns = [re_path(e[0], e[1]) for e in makeView.dctUrls.items() ] \
+              + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
+              + staticfiles_urlpatterns()
 
 # print(urlpatterns)
 
 '''
     #path('admin/', admin.site.urls),
 '''
+# schedule()

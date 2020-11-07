@@ -24,6 +24,12 @@ from .models import Vehicle, User, Driver, Supervisor
 from .models import Delivery, Agent
 
 from django.conf import settings
+import requests
+from urllib.parse import urlencode
+
+import googlemaps
+#import pandas as pd
+from math import ceil
 #from fuzzywuzzy import fuzz as accurate
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = settings.GOOGLE_APPLICATION_CREDENTIALS
@@ -190,6 +196,315 @@ def doOCR(path):
     return ret
 
 
+def googleDistAndTime(srcCoOrds, dstCoOrds):
+    '''
+
+    Args:
+        srcCoOrds: list of lat,lng of the source
+        dstCoOrds: list of lat, lng of the destination
+
+    Returns:
+        dictionary of dist, time
+    '''
+
+    import googlemaps
+    gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
+    dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
+    # log(dctDist)
+    # print('############# DST : ', dctDist)
+    if dctDist['status'] != 'OK':
+        raise ZPException(501, 'Error fetching distance matrix')
+
+    dctElem = dctDist['rows'][0]['elements'][0]
+    nDist = 0
+    nTime = 0
+    if dctElem['status'] == 'OK':
+        nDist = dctElem['distance']['value']
+        nTime = int(dctElem['duration']['value']) // 60
+    elif dctElem['status'] == 'NOT_FOUND':
+        nDist, nTime = 0, 0
+    elif dctElem['status'] == 'ZERO_RESULTS':
+        nDist, nTime = 0, 0
+    ret = {'dist': nDist, 'time': nTime}
+
+    return ret
+
+
+#################################
+#OCR v2
+
+STATES = [
+    ('Andhra Pradesh', 'andhrapradesh',  	'AP'),
+    ('Arunachal Pradesh', 'arunachalpradesh', 	'AR'),
+    ('Assam', 'assam',	'AS' ),
+    ('Bihar', 'bihar',	'BR'),
+    ('Chhattisgarh', 'chhattisgarh', 	'CG'),
+    ('Goa', 'goa', 	'GA'),
+    ('Gujarat', 'gujarat', 	'GJ'),
+    ('Haryana', 'haryana', 	'HR'),
+    ('Himachal Pradesh', 'himachalrpradesh', 	'HP'),
+    ('Jharkhand', 'jharkhand', 	'JH'),
+    ('Karnataka', 'karnataka', 	'KA'),
+    ('Kerala', 'kerala', 	'KL'),
+    ('Madhya Pradesh', 'madhyapradesh', 	'MP'),
+    ('Maharashtra', 'maharashtra', 	'MH'),
+    ('Manipur', 'manipur', 	'MN'),
+    ('Meghalaya', 'meghalaya', 	'ML'),
+    ('Mizoram', 'mizoram', 	'MZ'),
+    ('Nagaland', 'nagaland', 	'NL'),
+    ('Odisha', 'orissa', 	'OD'), # name was changed
+    ('Punjab', 'punjab', 	'PB'),
+    ('Rajasthan', 'rajasthan', 	'RJ'),
+    ('Sikkim', 'sikkim', 	'SK'),
+    ('Tamil Nadu', 	'tamilnadu', 'TN'),
+    ('Telangana', 'telangana' , 	'TS'),
+    ('Tripura', 'tripura', 	'TR'),
+    ('Uttar Pradesh', 'uttarpradesh', 	'UP'),
+    ('Uttarakhand', 'uttaranchal', 	'UK'),
+    ('West Bengal', 'westbengal', 	'WB'),
+
+    ('Andaman and Nicobar Islands' , 'andamanandnicobarislands', 	'AN'),
+    ('Chandigarh', 'chandigarh',	'CH'),
+    ('Dadra and Nagar Haveli', 'dadradandnagarhaveli', 	'DD'), #two UTs clubbed together, but we are using different
+    ('Daman and Diu', 'damananddiu', 'DD'),
+    ('Delhi' 'delhi', 	'DL'),
+    ('Jammu and Kashmir', 'jammuandkashmir', 	'JK'),
+    ('Ladakh', 'ladakh', 	'LA'),
+    ('Lakshadweep', 'lakshadweep', 	'LD'),
+    ('Puducherry', 'puducherry', 	'PY')
+ ]
+
+pins_to_name = {
+'248121' : ' Ajabpur, Dehradun ',
+'248125' : ' Ambari, Dehradun ',
+'248007' : ' Ambiwala, Dehradun ',
+'248003' : ' Anarwala, Dehradun ',
+'248199' : ' Tuini, Dehradun ',
+'248001' : ' Araghar, Dehradun ',
+'249201' : ' Ashutosh Nagar, Dehradun ',
+'248252' : ' Thaina, Dehradun ',
+'248143' : ' Kaluwala, Dehradun ',
+'248140' : ' Resham Majri, Dehradun ',
+'248005' : ' Tunwala, Dehradun ',
+'248196' : ' Samalta, Dehradun ',
+'248161' : ' Bhaniawala, Dehradun ',
+'248008' : ' Tapovan, Dehradun ',
+'248122' : ' Barlowganj, Dehradun ',
+'248124' : ' Nada, Dehradun ',
+'248197' : ' Tilwari, Dehradun ',
+'248009' : ' Shahanshahi Ashram, Dehradun ',
+'248123' : ' Tungra, Dehradun ',
+'248141' : ' Ghangora, Dehradun ',
+'248164' : ' Chhibroo, Dehradun ',
+'249204' : ' S.N. temple, Dehradun ',
+'248002' : ' Turner Road, Dehradun ',
+'248145' : ' Rani Pokhari, Dehradun ',
+'248165' : ' Ubhreau, Dehradun ',
+'248167' : ' Dhakrani, Dehradun ',
+'248142' : ' Vikasnagar, Dehradun ',
+'248159' : ' Khadar, Dehradun ',
+'249205' : ' Raiwala, Dehradun ',
+'248160' : ' Harrawala, Dehradun ',
+'248179' : ' Savoy Hotel, Dehradun ',
+'248006' : ' Newforest, Dehradun ',
+'248195' : ' Vijepur Hathibarka, Dehradun ',
+'248152' : ' Jharipani, Dehradun ',
+'248202' : ' K.P.kshetra, Dehradun ',
+'248119' : ' Korwa, Dehradun ',
+'248148' : ' Kulhal, Dehradun ',
+'248171' : ' Mehuwala, Dehradun ',
+'248110' : ' Mohbewala, Dehradun ',
+'248115' : ' Mothrowala, Dehradun ',
+'247670' : ' Narsan Kalan, Dehradun ',
+'248010' : ' Nehrugram, Dehradun ',
+'248198' : ' Vikasnagar, Dehradun ',
+'249203' : ' Pashulok, Dehradun ',
+'248126' : ' Ranjhawala, Dehradun ',
+'248102' : ' Sahstradhara, Dehradun ',
+'248146' : ' Seemadwar, Dehradun ',
+'249202' : ' Virbhadra, Dehradun ',
+'313601' : ' Vallabhnagar, Udaipur ',
+'313611' : ' Tothada, Udaipur ',
+'313804' : ' Sundra, Udaipur ',
+'313702' : ' Vass, Udaipur ',
+'313703' : ' Wali, Udaipur ',
+'313604' : ' Sarangpura, Udaipur ',
+'313031' : ' Sisarma, Udaipur ',
+'313701' : ' Upreta, Udaipur ',
+'313038' : ' Sheshpur, Udaipur ',
+'313602' : ' Vana, Udaipur ',
+'313026' : ' Tokar, Udaipur ',
+'313905' : ' Veerpura, Udaipur ',
+'313803' : ' Suveri, Udaipur ',
+'313705' : ' Surajgarh, Udaipur ',
+'307025' : ' Sandraf, Udaipur ',
+'313203' : ' Vadiyar, Udaipur ',
+'313802' : ' Ugamna Kotra, Udaipur ',
+'313027' : ' Toda, Udaipur ',
+'313902' : ' Thana, Udaipur ',
+'313603' : ' Saleda, Udaipur ',
+'313801' : ' Tidi, Udaipur ',
+'313011' : ' Thoor, Udaipur ',
+'313025' : ' Bari Tb (s), Udaipur ',
+'313708' : ' Teja Ka was, Udaipur ',
+'313024' : ' Zinc Smelter, Udaipur ',
+'313204' : ' Wanri, Udaipur ',
+'313003' : ' Udaipur Industrial area, Udaipur ',
+'313605' : ' Sihar, Udaipur ',
+'313001' : ' Udaipur University campus, Udaipur ',
+'313201' : ' Veerdholia, Udaipur ',
+'313903' : ' Surkhand Ka khera, Udaipur ',
+'313205' : ' Vasni Kalan, Udaipur ',
+'313015' : ' Umaramines, Udaipur ',
+'313904' : ' Chawand, Udaipur ',
+'313022' : ' Nandwel, Udaipur ',
+'313901' : ' Zawar Mines, Udaipur ',
+'313206' : ' Sanwar, Udaipur ',
+'313704' : ' Sayra, Udaipur ',
+'313002' : ' Udaipur H magri, Udaipur ',
+'263157' : ' Tushrar, Nainital ',
+'263159' : ' Syat, Nainital ',
+'263126' : ' Rnibagh, Nainital ',
+'263139' : ' Painth Parao, Nainital ',
+'263143' : ' Arjunpur, Nainital ',
+'263136' : ' Bhimtal, Nainital ',
+'263163' : ' Bail Parao, Nainital ',
+'263140' : ' Pawalgarh, Nainital ',
+'263128' : ' Patwadanger, Nainital ',
+'263134' : ' Unchakote, Nainital ',
+'263132' : ' Supi, Nainital ',
+'263141' : ' Kunwarpur, Nainital ',
+'263131' : ' Bhumiadhar, Nainital ',
+'263127' : ' Jeolikote, Nainital ',
+'244715' : ' Tukura, Nainital ',
+'263164' : ' Chhoi, Nainital ',
+'263158' : ' Nathuwakhan, Nainital ',
+'263135' : ' Talla Bardho, Nainital ',
+'262580' : ' Dholigaon, Nainital ',
+'263138' : ' Unura, Nainital ',
+'263156' : ' Ghorakhal, Nainital ',
+'263408' : ' Gularbhoj, Nainital ',
+'262404' : ' Haldu Chaur, Nainital ',
+'263002' : ' Tallital, Nainital ',
+'263162' : ' Kamola, Nainital ',
+'263001' : ' Pangoot, Nainital ',
+'262402' : ' Lalkua, Nainital ',
+'263129' : ' Manorapeak, Nainital ',
+'263144' : ' Mota Haldu, Nainital ',
+'263137' : ' Ramgarh, Nainital ',
+'263155' : ' Sattal, Nainital '
+
+}
+count = 0
+#################################
+
+from fuzzywuzzy import fuzz as fuzzY
+
+def doOCRback(path):
+    '''
+    does the OCR for backside,
+    give the Home State and AN(aadhaar number again)
+    '''
+    def fuzzMatch(s1, s2):
+        mn = min(len(s1), len(s2))
+        mx = max(len(s1), len(s2))
+        nMatch = 0
+        for i in range(mn):
+            if s1[i] == s2[i]:
+                nMatch += 1
+        fuzz = nMatch / mx
+        # print('values : ', nMatch, mx)
+        frat = fuzzY.ratio(s1.lower(), s2.lower())
+        # print('fuzz : ', fuzz, 'frat : ', frat / 100)
+        return max(fuzz, frat / 100)
+
+
+    def is_ascii(s):
+        return all(ord(c) < 128 for c in s)
+
+    def onlyAscii(s):
+        return ''.join([c for c in s if is_ascii(c)])
+
+    def noSpace(s):
+        return ''.join([c for c in s if not c.isspace()])
+
+    def getREMatch(dct, key, regex, words, bIgnoreCase=True, bNoSpace=True):
+        for word in words:
+            w = noSpace(word) if bNoSpace else word
+            m = re.search(regex, w, re.IGNORECASE) if bIgnoreCase else re.search(regex, w)
+            if m:
+                span = m.span()
+                dct[key] = w[span[0]:span[1]]
+                return
+
+    import io
+    from google.cloud import vision
+    client = vision.ImageAnnotatorClient()
+
+    with io.open(path, 'rb') as image_file:
+        content = image_file.read()
+
+    image = vision.types.Image(content=content)
+    response = client.text_detection(image=image)
+    if response.error.message:
+        print('Error!!!')
+        #raise ZPException(501, str(response.error.message))
+
+    texts = response.text_annotations
+
+    # Take only the first item
+    sAllText = ''
+    for text in texts:
+        sAllText = text.description
+        break
+
+    # Get each line of text and eliminate non ascii chars
+    arrWords = [onlyAscii(word).strip() for word in sAllText.split('\n')]
+
+    # Remove empty words
+    arrWords = [word for word in arrWords if len(word) > 0]
+    # log(arrWords)
+
+    ret = {}
+    ret['count'] = 0
+    # get AN again to see whether the front and the back are same or not
+    getREMatch(ret, 'an', r'\d{12}', arrWords)
+
+    # print(ret)
+    sArr = [ word.split()[0] for word in arrWords[1:]]
+    bFound = False
+    for sA in reversed(sArr):
+        if len(sA) > 2 : #smallest state isf Goa with len=3
+            # Look for "Home State" fuzzily
+            # len = range(STATES)
+            for tState in STATES:
+                ret['count'] = ret['count'] + 1
+                fMatch = max( fuzzMatch(noSpace(sA.lower()), tState[0]), fuzzMatch(noSpace(sA.lower()), tState[1] ))
+                print(sA, tState, fMatch, )
+
+                if fMatch > 0.90 :
+                    # print('Confidence %d%%' % (fMatch * 100))
+                    ret['hs'] = tState[2]
+                    bFound = True
+                    break
+        if bFound:
+            break
+
+    return ret
+
+
+def getSCID(an: int, admin: int, rtime: datetime) -> int:
+    '''
+    Generates a deterministic SCID
+    '''
+    sText = 'zippee-otp-%s-%s-%s' % (str(an), str(admin), str(rtime))
+    shaText = sText.encode('utf-8')
+    m = hashlib.new('ripemd160')
+    m.update(shaText)
+    scid = m.hexdigest()[:10]
+    return str(scid)
+
+
 def getOTP(an: int, dan: int, rtime: datetime) -> int:
     '''
     Generates a deterministic 4 digit OTP
@@ -199,6 +514,14 @@ def getOTP(an: int, dan: int, rtime: datetime) -> int:
     m = hashlib.new('ripemd160')
     m.update(shaText)
     otp = int(m.hexdigest(), 16) % 9999
+    sOtp = str(otp)
+    if len(sOtp) ==1:
+        sOtp += "123"
+    elif len(sOtp) ==2:
+        sOtp += "42"
+    elif   len(sOtp) == 3:
+        sOtp += "0"
+    otp = int(sOtp)
     return otp
 
 
@@ -282,7 +605,7 @@ def aadhaarNumVerify(sNum: str) -> bool:
 def updateTrip(_loc, trip: Trip):
     '''
     This method calculates the trip completion %age and updates the progress table
-    TODO: add google api to do this
+    TODO: add google Places and Geocoding api to do this
     '''
     # For now just pretend progress is being made, Later set progress based on vehicle/driver location
     prog = Progress.objects.get(tid=trip.id)
@@ -311,8 +634,8 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
     if time taken is not provided, its estimated from vehicle type
     '''
     # Get this route distance
-    recRoute = Route.getRoute(idSrc, idDst)
-    fDist = recRoute.dist
+    #recRoute = Route.getRoute(idSrc, idDst)
+    fDist = 6000 #iDist  #recRoute.dist
     iVType, iPayMode, iTimeSec = int(iVType), int(iPayMode), int(iTimeSec) #need explicit type conversion to int
     
     # Calculate the speed if time is known or else use average speed for estimates
@@ -336,59 +659,113 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
         price *= 0.9
 
     return {
-        'price': float('%.0f' % price),
+        'price': str(round(float('%.2f' % price),0))+'0', #make this round off to nearest decimal
         'time' : float('%.0f' % ((fDist/fAvgSpeed)/60)), #converted seconds to minutes
         'dist': float('%.0f' % (fDist / 1000)),
         'speed': float('%.0f' % (fAvgSpeed * 3.6 ))
     }
 
 
-def getRentPrice(idSrc, idDst, iVType, iPayMode, iTimeHrs=0):
+def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     '''
+    #old was depending of the time as well, but other factors
+    #def getRentPrice(idSrc, idDst, iVType, iPayMode, iTimeHrs=0):
+
     Determines the price given the rent details and time taken
-    time is etime - stime
+    TIME is the only factor :
+
+    iTimeHrs is the trip.hrs, min is 1 hour
+    iTimeActualMins is etime - stime
+
+    1:00:00 am	₹ 60.00
+    2:00:00 am	₹ 54.00	total	₹ 114.00
+    3:00:00 am	₹ 48.00	total	₹ 162.00
+    4:00:00 am	₹ 42.00	total	₹ 204.00
+    5:00:00 am	₹ 36.00	total	₹ 240.00
+    6:00:00 am	₹ 30.00	total	₹ 270.00
+    7:00:00 am	₹ 30.00	total	₹ 300.00
+    8:00:00 am	₹ 30.00	total	₹ 330.00
+    9:00:00 am	₹ 30.00	total	₹ 360.00
+    10:00:00 am	₹ 30.00	total	₹ 390.00
+    11:00:00 am	₹ 30.00	total	₹ 420.00
+    12:00:00 pm	₹ 30.00 total	₹ 450.00
+
+    1	    0-60 	                     ₹60.00
+    0.95	0-120	₹114.00	  ₹ 0.00     ₹54.00
+    0.9  	0-180	₹162.00	  ₹ 0.00     ₹48.00
+    0.85	0-240	₹204.00	  ₹ 0.00     ₹42.00
+    0.8	    0-300	₹240.00	  ₹ 0.00     ₹36.00
+    0.75	0-360	₹270.00	  ₹ 0.00     ₹30.00
+    0.7	    0-420	₹294.00	  ₹ 6.00     ₹24.00
+    0.65	0-480	₹312.00	  ₹ 18.00    ₹18.00
+    0.6	    0-540	₹324.00	  ₹ 36.00    ₹12.00
+    0.55	0-600	₹330.00	  ₹ 60.00    ₹6.00
+    0.5	    0-660	₹330.00	  ₹ 90.00    ₹0.00
+    0.5	    0-720	₹360.00	  ₹ 90.00    ₹30.00
+
+    1.00	 	₹ 60.00     ₹ 60.00
+    0.90		₹ 108.00    ₹ 48.00
+    0.80		₹ 144.00    ₹ 36.00
+    0.75   	    ₹ 180.00    ₹ 36.00
+    0.70		₹ 210.00    ₹ 30.00
+    0.65		₹ 234.00    ₹ 24.00
+    0.60   	    ₹ 252.00    ₹ 18.00
+    0.55		₹ 264.00    ₹ 12.00
+    0.50		₹ 270.00    ₹ 6.00
+    0.50        ₹ 300.00    ₹ 30.00
+    0.50        ₹ 330.00    ₹ 30.00
+    0.50        ₹ 360.00    ₹ 30.00
     '''
-    # Get this route distance
-    recRoute = Route.getRoute(idSrc, idDst)
-    fDist = recRoute.dist
-    iVType, iPayMode, iTimeHrs = int(iVType), int(iPayMode), int(iTimeHrs)  # need explicit type conversion to int
+    iMaxSpeed = 25  # capped to 25 kmph
+    iTimeActualMins = int(iTimeHrs) * 60 if iTimeActualMins == 0 else int(iTimeActualMins)
+    #hrs converted to mins
+    #lstPrice = [ 0, 100, 90, 80, 70, 60, 50, 50, 50, 50, 50, 50, 50, 50]  # paise per minute for every 1 hour
+    #idx      = [ 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13 ] # for every 1 hour, after 12th hour maybe charge extra
+    #idxNext  = [ 0, 70, 130, 190, 250, 310, 370, 430, 490, 550, 610, 670, 730 ] # for what should be the limit for next hours charges
+    #lstActualPrice = [0, 60.00, 54.00, 48.00, 42.00, 36.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00 ] #finalPrice
 
-    iTimeSec = iTimeHrs * 3600
-    fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
+    #idxNext = [ 0, 60, 120, 180, 240, 300, 300, 420, 480, 540, 600, 660, 720,
+    #             780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440]  # for next hours charges
+    #lstUpdatedPrice = [0, 60.00, 54.00, 48.00, 42.00, 36.00, 30.00, 24.00, 18.00, 12.00, 6.00, 0.00, 30.00
+    #                  ]  # finalPrice
 
-    lstPrice = [90, 80, 70, 60, 50, 50, 50] #for every 2 hours
+    idxNext = [0, 60, 120, 180, 240, 300, 300, 420, 480, 540, 600, 660, 720]
+    #             780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440]  # for next hours charges
+    lstUpdatedPrice = [0, 60.00, 48.00, 36.00, 36.00, 30.00, 24.00, 18.00, 12.00, 6.00, 30.00, 30.00, 30.00, 30.00]  # finalPrice
 
-    price = lstPrice[0]
-    if iTimeHrs == 4 :
-        price += lstPrice[1]
-    elif iTimeHrs == 8:
-        price += lstPrice[1]+lstPrice[2]
-    else:
-        price += lstPrice[1] + lstPrice[2] + lstPrice[3]
-
+    try:
+        idxMul = next(x[0] for x in enumerate(idxNext) if x[1] >= iTimeActualMins) #Find the correct value from the
+    except StopIteration:
+        idxMul = 12
+    price = sum(lstUpdatedPrice[1:idxMul+1]) # sum(lstActualPrice[1:idxMul+1])
+    # price = lstPrice[iTimeHrs] * iTimeSec
     return {
-        'price': float('%.0f' % price),
-        'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
-        'dist': float('%.0f' % (fDist / 1000)),
-        'speed': float('%.0f' % (fAvgSpeed * 3.6))
+        'price': str(round(float('%.2f' % price),0))+'0',
+        'speed': round(iMaxSpeed,0) #(fAvgSpeed * 3.6))
     }
+
 
 def getTripPrice(trip):
     '''
     Gets price info for non active trips
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    if trip.rtype == 0:
-        return getRoutePrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
+    if trip.rtype == '0':
+        return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
     else :
-        return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
+        #return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
+        return getRentPrice(trip.hrs, (trip.etime - trip.stime).seconds//60) #convert seconds to minutes
 
-def getDelPrice(deli):
+
+def getDelPrice(deli, hs):
     '''
     Gets price info for non active deliveries
     '''
-    vehicle = Vehicle.objects.filter(an=deli.van)[0]
-    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, 1, 1) #ToDO fix this for the dimensions
+    # vehicle = Vehicle.objects.filter(an=deli.van)[0]
+    # home state of user
+    print(" TIP IS : ", deli.tip)
+    exp = '1' if deli.express is True else '0'
+    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, exp, hs, deli.tip)
 
 ###########################################
 
@@ -450,7 +827,7 @@ def extractParams(func):
         if request.method == 'GET':
             dct = dict(request.GET.items())
         else:
-            print("REEEEEEEEEEEEEEEEEE : ", request.body)
+            #print("REEEEEEEEEEEEEEEEEE : ", request.body)
             #log(request.body.decode('utf-8'))
             dct = dict(json.loads(request.body.decode('utf-8')))
         return func(request, dct)
@@ -503,7 +880,7 @@ class checkAuth(object):
 
             if isAgent or isAuth:
                 qsAgent = Agent.objects.filter(auth=auth)
-
+                print(qsAgent)
                 # Ensure we have a confirmed Agent
                 if (qsAgent is not None) and (len(qsAgent) > 0) and qsAgent[0].mode != 'RG':
                     # Ensure the agent is in the desired state if any
@@ -606,11 +983,11 @@ def retireDelEntity(entity: [User, Agent, Vehicle]) -> None :
 
 # Delivery module
 
-def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
+
+def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, tip):
     '''
     Determines the price given the rent details and time taken
     time is etime - stime
-    #TODO add the variable of the size in this
     '''
     # Get this route distance
 
@@ -621,48 +998,48 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode):
 
     print(srcCoOrds,dstCoOrds)
 
-    import googlemaps
-    gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_KEY)
-    dctDist = gmaps.distance_matrix(srcCoOrds, dstCoOrds)
-    #log(dctDist)
-    print( '############# DST : ', dctDist)
-    if dctDist['status'] != 'OK':
-        raise ZPException(501, 'Error fetching distance matrix')
-
-    dctElem = dctDist['rows'][0]['elements'][0]
-    nDist = 0
-    nTime = 0
-    if dctElem['status'] == 'OK':
-        nDist = dctElem['distance']['value']
-        nTime = dctElem['duration']['value']
-    print('distance: ', nDist)
-    print('time: ', nTime)
+    gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+    nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
     fDist = nDist
-    iVType, iPayMode, iTimeSec = 2, 1, nTime #int(iVType), int(iPayMode), int(iTimeSec)  # need explicit type conversion to int
+    iVType, iPayMode, iTimeSec = 2, 1, nTime*60
 
     # Calculate the speed if time is known or else use average speed for estimates
     fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
 
     # Get base fare for vehicle
-    fBaseFare = Vehicle.BASE_FARE[iVType]
-
-    # Get average economic weight
-    idSrcWt = 100 # Place.objects.filter(id=idSrc)[0].wt
-    idDstWt = 100 # Place.objects.filter(id=idDst)[0].wt
-    avgWt = (idSrcWt + idDstWt) / 200
-
-    # get per km price for vehicle
-    maxPricePerKM = 15
-    vehiclePricePerKM = (iVType / 4) * maxPricePerKM
+    if str(hs).lower() == 'UK'.lower():
+        fBaseFare = 20.00
+    else:
+        fBaseFare = 50.00  # Vehicle.BASE_FARE[iVType]
 
     # Calculate price
-    price = fBaseFare + (fDist / 1000) * vehiclePricePerKM * avgWt
-    if iPayMode == Trip.UPI:
-        price *= 0.9
+    price = fBaseFare  # + (fDist / 1000) * vehiclePricePerKM * avgWt
+    if fDist > 5000:
+        price += ceil((fDist - 5000) / 1000) * 10.00
+        print(fDist, ceil((fDist - 5000) / 1000), price )
+    #if iPayMode == Trip.UPI:
+    #    price *= 0.9
+    print("EXPRESS : ", express)
+    if express == '1':
+        price += 20.00  # 20 Rs extra for express
+        print('Expresss okay############')
+    '''
+    # L = 10
+    # XL = 20
+    # XXL = 30
+    '''
+    if size == 'L':
+        price += 10.00
+    elif size == 'XL':
+        price += 20.00
+    elif size == 'XXL':
+        price += 30.00
 
+    price += tip
+    print( "PRICE : ", price)
     return {
-        'price': float('%.0f' % price),
+        'price': str(round(float('%.2f' % price),0))+'0',
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
         'dist': float('%.0f' % (fDist / 1000)),
         'speed': float('%.0f' % (fAvgSpeed * 3.6))
@@ -687,7 +1064,7 @@ class checkDeliveryStatus(object):
 
             # Get any trip assigned to this entity
             an = entity.an
-            qsDel = Delivery.objects.filter(uan=an) if type(entity) is User else Delivery.objects.filter(dan=an)
+            qsDel = Delivery.objects.filter(uan=an, st__in=self.arrValid) if type(entity) is User else Delivery.objects.filter(dan=an, st__in=self.arrValid)
 
             # If there is a delivery, ensure its status is within allowed
             if len(qsDel) > 0:
@@ -727,3 +1104,170 @@ def headers(h):
             return response
         return wrapped_function
     return headers_wrapper
+
+
+###################################
+
+# Ride with google maps
+
+
+def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
+    '''
+    Determines the price given the rent details and time taken
+    time is etime - stime
+    '''
+    # Get this route distance
+
+    #qsPlaces = Place.objects.all().values()
+    #arrLocs = [recPlace for recPlace in qsPlaces]
+    srcCoOrds = ['%s,%s' % (srclat,srclng)]
+    dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
+
+    print(srcCoOrds, dstCoOrds)
+
+    gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+    nDist, nTime = gMapsRet['dist'], gMapsRet['time']
+    print(nDist, nTime)
+    fDist = nDist
+    iVType, iPayMode = int(iVType), int(iPayMode)  # need explicit type conversion to int
+    iTimeSec = nTime*60 if iTime == 0 else iTime
+    # Calculate the speed if time is known or else use average speed for estimates
+    fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
+
+    # Get base fare for vehicle
+    fBaseFare = Vehicle.BASE_FARE[iVType]
+
+    # Get average economic weight
+    # TODO how do I decide which area is hot ?
+    idSrcWt = 100 # Place.objects.filter(id=idSrc)[0].wt
+    idDstWt = 100 # Place.objects.filter(id=idDst)[0].wt
+    avgWt = (idSrcWt + idDstWt) / 200
+
+    # get per km price for vehicle
+    maxPricePerKM = 15
+    vehiclePricePerKM = (iVType / 4) * maxPricePerKM
+
+    # Calculate price
+    price = fBaseFare + (fDist / 1000) * vehiclePricePerKM * avgWt
+    if iPayMode == Trip.UPI:
+        price *= 0.9
+
+    return {
+        'price': str(round(float('%.2f' % price),0))+'0',
+        'time': int('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
+        'dist': float('%.2f' % (fDist / 1000)),
+        'speed': float('%.2f' % (fAvgSpeed * 3.6))
+    }
+
+
+def getRiPrice(trip):
+    '''
+    Gets price info for non active trips
+    '''
+    vehicle = Vehicle.objects.filter(an=trip.van)
+    vType = vehicle[0].vtype if len(vehicle)>0 else 1
+    print(vType)
+    return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)#, (trip.etime - trip.stime).seconds)
+
+###############
+# GOOGLE
+
+def extract_lat_lng(address_or_postalcode, data_type = 'json'):
+    """
+
+    Args:
+        address_or_postalcode:
+        data_type:
+
+    Returns:
+        lat,lng of the place
+    """
+    endpoint = f"https://maps.googleapis.com/maps/api/geocode/{data_type}"
+    params = {"address": address_or_postalcode, "key": settings.GOOGLE_PLACES_KEY}
+    url_params = urlencode(params)
+    url = f"{endpoint}?{url_params}"
+    r = requests.get(url)
+    if r.status_code not in range(200, 299):
+        return {}
+    latlng = {}
+    try:
+        print(r.json()['results'][0]['address_components'][1]['long_name'])
+        latlng = r.json()['results'][0]['geometry']['location']
+    except:
+        pass
+    return latlng.get("lat"), latlng.get("lng")
+
+
+def extract_name_from_pin(address_or_postalcode, data_type='json'):
+    """
+
+    Args:
+        address_or_postalcode:
+        data_type:
+
+    Returns:
+        lat,lng of the place
+    """
+    '''
+    endpoint = f"https://maps.googleapis.com/maps/api/geocode/{data_type}"
+    params = {"address": address_or_postalcode, "key": settings.GOOGLE_PLACES_KEY}
+    url_params = urlencode(params)
+    url = f"{endpoint}?{url_params}"
+    r = requests.get(url)
+    townName = {}
+    if r.status_code not in range(200, 299):
+        return townName
+
+    townName['name'] = ''
+    # try:
+    print(r.json())
+    print(r.json()['results'][0]['address_components'][1]['long_name'])
+    townName['name'] = r.json()['results'][0]['address_components'][1]['long_name']
+    # r.json()['results'][0]['geometry']['location']
+    # except:
+    '''
+    townName = {}
+    if address_or_postalcode in pins_to_name:
+        townName['name'] = pins_to_name[address_or_postalcode]
+    else:
+        townName['name'] = "This PIN code is not serviceable yet."
+    return townName
+
+
+
+'''
+data = pd.read_excel('./pin_codes.xlsx')
+>>> data
+           State  District      Location  Pincode
+0    Uttarakhand  Dehradun       Ajabpur   248121
+1    Uttarakhand  Dehradun        Ambari   248125
+2    Uttarakhand  Dehradun      Ambiwala   248007
+3    Uttarakhand  Dehradun      Anarwala   248003
+4    Uttarakhand  Dehradun           Anu   248199
+..           ...       ...           ...      ...
+857  Uttarakhand  Nainital  Thala Manral   244715
+858  Uttarakhand  Nainital        Tukura   244715
+859  Uttarakhand  Nainital       Tushrar   263157
+860  Uttarakhand  Nainital     Unchakote   263134
+861  Uttarakhand  Nainital         Unura   263138
+
+[862 rows x 4 columns]
+>>> rows = [ row for ix, row in data.iterrows()]
+>>> rows
+len(rows)
+862
+>>> 
+>>> 
+>>> 
+>>> 
+>>> 
+>>> nainital
+set()
+>>> for i in range(862):
+...     if rows[i]['District'] == 'Nainital':
+...             nainital.add(rows[i]['Pincode'])
+... 
+>>> #data = pd.read_excel('./pin_codes.xlsx')
+>>> len(nainital)
+
+'''
