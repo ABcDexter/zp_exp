@@ -89,6 +89,7 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                myDialog.dismiss();
                 Intent finishIntent = new Intent(ActivityRateZippe.this, ActivityWelcome.class);
                 startActivity(finishIntent);
                 finish();

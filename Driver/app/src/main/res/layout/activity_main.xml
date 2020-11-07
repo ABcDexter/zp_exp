@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:text="HEY! PARTNER WITH"
+            android:text="@string/hey_partner_with"
             android:textAllCaps="true"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
             android:textColor="#FFFFFF" />

@@ -42,6 +42,8 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,6 +89,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.CALL_PHONE};
     String lat, lng, stringAN;
+    private TextView mOutputText;
 
     Animation animMoveL2R, animMoveR2L;
     @Override

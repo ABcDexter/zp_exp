@@ -26,4 +26,5 @@
     <string name="accept_payment_via">Accept Payment Via:</string>
     <string name="cash">CASH</string>
     <string name="upi_payment">UPI Payment</string>
+    <string name="hey_partner_with">HEY! PARTNER WITH</string>
 </resources>
