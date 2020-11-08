@@ -21,7 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Ride Cost:"
+                android:text="@string/ride_cost"
                 android:textAlignment="center"
                 android:textSize="23sp"
                 android:layout_weight="1"/>
@@ -55,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Accept Payment Via:"
+                    android:text="@string/accept_payment_via"
                     android:textAlignment="center"
                     android:textSize="25sp" />
             </LinearLayout>
@@ -78,7 +78,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:checked="false"
-                        android:text="CASH"
+                        android:text="@string/cash"
                         android:textSize="20sp"
                         android:textColor="@color/txtColor"/>
 
@@ -86,7 +86,7 @@
                         android:id="@+id/radio_upi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="UPI Payment"
+                        android:text="@string/upi_payment"
                         android:textSize="20sp"
                         android:textColor="@color/txtColor" />
 

@@ -22,7 +22,7 @@
                 android:layout_height="50dp"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="User Information"
+                android:text="@string/user_information"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
 
@@ -34,7 +34,7 @@
                 android:layout_marginEnd="25dp"
                 android:layout_marginTop="35dp"
                 android:background="@drawable/rect_box_solid"
-                android:text="View Map" />
+                android:text="@string/view_map" />
             <TextView
                 android:id="@+id/userName"
                 android:layout_width="match_parent"
@@ -42,7 +42,7 @@
                 android:layout_margin="25dp"
                 android:background="@drawable/rect_box_outline"
                 android:gravity="center"
-                android:text="name"
+                android:text="@string/user_name"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/txtColor"
@@ -55,7 +55,7 @@
                 android:layout_margin="25dp"
                 android:background="@drawable/rect_box_outline"
                 android:gravity="center"
-                android:text="phone"
+                android:text="@string/user_phone"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/txtColor"
@@ -71,7 +71,7 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="enter otp provided by user"
+                android:text="@string/enter_otp_provided_by_user"
                 android:textAllCaps="true"
                 android:textSize="18sp" />
 
@@ -98,7 +98,7 @@
                 android:layout_marginEnd="25dp"
                 android:layout_marginBottom="25dp"
                 android:background="@drawable/rect_box_solid"
-                android:text="START RIDE" />
+                android:text="@string/start_ride" />
 
             <Button
                 android:id="@+id/btn_cancelRide"
@@ -108,7 +108,7 @@
                 android:layout_marginEnd="25dp"
                 android:layout_marginBottom="25dp"
                 android:background="@drawable/rect_box_solid"
-                android:text="cancel" />
+                android:text="@string/cancel" />
         </LinearLayout>
 
     </ScrollView>

@@ -4,4 +4,27 @@
     <string name="title_activity_maps">Map</string>
     <string name="Open" />
     <string name="Close" />
+    <string name="driver_name">नाम</string>
+    <string name="mobile">मोबाइल</string>
+    <string name="change_language">भाषा बदलें</string>
+    <string name="dark_mode">डार्क मोड</string>
+    <string name="history">हिस्ट्री</string>
+    <string name="click_choose_picture">फोटो क्लिक करें / फोटो चुनें</string>
+    <string name="upload">अपलोड करें</string>
+    <string name="off_duty">ड्यूटी ऑफ़</string>
+    <string name="on_duty">ड्यूटी ऑन</string>
+    <string name="new_rides">नई राइड</string>
+    <string name="ride_in_process">राइड जो प्रगति में है</string>
+    <string name="user_information">यूज़र की जानकारी</string>
+    <string name="view_map">मैप देखें</string>
+    <string name="user_name">यूज़र का नाम</string>
+    <string name="user_phone">यूज़र का फ़ोन नम्बर</string>
+    <string name="enter_otp_provided_by_user">यूज़र द्वारा दिया ओ.टी.पी. डालिये</string>
+    <string name="start_ride">राइड शुरू करें</string>
+    <string name="cancel">कैंसल</string>
+    <string name="ride_cost">राइड का दाम:</string>
+    <string name="accept_payment_via">भुगतान स्वीकार करें:</string>
+    <string name="cash">नकद</string>
+    <string name="upi_payment">यू.पी.आई.</string>
+    <string name="hey_partner_with">HEY! PARTNER WITH</string>
 </resources>

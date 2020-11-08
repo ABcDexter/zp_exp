@@ -368,4 +368,6 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="drop_point_mobile">Please enter the mobile number of the person to whom the package is to be delivered.</string>
     <string name="terms_amp_conditions"><![CDATA[" TERMS & CONDITIONS"]]></string>
     <string name="upload_aadhar_card">Upload Aadhar Card</string>
+    <string name="_name">NAME</string>
+    <string name="_mobile">MOBILE</string>
 </resources>

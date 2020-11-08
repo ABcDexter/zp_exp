@@ -24,7 +24,7 @@
                 android:layout_marginStart="124dp"
                 android:layout_marginTop="12dp"
                 android:checked="false"
-                android:text="Off Duty"
+                android:text="@string/off_duty"
                 android:textColor="@color/txtColor"
                 android:textStyle="bold" />
 
@@ -34,7 +34,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="14dp"
                 android:layout_toEndOf="@id/dutyStatus"
-                android:text="On Duty"
+                android:text="@string/on_duty"
                 android:textColor="@color/txtColor"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -74,7 +74,7 @@
                     android:layout_marginStart="25dp"
                     android:layout_marginEnd="25dp"
                     android:background="@drawable/rect_box_solid"
-                    android:text="NEW rides"
+                    android:text="@string/new_rides"
                     android:layout_alignParentBottom="true"/>
 
             </RelativeLayout>
@@ -88,7 +88,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/rect_box_solid"
-                android:text="ride IN PROCESS" />
+                android:text="@string/ride_in_process" />
 
             <!--<Button
                 android:id="@+id/completed_rides"
