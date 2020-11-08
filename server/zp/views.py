@@ -704,7 +704,7 @@ def authLocationUpdate(dct, entity):
     # Create or edit
     if len(qsLoc) == 0:
         recLoc = Location()
-        recLoc.an = 731335266093 //dct['an']
+        recLoc.an = dct['an'] if an in dct else '0'
     else:
         recLoc = qsLoc[0]
 
