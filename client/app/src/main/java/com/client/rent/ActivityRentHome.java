@@ -84,6 +84,14 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     ActivityRentHome a = ActivityRentHome.this;
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
+
+        //response on hitting auth-location-update API
+        if (id == 0) {
+            /*Intent i = new Intent(this, UtilityPollingService.class);
+            i.setAction("00");
+            startService(i);*/
+
+        }
 //response on hitting user-trip-get-status API
         if (id == 1) {
             try {
@@ -324,10 +332,31 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
 
         imageDialog = new Dialog(this);
         imageDialog2 = new Dialog(this);
+
+        sendLocation();
+
         checkStatus();
 
     }
+    public void sendLocation() {
+        Log.d(TAG, "inside sendLocation()");
+        params.put("an", stringAN);
+        params.put("auth", stringAuth);
+        params.put("lat", lat);
+        params.put("lng", lng);
+        JSONObject parameters = new JSONObject(params);
 
+        Log.d(TAG, "auth = " + stringAuth + " lat =" + lat + " lng = " + lng + " an=" + stringAN);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST auth-location-update");
+        UtilityApiRequestPost.doPOST(a, "auth-location-update", parameters, 30000, 0, response -> {
+            try {
+                a.onSuccess(response, 0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+
+    }
     private void dlAlert() {
         // Create the object of
         // AlertDialog Builder class

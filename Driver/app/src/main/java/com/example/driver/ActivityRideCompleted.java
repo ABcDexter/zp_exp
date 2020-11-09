@@ -153,7 +153,7 @@ public class ActivityRideCompleted extends ActivityDrawer implements View.OnClic
         }*/
         if (id == 2) {
             //payment made, now move to the home page
-            Intent home = new Intent(ActivityRideCompleted.this, ActivityHome.class);
+            Intent home = new Intent(ActivityRideCompleted.this, ActivityRateClient.class);
             startActivity(home);
             finish();
         }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,8 +28,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, View.OnClickListener {
-    private static final String TAG = "MapsActivity2";
+public class MapUserLocation extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
+    private static final String TAG = "MapUserLocation";
 
     private GoogleMap mMap;
     private MarkerOptions src, dst;
@@ -47,17 +46,14 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     public static final String DSTLNG = "TripDstLng";
 
     String strAuth, strTid, strSrcLat, strSrcLng;
-    MapsActivity2 a = MapsActivity2.this;
+    MapUserLocation a = MapUserLocation.this;
     Map<String, String> params = new HashMap();
-    Button end, fail;
-
-    private static MapsActivity2 instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps2);
-        instance = this;
+        setContentView(R.layout.activity_map_user_location);
+
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, "");
 
@@ -75,18 +71,13 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
         dstLng = Double.parseDouble(stringDstLng);
 
 
-        end = findViewById(R.id.completedRide);
-        fail = findViewById(R.id.failedRide);
-
-        end.setOnClickListener(this);
-        fail.setOnClickListener(this);
         src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title("Pick Up");
         dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title("Destination");
         MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.mapNearBy);
+                .findFragmentById(R.id.mapUserLocation);
         mapFragment.getMapAsync(this);
 
-        new FetchURL(MapsActivity2.this).execute(getUrl(src.getPosition(), dst.getPosition(), "driving"), "driving");
+        new FetchURL(MapUserLocation.this).execute(getUrl(src.getPosition(), dst.getPosition(), "driving"), "driving");
 
     }
 
@@ -130,10 +121,6 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
     }
 
-    public static MapsActivity2 getInstance() {
-        return instance;
-    }
-
     public void getStatus() {
         String auth = strAuth;
         params.put("auth", auth);
@@ -150,40 +137,7 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
         }, a::onFailure);
     }
 
-    public void rideFail() {
-        String auth = strAuth;
-        params.put("auth", auth);
-        JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-fail");
-        UtilityApiRequestPost.doPOST(a, "auth-trip-fail", parameters, 20000, 0, response -> {
-            try {
-                a.onSuccess(response, 2);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-        }, a::onFailure);
-    }
-
-    public void rideEnd() {
-        String auth = strAuth;
-        params.put("auth", auth);
-        JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME driver-ride-end");
-        UtilityApiRequestPost.doPOST(a, "driver-ride-end", parameters, 20000, 0, response -> {
-            try {
-                a.onSuccess(response, 3);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-        }, a::onFailure);
-    }
-
     public void onSuccess(JSONObject response, int id) throws NegativeArraySizeException {
-        Log.d(TAG, "RESPONSE:" + response);
         //response on hitting driver-ride-get-status API
         if (id == 1) {
             try {
@@ -203,24 +157,10 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
                         delvyPref.edit().putString(DSTLAT, dstLat1).apply();
                         delvyPref.edit().putString(DSTLNG, dstLng1).apply();
 
-                        new CountDownTimer(45000, 1000) {
-
-                            public void onTick(long millisUntilFinished) {
-                                Log.d(TAG, "seconds remaining: " + millisUntilFinished / 1000);
-                            }
-
-                            public void onFinish() {
-                                getStatus();
-                            }
-                        }.start();
-                        /*Intent i = new Intent(this, UtilityPollingService.class);
-                        i.setAction("7");
-                        startService(i);*/
-
                     }
-                    if (status.equals("FN") || status.equals("TR")) {
+                    if (status.equals("FN") || status.equals("TR")){
                         //go on to the next activity
-                        Intent rideEnded = new Intent(MapsActivity2.this, ActivityRideCompleted.class);
+                        Intent rideEnded = new Intent(MapUserLocation.this, ActivityRideCompleted.class);
                         startActivity(rideEnded);
                         finish();
                     }
@@ -228,22 +168,13 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
                     startActivity(home);
                     finish();*/
                 } else if (active.equals("false")) {
-                    Intent home = new Intent(MapsActivity2.this, ActivityHome.class);
+                    Intent home = new Intent(MapUserLocation.this, ActivityHome.class);
                     startActivity(home);
                     finish();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-        }
-        if (id == 2) {
-            Intent home = new Intent(MapsActivity2.this, ActivityHome.class);
-            startActivity(home);
-        }
-        if (id == 3) {
-            Intent home = new Intent(MapsActivity2.this, ActivityRideCompleted.class);
-            startActivity(home);
         }
     }
 
@@ -252,15 +183,4 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
         Log.d(TAG, "Error:" + error.toString());
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.completedRide:
-                rideEnd();
-                break;
-            case R.id.failedRide:
-                rideFail();
-                break;
-        }
-    }
 }

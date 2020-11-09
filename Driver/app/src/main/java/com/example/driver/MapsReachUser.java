@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -85,6 +87,9 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
         String stringSrcLng = pref.getString(SRCLNG, "");
         String stringMySrcLat = pref.getString(MY_LAT, "");
         String stringMySrcLng = pref.getString(MY_LNG, "");
+
+        Log.d(TAG,"SRCLAT="+stringSrcLat+" SRCLNG="+stringSrcLng+" MYLAT="+stringMySrcLat+" MYLNG="+stringMySrcLng);
+
         SharedPreferences prefVan = getSharedPreferences(DAY_VAN, Context.MODE_PRIVATE);
         strVan = prefVan.getString(VAN, "");
 
@@ -127,12 +132,12 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         Log.d("mylog", "Added Markers");
-        mMap.addMarker(src);
-        mMap.addMarker(dst);
+        mMap.addMarker(src).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        mMap.addMarker(dst).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
         CameraPosition googlePlex = CameraPosition.builder()
                 .target(new LatLng(srcLat, srcLng))
-                .zoom(7)
+                .zoom(18)
                 .bearing(0)
                 .tilt(45)
                 .build();
@@ -329,6 +334,7 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
     }
 
     public void onFailure(VolleyError error) {
+        Toast.makeText(a, "Something went wrong. Please try again later. ", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
     }

@@ -23,35 +23,6 @@ public class UtilityPollingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent != null && intent.getAction() != null && intent.getAction().equals("00")) {
-            final int fixedTimeUpdateLoc = 30;
-            secondsActLocSel = fixedTimeUpdateLoc;
-            final Handler handler = new Handler();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    secondsActLocSel--;
-                    if (secondsActLocSel < 0) {
-                        Log.d("ActivityVerifyDLDetails.getInstance().isDriverVerified() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
-
-                        stopTimerActLocSel = true;
-                        ActivityVerifyDLDetails.getInstance().isDriverVerified();
-
-                    } else {
-                        stopTimerActLocSel = false;
-                    }
-
-                    if (stopTimerActLocSel == false) {
-                        Log.d("ActivityVerifyDLDetails.getInstance().isDriverVerified() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
-
-                        handler.postDelayed(this, 1000);
-                    } else {
-                        stopSelf();
-                    }
-                }
-            });
-        }
-
         //polling for
         if (intent != null && intent.getAction() != null && intent.getAction().equals("01")) {
 
@@ -155,44 +126,6 @@ public class UtilityPollingService extends Service {
 
         }*/
 
-        if (intent != null && intent.getAction() != null && intent.getAction().equals("3")) {
-            /*if (stop) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        ActivityRideInProgress.getInstance().sendLocation(); //call function!
-                    }
-                }, 30000);
-            } else stopSelf();*/
-            final int fixedTimeUpdateLoc = 30;
-            //final boolean stopTimerFlag2 = false;
-            secondsActLocSel = fixedTimeUpdateLoc;
-
-            final Handler handler = new Handler();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    secondsActLocSel--;
-                    if (secondsActLocSel < 0) {
-                        Log.d(" ActivityRideInProgress.getInstance().sendLocation() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
-
-                        stopTimerActLocSel = true;
-                        ActivityRideInProgress.getInstance().sendLocation(); //call function!
-
-                    } else {
-                        stopTimerActLocSel = false;
-                    }
-
-                    if (stopTimerActLocSel == false) {
-                        Log.d(" ActivityRideInProgress.getInstance().sendLocation() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
-
-                        handler.postDelayed(this, 1000);
-                    } else {
-                        stopSelf();
-                    }
-                }
-            });
-        }
         if (intent != null && intent.getAction() != null && intent.getAction().equals("4")) {
            /* if (stop) {
                 new Handler().postDelayed(new Runnable() {
@@ -231,10 +164,11 @@ public class UtilityPollingService extends Service {
                 }
             });
         }
-        if (intent != null && intent.getAction() != null && intent.getAction().equals("5")) {
+
+        if (intent != null && intent.getAction() != null && intent.getAction().equals("7")) {
 
             final int fixedTimeUpdateLoc = 30;
-            //final boolean stopTimerFlag2 = false;
+
             secondsActLocSel = fixedTimeUpdateLoc;
 
             final Handler handler = new Handler();
@@ -243,17 +177,17 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
-                        Log.d("ActivityRideInProgress.getInstance().rideStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("MapsActivity2.getInstance().getStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
 
                         stopTimerActLocSel = true;
-                        ActivityRideInProgress.getInstance().rideStatus();
+                        MapsActivity2.getInstance().getStatus(); //call function!
 
                     } else {
                         stopTimerActLocSel = false;
                     }
 
                     if (stopTimerActLocSel == false) {
-                        Log.d("ActivityRideInProgress.getInstance().rideStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+                        Log.d("MapsActivity2.getInstance().getStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -262,6 +196,7 @@ public class UtilityPollingService extends Service {
                 }
             });
         }
+
         if (intent != null && intent.getAction() != null && intent.getAction().equals("6")) {
             final int fixedTimeUpdateLoc = 30;
             //final boolean stopTimerFlag2 = false;

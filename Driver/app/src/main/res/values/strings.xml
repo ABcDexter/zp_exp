@@ -22,7 +22,7 @@
     <string name="new_rides">NEW rides</string>
     <string name="ride_in_process">ride IN PROCESS</string>
     <string name="user_information">User Information</string>
-    <string name="view_map">View Map</string>
+    <string name="view_map">View Location On Map</string>
     <string name="user_name">User Name</string>
     <string name="user_phone">User Phone no.</string>
     <string name="enter_otp_provided_by_user">enter otp provided by user</string>
@@ -33,5 +33,17 @@
     <string name="cash">CASH</string>
     <string name="upi_payment">UPI Payment</string>
     <string name="hey_partner_with">HEY! PARTNER WITH</string>
+    <string name="no">NO</string>
+    <string name="yes">YES</string>
+    <string name="rate_your_client">rate your client</string>
+    <string name="thanks_from_zippe">Thank you for serving ZIPP-E</string>
+    <string name="i_am_not_satisfied_because">I am not satisfied with</string>
+    <string name="please_specify">Please Specify</string>
+    <string name="submit">Submit</string>
+    <string name="att_client">Attitude of client</string>
+    <string name="client_punctuality">Client Punctuality</string>
+    <string name="cleanliness">Client Cleanliness</string>
+    <string name="any_other">Any other</string>
+    <string name="thanks_for_feedback">Thank you for your feedback. We promise to take appropriate action.</string>
 
 </resources>

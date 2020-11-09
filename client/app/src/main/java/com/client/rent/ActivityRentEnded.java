@@ -135,7 +135,14 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
             try {
                 String active = response.getString("active");
                 if (active.equals("false")) {
-                    getInfo();
+                    String tid = response.getString("tid");
+
+                    Log.d(TAG, "active=" + active + " tid="+tid);
+
+                    if (!tid.equals("-1")){
+                        getInfo();
+                    }
+                    //getInfo();
                     /*Intent home = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
                     startActivity(home);
                     finish();*/

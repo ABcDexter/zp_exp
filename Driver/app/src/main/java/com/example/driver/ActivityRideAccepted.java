@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +42,8 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
     public static final String TRIP_PHN = "TripPhn";
     TextView phone, name;
     EditText OTP;
-    Button startRide, cancleRideBtn,viewMap;
+    ImageView clientPhoto;
+    Button startRide, cancleRideBtn, viewMap;
     String authCookie;
     Dialog myDialog;
     private static ActivityRideAccepted instance;
@@ -53,9 +56,15 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         if (id == 1) {
-           Intent home = new Intent(ActivityRideAccepted.this, ActivityHome.class);
-           startActivity(home);
-
+            try {
+                Intent home = new Intent(ActivityRideAccepted.this, MapsActivity2.class);
+                startActivity(home);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+            /*Intent home = new Intent(ActivityRideAccepted.this, MapsActivity2.class);
+            startActivity(home);*/
         }
         if (id == 3) {
             //return to the home activity
@@ -64,6 +73,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
             startActivity(home);
             finish();
         }
+        //response on hitting driver-ride-get-status API
         if (id == 4) {
             String active = response.getString("active");
             if (active.equals("false")) {
@@ -83,27 +93,28 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
                 String tid = response.getString("tid");
                 String st = response.getString("st");
                 if (st.equals("AS")) {
-                        String srcLat = response.getString("srclat");
-                        String srcLng = response.getString("srclng");
-                        String dstLat = response.getString("dstlat");
-                        String dstLng = response.getString("dstlng");
-                        String phn = response.getString("uphone");
-                        String nm = response.getString("uname");
-
+                    String srcLat = response.getString("srclat");
+                    String srcLng = response.getString("srclng");
+                    String dstLat = response.getString("dstlat");
+                    String dstLng = response.getString("dstlng");
+                    String phn = response.getString("uphone");
+                    String nm = response.getString("uname");
+                    String photo = response.getString("photourl");
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_NAME, nm).apply();
                     sp_cookie.edit().putString(TRIP_PHN, phn).apply();
 
                     phone.setText(phn);
                     name.setText(nm);
-
+                    Glide.with(this).load(photo).into(clientPhoto);
                 }
                 if (st.equals("ST")) {
                     //go on to the next activity
-                    Intent inProgress = new Intent(ActivityRideAccepted.this, ActivityHome.class);
+                    Intent inProgress = new Intent(ActivityRideAccepted.this, MapsActivity2.class);
                     startActivity(inProgress);
                     finish();
                 }
+
             }
             /*Intent inProgress = new Intent(ActivityRideAccepted.this, ActivityHome.class);
             startActivity(inProgress);
@@ -142,6 +153,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
         //initializing variables
 
         phone = findViewById(R.id.userPhone);
+        clientPhoto = findViewById(R.id.photo_client);
         name = findViewById(R.id.userName);
         viewMap = findViewById(R.id.viewMap);
         OTP = findViewById(R.id.otp);
@@ -255,7 +267,10 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
                 }
                 break;
             case R.id.viewMap:
-                Toast.makeText(this, "Map Opens Here", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Map Opens Here", Toast.LENGTH_SHORT).show();
+                Intent map = new Intent(ActivityRideAccepted.this, MapUserLocation.class);
+                startActivity(map);
+
                 break;
         }
     }
