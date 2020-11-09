@@ -68,7 +68,7 @@ def loginDriver(_, dct):
         return HttpJSONResponse({'status':'false'})
     else:
         log('Auth exists for: %s' % (dct['pn']))
-        ret = {'status': True, 'auth':qsDriver[0].auth, 'an':qsDriver[0].an}    
+        ret = {'status': True, 'auth':qsDriver[0].auth, 'an':qsDriver[0].an, 'pn':qsDriver[0].pn, 'name':qsDriver[0].name }    
         return HttpJSONResponse(ret)
 
 
