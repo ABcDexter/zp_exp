@@ -401,9 +401,9 @@ def driverRideRetire(dct, driver, trip):
     retireEntity(driver)
 
     # Reset the vehicle tid to available
-    #vehicle = Vehicle.objects.filter(tid=trip.id)[0]
-    #vehicle.tid = Vehicle.AVAILABLE
-    #vehicle.save()
+    vehicle = Vehicle.objects.filter(tid=trip.id)[0]
+    vehicle.tid = Vehicle.AVAILABLE
+    vehicle.save()
     return HttpJSONResponse({})
 
 
