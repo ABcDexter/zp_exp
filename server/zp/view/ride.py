@@ -356,17 +356,19 @@ def driverPaymentConfirm(_dct, driver, trip):
     trip.st = 'PD'
     trip.save()
 
-    driver.mode = 'AV'
-    retireEntity(driver)
-
+    # driver.mode = 'AV'
+    # retiring is NOT done here but in the driver
+    #retireEntity(driver)
+    
     # user = User.objects.filter(an=trip.uan)[0]
     # user.tid = -1
     # user.save()
     # User retires via userRideRetire
 
     # Get the vehicle
-    vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    retireEntity(vehicle)
+    # vehicle = Vehicle.objects.filter(an=trip.van)[0]
+    # retireEntity(vehicle)
+    # NOT required AS PER date 9/11/2020
 
     return HttpJSONResponse({})
 
@@ -378,7 +380,7 @@ def driverPaymentConfirm(_dct, driver, trip):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkTripStatus(['CN', 'TO'])
+@checkTripStatus(['CN', 'TO', 'PD'])
 def driverRideRetire(dct, driver, trip):
     '''
     Resets driver's and vehicles active trip
@@ -389,7 +391,7 @@ def driverRideRetire(dct, driver, trip):
 
     Following states when reached, have already retired the driver and vehicle
     DN : driver already retired from driverRideCancel()
-    PD : driver already retired from driverPaymentConfirm
+    # PD : driver already retired from driverPaymentConfirm #NOT anymore 9/11/2020
     FL : admin already retired from adminHandleFailedTrip()
 
     TODO: move this common code to a function
@@ -399,9 +401,9 @@ def driverRideRetire(dct, driver, trip):
     retireEntity(driver)
 
     # Reset the vehicle tid to available
-    vehicle = Vehicle.objects.filter(tid=trip.id)[0]
-    vehicle.tid = Vehicle.AVAILABLE
-    vehicle.save()
+    #vehicle = Vehicle.objects.filter(tid=trip.id)[0]
+    #vehicle.tid = Vehicle.AVAILABLE
+    #vehicle.save()
     return HttpJSONResponse({})
 
 
