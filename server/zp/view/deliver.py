@@ -561,7 +561,7 @@ def loginAgent(_, dct):
     makes the agent login with phone number
     
     HTTP Args:
-        pno: phone number of the agent without the ISD code
+        pn: phone number of the agent without the ISD code
         key: auth rot 13 of agent
         
 
@@ -773,10 +773,10 @@ def agentDeliveryGetStatus(_dct, agent):
         deli = qsDelivery[0]
         print("STATIS : ", deli.st)
         # For assigned deli return srcadd, dstadd
-        if deli.st == 'AS':
-            print('here....', deli.srcadd)
-            ret.update({'srcadd': deli.srcadd, 'dstadd': deli.dstadd})
-        elif deli.st == 'PD':
+        if deli.st in ['AS', 'RC']:
+            #print('here....', deli.srcadd)
+            #ret.update({'srcadd': deli.srcadd, 'dstadd': deli.dstadd})
+        #ielif deli.st == 'PD':
             #ret = {'uan': deli.uan, 'van': deli.van}
             ret.update({'srcper': deli.srcper,
                     'srcadd': deli.srcadd,
@@ -787,7 +787,7 @@ def agentDeliveryGetStatus(_dct, agent):
 
         # For started deli send progress
         elif deli.st == 'ST':
-            ret.update({'dstper': deli.dstper,
+            ret.update({'srcphone': deli.srcphone, 'dstper': deli.dstper,
                         'dstadd': deli.dstadd,
                         'dstland': deli.dstland,
                         'dstphone': deli.dstphone,
