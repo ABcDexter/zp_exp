@@ -154,7 +154,7 @@ def driverRideGetStatus(_dct, driver):
             #pct = Progress.objects.filter(tid=trip.id)[0].pct
             #ret = {'pct': pct}
             #showing progress in Google maps
-            ret = {'dstlat': trip.dstlat, 'dstlng': trip.dstlng}
+            ret = {'srclat': trip.srclat, 'srclng':trip.srclng, 'dstlat': trip.dstlat, 'dstlng': trip.dstlng}
             # maybe in future, we allow the User to update destination whilst being in Trip
 
         # For ended trips that need payment send the price data
