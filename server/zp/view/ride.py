@@ -497,9 +497,8 @@ def userIsDriverAv(dct, user):
     ret = {}
     drivers = []
     print('drivers are here ' ,len(qsDrivers))
-    # TODO make this view API optimal
+    # TODO make this view API optimal and Integrate with PUSH notification of FCM
     for driver in qsDrivers:
-        #print("$$$$$$$$$$$$$$$$: " ,qsDrivers, qsDrivers[0]['an'])
         #print(driver)
         vehicles = list(Vehicle.objects.filter(vtype=dct['vtype']).values('an','vtype'))
         #print(vehicles)
