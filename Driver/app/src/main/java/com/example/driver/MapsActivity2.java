@@ -63,10 +63,12 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
 
         SharedPreferences pref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
         strTid = pref.getString(TID, "");
+
         String stringSrcLat = pref.getString(SRCLAT, "");
         String stringSrcLng = pref.getString(SRCLNG, "");
         String stringDstLat = pref.getString(DSTLAT, "");
         String stringDstLng = pref.getString(DSTLNG, "");
+        Log.d(TAG,"moved to getStatus()");
         getStatus();
 
         srcLat = Double.parseDouble(stringSrcLat);
@@ -135,6 +137,7 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     }
 
     public void getStatus() {
+        Log.d(TAG,"in getStatus()");
         String auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
@@ -195,13 +198,21 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
                     sp_cookie.edit().putString(TID, tid).apply();
 
                     if (status.equals("ST")) {
+                        String srclat = response.getString("srclat");
+                        String srclng = response.getString("srclng");
                         String dstLat1 = response.getString("dstlat");
                         String dstLng1 = response.getString("dstlng");
                         dstLat = Double.parseDouble(dstLat1);
                         dstLng = Double.parseDouble(dstLng1);
-                        SharedPreferences delvyPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+                        srcLat = Double.parseDouble(srclat);
+                        srcLng = Double.parseDouble(srclng);
+
+                       /* src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title("Pick Up");
+                        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title("Destination");*/
+
+                        /*SharedPreferences delvyPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                         delvyPref.edit().putString(DSTLAT, dstLat1).apply();
-                        delvyPref.edit().putString(DSTLNG, dstLng1).apply();
+                        delvyPref.edit().putString(DSTLNG, dstLng1).apply();*/
 
                         new CountDownTimer(45000, 1000) {
 
@@ -244,6 +255,7 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
         if (id == 3) {
             Intent home = new Intent(MapsActivity2.this, ActivityRideCompleted.class);
             startActivity(home);
+            finish();
         }
     }
 

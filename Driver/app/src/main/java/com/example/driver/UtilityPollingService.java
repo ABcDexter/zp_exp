@@ -165,38 +165,6 @@ public class UtilityPollingService extends Service {
             });
         }
 
-        if (intent != null && intent.getAction() != null && intent.getAction().equals("7")) {
-
-            final int fixedTimeUpdateLoc = 30;
-
-            secondsActLocSel = fixedTimeUpdateLoc;
-
-            final Handler handler = new Handler();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    secondsActLocSel--;
-                    if (secondsActLocSel < 0) {
-                        Log.d("MapsActivity2.getInstance().getStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
-
-                        stopTimerActLocSel = true;
-                        MapsActivity2.getInstance().getStatus(); //call function!
-
-                    } else {
-                        stopTimerActLocSel = false;
-                    }
-
-                    if (stopTimerActLocSel == false) {
-                        Log.d("MapsActivity2.getInstance().getStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
-
-                        handler.postDelayed(this, 1000);
-                    } else {
-                        stopSelf();
-                    }
-                }
-            });
-        }
-
         if (intent != null && intent.getAction() != null && intent.getAction().equals("6")) {
             final int fixedTimeUpdateLoc = 30;
             //final boolean stopTimerFlag2 = false;

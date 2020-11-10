@@ -620,11 +620,14 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
+
+            sendLocation();
         }
         //response on hitting driver-delivery-retire API
         if (id == 8) {
             status_duty.setChecked(false);
             Log.d(TAG, "vehicle retired successfully");
+
         }
     }
 

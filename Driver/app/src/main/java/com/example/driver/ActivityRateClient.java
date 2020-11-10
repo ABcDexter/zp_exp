@@ -217,6 +217,7 @@ public class ActivityRateClient extends ActivityDrawer implements View.OnClickLi
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    myDialog.dismiss();
                     Intent finishIntent = new Intent(ActivityRateClient.this, ActivityHome.class);
                     startActivity(finishIntent);
                     finish();

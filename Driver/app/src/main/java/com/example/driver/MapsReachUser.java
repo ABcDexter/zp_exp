@@ -297,6 +297,7 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
             startActivity(home);
             finish();
         }
+        //response on hitting driver-ride-get-status API
         if (id == 2) {
             try {
                 String active = response.getString("active");
