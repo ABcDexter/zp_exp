@@ -8,10 +8,10 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from url_magic import makeView
-from ..models import Place, Trip, Progress
+from ..models import Place, Trip, Progress, Rate
 from ..models import User, Vehicle, Driver, Location
 from ..utils import ZPException, HttpJSONResponse, googleDistAndTime
-from ..utils import getOTP
+from ..utils import getOTP, log
 from ..utils import getRoutePrice, getTripPrice, getRidePrice, getRiPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 
@@ -33,6 +33,44 @@ makeView.APP_NAME = 'zp'
 # ============================================================================
 # Driver views
 # ============================================================================
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
+def loginDriver(_, dct):
+    '''
+    Driver login
+    makes the driver logun with phone number
+    
+    HTTP Args:
+        pno: phone number of the driver without the ISD code
+        key: auth rot 13 of driver
+        
+
+    Notes:
+        Rot 13 is important
+    '''
+
+    log('Driver login request. Dct : %s ' % (str(dct)))
+
+    sPhone = str(dct['pn'])
+    from codecs import encode
+    sAuth = encode(str(dct['key']), 'rot13')
+    log('Driver login key request. Dct : %s ' % (str(sAuth)))
+    qsDriver = Driver.objects.filter(auth=sAuth, pn=sPhone)
+    bDriverExists = len(qsDriver) != 0
+    if not bDriverExists:
+        log('Driver not registered with phone : %s' % (dct['pn']))
+        return HttpJSONResponse({'status':'false'})
+    else:
+        log('Auth exists for: %s' % (dct['pn']))
+        ret = {'status': True, 'auth':qsDriver[0].auth, 'an':qsDriver[0].an, 'pn':qsDriver[0].pn, 'name':qsDriver[0].name }    
+        return HttpJSONResponse(ret)
+
 
 
 @makeView()
@@ -116,16 +154,23 @@ def driverRideGetStatus(_dct, driver):
             #pct = Progress.objects.filter(tid=trip.id)[0].pct
             #ret = {'pct': pct}
             #showing progress in Google maps
-            ret = {'dstlat': trip.dstlat, 'dstlng': trip.dstlng}
+            ret = {'srclat': trip.srclat, 'srclng':trip.srclng, 'dstlat': trip.dstlat, 'dstlng': trip.dstlng}
             # maybe in future, we allow the User to update destination whilst being in Trip
 
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
             ret = getTripPrice(trip)
+            # get the acutal price for TRminated trips
+            if trip.st in ['TR'] : 
+                rate = Rate.objects.filter(id='ride'+str(trip.id))[0]
+                ret['price'] = rate.money
 
         ret['active'] = trip.st in Trip.DRIVER_ACTIVE
         ret['st'] = trip.st
         ret['tid'] = trip.id
+        uAuth = User.objects.filter(an=trip.uan)[0].auth
+        ret['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
+
 
     return HttpJSONResponse(ret)
 
@@ -311,17 +356,19 @@ def driverPaymentConfirm(_dct, driver, trip):
     trip.st = 'PD'
     trip.save()
 
-    driver.mode = 'AV'
-    retireEntity(driver)
-
+    # driver.mode = 'AV'
+    # retiring is NOT done here but in the driver
+    #retireEntity(driver)
+    
     # user = User.objects.filter(an=trip.uan)[0]
     # user.tid = -1
     # user.save()
     # User retires via userRideRetire
 
     # Get the vehicle
-    vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    retireEntity(vehicle)
+    # vehicle = Vehicle.objects.filter(an=trip.van)[0]
+    # retireEntity(vehicle)
+    # NOT required AS PER date 9/11/2020
 
     return HttpJSONResponse({})
 
@@ -333,7 +380,7 @@ def driverPaymentConfirm(_dct, driver, trip):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkTripStatus(['CN', 'TO'])
+@checkTripStatus(['CN', 'TO', 'PD'])
 def driverRideRetire(dct, driver, trip):
     '''
     Resets driver's and vehicles active trip
@@ -344,7 +391,7 @@ def driverRideRetire(dct, driver, trip):
 
     Following states when reached, have already retired the driver and vehicle
     DN : driver already retired from driverRideCancel()
-    PD : driver already retired from driverPaymentConfirm
+    # PD : driver already retired from driverPaymentConfirm #NOT anymore 9/11/2020
     FL : admin already retired from adminHandleFailedTrip()
 
     TODO: move this common code to a function
@@ -450,9 +497,8 @@ def userIsDriverAv(dct, user):
     ret = {}
     drivers = []
     print('drivers are here ' ,len(qsDrivers))
-    # TODO make this view API optimal
+    # TODO make this view API optimal and Integrate with PUSH notification of FCM
     for driver in qsDrivers:
-        #print("$$$$$$$$$$$$$$$$: " ,qsDrivers, qsDrivers[0]['an'])
         #print(driver)
         vehicles = list(Vehicle.objects.filter(vtype=dct['vtype']).values('an','vtype'))
         #print(vehicles)
@@ -472,7 +518,7 @@ def userIsDriverAv(dct, user):
             nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
             #if nTime or nDist:
-            if nDist < 10_000:  # 10 kms
+            if nDist < 50_000:  # 10 kms
                 print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
                 drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
     print("drivers found in 10km radius : ", len(drivers))
@@ -564,6 +610,16 @@ def userRideRequest(dct, user):#, _trip):
     # getRoutePrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
     ret = getRiPrice(trip)
     ret['tid'] = trip.id
+
+    # to get the exact price even if the user TRminated the ride en route.
+    if trip.rtype=='0':
+        rate = Rate()
+        rate.id = 'ride' + str(trip.id)
+        rate.type = 'ride' if trip.rtype == '0' else 'rent'
+        rate.rev = ''
+        rate.money = float(getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)['price'])
+        rate.save()        
+
 
     return HttpJSONResponse(ret)
 

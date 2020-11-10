@@ -33,7 +33,7 @@ from url_magic import makeView
 from zp.view import rent, ride, deliver, pwa
 from .utils import googleDistAndTime
 from zp.view import schedule
-from .models import Rate
+from .models import Rate, Supervisor
 
 ###########################################
 # Types
@@ -90,7 +90,7 @@ def registerUserNoAadhaar(_, dct: Dict):
         user.auth = sAuth
         user.an = int(sAn)
         user.pn = sPhone
-        user.hs = dct['home']
+        user.hs = dct['home'].lower()
         user.save()
         log('New user registered: %s' % user.name)
     else:
@@ -387,7 +387,12 @@ def userTripGetStatus(_dct, user):
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
             if trip.rtype == '0':
-                price = getTripPrice(trip)['price']
+                if trip.st == 'TR':
+                    rate = Rate.objects.filter(id='ride'+str(trip.id))[0]
+                    price = rate.money
+                else :
+                    price = getTripPrice(trip)['price']
+
             else : #rental
                 #vehicle = Vehicle.objects.filter(an=trip.van)[0]
                 #currTime = datetime.now(timezone.utc)
@@ -398,6 +403,11 @@ def userTripGetStatus(_dct, user):
                 price = str(remPrice) + '.00' if remPrice >=0 else '0.00'
 
             ret['price'] = price
+        
+        if trip.st not in ['RQ'] :
+            dAuth = Driver.objects.filter(an=trip.dan)[0].auth if trip.rtype == '0' else Supervisor.objects.filter(an=trip.dan)[0].auth
+            ret['photourl'] = "https://api.villageapps.in:8090/media/dp_" + dAuth + "_.jpg"
+    # else the trip is not active
     else:
         ret = {'active': False, 'st': 'NONE', 'tid': -1}
 
@@ -480,16 +490,17 @@ def userTripRequest(dct, user, _trip):
 
 @makeView()
 @csrf_exempt
+@handleException(IndexError, 'Driver NOT found', 501)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
 @checkTripStatus('AS')
 def userRideGetDriver(_dct, entity, trip):
     '''
-    Returns aadhaar, name and phone of current assigned driver, TODO: Photo
+    Returns aadhaar, name and phone of current assigned driver
     '''
     driver = Driver.objects.filter(an=trip.dan)[0]
-    ret = {'pn': driver.pn, 'an': driver.an, 'name': driver.name}
+    ret = {'pn': driver.pn, 'an': driver.an, 'name': driver.name, 'photourl' : "https://api.villageapps.in:8090/media/dp_" + driver.auth + "_.jpg"}
     return HttpJSONResponse(ret)
 
 
@@ -580,6 +591,11 @@ def authTripGetInfo(dct, entity):
         remPrice = int(float(getTripPrice(trip)['price']) - float(getRentPrice(trip.hrs)['price']))
         price = str(remPrice) + '.00' if remPrice >= 0 else '0.00'
         ret.update({'price': price})
+
+    if trip.st == 'TR' and trip.rtype=='0':
+        rate = Rate.objects.filter(id='ride'+str(trip.id))[0]
+        ret['price'] = rate.money
+
     return HttpJSONResponse(ret)
 
 
@@ -688,7 +704,7 @@ def authLocationUpdate(dct, entity):
     # Create or edit
     if len(qsLoc) == 0:
         recLoc = Location()
-        recLoc.an = dct['an']
+        recLoc.an = dct['an'] if 'an' in dct else '0'
     else:
         recLoc = qsLoc[0]
 
@@ -1265,15 +1281,71 @@ def authProfilePhotoSave(dct, entity):
 
     HTTP Args:
         auth
-        aadhaarFront base 64 encoded
+        Display photo base 64 encoded
     Notes:
         needs production settings
     '''
-    entityAdhar = str(entity.an)
+    #from codecs import encode
+    #entityAdhar = encode(str(entity.auth), 'rot13')
+    #entityAdhar = encode(entityAdhar, 'rot13') #could be removed
+    entityAdhar = str(entity.auth)
     sProfilePhoto = saveTmpImgFile(settings.PROFILE_PHOTO_DIR, dct['profilePhoto'], 'dp')
     log('Profile photo saved for - %s saved as %s' % (entityAdhar, sProfilePhoto))
     dpFileName = 'dp_' + entityAdhar + '_.jpg'
     os.rename(sProfilePhoto, os.path.join(settings.PROFILE_PHOTO_DIR, dpFileName))
     log('New photo saved: %s' % dpFileName)
     return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def authAadhaarSave(dct, entity):
+    '''
+    entity sends and saves his/her profile photo
+
+    HTTP Args:
+        auth
+        Aadhaar photo base 64 encoded
+            aadhaarFront, aadhaarBack
+    Notes:
+        needs production settings
+    '''
+    
+    sAadharFrontTemp = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarFront'], 'front-tmp')
+    sAadharBackTemp = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarBack'], 'back-tmp')
+    entityAdhar = str(entity.an)
+    log('Aadhaar photo saved for - %s saved as %s' % (entityAdhar, sAadharFrontTemp))
+    
+    # Get aadhaar as 3 groups of 4 digits at a time via google vision api
+    clientDetails = doOCR(sAadharFrontTemp)
+    sAadhaar = clientDetails['an']
+    log('Aadhaar number read from %s - %s' % (sAadharFrontTemp, sAadhaar))
+    clientDetails2 = doOCRback(sAadharBackTemp)
+    sAadhaar2 = clientDetails2['an']
+    log('Aadhaar number read from %s - %s' % (sAadharBackTemp, sAadhaar2))
+
+    # verify aadhaar number via Verhoeff algorithm
+    if not aadhaarNumVerify(sAadhaar):
+        raise ZPException(501,'Aadhaar number not valid!')
+    log('Aadhaar is valid')
+
+    if sAadhaar != sAadhaar2:
+        raise ZPException(501, 'Aadhaar number front doesn\'t match Aadhaar number back!')
+
+    entity.hs = clientDetails2['hs']
+    entity.save()   
+
+    sAdharFrontFileName = 'ad_' + entityAdhar + '_front.jpg'
+    sAdharBackFileName = 'ad_' + entityAdhar + '_back.jpg'
+    log('HS updated for : %s | %s' % (entity.an, entity.hs))
+
+    os.rename(sAadharFrontTemp, os.path.join(settings.AADHAAR_DIR, sAdharFrontFileName))
+    os.rename(sAadharBackTemp, os.path.join(settings.AADHAAR_DIR, sAdharBackFileName))
+    log('New photo saved: front %s | back %s' % (sAdharFrontFileName, sAdharBackFileName))
+    return HttpJSONResponse({})
+
 

@@ -66,7 +66,7 @@ class Driver(Entity):
         if st == 'AS':
             self.log('Waiting for user to arrive')
 
-            if prob(0.001): # only 1 % chance of cancelling a trip
+            if prob(0.000): # only 1 % chance of cancelling a trip
                 self.log('Canceling trip!')
                 ret = self.callAPI('driver-ride-cancel')
                 self.logIfErr(ret)
@@ -89,7 +89,7 @@ class Driver(Entity):
                 ret = self.callAPI('driver-ride-end')
                 self.logIfErr(ret)
 
-            if prob(0.01):
+            if prob(0.00):
                 self.log('Failing trip!')
                 ret = self.callAPI('auth-trip-fail')
                 self.logIfErr(ret)

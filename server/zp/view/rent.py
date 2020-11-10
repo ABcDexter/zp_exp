@@ -99,10 +99,10 @@ def userRentGetSup(_dct, _user, trip):
     '''
     if trip.st == 'AS':
         sup = Supervisor.objects.filter(pid=trip.srcid)[0]
-        ret = {'pn': sup.pn, 'name': sup.name}
+        ret = {'pn': sup.pn, 'name': sup.name, "photourl": "https://api.villageapps.in:8090/media/dp_" + str(sup.auth) + "_.jpg" }
     else:
         sup = Supervisor.objects.filter(pid=trip.dstid)[0]
-        ret = {'pn': sup.pn, 'name': sup.name}
+        ret = {'pn': sup.pn, 'name': sup.name, "photourl": "https://api.villageapps.in:8090/media/dp_" + str(sup.auth) + "_.jpg"}
     return HttpJSONResponse(ret)
 
 
@@ -336,6 +336,24 @@ def userRentPay(dct, _user, trip):
 # ============================================================================
 
 
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Sup Not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+def supRentLogin(_, dct):
+    '''
+    Makes the supervisor login 
+    HTTPS args:
+        pn : phone number,
+        sa : super auth
+    '''
+    sup = Supervisor.objects.filter(pn=dct['pn'], auth=dct['sa'])[0]
+    ret = {'auth': sup.auth, 'redirect':True,"redirect_url": "index.html"}
+    return HttpJSONResponse(ret)
+
+
 @makeView()
 @csrf_exempt
 @handleException(IndexError, 'Trip/User/Vehicle not found', 404)
@@ -395,7 +413,17 @@ def supRentCheck(dct, sup):
             vals['rvtype'] = 'BIKE'
         elif trip.rvtype == 3:
             vals['rvtype'] = 'ZBEE'
-        vals['price'] = getRentPrice(trip.hrs)['price']
+
+        if trip.st == 'ST':
+            vals['price'] = getTripPrice(trip)['price']
+        elif trip.st == 'FN':
+            vals['price'] = getTripPrice(trip)['price']
+        else:
+            vals['price'] = getRentPrice(trip.hrs)['price']
+        uAuth = User.objects.filter(an=trip.uan)[0].auth
+        vals['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
+
+        vals['van'] = trip.van
         rentals.append(vals)
         
     ret = {} if not len(qsTrip) else {'rentals': rentals}

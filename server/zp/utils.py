@@ -753,8 +753,8 @@ def getTripPrice(trip):
     if trip.rtype == '0':
         return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
     else :
-        #return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
-        return getRentPrice(trip.hrs, (trip.etime - trip.stime).seconds//60) #convert seconds to minutes
+        hrs = datetime.now(timezone.utc) - trip.stime if trip.st == 'ST' else trip.etime- trip.stime
+        return getRentPrice(trip.hrs, hrs.seconds//60) #convert seconds to minutes
 
 
 def getDelPrice(deli, hs):
@@ -864,6 +864,7 @@ class checkAuth(object):
 
             # If auth key checks out, then return JSON, else Unauthorized
             auth = dct.get('auth', '')
+            print("auth is :", auth, "...")
             if isUser or isAuth:
                 qsUser = User.objects.filter(auth=auth)
                 if (qsUser is not None) and len(qsUser) > 0:
@@ -871,7 +872,7 @@ class checkAuth(object):
 
             if isDriver or isAuth:
                 qsDriver = Driver.objects.filter(auth=auth)
-
+                print("driver : ", qsDriver)
                 # Ensure we have a confirmed driver
                 if (qsDriver is not None) and (len(qsDriver) > 0) and qsDriver[0].mode != 'RG':
                     # Ensure the driver is in the desired state if any
@@ -880,7 +881,7 @@ class checkAuth(object):
 
             if isAgent or isAuth:
                 qsAgent = Agent.objects.filter(auth=auth)
-                print(qsAgent)
+                print("agents : ", qsAgent)
                 # Ensure we have a confirmed Agent
                 if (qsAgent is not None) and (len(qsAgent) > 0) and qsAgent[0].mode != 'RG':
                     # Ensure the agent is in the desired state if any
@@ -1149,9 +1150,16 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
 
     # Calculate price
     price = fBaseFare + (fDist / 1000) * vehiclePricePerKM * avgWt
-    if iPayMode == Trip.UPI:
+    if iPayMode == Trip.UPI:  # UPI has 10% off
         price *= 0.9
 
+    #if str(hs) == 'UK': # 50% off for natives
+    #	price *= 0.5
+
+    #if str(hs) == 'UK': # 50% off for natives
+    #   price *= 0.5
+
+ 
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
         'time': int('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes

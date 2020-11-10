@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+8^8@0w0p1)6yr-g)!3l04&qp-ggjwz@9f_-fvpm_qta0g&36r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "media.villageapps.in", "8ee0edfb6206.ngrok.io", "159.65.144.72","86d9a981a121.ngrok.io" ] # ngrok http http://127.0.0.1:9999
 
@@ -49,6 +49,9 @@ RENT_AS_TIMEOUT = 3600  # 60 minutes
 
 DEL_SC_TIMEOUT = 900   # 15 minutes
 DEL_AS_TIMEOUT = 1800  # 30 minutes
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 26214400 # 25 MB
+
 # Application definition
 
 INSTALLED_APPS = [
