@@ -136,7 +136,7 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
     String srcName, srcPhn, dstName, dstPhn, fr, li, pe, kw, kc, express, st, itype, idim, srcAdd, dstAdd, det, ptime, pDate;
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
-        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        Log.d(TAG, "RESPONSE:" + response);
 
         //response on hitting auth-delivery-data API
         if (id == 2) {
@@ -224,8 +224,6 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
 
         }
 
-
-        Log.d(TAG, "RESPONSE:" + response);
         //response on hitting user-delivery-get-info API
         if (id == 1) {
             try {
@@ -367,7 +365,6 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
 
         //myDialog.setContentView(R.layout.popup_new_request);
         dialog_txt = findViewById(R.id.txtInfo);
-        String INFO = info;
         //RQ or PD
         if (id == 0) {
             dialog_txt.setText(R.string.your_agent_will_be_assigned_shortly);
@@ -378,7 +375,9 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
         }
         //AS
         if (id == 2) {
-            dialog_txt.setText(R.string.your_delivery_agent_will_arrive_shortly + INFO);
+            //dialog_txt.setText(R.string.your_delivery_agent_will_arrive_shortly + info);
+            dialog_txt.setText(String.format("OTP : %s", info));
+            Log.d(TAG, "AS OTP = "+ info);
         }
         //FL
         if (id == 3) {
@@ -402,7 +401,9 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
         }
         //RC
         if (id == 8) {
-            dialog_txt.setText(R.string.agent_has_arrived + INFO);
+            //dialog_txt.setText(R.string.agent_has_arrived + INFO);
+            dialog_txt.setText(String.format("OTP : %s", info));
+            Log.d(TAG, "RC OTP = "+ info);
         }
 
     }

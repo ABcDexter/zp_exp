@@ -24,7 +24,7 @@ public class UtilityPollingService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("00")) {
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             secondsActLocSel = fixedTimeUpdateLoc;
             final Handler handler = new Handler();
             handler.post(new Runnable() {
@@ -55,7 +55,7 @@ public class UtilityPollingService extends Service {
 //polling for
         if (intent != null && intent.getAction() != null && intent.getAction().equals("01")) {
 
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -90,7 +90,7 @@ public class UtilityPollingService extends Service {
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("02")) {
 
-            final int fixedTimeUpdateLoc = 60;
+            final int fixedTimeUpdateLoc = 45;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;

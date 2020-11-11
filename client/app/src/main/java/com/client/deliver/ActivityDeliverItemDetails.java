@@ -208,7 +208,7 @@ public class ActivityDeliverItemDetails extends ActivityDrawer implements View.O
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(ActivityDeliverItemDetails.this, ActivityDeliverHome.class));
+        startActivity(new Intent(ActivityDeliverItemDetails.this, ActivityPackageDetails.class));
         finish();
     }
 }

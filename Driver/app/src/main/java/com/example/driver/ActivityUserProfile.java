@@ -82,7 +82,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(this, "Something went wrong! Please try again later.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
         simpleProgressBar.setVisibility(View.GONE);
     }
 

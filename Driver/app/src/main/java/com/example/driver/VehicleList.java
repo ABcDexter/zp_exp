@@ -43,10 +43,6 @@ public class VehicleList extends AppCompatActivity {
     public static final String DAY_VAN = "com.driver.Van";
     public static final String VAN = "Van";
     public static final String TRIP_ID = "TripId";
-    public static final String TRIP_NAME = "TripName";
-    public static final String TRIP_SRC = "TripSrc";
-    public static final String TRIP_DST = "TripDst";
-    public static final String TRIP_PHN = "TripPhn";
     String auth;
     Map<String, String> params = new HashMap();
     VehicleList a = VehicleList.this;
@@ -176,6 +172,8 @@ public class VehicleList extends AppCompatActivity {
     }
 
     public void onFailure(VolleyError error) {
+        Toast.makeText(a, R.string.something_wrong, Toast.LENGTH_SHORT).show();
+
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Toast.makeText(this, "CHECK YOUR INTERNET CONNECTION!", Toast.LENGTH_LONG).show();
     }

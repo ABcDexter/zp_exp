@@ -30,7 +30,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="16dp"
         android:checked="false"
-        android:text="Attitude of driver"
+        android:text=""
         android:textColor="#000"
         android:textSize="20sp" />
 
@@ -42,7 +42,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="16dp"
         android:checked="false"
-        android:text="Vehicle condition"
+        android:text=""
         android:textColor="#000"
         android:textSize="20sp" />
 
@@ -54,7 +54,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="16dp"
         android:checked="false"
-        android:text="Vehicle cleanliness"
+        android:text=""
         android:textColor="#000"
         android:textSize="20sp" />
 
@@ -66,7 +66,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="16dp"
         android:checked="false"
-        android:text="Any other"
+        android:text=""
         android:textColor="#000"
         android:textSize="20sp" />
 

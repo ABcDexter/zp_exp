@@ -20,7 +20,7 @@
                 android:layout_height="50dp"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="Delivery En route"
+                android:text="Origin Information"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
             <Button
@@ -52,7 +52,7 @@
                     android:paddingStart="10dp"
                     android:text="Name"
                     android:textAllCaps="true"
-                    android:textSize="16sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -64,7 +64,7 @@
                     android:layout_marginStart="28dp" />
 
                 <TextView
-                    android:id="@+id/dst_per"
+                    android:id="@+id/src_per"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -103,7 +103,7 @@
                     android:paddingStart="10dp"
                     android:text="Address"
                     android:textAllCaps="true"
-                    android:textSize="16sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -115,7 +115,7 @@
                     android:layout_marginStart="28dp" />
 
                 <TextView
-                    android:id="@+id/dst_add"
+                    android:id="@+id/src_add"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -153,7 +153,7 @@
                     android:paddingStart="10dp"
                     android:text="Landmark"
                     android:textAllCaps="true"
-                    android:textSize="16sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -165,7 +165,7 @@
                     android:layout_marginStart="28dp" />
 
                 <TextView
-                    android:id="@+id/dst_land"
+                    android:id="@+id/src_land"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -202,9 +202,9 @@
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
-                    android:text="Receiver Phone"
+                    android:text="Phone"
                     android:textAllCaps="true"
-                    android:textSize="16sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -216,7 +216,7 @@
                     android:layout_marginStart="28dp" />
 
                 <TextView
-                    android:id="@+id/dst_phone"
+                    android:id="@+id/src_phone"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -236,83 +236,51 @@
                     android:background="@drawable/ic_phone" />
             </LinearLayout>
 
+
+            <EditText
+                android:id="@+id/enter_otp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/layout_phn"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/rect_box_outline"
+                android:hint="Enter OTP Provided by User"
+                android:inputType="number"
+                android:maxLength="4"
+                android:padding="5dp"
+                android:textColor="@color/txtColor"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="20sp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/rect_box_outline"
                 android:orientation="horizontal"
                 android:weightSum="2"
-                android:layout_below="@id/layout_phn"
-                android:id="@+id/layout_send_phn">
-
-                <TextView
-                    android:id="@+id/txtSendPhn"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center|start"
-                    android:paddingStart="10dp"
-                    android:text="Sender Phone"
-                    android:textAllCaps="true"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:gravity="center|start"
-                    android:text=":"
-                    android:textAllCaps="true"
-                    android:textSize="23sp"
-                    android:layout_marginStart="28dp" />
-
-                <TextView
-                    android:id="@+id/dst_send_phone"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center|end"
-                    android:paddingEnd="20dp"
-                    android:text="XYZ"
-                    android:maxLength="10"
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/dialSendPhn"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/ic_phone" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_below="@+id/enter_otp"
+                android:layout_marginTop="150dp">
 
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Done"
-                    android:layout_marginEnd="5dp"
+                    android:text="Start"
                     android:background="@drawable/btn_bkg"
                     android:textColor="#FFFFFF"
-                    android:id="@+id/completed"/>
+                    android:layout_marginEnd="5dp"
+                    android:id="@+id/yes"/>
 
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Fail"
+                    android:text="Reject"
                     android:layout_marginStart="5dp"
                     android:background="@drawable/btn_bkg"
                     android:textColor="#FFFFFF"
-                    android:id="@+id/failed"/>
+                    android:id="@+id/no"/>
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>

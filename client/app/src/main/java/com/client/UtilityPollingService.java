@@ -215,7 +215,7 @@ public class UtilityPollingService extends Service {
         }
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("05")) {
-            final int fixedTimeUpdateLoc = 45;
+            final int fixedTimeUpdateLoc = 30;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;

@@ -45,5 +45,21 @@
     <string name="cleanliness">Client Cleanliness</string>
     <string name="any_other">Any other</string>
     <string name="thanks_for_feedback">Thank you for your feedback. We promise to take appropriate action.</string>
+    <string name="offline">YOU ARE OFFLINE</string>
+    <string name="ride_completed">Ride completed successfully !</string>
+    <string name="time_out">Ride time out</string>
+    <string name="ride_fail">Ride failed</string>
+    <string name="canceled_by_user">TRIP HAS BEEN CANCELED BY USER ! </string>
+    <string name="mark_offline">YOU WILL BE MARKED OFFLINE !\nCONTINUE?</string>
+    <string name="something_wrong">Something went wrong! Please try again later.</string>
+    <string name="pick_up">Pick Up</string>
+    <string name="destination">Destination</string>
+    <string name="your_location">You are here</string>
+    <string name="completed_rides">COMPLETED RIDES</string>
+    <string name="total_earnings">total earnings</string>
+    <string name="enter_mobile">ENTER MOBILE</string>
+    <string name="request_otp">request otp</string>
+    <string name="enter_otp_to_verify">ENTER OTP TO VERIFY</string>
+    <string name="login_key">LOGIN KEY</string>
 
 </resources>

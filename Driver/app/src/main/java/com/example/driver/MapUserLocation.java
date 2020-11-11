@@ -33,7 +33,6 @@ public class MapUserLocation extends AppCompatActivity implements OnMapReadyCall
 
     private GoogleMap mMap;
     private MarkerOptions src, dst;
-    Button getDirection;
     private Polyline currentPolyline;
     double srcLat, srcLng, dstLat, dstLng;
     public static final String TRIP_DETAILS = "com.driver.tripDetails";
@@ -45,7 +44,7 @@ public class MapUserLocation extends AppCompatActivity implements OnMapReadyCall
     public static final String DSTLAT = "TripDstLat";
     public static final String DSTLNG = "TripDstLng";
 
-    String strAuth, strTid, strSrcLat, strSrcLng;
+    String strAuth, strTid;
     MapUserLocation a = MapUserLocation.this;
     Map<String, String> params = new HashMap();
 
@@ -71,8 +70,8 @@ public class MapUserLocation extends AppCompatActivity implements OnMapReadyCall
         dstLng = Double.parseDouble(stringDstLng);
 
 
-        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title("Pick Up");
-        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title("Destination");
+        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(String.valueOf(R.string.pick_up));
+        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title(String.valueOf(R.string.destination));
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapUserLocation);
         mapFragment.getMapAsync(this);
@@ -179,6 +178,8 @@ public class MapUserLocation extends AppCompatActivity implements OnMapReadyCall
     }
 
     public void onFailure(VolleyError error) {
+        Toast.makeText(a, R.string.something_wrong, Toast.LENGTH_SHORT).show();
+
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
     }

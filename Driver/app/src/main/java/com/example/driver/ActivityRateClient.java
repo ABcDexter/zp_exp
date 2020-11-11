@@ -32,22 +32,8 @@ public class ActivityRateClient extends ActivityDrawer implements View.OnClickLi
     ScrollView scrollView;
     Dialog myDialog,checkDialog;
 
-    public static final String TRIP_DETAILS = "com.driver.tripDetails";
     public static final String AUTH_KEY = "Auth";
     public static final String AUTH_COOKIE = "com.agent.cookie";
-    String lat, lng, str_phone, aadhar;
-    public static final String PICTURE_UPLOAD_STATUS = "com.driver.pictureUploadStatus";
-    public static final String AADHAR = "Aadhar";
-    public static final String FIRST_LAUNCH = "FirstLaunch";
-    public static final String DRIVER_STATUS = "DriverStatus";
-    public static final String STATUS = "Status";
-    public static final String TID = "RideID";
-    public static final String SRCLAT = "TripSrcLat";
-    public static final String SRCLNG = "TripSrcLng";
-    public static final String DSTLAT = "TripDstLat";
-    public static final String DSTLNG = "TripDstLng";
-    public static final String MY_LAT = "MYSrcLAT";
-    public static final String MY_LNG = "MYSrcLng";
     private static final String TAG = "ActivityRateZippe";
     String stringAuthCookie;
 

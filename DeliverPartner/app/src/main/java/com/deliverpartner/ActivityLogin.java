@@ -60,14 +60,14 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 SharedPreferences aadhar = this.getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
                 aadhar.edit().putString(AADHAR, an).apply();
 
+                Intent next = new Intent(ActivityLogin.this, ActivityWelcome.class);
+                startActivity(next);
+                finish();
             }
             else {
                 Toast.makeText(this, "Please check your Login Key", Toast.LENGTH_SHORT).show();
             }
 
-            Intent next = new Intent(ActivityLogin.this, ActivityWelcome.class);
-            startActivity(next);
-            finish();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -172,32 +172,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             }
         });
     }
-    /*private void alertDialog() {
-        Log.d(TAG, " alert Dialog opened");
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setMessage("ARE YOU DONE FOR THE DAY?");
-        dialog.setTitle("END RIDE");
-        dialog.setPositiveButton("YES",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int which) {
-
-                        userCancelTrip();
-                        Log.d(TAG, "checkStatus invoked");
-                    }
-                });
-        dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "RIDE NOT ENDED", Toast.LENGTH_LONG).show();
-            }
-        });
-        AlertDialog alertDialog = dialog.create();
-        alertDialog.show();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
-
-    }
-*/
 
     //method to initiate and populate dialog box
     private void ShowPopup(int id) {
@@ -205,7 +179,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
         if (id == 2) {
-            infoText.setText("YOU ARE OFFLINE");
+            infoText.setText(R.string.offline);
         }
         if (id == 3) {
             //vibrate the device for 1000 milliseconds
@@ -218,15 +192,15 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             myDialog.setCanceledOnTouchOutside(false);
         }
         if (id == 4) {
-            infoText.setText("Ride completed successfully !");
+            infoText.setText(R.string.ride_completed);
             retireRide();
         }
         if (id == 5) {
-            infoText.setText("Ride time out");
+            infoText.setText(R.string.time_out);
             retireRide();
         }
         if (id == 6) {
-            infoText.setText("Ride failed");
+            infoText.setText(R.string.ride_fail);
             retireRide();
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -489,7 +463,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     break;
             }
         }
-        //response on hitting auth-location-update API
+        //response on hitting driver-is-vehicle-set API
         if (id == 7) {
             String set = response.getString("set");
             if (set.equals("true")) {

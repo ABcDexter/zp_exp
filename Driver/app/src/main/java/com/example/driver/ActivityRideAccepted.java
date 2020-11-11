@@ -225,7 +225,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
         LinearLayout ln = myDialog.findViewById(R.id.layout_btn);
         //called when the user cancels the ride
         if (id == 1) {
-            infoText.setText("TRIP HAS BEEN CANCELED BY USER ! ");
+            infoText.setText(R.string.canceled_by_user);
             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             myDialog.show();
             myDialog.setCanceledOnTouchOutside(true);
@@ -233,7 +233,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
         //called when driver cancels the ride
         if (id == 2) {
             ln.setVisibility(View.VISIBLE);
-            infoText.setText("YOU WILL BE MARKED OFFLINE !\nCONTINUE? ");
+            infoText.setText(R.string.mark_offline);
             reject_rq.setOnClickListener(this);
             accept_rq.setOnClickListener(this);
             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

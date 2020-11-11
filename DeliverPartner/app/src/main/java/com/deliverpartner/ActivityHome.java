@@ -50,6 +50,10 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     ScrollView scrollView;
     public static final String DELIVERY_DETAILS = "com.agent.DeliveryDetails";
     public static final String DID = "DeliveryID";
+    public static final String SRCLAT = "DeliverySrcLat";
+    public static final String SRCLNG = "DeliverySrcLng";
+    public static final String MY_LAT = "MYSrcLAT";
+    public static final String MY_LNG = "MYSrcLng";
     public static final String SRCLND = "DeliverySrcLand";
     public static final String DSTLND = "DeliveryDstLand";
     public static final String AUTH_COOKIE = "com.agent.cookie";
@@ -61,7 +65,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public static final String AADHAR = "Aadhar";
     public static final String DRIVER_STATUS = "DriverStatus";
     public static final String STATUS = "Status";
-
+    String earn;
     Vibrator vibrator;
     TextView notify;
     private static ActivityHome instance;
@@ -105,7 +109,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         SharedPreferences delPref = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
         String strDid = delPref.getString(DID, "");
 
-        deliveryID =strDid;
+        deliveryID = strDid;
         //initializing variables
         status_duty = findViewById(R.id.dutyStatus);
         scrollView = findViewById(R.id.scrollLayout);
@@ -163,11 +167,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     private void ShowPopup(int id) {
         myDialog.setContentView(R.layout.popup_text);
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
-        if (id == 1) {
-            infoText.setText("WAITING FOR PAYMENT FROM USER");
-            myDialog.setCanceledOnTouchOutside(false);// dialog box will be dismissed if screen outside the box is touched
 
-        }
         if (id == 2) {
             infoText.setText("YOU ARE OFFLINE ! ");
         }
@@ -182,7 +182,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             myDialog.setCanceledOnTouchOutside(false);
         }
         if (id == 4) {
-            infoText.setText("Delivery done successfully !");
+            infoText.setText("Delivery done successfully ! You have earned ₹ " + earn);
             retireDelvy();
         }
         if (id == 5) {
@@ -231,6 +231,9 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                                 lat = location.getLatitude() + "";
                                 lng = location.getLongitude() + "";
                                 Log.d(TAG, "lat = " + lat + " lng = " + lng);
+                                SharedPreferences sp_cookie = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
+                                sp_cookie.edit().putString(MY_LAT, lat).apply();
+                                sp_cookie.edit().putString(MY_LNG, lng).apply();
                                 sendLocation();// method to hit auth-location-update API
                             }
                         }
@@ -282,11 +285,12 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             case R.id.accept_request:
                 break;
             case R.id.new_order:
-                Intent newOrderIntent = new Intent(ActivityHome.this, ActivityNewOrders.class);
-                startActivity(newOrderIntent);
+                agentDelCheck();
+                /*Intent newOrderIntent = new Intent(ActivityHome.this, ActivityNewOrders.class);
+                startActivity(newOrderIntent);*/
                 break;
             case R.id.order_in_progress:
-                Intent inProgressIntent = new Intent(ActivityHome.this, ActivityInProgress.class);
+                Intent inProgressIntent = new Intent(ActivityHome.this, ActivityAccepted.class);
                 startActivity(inProgressIntent);
                 break;
             /*case R.id.completed_orders:
@@ -429,9 +433,9 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         }
         //response on hitting auth-location-update API
         if (id == 2) {
-            Intent i = new Intent(this, UtilityPollingService.class);
+           /* Intent i = new Intent(this, UtilityPollingService.class);
             i.setAction("01");
-            startService(i);
+            startService(i);*/
         }
         //response on hitting agent-delivery-get-status API
         if (id == 3) {
@@ -444,18 +448,25 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     sp_cookie.edit().putString(DID, did).apply();
                     deliveryID = did;
                     if (status.equals("AS")) {
+
                         String srcAdd = response.getString("srcadd");
-                        String dstAdd = response.getString("dstadd");
-                        ShowPopup(1);
-                        getStatus();
+                        String srcPhn = response.getString("srcphone");
+                        String srcName = response.getString("srcper");
+                        String srcLat = response.getString("srclat");
+                        String srcLng = response.getString("srclng");
+                        String srcLand = response.getString("srcland");
+                        //ShowPopup(1);
+                        Intent reachClient = new Intent(ActivityHome.this, ActivityAccepted.class);
+                        startActivity(reachClient);
+                        finish();
                     }
                     if (status.equals("ST")) {
                         Intent st = new Intent(ActivityHome.this, ActivityEnroute.class);
                         startActivity(st);
 
                     }
-                    if (status.equals("PD")) {
-                        Intent pd = new Intent(ActivityHome.this, ActivityInProgress.class);
+                    if (status.equals("RC")) {
+                        Intent pd = new Intent(ActivityHome.this, ActivityAccepted.class);
                         startActivity(pd);
 
                     }
@@ -466,7 +477,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                         String did = response.getString("did");
                         delvyGetInfo();
 
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                         agentDelCheck();
                     }
@@ -483,15 +494,18 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                 String count = response.getString("count");
                 if (!count.equals("0")) {
                     String did = response.getString("did");
-                    String srclnd = response.getString("srcland");
-                    String dstlnd = response.getString("dstland");
+                    String srclng = response.getString("srclng");
+                    String srclat = response.getString("srclat");
                     notify.setVisibility(View.VISIBLE);
                     notify.setText("1");
                     SharedPreferences sp_cookie = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(DID, did).apply();
-                    sp_cookie.edit().putString(SRCLND, srclnd).apply();
-                    sp_cookie.edit().putString(DSTLND, dstlnd).apply();
+                    sp_cookie.edit().putString(SRCLNG, srclng).apply();
+                    sp_cookie.edit().putString(SRCLAT, srclat).apply();
 
+                    Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachClient.class);
+                    startActivity(newOrderIntent);
+                    finish();
 
                 } else {
                     Intent i = new Intent(this, UtilityPollingService.class);
@@ -500,7 +514,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                 }
 
             } catch (Exception e) {
-                notify.setVisibility(View.GONE);
+                notify.setVisibility(View.VISIBLE);
                 notify.setText("0");
                 e.printStackTrace();
             }
@@ -522,6 +536,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                 ShowPopup(5);
             }
             if (status.equals("FN")) {
+                earn = response.getString("earn");
                 ShowPopup(4);
             }
 

@@ -99,7 +99,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/btn_bkg"
-                android:text="COMPLETED Rides" />
+                android:text="@string/completed_rides" />
 
             <Button
                 android:id="@+id/earnings"
@@ -110,7 +110,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/btn_bkg"
-                android:text="total earnings" />
+                android:text="@string/total_earnings" />
 
         </RelativeLayout>
     </ScrollView>

@@ -82,8 +82,8 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
 
         end.setOnClickListener(this);
         fail.setOnClickListener(this);
-        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title("Pick Up");
-        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title("Destination");
+        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(String.valueOf(R.string.pick_up));
+        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title(String.valueOf(R.string.destination));
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapNearBy);
         mapFragment.getMapAsync(this);
