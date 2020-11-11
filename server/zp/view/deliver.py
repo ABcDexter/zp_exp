@@ -844,7 +844,7 @@ def agentDeliveryCheck(_dct, agent):
         if nTime or nDist:
             if nDist < 10_000:  # 10 kms radius
                 print({'did': deli['id'], 'srcland':deli['srcland'], 'dstland':deli['dstland']})
-                delis.append({'did': deli['id'], 'srcland':deli['srcland'], 'dstland':deli['dstland']})
+                delis.append({'did': deli['id'], 'srcland':deli['srcland'], 'dstland':deli['dstland'], 'srclat':deli['srclat'], 'srclng':deli['srlng']})
 
     ret = {} if len(delis) == 0 else {'did': delis[0]['did'], 'srclat': delis[0]['srclat'],'srclng': delis[0]['srclng'],'srcland':delis[0]['srcland'], 'dstland':delis[0]['dstland']}
     ret.update({'count': len(delis)})
