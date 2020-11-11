@@ -509,6 +509,7 @@ def getOTP(an: int, dan: int, rtime: datetime) -> int:
     '''
     Generates a deterministic 4 digit OTP
     '''
+    print((str(an), str(dan), str(rtime)))
     sText = 'zippee-otp-%s-%s-%s' % (str(an), str(dan), str(rtime))
     shaText = sText.encode('utf-8')
     m = hashlib.new('ripemd160')
