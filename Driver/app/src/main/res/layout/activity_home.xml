@@ -73,13 +73,13 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="25dp"
                     android:layout_marginEnd="25dp"
-                    android:background="@drawable/rect_box_solid"
+                    android:background="@drawable/btn_bkg"
                     android:text="@string/new_rides"
                     android:layout_alignParentBottom="true"/>
 
             </RelativeLayout>
 
-            <Button
+            <!--<Button
                 android:id="@+id/ride_in_progress"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -88,29 +88,29 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/rect_box_solid"
-                android:text="@string/ride_in_process" />
+                android:text="@string/ride_in_process" />-->
 
-            <!--<Button
+            <Button
                 android:id="@+id/completed_rides"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@+id/ride_in_progress"
+                android:layout_below="@+id/rl_ride"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
-                android:background="@drawable/rect_box_solid"
-                android:text="COMPLETED Rides" />-->
+                android:background="@drawable/btn_bkg"
+                android:text="@string/completed_rides" />
 
-            <!--<Button
+            <Button
                 android:id="@+id/earnings"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@+id/completed_orders"
+                android:layout_below="@+id/completed_rides"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
-                android:background="@drawable/rect_box_solid"
-                android:text="total earnings" />-->
+                android:background="@drawable/btn_bkg"
+                android:text="@string/total_earnings" />
 
         </RelativeLayout>
     </ScrollView>

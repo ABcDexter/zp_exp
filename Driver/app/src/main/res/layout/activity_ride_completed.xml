@@ -12,38 +12,48 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_above="@id/layoutZippeee"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="60dp"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:weightSum="2"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true">
+            android:weightSum="2">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:text="@string/ride_cost"
-                android:textAlignment="center"
-                android:textSize="23sp"
-                android:layout_weight="1"/>
+                android:textSize="23sp" />
+
             <TextView
+                android:id="@+id/txt_rideCost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/ic_rupee"
                 android:text=" XXX"
                 android:textAlignment="center"
-                android:drawableStart="@drawable/ic_rupee"
-                android:textSize="23sp"
-                android:id="@+id/txt_rideCost"
-                android:layout_weight="1"/>
+                android:textSize="23sp" />
         </LinearLayout>
 
+        <include
+            android:id="@+id/layoutZippeee"
+            layout="@layout/zippe_logo"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_centerInParent="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_below="@id/layoutZippeee"
+            android:layout_marginTop="50dp"
             android:orientation="horizontal"
-            android:layout_centerInParent="true">
+            android:layout_marginStart="20dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -77,18 +87,20 @@
                         android:id="@+id/radio_cash"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:buttonTint="@android:color/white"
                         android:checked="false"
                         android:text="@string/cash"
-                        android:textSize="20sp"
-                        android:textColor="@color/txtColor"/>
+                        android:textColor="@color/txtColor"
+                        android:textSize="20sp" />
 
                     <RadioButton
                         android:id="@+id/radio_upi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:buttonTint="@android:color/white"
                         android:text="@string/upi_payment"
-                        android:textSize="20sp"
-                        android:textColor="@color/txtColor" />
+                        android:textColor="@color/txtColor"
+                        android:textSize="20sp" />
 
                 </RadioGroup>
 
@@ -96,12 +108,12 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/btn_paymntAccepted"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:id="@+id/btn_paymntAccepted"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/btn_bkg"
             android:text="Payment Accepted"
-            android:textAllCaps="true"
-            android:background="@drawable/rect_box_solid"
-            android:layout_alignParentBottom="true"/>
+            android:textAllCaps="true" />
     </RelativeLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

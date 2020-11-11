@@ -29,7 +29,10 @@ import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
 import com.client.deliver.ActivityPackageDetails;
+import com.client.rent.ActivityRateRent;
+import com.client.rent.ActivityRentEnded;
 import com.client.rent.ActivityRentHome;
+import com.client.rent.ActivityRentInProgress;
 import com.client.ride.ActivityRideEnded;
 import com.client.ride.ActivityRideHome;
 import com.client.ride.ActivityRideInProgress;
@@ -376,6 +379,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                             startActivity(as);
                         }
                         if (status.equals("FN") || status.equals("TR")) {
+
                             Intent fntr = new Intent(ActivityWelcome.this, ActivityRideEnded.class);
                             startActivity(fntr);
                         }
@@ -388,6 +392,20 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                         }
                     }
 
+                    if (rtype.equals("1")){
+                        if (status.equals("FN") || status.equals("TR")) {
+                            String price = response.getString("price");
+                            if (price.equals("0.00")) {
+                                Intent rate = new Intent(ActivityWelcome.this, ActivityRateRent.class);
+                                startActivity(rate);
+                                finish();
+                            } else {
+                                Intent payment = new Intent(ActivityWelcome.this, ActivityRentEnded.class);
+                                startActivity(payment);
+                                finish();
+                            }
+                        }
+                    }
                     /*if (rtype.equals("1")) {
                         if (status.equals("RQ")) {
                             Intent rq = new Intent(ActivityWelcome.this, ActivityRentRequest.class);
@@ -424,8 +442,9 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                         }
 
                     }*/
-                } else {
-                    Log.d(TAG, "active=" + active);
+                } else if (active.equals("false")){
+                    String tid = response.getString("tid");
+                    Log.d(TAG, "active=" + active + " tid="+tid);
 
                     SharedPreferences prefTripDetails = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     String tripIDExists = prefTripDetails.getString(TRIP_ID, "");
@@ -434,6 +453,9 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                         homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(homePage);
                         finish();*/
+                        //tripInfo(tripIDExists);
+                    }
+                    if (!tid.equals("-1")){
                         tripInfo(tripIDExists);
                     }
                 }
@@ -459,8 +481,6 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                     SharedPreferences.Editor editor1 = prefBuzz.edit();
                     editor1.remove(BUSS_FLAG);
                     editor1.apply();
-
-
                 }
 
                 if (st.equals("DN")) {
@@ -599,7 +619,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                 startActivity(shopIntent);
                 break;
             case R.id.btn_connect:
-                String connectUrl = "https://zippe.in/en/service-categories/";
+                String connectUrl = "https://zippe.in/en/zippe-connect/";
                 Intent connectIntent = new Intent(Intent.ACTION_VIEW);
                 connectIntent.setData(Uri.parse(connectUrl));
                 startActivity(connectIntent);

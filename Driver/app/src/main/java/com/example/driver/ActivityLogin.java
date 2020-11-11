@@ -41,6 +41,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     public static final String VERIFICATION_TOKEN = "Token";
     public static final String AADHAR = "Aadhar";
     public static final String MOBILE = "Mobile";
+    public static final String NAME = "Name";
     public static final String AUTH_KEY = "Auth";
     public static final String AUTH_COOKIE = "com.agent.cookie";
     String mobile, loginKey;
@@ -49,20 +50,24 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     public void onSuccess(JSONObject response) {
         Log.d(TAG, "RESPONSE:" + response);
 
+        //response on hitting login-driver API
         try {
             String status = response.getString("status");
-            if (status.equals("true")){
+            if (status.equals("true")) {
                 String auth = response.getString("auth");
                 String an = response.getString("an");
+                String phone = response.getString("pn");
+                String name = response.getString("name");
 
                 SharedPreferences pref_uploadStatus = this.getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
                 pref_uploadStatus.edit().putString(AUTH_KEY, auth).apply();
+                pref_uploadStatus.edit().putString(MOBILE, phone).apply();
+                pref_uploadStatus.edit().putString(NAME, name).apply();
 
                 SharedPreferences aadhar = this.getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
                 aadhar.edit().putString(AADHAR, an).apply();
 
-            }
-            else {
+            } else {
                 Toast.makeText(this, "Please check your Login Key", Toast.LENGTH_SHORT).show();
             }
 
@@ -121,7 +126,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     etOTP.requestFocus();
                     return;
                 }
-                if (loginKey.isEmpty()|| loginKey.length() > 9) {
+                if (loginKey.isEmpty() || loginKey.length() > 9) {
                     Log.d(TAG, "Error in Login Key");
                     etLoginKey.setError("Enter valid Login Key");
                     etLoginKey.requestFocus();

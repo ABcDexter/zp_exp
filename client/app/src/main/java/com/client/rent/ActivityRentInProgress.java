@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +60,8 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
     Dialog myDialog, colorDialog;
 
     String stringAuthCookie;
-ImageView supPhoto;
+    ImageView supPhoto;
+
     public static ActivityRentInProgress getInstance() {
         return instance;
     }
@@ -167,17 +167,22 @@ ImageView supPhoto;
                                     ShowPopup(3);
                                 }
                             }
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
                     }
                     if (status.equals("FN") || status.equals("TR")) {
-                        //String price = response.getString("price");
-
-                        Intent payment = new Intent(ActivityRentInProgress.this, ActivityRentEnded.class);
-                        startActivity(payment);
-                        finish();
+                        String price = response.getString("price");
+                        if (price.equals("0.00")) {
+                            Intent rate = new Intent(ActivityRentInProgress.this, ActivityRateRent.class);
+                            startActivity(rate);
+                            finish();
+                        } else {
+                            Intent payment = new Intent(ActivityRentInProgress.this, ActivityRentEnded.class);
+                            startActivity(payment);
+                            finish();
+                        }
                     }
                 } /*else {
                     Intent homePage = new Intent(ActivityRentInProgress.this, ActivityWelcome.class);
@@ -283,6 +288,7 @@ ImageView supPhoto;
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         myDialog.setCanceledOnTouchOutside(true);
     }
+
 
     private void PopupColor(int id) {
 

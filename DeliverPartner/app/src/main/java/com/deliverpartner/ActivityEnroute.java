@@ -1,16 +1,24 @@
 package com.deliverpartner;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
 
@@ -27,25 +35,23 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
 
     public static final String DELIVERY_DETAILS = "com.agent.DeliveryDetails";
     public static final String DID = "DeliveryID";
-    public static final String SRC_PER = "SrcPer";
-    public static final String SRC_ADD = "SrcAdd";
-    public static final String SRC_LND = "SrcLnd";
-    public static final String SRC_PHN = "SrcPhn";
-    public static final String SRC_LAT = "SrcLat";
-    public static final String SRC_LNG = "SrcLng";
     public static final String DST_PER = "DSTPer";
     public static final String DST_ADD = "DSTAdd";
     public static final String DST_LND = "DSTLnd";
     public static final String DST_PHN = "DSTPhn";
-    public static final String DST_LAT = "DSTLat";
-    public static final String DST_LNG = "DSTLng";
+    public static final String DSTLAT = "DeliveryDstLat";
+    public static final String DSTLNG = "DeliveryDstLng";
     String strAuth;
     ActivityEnroute a = ActivityEnroute.this;
     Map<String, String> params = new HashMap();
 
-    TextView person, address, landmark, phone;
+    TextView person, address, landmark, phone, senderPhn;
     String lat, lng;
     Button yes, no, map;
+    ImageButton nameInfo, addInfo, landInfo, phoneDial, sendPhnDial;
+    Dialog myDialog;
+    String strName, strAddress, strLandmark;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,14 +63,30 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
         address = findViewById(R.id.dst_add);
         landmark = findViewById(R.id.dst_land);
         phone = findViewById(R.id.dst_phone);
+        senderPhn = findViewById(R.id.dst_send_phone);
         yes = findViewById(R.id.completed);
         no = findViewById(R.id.failed);
         map = findViewById(R.id.map);
 
+        nameInfo = findViewById(R.id.infoName);
+        addInfo = findViewById(R.id.infoAdd);
+        landInfo = findViewById(R.id.infoLand);
+        phoneDial = findViewById(R.id.dialPhn);
+        sendPhnDial = findViewById(R.id.dialSendPhn);
+
         yes.setOnClickListener(this);
         no.setOnClickListener(this);
         map.setOnClickListener(this);
+        nameInfo.setOnClickListener(this);
+        addInfo.setOnClickListener(this);
+        landInfo.setOnClickListener(this);
+        phoneDial.setOnClickListener(this);
+        sendPhnDial.setOnClickListener(this);
+        phone.setOnClickListener(this);
+        sendPhnDial.setOnClickListener(this);
+
         getStatus();
+        myDialog = new Dialog(this);
     }
 
     public void getStatus() {
@@ -88,8 +110,8 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME agent-delivery-fail");
-        UtilityApiRequestPost.doPOST(a, "agent-delivery-fail", parameters, 20000, 0, response -> {
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-delivery-fail");
+        UtilityApiRequestPost.doPOST(a, "auth-delivery-fail", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
             } catch (Exception e) {
@@ -132,6 +154,7 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
                         String add = response.getString("dstadd");
                         String land = response.getString("dstland");
                         String phn = response.getString("dstphone");
+                        String sendPhn = response.getString("srcphone");
                         String lat = response.getString("dstlat");
                         String lng = response.getString("dstlng");
 
@@ -139,14 +162,17 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
                         address.setText(add);
                         landmark.setText(land);
                         phone.setText(phn);
-
+                        senderPhn.setText(sendPhn);
+                        strName = per;
+                        strAddress = add;
+                        strLandmark = land;
                         SharedPreferences delvyPref = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
                         delvyPref.edit().putString(DST_PER, per).apply();
                         delvyPref.edit().putString(DST_ADD, add).apply();
                         delvyPref.edit().putString(DST_LND, land).apply();
                         delvyPref.edit().putString(DST_PHN, phn).apply();
-                        delvyPref.edit().putString(DST_LAT, lat).apply();
-                        delvyPref.edit().putString(DST_LNG, lng).apply();
+                        delvyPref.edit().putString(DSTLAT, lat).apply();
+                        delvyPref.edit().putString(DSTLNG, lng).apply();
                     }
 
                 } else if (active.equals("false")) {
@@ -159,7 +185,7 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
             }
         }
 
-        //response on hitting agent-delivery-fail API
+        //response on hitting auth-delivery-fail API
         if (id == 2) {
             Intent home = new Intent(ActivityEnroute.this, ActivityHome.class);
             startActivity(home);
@@ -179,6 +205,35 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
         Log.d(TAG, "Error:" + error.toString());
     }
 
+    private void ShowPopup(int id) {
+
+        myDialog.setContentView(R.layout.popup_new_request);
+        TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
+
+        if (id == 1) {
+            infoText.setText(strName);
+        }
+        if (id == 2) {
+            infoText.setText(strAddress);
+        }
+        if (id == 3) {
+            infoText.setText(strLandmark);
+        }
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+        myDialog.setCanceledOnTouchOutside(true);
+    }
+
+    public void callClientPhn(String phnNumber) {
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:" + phnNumber));
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        startActivity(intent);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -189,9 +244,29 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
                 delvyFail();
                 break;
             case R.id.map:
-                /*Intent map = new Intent(ActivityInProgress.this, ActivityMap.class);
-                startActivity(map);*/
-                Toast.makeText(this, "Map will open", Toast.LENGTH_LONG).show();
+                Intent map = new Intent(ActivityEnroute.this, MapsReceiverLocation.class);
+                startActivity(map);
+                finish();
+                break;
+
+            case R.id.infoName:
+                ShowPopup(1);
+                break;
+            case R.id.infoAdd:
+                ShowPopup(2);
+                break;
+            case R.id.infoLand:
+                ShowPopup(3);
+                break;
+            case R.id.dialPhn:
+            case R.id.dialSendPhn:
+                String receiverNo = phone.getText().toString();
+                callClientPhn(receiverNo);
+                break;
+            case R.id.dst_phone:
+            case R.id.dst_send_phone:
+                String senderNo = senderPhn.getText().toString();
+                callClientPhn(senderNo);
                 break;
         }
     }

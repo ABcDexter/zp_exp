@@ -65,7 +65,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public static final String DSTLNG = "TripDstLng";
     public static final String MY_LAT = "MYSrcLAT";
     public static final String MY_LNG = "MYSrcLng";
-    TextView newOrder, inProgress, completedOrder, totalEarnings;
+    TextView newOrder, /*inProgress*/
+            completedOrder, totalEarnings;
 
     Vibrator vibrator;
 
@@ -117,13 +118,13 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         status_duty = findViewById(R.id.dutyStatus);
         scrollView = findViewById(R.id.scrollLayout);
         newOrder = findViewById(R.id.new_ride);
-        inProgress = findViewById(R.id.ride_in_progress);
+        //inProgress = findViewById(R.id.ride_in_progress);
         //completedOrder = findViewById(R.id.completed_rides);
         //totalEarnings = findViewById(R.id.earnings);
         notify = findViewById(R.id.notifNo);
 
         newOrder.setOnClickListener(this);
-        inProgress.setOnClickListener(this);
+        //inProgress.setOnClickListener(this);
         //completedOrder.setOnClickListener(this);
         //totalEarnings.setOnClickListener(this);
 
@@ -136,6 +137,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             status_duty.setChecked(true);
             getLastLocation();// method for getting the last know latitude and longitude of driver
             getStatus();
+            Log.d(TAG, "call 1");
         }
         if (!stringStatus.equals("AV")) {
             status_duty.setChecked(false);
@@ -151,6 +153,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     Log.d(TAG, "driverStatus = " + driverStatus);
                     driverSetMode(driverStatus);
                     getLastLocation();// method for getting the last know latitude and longitude of driver
+                    Log.d(TAG, "call 2");
                     getStatus();
 
                 } else {
@@ -169,32 +172,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             }
         });
     }
-    /*private void alertDialog() {
-        Log.d(TAG, " alert Dialog opened");
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setMessage("ARE YOU DONE FOR THE DAY?");
-        dialog.setTitle("END RIDE");
-        dialog.setPositiveButton("YES",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int which) {
-
-                        userCancelTrip();
-                        Log.d(TAG, "checkStatus invoked");
-                    }
-                });
-        dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "RIDE NOT ENDED", Toast.LENGTH_LONG).show();
-            }
-        });
-        AlertDialog alertDialog = dialog.create();
-        alertDialog.show();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
-
-    }
-*/
 
     //method to initiate and populate dialog box
     private void ShowPopup(int id) {
@@ -202,7 +179,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
         if (id == 2) {
-            infoText.setText("YOU ARE OFFLINE");
+            infoText.setText(R.string.offline);
         }
         if (id == 3) {
             //vibrate the device for 1000 milliseconds
@@ -215,15 +192,15 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             myDialog.setCanceledOnTouchOutside(false);
         }
         if (id == 4) {
-            infoText.setText("Ride completed successfully !");
+            infoText.setText(R.string.ride_completed);
             retireRide();
         }
         if (id == 5) {
-            infoText.setText("Ride time out");
+            infoText.setText(R.string.time_out);
             retireRide();
         }
         if (id == 6) {
-            infoText.setText("Ride failed");
+            infoText.setText(R.string.ride_fail);
             retireRide();
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -306,8 +283,10 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         super.onResume();
         if (hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        } else
+        } else {
             getLastLocation();
+            Log.d(TAG, "call 3");
+        }
     }
 
     @Override
@@ -316,13 +295,14 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
             case R.id.new_ride:
                 //Intent newOrderIntent = new Intent(ActivityHome.this, ActivityNewRide.class);
-                Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachUser.class);
-                startActivity(newOrderIntent);
+                driverRideCheck();
+                /*Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachUser.class);
+                startActivity(newOrderIntent);*/
                 break;
-            case R.id.ride_in_progress:
+           /* case R.id.ride_in_progress:
                 Intent inProgressIntent = new Intent(ActivityHome.this, ActivityInProgress.class);
                 startActivity(inProgressIntent);
-                break;
+                break;*/
             /*case R.id.completed_orders:
                 Intent completedOrderIntent = new Intent(ActivityHome.this, ActivityCompletedOrders.class);
                 startActivity(completedOrderIntent);
@@ -483,11 +463,12 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     break;
             }
         }
-        //response on hitting auth-location-update API
+        //response on hitting driver-is-vehicle-set API
         if (id == 7) {
             String set = response.getString("set");
             if (set.equals("true")) {
                 getLastLocation();
+                Log.d(TAG, "call 4");
             }
             if (set.equals("false")) {
                 Intent getVehicle = new Intent(ActivityHome.this, VehicleList.class);
@@ -497,9 +478,9 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         //response on hitting auth-location-update API
         if (id == 2) {
-            Intent i = new Intent(this, UtilityPollingService.class);
+           /* Intent i = new Intent(this, UtilityPollingService.class);
             i.setAction("01");
-            startService(i);
+            startService(i);*/
         }
         //response on hitting driver-ride-get-status API
         if (id == 3) {
@@ -537,7 +518,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     if (status.equals("FN") || status.equals("TR")) {
                         Intent pd = new Intent(ActivityHome.this, ActivityRideCompleted.class);
                         startActivity(pd);
-
                     }
 
                 } else if (active.equals("false")) {
@@ -559,21 +539,26 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         }
         //response on hitting driver-ride-check API
         if (id == 4) {
-            try {
 
+            try {
                 String tid = response.getString("tid");
                 String srclat = response.getString("srclat");
                 String srclng = response.getString("srclng");
                 notify.setVisibility(View.VISIBLE);
+                newOrder.setClickable(true);
                 notify.setText("1");
                 SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                 sp_cookie.edit().putString(TID, tid).apply();
                 sp_cookie.edit().putString(SRCLAT, srclat).apply();
                 sp_cookie.edit().putString(SRCLNG, srclng).apply();
 
+                Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachUser.class);
+                startActivity(newOrderIntent);
 
             } catch (Exception e) {
-                notify.setVisibility(View.GONE);
+                // Toast.makeText(this, "No New Rides", Toast.LENGTH_LONG).show();
+                notify.setVisibility(View.VISIBLE);
+                newOrder.setClickable(false);
                 notify.setText("0");
                 Intent i = new Intent(this, UtilityPollingService.class);
                 i.setAction("02");
@@ -581,7 +566,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                 e.printStackTrace();
             }
         }
-        //response on hitting driver-delivery-get-info API
+
+        //response on hitting auth-trip-get-info API
         if (id == 5) {
             String status = response.getString("st");
             //String tid = response.getString("tid");
@@ -608,11 +594,14 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
+
+            sendLocation();
         }
         //response on hitting driver-delivery-retire API
         if (id == 8) {
             status_duty.setChecked(false);
             Log.d(TAG, "vehicle retired successfully");
+
         }
     }
 

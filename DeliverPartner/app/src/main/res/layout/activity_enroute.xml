@@ -27,63 +27,265 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="View in map"
-                android:textColor="#000"
+                android:background="@drawable/btn_bkg"
+                android:textColor="#FFFFFF"
                 android:id="@+id/map"
                 android:layout_below="@id/txt"
                 android:layout_marginTop="20dp"/>
-            <TextView
-                android:id="@+id/dst_per"
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rect_box_outline"
+                android:orientation="horizontal"
+                android:weightSum="2"
                 android:layout_below="@id/map"
-                android:layout_marginTop="25dp"
-                android:background="@drawable/rect_box_outline"
-                android:padding="5dp"
-                android:text="Person"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="23sp" />
+                android:id="@+id/layout_name">
 
-            <TextView
-                android:id="@+id/dst_add"
+                <TextView
+                    android:id="@+id/txtr"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="Name"
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:gravity="center|start"
+                    android:text=":"
+                    android:textAllCaps="true"
+                    android:textSize="23sp"
+                    android:layout_marginStart="28dp" />
+
+                <TextView
+                    android:id="@+id/dst_per"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:paddingEnd="20dp"
+                    android:text="XYZ"
+                    android:maxLength="10"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoName"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_info" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/dst_per"
-                android:layout_marginTop="20dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/rect_box_outline"
-                android:padding="5dp"
-                android:text="Address"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="23sp" />
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_below="@id/layout_name"
+                android:id="@+id/layout_address">
 
-            <TextView
-                android:id="@+id/dst_land"
+                <TextView
+                    android:id="@+id/txtadd"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="Address"
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:gravity="center|start"
+                    android:text=":"
+                    android:textAllCaps="true"
+                    android:textSize="23sp"
+                    android:layout_marginStart="28dp" />
+
+                <TextView
+                    android:id="@+id/dst_add"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:paddingEnd="20dp"
+                    android:text="XYZveferertrttrtrrtgtrgtrgtrgtrgtrgtrgt"
+                    android:textAllCaps="true"
+                    android:textSize="20sp"
+                    android:maxLength="10"/>
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoAdd"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_info" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/dst_add"
-                android:layout_marginTop="20dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/rect_box_outline"
-                android:padding="5dp"
-                android:text="Landmark"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="23sp" />
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_below="@id/layout_address"
+                android:id="@+id/layout_land">
 
-            <TextView
-                android:id="@+id/dst_phone"
+                <TextView
+                    android:id="@+id/txtLand"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="Landmark"
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:gravity="center|start"
+                    android:text=":"
+                    android:textAllCaps="true"
+                    android:textSize="23sp"
+                    android:layout_marginStart="28dp" />
+
+                <TextView
+                    android:id="@+id/dst_land"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:paddingEnd="20dp"
+                    android:text="XYZ"
+                    android:maxLength="10"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoLand"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_info" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/dst_land"
-                android:layout_marginTop="20dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/rect_box_outline"
-                android:padding="5dp"
-                android:text="Phone"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="23sp" />
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_below="@id/layout_land"
+                android:id="@+id/layout_phn">
 
+                <TextView
+                    android:id="@+id/txtPhn"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="Receiver Phone"
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:gravity="center|start"
+                    android:text=":"
+                    android:textAllCaps="true"
+                    android:textSize="23sp"
+                    android:layout_marginStart="28dp" />
+
+                <TextView
+                    android:id="@+id/dst_phone"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:paddingEnd="20dp"
+                    android:text="XYZ"
+                    android:maxLength="10"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/dialPhn"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_phone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rect_box_outline"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_below="@id/layout_phn"
+                android:id="@+id/layout_send_phn">
+
+                <TextView
+                    android:id="@+id/txtSendPhn"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="Sender Phone"
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:gravity="center|start"
+                    android:text=":"
+                    android:textAllCaps="true"
+                    android:textSize="23sp"
+                    android:layout_marginStart="28dp" />
+
+                <TextView
+                    android:id="@+id/dst_send_phone"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:paddingEnd="20dp"
+                    android:text="XYZ"
+                    android:maxLength="10"
+                    android:textAllCaps="true"
+                    android:textSize="20sp" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/dialSendPhn"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_phone" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -97,7 +299,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Done"
-                    android:textColor="#000"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/btn_bkg"
+                    android:textColor="#FFFFFF"
                     android:id="@+id/completed"/>
 
                 <Button
@@ -105,7 +309,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Fail"
-                    android:textColor="#000"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/btn_bkg"
+                    android:textColor="#FFFFFF"
                     android:id="@+id/failed"/>
             </LinearLayout>
         </RelativeLayout>

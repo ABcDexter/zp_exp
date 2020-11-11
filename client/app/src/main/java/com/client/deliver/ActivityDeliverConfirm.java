@@ -214,8 +214,8 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
 
     private void moveit() {
         zbeeL.setVisibility(View.VISIBLE);
-        zbeeL.startAnimation(animMoveL2R);
-        zbeeR.startAnimation(animMoveR2L);
+        zbeeR.startAnimation(animMoveL2R);
+        zbeeL.startAnimation(animMoveR2L);
         /*ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zbeeL, "translationX", 1500, 0f);
         objectAnimator.setDuration(1500);
         objectAnimator.start();
@@ -258,11 +258,11 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         params.put("pe", pe);
         //params.put("no", no);
         params.put("express", express);//0,1
-        params.put("pYear", "2020");//TODO remove hard coded values
-        params.put("pMonth", "9");//TODO remove hard coded values
-        params.put("pDate", "2");//TODO remove hard coded values
-        params.put("pHour", "17");
-        params.put("pMinute", "30");
+        params.put("pYear", pYear);//TODO remove hard coded values
+        params.put("pMonth", pMonth);//TODO remove hard coded values
+        params.put("pDate", pDay);//TODO remove hard coded values
+        params.put("pHour", pHour);
+        params.put("pMinute", pMinute);
         params.put("pmode", "1");
         /*if (edTip.getText().toString().isEmpty()){
             params.put("tip", "0");

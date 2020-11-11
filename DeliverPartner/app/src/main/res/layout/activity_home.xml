@@ -73,7 +73,7 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="25dp"
                     android:layout_marginEnd="25dp"
-                    android:background="@drawable/rect_box_solid"
+                    android:background="@drawable/btn_bkg"
                     android:text="NEW ORDERS"
                     android:layout_alignParentBottom="true"/>
 
@@ -87,7 +87,7 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
-                android:background="@drawable/rect_box_solid"
+                android:background="@drawable/btn_bkg"
                 android:text="ORDER IN PROCESS" />
 
             <Button
@@ -98,7 +98,7 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
-                android:background="@drawable/rect_box_solid"
+                android:background="@drawable/btn_bkg"
                 android:text="COMPLETED ORDERS" />
 
             <!--<Button

@@ -30,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_below="@id/textView"
+            android:layout_marginTop="10dp"
             android:src="@drawable/zippe_logo" />
 
         <EditText
@@ -40,7 +41,7 @@
             android:layout_marginTop="30dp"
             android:background="@drawable/rect_box_outline"
             android:cursorVisible="true"
-            android:hint="ENTER MOBILE"
+            android:hint="@string/enter_mobile"
             android:inputType="phone"
             android:padding="5dp"
             android:maxLength="10"
@@ -57,7 +58,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/btn_bkg"
             android:padding="5dp"
-            android:text="request otp"
+            android:text="@string/request_otp"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textSize="23sp" />
@@ -71,7 +72,7 @@
             android:layout_marginTop="7dp"
             android:background="@drawable/rect_box_outline"
             android:digits="0123456789"
-            android:hint="ENTER OTP TO VERIFY"
+            android:hint="@string/enter_otp_to_verify"
             android:inputType="phone"
             android:padding="5dp"
             android:maxLength="6"
@@ -86,7 +87,7 @@
             android:layout_marginTop="30dp"
             android:background="@drawable/rect_box_outline"
             android:cursorVisible="true"
-            android:hint="LOGIN KEY"
+            android:hint="@string/login_key"
             android:padding="5dp"
             android:maxLength="8"
             android:textAlignment="center"

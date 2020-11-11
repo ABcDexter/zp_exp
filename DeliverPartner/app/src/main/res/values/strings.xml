@@ -9,4 +9,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="Open" />
     <string name="Close" />
+    <string name="title_activity_maps_reach_client">Map</string>
+    <string name="title_activity_maps_new_delivery">Map</string>
+    <string name="title_activity_maps_client_location">Map</string>
 </resources>
