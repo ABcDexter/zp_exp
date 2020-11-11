@@ -842,7 +842,7 @@ def agentDeliveryCheck(_dct, agent):
         nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
         if nTime or nDist:
-            if nDist < 10_000:  # 10 kms radius
+            if nDist < 50_000:  # 50 kms radius
                 print({'did': deli['id'], 'srcland':deli['srcland'], 'dstland':deli['dstland']})
                 delis.append({'did': deli['id'], 'srcland':deli['srcland'], 'dstland':deli['dstland'], 'srclat':deli['srclat'], 'srclng':deli['srclng']})
 
