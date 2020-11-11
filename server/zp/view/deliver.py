@@ -977,6 +977,7 @@ def agentDeliveryStart(dct, _agent, deli):
     HTTP Args:
         OTP
     '''
+    print(str(dct['otp']) , str(getOTP(deli.uan, deli.dan, deli.atime))
     if str(dct['otp']) == str(getOTP(deli.uan, deli.dan, deli.atime)):
         deli.st = 'ST'
         deli.stime = datetime.now(timezone.utc)
