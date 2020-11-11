@@ -257,6 +257,19 @@ def driverRideAccept(dct, driver):
         #dst = Place.objects.filter(id=trip.dstid)[0]
         #ret.update({'srcname': src.pn, 'dstname': dst.pn})
         print("Accepting trip : ", ret)
+        params = {"to": "/topics/all", "notification":{
+                                    "title":"Let's ZIPPE !",
+                                    "body":"Your RIDE has been accepted :)",
+                                    "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+                                    "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+        }
+        }
+        dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+        jsonData = json.dumps(params).encode()
+        sUrl = 'https://fcm.googleapis.com/fcm/send'
+        req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+        jsonResp = urllib.request.urlopen(req, timeout=30).read()
+        ret = json.loads(jsonResp)
     else:
         raise ZPException(400, 'Trip already assigned')
 
