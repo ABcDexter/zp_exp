@@ -1133,10 +1133,11 @@ def authDeliveryHistory(dct, entity, deli):
         states = []
         for i in qsDeli:
             # print(str(i['stime'])[:19])
-            strSTime = str(i['stime'])[:19]
-            # print(i['etime'])
+            print("Delivery state : ", str(i['st']))
             if i['st'] in ['ST', 'FL', 'FN']:
+                strSTime = str(i['stime'])[:19]
                 sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+            # print(i['etime'])
             else:
                 sTime = 'NOTSTARTED'
             if i['st'] in ['FN', 'CN']:

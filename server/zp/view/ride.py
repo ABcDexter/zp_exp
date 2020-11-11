@@ -20,6 +20,7 @@ from django.conf import settings
 from django.db.utils import OperationalError, IntegrityError
 
 import urllib.request
+import json
 
 ###########################################
 # Types
