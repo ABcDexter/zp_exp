@@ -262,7 +262,7 @@ def driverRideAccept(dct, driver):
         print("Accepting trip : ", ret)
         params = {"to": "/topics/all", "notification":{
                                     "title":"Let's ZIPPE !",
-                                    "body":"Your RIDE has been accepted :)",
+                                    "body":"Your RIDE has been accepted.",
                                     "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
                                     "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
         }

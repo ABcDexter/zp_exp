@@ -72,6 +72,15 @@ class Admin(Entity):
                     print(" values : ", did, "auth of agent closest ", auth)
                     response = self.callAPI('agent-delivery-accept', {'did': did}, auth)
 
+                self.log('Checking from AS to RC')
+
+                resp = self.callAPI('admin-agent-reached')
+                if not self.logIfErr(resp):
+                    did = resp['did']
+                    auth = resp['babua']
+                    print(" values : ", did, "auth of agent reached ", auth)
+                    response = self.callAPI('agent-delivery-reached', {'did': did}, auth)
+
             pass
 
             # Sleep for specified time

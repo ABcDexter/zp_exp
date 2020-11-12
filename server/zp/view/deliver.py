@@ -545,6 +545,69 @@ def adminAgentAssign(dct):
     auth = choosenAgent.auth
     return HttpJSONResponse({'babua': auth, 'did': delId})
 
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Agent not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Transaction error', 500)
+@transaction.atomic
+@extractParams
+@checkAuth()
+def adminAgentReached(dct):
+    '''
+    Checks for deliveries in AS state and check whether the agent has reached or not.
+        if yes, then RC state
+
+    HTTP args:
+        *: Any other fields that need to be updated/corrected (except state)
+
+    Note:
+        this uses Google distance, assigns closest as per time, so might not be accurate
+    '''
+    # Get the deliveries and look for RQ ones
+    qsDeli = Delivery.objects.filter(st__in=['AS'])[0]
+    deliId = 0
+    #qsAgent = Agent.objects.filter(mode='AV', did='-1')
+
+    for deli in qsDeli: # do one delivery at a time
+        
+        srcCoOrds = ['%s, %s' % (deli.srclat, deli.srclng)]
+        iterAn = 0
+        minDist, minTime = 1_000, 5 # 1000 metres and 5 minutes
+        locAgent = Location.objects.filter(an=deli.dan)[0]
+
+        dstCoOrds = ['%s,%s' % (locAgent.lat, locAgent.lng)]
+        print(srcCoOrds, dstCoOrds)
+
+        gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+        nDist, nTime = gMapsRet['dist'], gMapsRet['time']
+        print(" dist : ", nDist, " time : ", nTime)
+        if  (nTime < minTime) or (nDist < minDist):
+            minTime = nTime
+            minDist = nDist
+            iterAn = agent.an
+            deli.st = 'RC'
+            print("The agent is : ", minDist, " metres away and ", minTime, " minutes away")
+            params = {"to": "/topics/all", "notification":{
+                                    "title":"Let's ZIPPE !",
+                                    "body":"Your DELIVERY agent is reaching soon. Please keep the package ready",
+                                    "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+                                    "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+            }
+            }
+            dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+            jsonData = json.dumps(params).encode()
+            sUrl = 'https://fcm.googleapis.com/fcm/send'
+            req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+            jsonResp = urllib.request.urlopen(req, timeout=30).read()
+            ret = json.loads(jsonResp)
+
+            #delId = deli.id
+            choosenAgent = Agent.objects.filter(an=iterAn)[0]
+            auth = choosenAgent.auth
+            #deli.save()  
+            
+    return HttpJSONResponse({'babua': auth, 'did': delId})
 
 # ============================================================================
 # Agent views
@@ -911,7 +974,7 @@ def agentDeliveryAccept(dct, agent):
         print("Accepting deli : ", ret)
         params = {"to": "/topics/all", "notification":{
                                     "title":"Let's ZIPPE !",
-                                    "body":"Your DELIVERY has been accepted :)",
+                                    "body":"Your DELIVERY has been accepted.",
                                     "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
                                     "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
         }
