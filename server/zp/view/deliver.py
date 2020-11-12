@@ -603,7 +603,7 @@ def adminAgentReached(dct):
             jsonResp = urllib.request.urlopen(req, timeout=30).read()
             ret = json.loads(jsonResp)
 
-            #delId = deli.id
+            delId = deli.id
             choosenAgent = Agent.objects.filter(an=iterAn)[0]
             auth = choosenAgent.auth
             #deli.save()  
