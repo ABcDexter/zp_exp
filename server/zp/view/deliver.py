@@ -586,7 +586,7 @@ def adminAgentReached(dct):
         if  (nTime < minTime) or (nDist < minDist):
             minTime = nTime
             minDist = nDist
-            iterAn = agent.an
+            iterAn = deli.dan
             deli.st = 'RC'
             print("The agent is : ", minDist, " metres away and ", minTime, " minutes away")
             params = {"to": "/topics/all", "notification":{
