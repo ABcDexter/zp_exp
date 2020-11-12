@@ -566,7 +566,7 @@ def adminAgentReached(dct):
     '''
     # Get the deliveries and look for RQ ones
     qsDeli = Delivery.objects.filter(st__in=['AS']) #[0]
-    deliId = 0
+    delId = 0
     auth = ''
     #qsAgent = Agent.objects.filter(mode='AV', did='-1')
 
