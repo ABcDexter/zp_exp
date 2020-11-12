@@ -565,7 +565,7 @@ def adminAgentReached(dct):
         this uses Google distance, assigns closest as per time, so might not be accurate
     '''
     # Get the deliveries and look for RQ ones
-    qsDeli = Delivery.objects.filter(st__in=['AS'])[0]
+    qsDeli = Delivery.objects.filter(st__in=['AS']) #[0]
     deliId = 0
     #qsAgent = Agent.objects.filter(mode='AV', did='-1')
 
