@@ -572,3 +572,46 @@ class Rate(models.Model):
     class Meta:
         db_table = 'rate'
         managed = True
+
+
+########################
+#Shop module
+########################
+
+
+class Product(models.Model):
+    '''
+    name(str): name of the product
+    type(bool): simple 0 or grouped 1
+    regular_price (float): MRP of the product 
+    cost_price (float): price we are getting the product at
+    sale_price (float): selling price of the product 
+    
+    stock_quantity(int):   quantity of the item in the stock
+    categories(str): product categories( see Category table)
+    weight (float): weight (in grams) of one unit of the product 
+    SKU(str): PRIMARY key
+    
+    tax_class(float): how much tax on the product
+    low_stock_amount(int): low stock alert
+    '''
+    sku  = models.CharField(primary_key=True, max_length=100)
+    name  = models.CharField(null=True, max_length=100)
+    type = models.BooleanField(default=False, db_index=True)
+    
+    regular_price = models.FloatField(db_index=True, default=0.0)
+    cost_price = models.FloatField(db_index=True, default=0.0)
+    sale_price = models.FloatField(db_index=True, default=0.0)
+    
+    stock_quantity = models.IntegerField(default=0, db_index=True)
+    categories = models.CharField(null=True, db_index=True, max_length=50)
+    
+    weight  = models.FloatField(db_index=True, default=0.0)
+
+    tax_class = models.FloatField(db_index=True, default=0.0)
+    low_stock_amount  = models.SmallIntegerField(null=True, db_index=True)
+    
+    class Meta:
+        db_table = 'product'
+        managed = True
+
