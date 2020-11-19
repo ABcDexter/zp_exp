@@ -316,21 +316,34 @@ def userDeliveryRequest(dct, user): #, _delivery):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkDeliveryStatus(['SC'])
-def userDeliveryPay(dct, user, delivery):
+@checkDeliveryStatus(['SC', 'RQ', 'AS', 'RC', 'ST'])
+def authDeliveryPay(dct, entity, delivery):
     '''
-        Pay for the Delivery for a user after scheduled
-        Https args:
-            auth,
-            scid
+    Pay for the Delivery for an antity after scheduled
+    Https args:
+        auth,
+        scid
     '''
-    print(delivery.scid, delivery.id)
-    delivery = Delivery.objects.filter(scid=dct['scid'])[0]
-    user.did = ''  # retire the user, #TODO move this logic to userDeliveryRetire() and comment this out
-    user.save()
-
-    delivery.st = 'PD'  # paid now
-    delivery.save()
+    if type(entity) is Agent:
+        
+        print(delivery.scid, delivery.id)
+        #delivery = Delivery.objects.filter(scid=dct['scid'])[0]
+        rate = Rate()
+        rate.id = 'deli' + str(delivery.id)
+        rate.type = 'deli' 
+        rate.rev = ''
+        user = User.objects.filter(an=delivery.uan)[0]
+        rate.money = float(getDelPrice(delivery, user.hs)['price'])
+        rate.save()        
+    
+        # delivery.st = 'PD' # paid now
+        delivery.save()
+    
+    else:
+        pass
+        #user.did = ''  # retire the user, #DONE move this logic to userDeliveryRetire() and comment this out
+        #user.save()
+    
 
     return HttpJSONResponse({})
 
@@ -406,7 +419,7 @@ def userDeliveryRQ(dct, user):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkDeliveryStatus(['PD'])
+@checkDeliveryStatus(['PD', 'SC', 'RQ'])
 def userDeliveryRetire(dct, user, _deli):
     '''
         retires the delivery for the use
@@ -865,6 +878,7 @@ def agentDeliveryGetStatus(_dct, agent):
         ret['active'] = deli.st in Delivery.AGENT_ACTIVE
         ret['st'] = deli.st
         ret['did'] = deli.id
+        ret['paid'] = True if len(Rate.objects.filter(id='deli' + str(deli.id))) > 0 else False #deli.pmode in ['0', '1']
         print(ret)
 
     return HttpJSONResponse(ret)
