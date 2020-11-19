@@ -1081,7 +1081,7 @@ def agentDeliveryDone(_dct, agent, deli):
     deli.etime = datetime.now(timezone.utc)
     deli.save()
     print("Completing delivery : ", deli.id)
-        params = {"to": "/topics/all", "notification":{
+    params = {"to": "/topics/all", "notification":{
                                     "title":"Let's ZIPPE !",
                                     "body":"Your DELIVERY has been successfully completed.",
                                     "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
@@ -1225,7 +1225,9 @@ def authDeliveryHistory(dct, entity, deli):
                 eTime = 'ONGOING'
 
             hs = User.objects.filter(an=deli.uan)[0].hs
-            thisOneBro = {'scid': i['scid'], 'st': i['st'],
+            thisOneBro = {'scid': i['scid'],
+                          #'': i[],
+                          'st': i['st'],
                           'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
                           'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
                           'tip': i['tip'],
