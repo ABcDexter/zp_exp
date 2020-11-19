@@ -291,7 +291,7 @@ def userDeliverySchedule(dct, user):
     delivery.srclat, delivery.srclng, delivery.dstlat, delivery.dstlng = dct['srclat'], dct['srclng'], \
                                                                          dct['dstlat'], dct['dstlng']
     # 2, 3, 4, 5,
-    delivery.srcpin, delivery.dstpin = dct['srcpin'],  dct['dstpin']
+    delivery.srcpin, delivery.dstpin = 263136, 246149 #  dct['srcpin'],  dct['dstpin']
     # 6,7
     delivery.idim = dct['idim']
     delivery.itype = dct['itype']
