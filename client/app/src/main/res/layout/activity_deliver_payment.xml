@@ -10,99 +10,18 @@
         android:layout_margin="10dp"
         android:fillViewport="true">
 
-        <!--<LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="30dp"
-                android:text="thank you for\nchoosing"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="23sp" />
-
-
-            <include
-                layout="@layout/zippe_logo"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="50dp" />
-
-            <RelativeLayout
-                android:id="@+id/rl_cost"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="25dp"
-                android:background="@drawable/rect_box_outline"
-                android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/txtc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:gravity="center|start"
-                    android:text="please pay -"
-                    android:textAllCaps="true"
-                    android:textSize="23sp" />
-
-                <TextView
-                    android:id="@+id/payment"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_toEndOf="@+id/txtc"
-                    android:drawableStart="@drawable/ic_rupee"
-                    android:gravity="center|start"
-                    android:text="250 "
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="23sp" />
-
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/upi"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/rect_box_outline"
-                android:drawableEnd="@drawable/ic_bhim"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="pay using upi"
-                android:textAllCaps="true"
-                android:textSize="23sp"/>
-            <Button
-                android:id="@+id/confirm_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|bottom"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/rect_box_solid"
-                android:text="DONE"
-                android:textSize="25sp" />
-       />
-        </LinearLayout>-->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:orientation="vertical"
-                android:layout_centerInParent="true">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -121,7 +40,7 @@
                     android:layout_height="70dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="50dp"
-                    android:layout_marginBottom="50dp"/>
+                    android:layout_marginBottom="50dp" />
 
                 <LinearLayout
                     android:id="@+id/rl_cost"
@@ -186,17 +105,48 @@
                     android:textAllCaps="true"
                     android:textSize="23sp" />
 
-                <!-- <Button
-                     android:id="@+id/confirm_btn"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_gravity="center|bottom"
-                     android:layout_marginTop="50dp"
-                     android:background="@drawable/rect_box_solid"
-                     android:text="DONE"
-                     android:textSize="25sp" />-->
+                <TextView
+                    android:id="@+id/pay_pickup"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/rect_box_outline"
+                    android:drawableEnd="@drawable/money"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@string/cash_on_pickup"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/pod"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/rect_box_outline"
+                        android:drawableEnd="@drawable/money"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="@string/pay_on_delivery"
+                        android:textAllCaps="true"
+                        android:textSize="23sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignEnd="@id/pod"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginEnd="40dp"
+                        android:src="@drawable/ic_bhim" />
+                </RelativeLayout>
+
 
             </LinearLayout>
+
             <ImageButton
                 android:id="@+id/pay_now"
                 android:layout_width="match_parent"
@@ -213,11 +163,11 @@
                 android:id="@+id/dummy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
                 android:text="dummy"
-                android:visibility="visible"
-                android:layout_alignParentBottom="true"/>
+                android:visibility="visible" />
         </RelativeLayout>
 
     </ScrollView>

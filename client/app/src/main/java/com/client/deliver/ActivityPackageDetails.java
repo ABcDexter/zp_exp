@@ -174,130 +174,125 @@ public class ActivityPackageDetails extends ActivityDrawer implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.content_type:
-                PopupContent();
-                break;
-            case R.id.rl_content_1:
-                packageDetails.setText(R.string.documents_books);
-                ContentType = "DOC";
-                ctype = "Documents / Books";
+        int id = v.getId();
+        if (id == R.id.content_type) {
+            PopupContent();
+        } else if (id == R.id.rl_content_1) {
+            packageDetails.setText(R.string.documents_books);
+            packageDetails.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            ContentType = "DOC";
+            ctype = "Documents / Books";
+            contentDialog.dismiss();
+        } else if (id == R.id.rl_content_2) {
+            packageDetails.setText(R.string.restaurant_orders);
+            packageDetails.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            ContentType = "FOO";
+            ctype = "Restaurant Orders";
+            contentDialog.dismiss();
+        } else if (id == R.id.rl_content_3) {
+            packageDetails.setText(R.string.household_items);
+            packageDetails.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            ContentType = "HOU";
+            ctype = "Household Items";
+            contentDialog.dismiss();
+        } else if (id == R.id.rl_content_4) {
+            packageDetails.setText(R.string.electronics_electrical);
+            packageDetails.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            ContentType = "ELE";
+            ctype = "Electronics / electrical";
+            contentDialog.dismiss();
+        } else if (id == R.id.rl_content_5) {
+            packageDetails.setText(R.string.clothes_accessories);
+            packageDetails.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            ContentType = "CLO";
+            ctype = "Clothes / Accessories";
+            contentDialog.dismiss();
+        } else if (id == R.id.rl_content_7) {
+            packageDetails.setText(R.string.medicines);
+            packageDetails.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            ContentType = "MED";
+            ctype = "Medicines";
+            contentDialog.dismiss();
+        } else if (id == R.id.other) {
+            rlSpecify.setVisibility(View.VISIBLE);
+            contentDialog.setCanceledOnTouchOutside(false);
+        } else if (id == R.id.checkTick) {
+            String details = specify.getText().toString();
+            if (!details.isEmpty()) {
+                packageDetails.setText(details);
+                packageDetails.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+                ContentType = details;
+                ctype = details;
                 contentDialog.dismiss();
-                break;
-            case R.id.rl_content_2:
-                packageDetails.setText(R.string.restaurant_orders);
-                ContentType = "FOO";
-                ctype = "Restaurant Orders";
-                contentDialog.dismiss();
-                break;
-            case R.id.rl_content_3:
-                packageDetails.setText(R.string.household_items);
-                ContentType = "HOU";
-                ctype = "Household Items";
-                contentDialog.dismiss();
-                break;
-            case R.id.rl_content_4:
-                packageDetails.setText(R.string.electronics_electrical);
-                ContentType = "ELE";
-                ctype = "Electronics / electrical";
-                contentDialog.dismiss();
-                break;
-            case R.id.rl_content_5:
-                packageDetails.setText(R.string.clothes_accessories);
-                ContentType = "CLO";
-                ctype = "Clothes / Accessories";
-                contentDialog.dismiss();
-                break;
-            case R.id.rl_content_7:
-                packageDetails.setText(R.string.medicines);
-                ContentType = "MED";
-                ctype = "Medicines";
-                contentDialog.dismiss();
-                break;
-            case R.id.other:
-                rlSpecify.setVisibility(View.VISIBLE);
-                contentDialog.setCanceledOnTouchOutside(false);
-                break;
-            case R.id.checkTick:
-                String details = specify.getText().toString();
-                if (!details.isEmpty()) {
-                    packageDetails.setText(details);
-                    ContentType = details;
-                    ctype = details;
-                    contentDialog.dismiss();
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                 } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                    } else {
-                        vibrator.vibrate(1000);
-                    }
+                    vibrator.vibrate(1000);
+                    packageDetails.setBackgroundResource(R.drawable.rect_box_outline);
                 }
-                break;
-            case R.id.content_size:
-                PopupSize();
-                break;
-            case R.id.s_1:
-                packageSize.setText(R.string.small);
-                ContentSize = "S";
-                csize = "Small";
-                sizeDialog.dismiss();
-                break;
-            case R.id.s_2:
-                packageSize.setText(R.string.medium);
-                ContentSize = "M";
-                csize = "Medium";
-                sizeDialog.dismiss();
-                break;
-            case R.id.s_3:
-                packageSize.setText(R.string.large);
-                ContentSize = "L";
-                csize = "Large";
-                sizeDialog.dismiss();
-                break;
-            case R.id.s_4:
-                packageSize.setText(R.string.x_large);
-                ContentSize = "XL";
-                csize = "X-Large";
-                sizeDialog.dismiss();
-                break;
-            case R.id.s_5:
-                packageSize.setText(R.string.x_x_large);
-                ContentSize = "XXL";
-                csize = "XX-Large";
-                sizeDialog.dismiss();
-                break;
-            case R.id.add_on:
-                PopupCare();
-                break;
-            case R.id.confirm:
-                careDialog.dismiss();
-                storeCareData();
-                break;
-            case R.id.next_deliver:
+            }
+        } else if (id == R.id.content_size) {
+            PopupSize();
+        } else if (id == R.id.s_1) {
+            packageSize.setText(R.string.small);
+            packageSize.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            ContentSize = "S";
+            csize = "Small";
+            sizeDialog.dismiss();
+        } else if (id == R.id.s_2) {
+            packageSize.setText(R.string.medium);
+            packageSize.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            ContentSize = "M";
+            csize = "Medium";
+            sizeDialog.dismiss();
+        } else if (id == R.id.s_3) {
+            packageSize.setText(R.string.large);
+            packageSize.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            ContentSize = "L";
+            csize = "Large";
+            sizeDialog.dismiss();
+        } else if (id == R.id.s_4) {
+            packageSize.setText(R.string.x_large);
+            packageSize.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            ContentSize = "XL";
+            csize = "X-Large";
+            sizeDialog.dismiss();
+        } else if (id == R.id.s_5) {
+            packageSize.setText(R.string.x_x_large);
+            packageSize.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            ContentSize = "XXL";
+            csize = "XX-Large";
+            sizeDialog.dismiss();
+        } else if (id == R.id.add_on) {
+            PopupCare();
+        } else if (id == R.id.confirm) {
 
-                if (ContentType.equals("") || ContentSize.equals("")) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                    } else {
-                        vibrator.vibrate(1000);
-                    }
-                    Log.d("PackageDEtails"," ContentType="+ContentType+" ContentSize="+ContentSize);
-                    Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
-                    View sbView = snackbar.getView();
-                    TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
-                    textView.setTextColor(Color.YELLOW);
-                    snackbar.show();
-
+            packageCare.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            careDialog.dismiss();
+            storeCareData();
+        } else if (id == R.id.next_deliver) {
+            if (ContentType.equals("") || ContentSize.equals("")) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                 } else {
-                    storeData();
-                    Intent confirmIntent = new Intent(ActivityPackageDetails.this, ActivityFillPickDetails.class);
-                    startActivity(confirmIntent);
+                    vibrator.vibrate(1000);
                 }
-                break;
-            case R.id.slidingImage:
-                Intent full = new Intent(ActivityPackageDetails.this, ActivitySlidingFullPage.class);
-                startActivity(full);
-                break;
+                Log.d("PackageDetails", " ContentType=" + ContentType + " ContentSize=" + ContentSize);
+                Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
+                View sbView = snackbar.getView();
+                TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
+                textView.setTextColor(Color.YELLOW);
+                snackbar.show();
+
+            } else {
+                storeData();
+                Intent confirmIntent = new Intent(ActivityPackageDetails.this, ActivityFillPickDetails.class);
+                startActivity(confirmIntent);
+            }
+        } else if (id == R.id.slidingImage) {
+            Intent full = new Intent(ActivityPackageDetails.this, ActivitySlidingFullPage.class);
+            startActivity(full);
         }
     }
 

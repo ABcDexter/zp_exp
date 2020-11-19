@@ -92,9 +92,11 @@
     <string name="thank_your_agent">Thank your agent</string>
     <string name="enter_tip">Enter Tip</string>
     <string name="colon">:</string>
-    <string name="please_make_payment_to_nconfirm_your_delivery">Please make payment to \nconfirm your delivery</string>
+    <string name="please_make_payment_to_nconfirm_your_delivery">Please choose payment mode to \nconfirm your delivery</string>
     <string name="please_pay">Please Pay \u0020</string>
-    <string name="make_payment_using_upi">make payment using upi</string>
+    <string name="make_payment_using_upi">pay now using upi</string>
+    <string name="pay_on_delivery">pay on delivery</string>
+    <string name="cash_on_pickup">pay by cash on pickup</string>
     <string name="your_agent_will_be_assigned_shortly_please_keep_you_your_package_ready_nthank_you_for_choosing">Your agent will be assigned shortly. Please keep you your package ready.</string>
     <string name="thank_you_for_choosing">Thank you for choosing</string>
     <string name="to_view_your_order">to view your order</string>

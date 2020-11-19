@@ -81,7 +81,7 @@
     <string name="thank_your_agent">अपने एजेंट का शुक्रिया करें</string>
     <string name="enter_tip">कृपया टिप दें</string>
     <string name="colon">:</string>
-    <string name="please_make_payment_to_nconfirm_your_delivery">कृपया इस डिलीवरी के लिए \nभुगतान करें</string>
+    <string name="please_make_payment_to_nconfirm_your_delivery">कृपया डिलीवरी के भुगतान के \nमाध्यम को चुनेंं</string>
     <string name="your_agent_will_be_assigned_shortly_please_keep_you_your_package_ready_nthank_you_for_choosing">आपका डिलीवरी एजेंट जल्द ही नियुक्त किया जाएगा। कृपया आप अपना पार्सल तैयार रखें।</string>
     <string name="thank_you_for_choosing">ज़िप्पी को चुनने के लिए धन्यवाद</string>
     <string name="to_view_your_order">अपने आर्डर को देखने के लिए</string>
@@ -128,7 +128,9 @@
     <string name="standard_delivery">स्टैण्डर्ड डिलीवरी (वितरण)</string>
     <string name="your_rental_time_is_over_nwith">रेंट का समय खत्म \nहो गया है</string>
     <string name="please_pay">कृपया शुल्क चुकायें\u0020</string>
-    <string name="make_payment_using_upi">यू.पी.आई. का उपयोग करके भुगतान करें</string>
+    <string name="make_payment_using_upi">यू.पी.आई. से भुगतान करें</string>
+    <string name="pay_on_delivery">डिलीवरी ड्रॉप के समय भुगतान करें</string>
+    <string name="cash_on_pickup">पिक-अप के समय नकद दें</string>
     <string name="pick_up_point_z_hub">पपिक-अप पॉइंट / ज़ी-हब</string>
     <string name="drop_point_z_hub">ड्राप-पॉइंट / ज़ी-हब</string>
     <string name="no_of_hours">कृपया घंटे चुनें</string>

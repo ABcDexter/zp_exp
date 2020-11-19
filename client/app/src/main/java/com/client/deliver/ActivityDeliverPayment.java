@@ -36,7 +36,7 @@ import java.util.Map;
 
 public class ActivityDeliverPayment extends ActivityDrawer implements View.OnClickListener {
 
-    TextView upiPayment, cost;
+    TextView upiPayment, cost, payOnPickup, payOnDelivery;
     final int UPI_PAYMENT = 0;
     String strAuth, DID, costOnly;
 
@@ -96,11 +96,15 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
         DID = deliveryPref.getString(DELIVERY_ID, "");
 
         upiPayment = findViewById(R.id.upi);
+        payOnPickup = findViewById(R.id.pay_pickup);
+        payOnDelivery = findViewById(R.id.pod);
         cost = findViewById(R.id.payment);
         dummy = findViewById(R.id.dummy);
         infoCost = findViewById(R.id.infoCost);
         infoCost.setOnClickListener(this);
         upiPayment.setOnClickListener(this);
+        payOnDelivery.setOnClickListener(this);
+        payOnPickup.setOnClickListener(this);
         dummy.setOnClickListener(this);
         checkStatus();
         myDialog = new Dialog(this);
@@ -132,7 +136,7 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
 
-        //response on hitting user-delivery-pay API
+        //response on hitting auth-delivery-pay API
         if (id == 1) {
             /*SharedPreferences sp_price = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
             sp_price.edit().putString(DELIVERY_OTP, otp).apply();*/
@@ -227,20 +231,23 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.upi:
-                String amount = costOnly;
-                String note = "Payment for rental service";
-                String name = "Zipp-E";
-                String upiId = "rajnilakshmi@ybl";
-                payUsingUpi(amount, upiId, name, note);
-                break;
+        int id = v.getId();
+        if (id == R.id.upi) {
+            String amount = costOnly;
+            String note = "Payment for rental service";
+            String name = "Zipp-E";
+            String upiId = "rajnilakshmi@ybl";
+            payUsingUpi(amount, upiId, name, note);
+        } else if (id == R.id.dummy) {
+            paymentMade();
 
-            case R.id.dummy:
-                paymentMade();
-            case R.id.infoCost:
-                ShowPopup();
-                break;
+            ShowPopup();
+        } else if (id == R.id.infoCost) {
+            ShowPopup();
+        } else if (id==R.id.pod){
+
+        } else if (id== R.id.pay_pickup){
+
         }
     }
 
@@ -251,8 +258,8 @@ public class ActivityDeliverPayment extends ActivityDrawer implements View.OnCli
         params.put("scid", did);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth + " scid=" + did);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-delivery-pay");
-        UtilityApiRequestPost.doPOST(a, "user-delivery-pay", parameters, 20000, 0, response -> {
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-delivery-pay");
+        UtilityApiRequestPost.doPOST(a, "auth-delivery-pay", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
             } catch (Exception e) {

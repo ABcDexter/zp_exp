@@ -241,8 +241,9 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
                         editor.putString(DELIVERY_ID, scid);
                         editor.apply();*/
 
-                    Intent payment = new Intent(ActivityDeliverySummery.this, ActivityDeliverPayment.class);
+                    Intent payment = new Intent(ActivityDeliverySummery.this, ActivityDeliverConfirm.class);
                     startActivity(payment);
+                    finish();
                 }
 
                 if (st.equals("RQ") || st.equals("PD")) {
