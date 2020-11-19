@@ -3,7 +3,6 @@ import datetime
 from datetime import datetime, timedelta
 from decimal import getcontext
 import random
-
 from django.db import transaction
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -562,7 +561,7 @@ def adminAgentReached(dct):
         *: Any other fields that need to be updated/corrected (except state)
 
     Note:
-        this uses Google distance, assigns closest as per time, so might not be accurate
+        this uses Google distance, so might not be accurate
     '''
     # Get the deliveries and look for RQ ones
     qsDeli = Delivery.objects.filter(st__in=['AS']) #[0]
@@ -1081,6 +1080,21 @@ def agentDeliveryDone(_dct, agent, deli):
     deli.st = 'FN'
     deli.etime = datetime.now(timezone.utc)
     deli.save()
+    print("Completing delivery : ", deli.id)
+        params = {"to": "/topics/all", "notification":{
+                                    "title":"Let's ZIPPE !",
+                                    "body":"Your DELIVERY has been successfully completed.",
+                                    "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+                                    "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+    }
+    }
+    dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+    jsonData = json.dumps(params).encode()
+    sUrl = 'https://fcm.googleapis.com/fcm/send'
+    req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+    jsonResp = urllib.request.urlopen(req, timeout=30).read()
+    ret = json.loads(jsonResp)
+
 
     # Get the vehicle
     # recVehicle = Vehicle.objects.filter(an=deli.van)[0]
