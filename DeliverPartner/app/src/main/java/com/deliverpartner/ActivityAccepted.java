@@ -43,12 +43,6 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
     public static final String SRC_PHN = "SrcPhn";
     public static final String SRCLAT = "DeliverySrcLat";
     public static final String SRCLNG = "DeliverySrcLng";
-    public static final String DST_PER = "DSTPer";
-    public static final String DST_ADD = "DSTAdd";
-    public static final String DST_LND = "DSTLnd";
-    public static final String DST_PHN = "DSTPhn";
-    public static final String DSTLAT = "DeliveryDstLat";
-    public static final String DSTLNG = "DeliveryDstLng";
     String strAuth;
     ActivityAccepted a = ActivityAccepted.this;
     Map<String, String> params = new HashMap();
@@ -157,7 +151,7 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
                     SharedPreferences sp_cookie = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(DID, did).apply();
 
-                    if (status.equals("AS")) {
+                    if (status.equals("AS") || status.equals("RC")) {
                         String per = response.getString("srcper");
                         String add = response.getString("srcadd");
                         String land = response.getString("srcland");
@@ -185,6 +179,7 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
                         finish();*/
                     }
 
+
                     if (status.equals("ST")) {
                         Intent home = new Intent(ActivityAccepted.this, ActivityHome.class);
                         startActivity(home);
@@ -211,7 +206,7 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
             try {
                 String status = response.getString("status");
                 if (status.equals("403")){
-                    Toast.makeText(this, "Incorrect OTP.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.incorrect_otp, Toast.LENGTH_LONG).show();
                     otp.requestFocus();
                 }
                 /*Intent home = new Intent(ActivityRideAccepted.this, MapsActivity2.class);
@@ -228,6 +223,7 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
     }
 
     public void onFailure(VolleyError error) {
+        Toast.makeText(a, R.string.something_wrong, Toast.LENGTH_LONG).show();
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
     }
@@ -264,36 +260,27 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.yes:
-                String checkOtp = otp.getText().toString();
-                if (!checkOtp.isEmpty()) {
-                    delvyStart(checkOtp);//method to check if the OTP entered is correct or not
-                } else
-                    otp.requestFocus();// if OTP field is empty, then driverStartTrip method will not be called
-                break;
-            case R.id.no:
-                delvyCancel();
-                break;
-            case R.id.map:
-                Intent map = new Intent(ActivityAccepted.this, MapsClientLocation.class);
-                startActivity(map);
-                finish();
-                break;
-
-            case R.id.infoName:
-                ShowPopup(1);
-                break;
-            case R.id.infoAdd:
-                ShowPopup(2);
-                break;
-            case R.id.infoLand:
-                ShowPopup(3);
-                break;
-            case R.id.dialPhn:
-            case R.id.src_phone:
-                callClientPhn();
-                break;
+        int id = v.getId();
+        if (id == R.id.yes) {
+            String checkOtp = otp.getText().toString();
+            if (!checkOtp.isEmpty()) {
+                delvyStart(checkOtp);//method to check if the OTP entered is correct or not
+            } else
+                otp.requestFocus();// if OTP field is empty, then driverStartTrip method will not be called
+        } else if (id == R.id.no) {
+            delvyCancel();
+        } else if (id == R.id.map) {
+            Intent map = new Intent(ActivityAccepted.this, MapsClientLocation.class);
+            startActivity(map);
+            finish();
+        } else if (id == R.id.infoName) {
+            ShowPopup(1);
+        } else if (id == R.id.infoAdd) {
+            ShowPopup(2);
+        } else if (id == R.id.infoLand) {
+            ShowPopup(3);
+        } else if (id == R.id.dialPhn || id == R.id.src_phone) {
+            callClientPhn();
         }
     }
 }

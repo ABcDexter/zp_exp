@@ -46,7 +46,6 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
     Map<String, String> params = new HashMap();
 
     TextView person, address, landmark, phone, senderPhn;
-    String lat, lng;
     Button yes, no, map;
     ImageButton nameInfo, addInfo, landInfo, phoneDial, sendPhnDial;
     Dialog myDialog;
@@ -201,6 +200,7 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
     }
 
     public void onFailure(VolleyError error) {
+        Toast.makeText(a, R.string.something_wrong, Toast.LENGTH_LONG).show();
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
     }
@@ -236,38 +236,27 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.completed:
-                delvyEnd();
-                break;
-            case R.id.failed:
-                delvyFail();
-                break;
-            case R.id.map:
-                Intent map = new Intent(ActivityEnroute.this, MapsReceiverLocation.class);
-                startActivity(map);
-                finish();
-                break;
-
-            case R.id.infoName:
-                ShowPopup(1);
-                break;
-            case R.id.infoAdd:
-                ShowPopup(2);
-                break;
-            case R.id.infoLand:
-                ShowPopup(3);
-                break;
-            case R.id.dialPhn:
-            case R.id.dialSendPhn:
-                String receiverNo = phone.getText().toString();
-                callClientPhn(receiverNo);
-                break;
-            case R.id.dst_phone:
-            case R.id.dst_send_phone:
-                String senderNo = senderPhn.getText().toString();
-                callClientPhn(senderNo);
-                break;
+        int id = v.getId();
+        if (id == R.id.completed) {
+            delvyEnd();
+        } else if (id == R.id.failed) {
+            delvyFail();
+        } else if (id == R.id.map) {
+            Intent map = new Intent(ActivityEnroute.this, MapsReceiverLocation.class);
+            startActivity(map);
+            finish();
+        } else if (id == R.id.infoName) {
+            ShowPopup(1);
+        } else if (id == R.id.infoAdd) {
+            ShowPopup(2);
+        } else if (id == R.id.infoLand) {
+            ShowPopup(3);
+        } else if (id == R.id.dialPhn || id == R.id.dialSendPhn) {
+            String receiverNo = phone.getText().toString();
+            callClientPhn(receiverNo);
+        } else if (id == R.id.dst_phone || id == R.id.dst_send_phone) {
+            String senderNo = senderPhn.getText().toString();
+            callClientPhn(senderNo);
         }
     }
 }

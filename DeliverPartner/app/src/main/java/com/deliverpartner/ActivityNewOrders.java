@@ -59,7 +59,7 @@ public class ActivityNewOrders extends ActivityDrawer implements View.OnClickLis
         yes.setOnClickListener(this);
         no.setOnClickListener(this);
         if (strDid.isEmpty()) {
-            info.setText("NO new delivery");
+            info.setText(R.string.no_new_delivery);
         } else {
             relativeLayout.setVisibility(View.VISIBLE);
         }
@@ -102,15 +102,13 @@ public class ActivityNewOrders extends ActivityDrawer implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.accept_request:
-                delvyAccept();
-                break;
-            case R.id.reject_request:
-                Intent home = new Intent(ActivityNewOrders.this, ActivityHome.class);
-                startActivity(home);
-                finish();
-                break;
+        int id = v.getId();
+        if (id == R.id.accept_request) {
+            delvyAccept();
+        } else if (id == R.id.reject_request) {
+            Intent home = new Intent(ActivityNewOrders.this, ActivityHome.class);
+            startActivity(home);
+            finish();
         }
     }
 
@@ -135,7 +133,7 @@ public class ActivityNewOrders extends ActivityDrawer implements View.OnClickLis
 
                     } catch (Exception e) {
                         e.printStackTrace();
-                        info.setText("NO new delivery");
+                        info.setText(R.string.no_new_delivery);
                         relativeLayout.setVisibility(View.GONE);
                     }
 

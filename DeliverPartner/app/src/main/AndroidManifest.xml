@@ -67,8 +67,6 @@
             android:name=".ActivityAccepted"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".ActivityNewOrders" />
-        <activity android:name=".ActivityMain" />
-        <activity android:name=".ActivityVerifyDLDetails" />
         <activity android:name=".ActivityWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

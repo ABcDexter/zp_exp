@@ -1,5 +1,6 @@
 package com.deliverpartner;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -91,8 +92,8 @@ public class MapsReceiverLocation extends AppCompatActivity implements OnMapRead
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, "");
 
-        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title("Delivery Pick Up");
-        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title("You Are Here");
+        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(getString(R.string.del_pick_up));
+        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title(getString(R.string.your_loc));
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapNearBy);
         mapFragment.getMapAsync(this);
@@ -162,6 +163,10 @@ public class MapsReceiverLocation extends AppCompatActivity implements OnMapRead
         if (hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+                return;
+            }
             mFusedLocationClient.getLastLocation().addOnCompleteListener(
                     new OnCompleteListener<Location>() {
                         @Override
@@ -192,6 +197,10 @@ public class MapsReceiverLocation extends AppCompatActivity implements OnMapRead
         mLocationRequest.setNumUpdates(1);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+            return;
+        }
         mFusedLocationClient.requestLocationUpdates(
                 mLocationRequest, mLocationCallback,
                 Looper.myLooper()

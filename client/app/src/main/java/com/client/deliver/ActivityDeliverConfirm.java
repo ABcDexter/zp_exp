@@ -1,7 +1,5 @@
 package com.client.deliver;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +14,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -107,7 +104,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     ImageView zbeeR, zbeeL;
     // Button cancel;
     Animation animMoveL2R, animMoveR2L;
-
+    String standtime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,7 +156,12 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         detailsPick = pref.getString(ADD_INFO_PICK_POINT, "");
         express = pref.getString(EXPRESS, "");
 
-
+        if (express.equals("0")) {
+            String []splitArray=pHour.split(":");
+            standtime =splitArray[0];
+            Log.d(TAG, "time slot = " + standtime);
+            //pHour=standtime;
+        }
         cost = findViewById(R.id.payment);
         //edTip = findViewById(R.id.tip);
         infoPayment = findViewById(R.id.infoPayment);
@@ -258,10 +260,13 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         params.put("pe", pe);
         //params.put("no", no);
         params.put("express", express);//0,1
-        params.put("pYear", pYear);//TODO remove hard coded values
-        params.put("pMonth", pMonth);//TODO remove hard coded values
-        params.put("pDate", pDay);//TODO remove hard coded values
-        params.put("pHour", pHour);
+        params.put("pYear", pYear);
+        params.put("pMonth", pMonth);
+        params.put("pDate", pDay);
+        if (express.equals("0")){
+            params.put("pHour", standtime);
+        }else params.put("pHour", pHour);
+
         params.put("pMinute", pMinute);
         params.put("pmode", "1");
         /*if (edTip.getText().toString().isEmpty()){
@@ -272,6 +277,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
 
 
         JSONObject parameters = new JSONObject(params);
+
         Log.d(TAG, "Values: auth=" + auth + " srclat= " + pLat
                 + " srclng= " + pLng + " dstlat=" + dLat + " dstlng=" + dLng + " srcphone=" + pMobile
                 + " dstphone=" + dMobile + " srcper=" + pName + " dstper=" + dName + " srcadd=" + pAddress
@@ -335,7 +341,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
             infoText.setText(R.string.the_amount_shall_be_directly_credited_to_our_agent_account);
         }
         if (id == 2) {
-            infoText.setText(getString(R.string.base_price) + " ₹ 15" + "\n"+ getString(R.string.distance) + distance + " km");
+            infoText.setText(getString(R.string.base_price) + " ₹ 15" + "\n" + getString(R.string.distance) + distance + " km");
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();

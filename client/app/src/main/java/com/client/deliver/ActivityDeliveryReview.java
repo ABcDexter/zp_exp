@@ -192,7 +192,7 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
         }
         time = findViewById(R.id.delv_time);
         if (!stndHour.equals("")) {
-            time.setText(stndHour + ":" + stndMin);
+            time.setText(expHour);
         }
         if (!expHour.equals("")) {
             time.setText(expHour + ":" + expMin);

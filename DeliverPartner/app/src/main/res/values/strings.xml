@@ -12,4 +12,16 @@
     <string name="title_activity_maps_reach_client">Map</string>
     <string name="title_activity_maps_new_delivery">Map</string>
     <string name="title_activity_maps_client_location">Map</string>
+    <string name="incorrect_otp">Incorrect OTP.</string>
+    <string name="something_wrong">Something went wrong. Please try again later.</string>
+    <string name="offline">YOU ARE OFFLINE !</string>
+    <string name="locked">YOU ARE CURRENTLY LOCKED ! \nCONTACT ADMIN</string>
+    <string name="delivery_successful">Delivery done successfully ! You have earned ₹ </string>
+    <string name="delivery_timeout">Delivery time out</string>
+    <string name="delivery_failed">Delivery failed</string>
+    <string name="login_unsuccessful">LOGIN UNSUCCESSFUL! CHECK YOUR INTERNET CONNECTION</string>
+    <string name="verification_failed">Verification Failed</string>
+    <string name="no_new_delivery">NO new delivery</string>
+    <string name="del_pick_up">Delivery Pick Up</string>
+    <string name="your_loc">You Are Here</string>
 </resources>

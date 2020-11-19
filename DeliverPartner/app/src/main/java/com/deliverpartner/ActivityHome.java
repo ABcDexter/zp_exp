@@ -1,5 +1,6 @@
 package com.deliverpartner;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -54,8 +55,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public static final String SRCLNG = "DeliverySrcLng";
     public static final String MY_LAT = "MYSrcLAT";
     public static final String MY_LNG = "MYSrcLng";
-    public static final String SRCLND = "DeliverySrcLand";
-    public static final String DSTLND = "DeliveryDstLand";
     public static final String AUTH_COOKIE = "com.agent.cookie";
     public static final String AUTH_KEY = "Auth";
     FusedLocationProviderClient mFusedLocationClient;
@@ -169,7 +168,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
         if (id == 2) {
-            infoText.setText("YOU ARE OFFLINE ! ");
+            infoText.setText(R.string.offline);
         }
         if (id == 3) {
             //vibrate the device for 1000 milliseconds
@@ -178,19 +177,19 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             } else {
                 vibrator.vibrate(1000);
             }
-            infoText.setText("YOU ARE CURRENTLY LOCKED ! \nCONTACT ADMIN");
+            infoText.setText(R.string.locked);
             myDialog.setCanceledOnTouchOutside(false);
         }
         if (id == 4) {
-            infoText.setText("Delivery done successfully ! You have earned ₹ " + earn);
+            infoText.setText(R.string.delivery_successful + earn);
             retireDelvy();
         }
         if (id == 5) {
-            infoText.setText("delivery time out");
+            infoText.setText(R.string.delivery_timeout);
             retireDelvy();
         }
         if (id == 6) {
-            infoText.setText("delivery failed");
+            infoText.setText(R.string.delivery_failed);
             retireDelvy();
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -220,6 +219,16 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         if (hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             mFusedLocationClient.getLastLocation().addOnCompleteListener(
                     new OnCompleteListener<Location>() {
                         @Override
@@ -251,6 +260,16 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         mLocationRequest.setNumUpdates(1);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mFusedLocationClient.requestLocationUpdates(
                 mLocationRequest, mLocationCallback,
                 Looper.myLooper()
@@ -279,21 +298,15 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.reject_request:
-                break;
-            case R.id.accept_request:
-                break;
-            case R.id.new_order:
-                agentDelCheck();
+        int id = v.getId();
+        if (id == R.id.new_order) {
+            agentDelCheck();
                 /*Intent newOrderIntent = new Intent(ActivityHome.this, ActivityNewOrders.class);
                 startActivity(newOrderIntent);*/
-                break;
-            case R.id.order_in_progress:
-                Intent inProgressIntent = new Intent(ActivityHome.this, ActivityAccepted.class);
-                startActivity(inProgressIntent);
-                break;
-            /*case R.id.completed_orders:
+        } else if (id == R.id.order_in_progress) {
+            Intent inProgressIntent = new Intent(ActivityHome.this, ActivityAccepted.class);
+            startActivity(inProgressIntent);
+                /*case R.id.completed_orders:
                 Intent completedOrderIntent = new Intent(ActivityHome.this, ActivityCompletedOrders.class);
                 startActivity(completedOrderIntent);
                 break;*/
@@ -553,6 +566,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(instance, "Something went wrong! Please try again later.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(instance, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 }
