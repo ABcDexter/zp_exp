@@ -1,7 +1,9 @@
 package com.client.deliver;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -16,13 +18,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -80,9 +82,9 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
     SharedPreferences prefAuth;
     ImageButton next;
     String EXPress;
-    String express = "0";
+    String express = "00";
 
-    TextView expTime, stndTime, addDetails, expTomorrow, stndtomorrow;
+    TextView /*expTime*/ stndTime, addDetails, expTomorrow, stndtomorrow;
     String timeSlot = "0";
     Vibrator vibrator;
     Switch stndDay, expDay;
@@ -107,7 +109,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
     int hour = 0;
     int min = 0;
     String format = "AM";
-    String StringMinute;
+    String StringMinute, StringHours;
     int exp_date = 1;
 
     @Override
@@ -140,7 +142,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         stringAN = prefAuth.getString(AN_KEY, "");
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        expTime = findViewById(R.id.express_time);
+        //expTime = findViewById(R.id.express_time);
         stndTime = findViewById(R.id.standard_time);
 
         expressDelv = findViewById(R.id.chk_express);
@@ -225,177 +227,199 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.confirm_exp:
-                express = "1";
-                expTime.setText(hour + ":" + StringMinute);
-                SharedPreferences sharedPreferences = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(PICK_HOUR, Integer.toString(hour));
-                editor.putString(PICK_MINUTE, StringMinute);
-                editor.putString(EXPRESS, "1");
-                editor.apply();
-                Log.d(TAG, "hour" + hour + " min=" + StringMinute);
-                SharedPreferences review = getSharedPreferences(REVIEW, Context.MODE_PRIVATE);
-                SharedPreferences.Editor reditor = review.edit();
-                reditor.putString(R_EXP_DELVY, "express");
-                reditor.apply();
-                expressDelv.getText();
-                if (exp_date == 1) {
-                    TodayDate();
-                }
-                if (exp_date == 2) {
-                    TomorrowDate();
-                }
-                timeDialog.dismiss();
-                break;
-            case R.id.confirm_standard:
-                int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); //Current hour
-                Log.d(TAG, "time=" + currentHour);
-                Log.d(TAG, "exp_date=" + exp_date);
-                if (exp_date == 1) {
-                    TodayDate();
+        int id = v.getId();
+        /*if (id == R.id.confirm_exp) {
+            express = "1";
+            //expTime.setText(hour + ":" + StringMinute);
+            SharedPreferences sharedPreferences = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            //editor.putString(PICK_HOUR, Integer.toString(hour));
+            editor.putString(PICK_HOUR, StringHours);
+            editor.putString(PICK_MINUTE, StringMinute);
+            editor.putString(EXPRESS, "1");
+            editor.apply();
+            Log.d(TAG, "hour" + StringHours + " min=" + StringMinute);
+            SharedPreferences review = getSharedPreferences(REVIEW, Context.MODE_PRIVATE);
+            SharedPreferences.Editor reditor = review.edit();
+            reditor.putString(R_EXP_DELVY, "express");
+            reditor.apply();
+            expressDelv.getText();
+            if (exp_date == 1) {
+                TodayDate();
+            }
+            if (exp_date == 2) {
+                TomorrowDate();
+            }
+            timeDialog.dismiss();
+        }
+        else*/
+        if (id == R.id.confirm_standard) {
+            int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); //Current hour
+            Log.d(TAG, "time=" + currentHour);
+            Log.d(TAG, "exp_date=" + exp_date);
+            if (exp_date == 1) {
+                TodayDate();
 
-                    switch (timeSlot) {
-                        case "0":
+                switch (timeSlot) {
+                    case "0":
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                        } else {
+                            vibrator.vibrate(1000);
+                        }
+                        Toast.makeText(this, R.string.make_selection, Toast.LENGTH_LONG).show();
+
+                        break;
+                    case "8":
+                        if (currentHour >= 10) //False if after 10am
+                        {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                             } else {
                                 vibrator.vibrate(1000);
                             }
-                            Toast.makeText(this, R.string.make_selection, Toast.LENGTH_LONG).show();
-
-                            break;
-                        case "8":
-                            if (currentHour >= 10) //False if after 10am
-                            {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                                } else {
-                                    vibrator.vibrate(1000);
-                                }
-                                Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else /*if (currentHour >= 8)*/ {
-                                standardDialog.dismiss();
-                                saveStandardTime("8:00-10:00 am");
+                            Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
+                        } else /*if (currentHour >= 8)*/ {
+                            standardDialog.dismiss();
+                            saveStandardTime("8:00-10:00 am");
+                        }
+                        break;
+                    case "10":
+                        if (currentHour >= 12) //False if after 12pm
+                        {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                vibrator.vibrate(1000);
                             }
-                            break;
-                        case "10":
-                            if (currentHour >= 12) //False if after 12pm
-                            {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                                } else {
-                                    vibrator.vibrate(1000);
-                                }
-                                Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else /*if (currentHour >= 10)*/ {
-                                standardDialog.dismiss();
-                                saveStandardTime("10:00-12:00 pm");
-                            }
-                            break;
-                        case "12":
+                            Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
+                        } else /*if (currentHour >= 10)*/ {
+                            standardDialog.dismiss();
+                            saveStandardTime("10:00-12:00 pm");
+                        }
+                        break;
+                    case "12":
                             /*if (currentHour ==12 || currentHour == 13){
                                 standardDialog.dismiss();
                                 saveStandardTime("12:00-14:00 ");
                             }
                             else */
-                            if (currentHour >= 14) //False if after 2pm
-                            {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                                } else {
-                                    vibrator.vibrate(1000);
-                                }
-                                Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else /*if (currentHour >= 12) */ {
-                                standardDialog.dismiss();
-                                saveStandardTime("12:00-14:00 ");
+                        if (currentHour >= 14) //False if after 2pm
+                        {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                vibrator.vibrate(1000);
                             }
-                            break;
-                        case "14":
-                            if (currentHour >= 16) //False if after 4pm
-                            {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                                } else {
-                                    vibrator.vibrate(1000);
-                                }
-                                Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else /*if (currentHour >= 14)*/ {
-                                standardDialog.dismiss();
-                                saveStandardTime("14:00-16:00");
+                            Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
+                        } else /*if (currentHour >= 12) */ {
+                            standardDialog.dismiss();
+                            saveStandardTime("12:00-14:00 ");
+                        }
+                        break;
+                    case "14":
+                        if (currentHour >= 16) //False if after 4pm
+                        {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                vibrator.vibrate(1000);
                             }
-                            break;
-                        case "16":
-                            if (currentHour >= 18) //False if after 6pm
-                            {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                                } else {
-                                    vibrator.vibrate(1000);
-                                }
-                                Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else /*if (currentHour >= 16)*/ {
-                                standardDialog.dismiss();
-                                saveStandardTime("16:00-18:00");
+                            Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
+                        } else /*if (currentHour >= 14)*/ {
+                            standardDialog.dismiss();
+                            saveStandardTime("14:00-16:00");
+                        }
+                        break;
+                    case "16":
+                        if (currentHour >= 18) //False if after 6pm
+                        {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                vibrator.vibrate(1000);
                             }
-                            break;
-                        case "18":
-                            if (currentHour >= 20) //False if after 8pm
-                            {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                                } else {
-                                    vibrator.vibrate(1000);
-                                }
-                                Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
-                            } else /*if (currentHour >= 18)*/ {
-                                standardDialog.dismiss();
-                                saveStandardTime("18:00-20:00");
+                            Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
+                        } else /*if (currentHour >= 16)*/ {
+                            standardDialog.dismiss();
+                            saveStandardTime("16:00-18:00");
+                        }
+                        break;
+                    case "18":
+                        if (currentHour >= 20) //False if after 8pm
+                        {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                vibrator.vibrate(1000);
                             }
-                            break;
-                    }
-                } /*else {*/
+                            Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_LONG).show();
+                        } else /*if (currentHour >= 18)*/ {
+                            standardDialog.dismiss();
+                            saveStandardTime("18:00-20:00");
+                        }
+                        break;
+                }
+            } /*else {*/
                     /*if (exp_date == 1) {
                         TodayDate();
                     }*/
-                if (exp_date == 2) {
-                    Toast.makeText(ActivityDeliveryTimeSlot.this, R.string.delivery_sch_tommorrow, Toast.LENGTH_LONG).show();
-                    TomorrowDate();
-                    standardDialog.dismiss();
-                    saveStandardTime(timeSlot);
-                }
+            if (exp_date == 2) {
+                Toast.makeText(ActivityDeliveryTimeSlot.this, R.string.delivery_sch_tommorrow, Toast.LENGTH_LONG).show();
+                TomorrowDate();
+                standardDialog.dismiss();
+                saveStandardTime(timeSlot);
+            }
                     /*standardDialog.dismiss();
                     saveStandardTime(timeSlot);*/
-                /*}*/
-                break;
-            case R.id.cancel_exp:
-                express = "0";
-                timeDialog.dismiss();
-                break;
-            case R.id.next_deliver:
-                //TodayDate();
-                //saveData();
-                //deliveryEstimate();
-                if (expTime.getText().toString().equals("") && stndTime.getText().toString().equals("")) {
-                    Log.d(TAG, "expTime=" + expTime.getText().toString() + "stndTime=" + stndTime.getText().toString());
-                    Toast.makeText(a, "Please choose time", Toast.LENGTH_SHORT).show();
+            /*}*/
+        } else if (id == R.id.cancel_exp) {
+            express = "0";
+            timeDialog.dismiss();
+        } else if (id == R.id.next_deliver) {//TodayDate();
+            //saveData();
+            //deliveryEstimate();
+            if (/*expTime.getText().toString().equals("") && stndTime.getText().toString().equals("")*/ express.equals("00")) {
+                // Log.d(TAG, "expTime=" + expTime.getText().toString() + "stndTime=" + stndTime.getText().toString());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                 } else {
-                    Intent next = new Intent(ActivityDeliveryTimeSlot.this, ActivityDeliveryReview.class);
-                    startActivity(next);
+                    vibrator.vibrate(1000);
                 }
-                break;
-            case R.id.add_details:
-                DetailsCheckbox();
-                break;
-
-            case R.id.confirm_details:
-                additionalDetails.dismiss();
-                break;
-            case R.id.cancel_standard:
-                standardDialog.dismiss();
-                break;
+                Log.d(TAG, "express=" + express);
+                Toast.makeText(a, "Please choose time", Toast.LENGTH_SHORT).show();
+            } else {
+                if (express.equals("1")) {
+                    //expTime.setText(hour + ":" + StringMinute);
+                    SharedPreferences sharedPreferences = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    //editor.putString(PICK_HOUR, Integer.toString(hour));
+                    editor.putString(PICK_HOUR, StringHours);
+                    editor.putString(PICK_MINUTE, StringMinute);
+                    editor.putString(EXPRESS, "1");
+                    editor.apply();
+                    Log.d(TAG, "hour" + StringHours + " min=" + StringMinute);
+                    SharedPreferences review = getSharedPreferences(REVIEW, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor reditor = review.edit();
+                    reditor.putString(R_EXP_DELVY, "express");
+                    reditor.apply();
+                    expressDelv.getText();
+                    if (exp_date == 1) {
+                        TodayDate();
+                    }
+                    if (exp_date == 2) {
+                        TomorrowDate();
+                    }
+                }
+                Intent next = new Intent(ActivityDeliveryTimeSlot.this, ActivityDeliveryReview.class);
+                startActivity(next);
+            }
+        } else if (id == R.id.add_details) {
+            DetailsCheckbox();
+        } else if (id == R.id.confirm_details) {
+            additionalDetails.dismiss();
+        } else if (id == R.id.cancel_standard) {
+            standardDialog.dismiss();
         }
     }
 
@@ -427,7 +451,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         slot6 = standardDialog.findViewById(R.id.slot6);
         stndDay = standardDialog.findViewById(R.id.stnd_day_switch);
         stndDay.setChecked(false);
-        exp_date=1;
+        exp_date = 1;
         stndDay.setOnCheckedChangeListener(this);
         stndtomorrow = standardDialog.findViewById(R.id.tomorrow);
 
@@ -483,7 +507,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
 
     }
 
-    private void PopupTime() {
+    /*private void PopupTime() {
         timeDialog.setContentView(R.layout.popup_time);
         TimePicker simpleTimePicker = timeDialog.findViewById(R.id.simpleTimePicker);
         TextView confirm = (TextView) timeDialog.findViewById(R.id.confirm_exp);
@@ -501,16 +525,16 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 if (hourOfDay < 7.59) {
                     simpleTimePicker.setHour(8);
                     simpleTimePicker.setMinute(0);
-                    /*hour = simpleTimePicker.getHour();
-                    min = simpleTimePicker.getMinute();*/
+                    *//*hour = simpleTimePicker.getHour();
+                    min = simpleTimePicker.getMinute();*//*
                 } else if (hourOfDay > 19.59) {
                     simpleTimePicker.setHour(20);
                     simpleTimePicker.setMinute(0);
-                   /* hour = simpleTimePicker.getHour();
-                    min = simpleTimePicker.getMinute();*/
+                   *//* hour = simpleTimePicker.getHour();
+                    min = simpleTimePicker.getMinute();*//*
                 }
 
-                /*if (hour == 0) {
+                *//*if (hour == 0) {
 
                     hour += 12;
 
@@ -528,7 +552,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 } else {
 
                     format = "AM";
-                }*/
+                }*//*
 
                 String str_minute = "";
 
@@ -567,9 +591,9 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 }
                 hour = hourOfDay;
                 StringMinute = str_minute;
-                /*expTime.setText(hourOfDay + ":" + str_minute);
-                 *//* if (express.equals("1")) {*/
-                /*
+                *//*expTime.setText(hourOfDay + ":" + str_minute);
+     *//**//* if (express.equals("1")) {*//*
+     *//*
                 SharedPreferences sharedPreferences = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(PICK_HOUR, Integer.toString(hourOfDay));
@@ -579,9 +603,9 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 SharedPreferences review = getSharedPreferences(REVIEW, Context.MODE_PRIVATE);
                 SharedPreferences.Editor reditor = review.edit();
                 reditor.putString(R_EXP_DELVY, "express");
-                reditor.apply();*/
+                reditor.apply();*//*
                 Log.d(TAG, "hour=" + hourOfDay + " min = " + str_minute);
-                /*}*/
+                *//*}*//*
             }
         });
 
@@ -595,6 +619,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         timeDialog.setCanceledOnTouchOutside(true);
 
     }
+*/
 
     private void TodayDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
@@ -651,6 +676,34 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         finish();
     }
 
+    private void expDelAlert() {
+        // Create the object of AlertDialog Builder class
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityDeliveryTimeSlot.this);
+        // Set the message show for the Alert time
+        builder.setMessage(R.string.first_order_at_8_00am_nlast_order_at_8_00pm_nwithin_2_hours_upto_10km);
+        // Set Alert Title
+        builder.setTitle(R.string.please_note);
+        // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
+        builder.setCancelable(false);
+        // Set the positive button with ok name OnClickListener method is use of DialogInterface interface.
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                expressDelv.setChecked(false);
+                dialog.cancel();
+            }
+        });
+
+        // Create the Alert dialog
+        AlertDialog alertDialog = builder.create();
+
+        // Show the Alert Dialog box
+        alertDialog.show();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
+        Button buttonPositive = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        buttonPositive.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+
+    }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -658,8 +711,25 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         if (id == R.id.chk_express) {
             if (expressDelv.isChecked()) {
                 standardDelv.setChecked(false);
-                PopupTime();
-                express = "1";
+                //PopupTime();
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                String str = sdf.format(new Date());
+                Log.d(TAG, "sdf=" + str);
+                String[] splitArray = str.split(":");
+                String HH = splitArray[0];
+                String MM = splitArray[1];
+                Log.d(TAG, "HH=" + HH + " MM=" + MM);
+                int intHH = Integer.parseInt(HH);
+                Log.d(TAG, "intHH=" + intHH);
+
+                if (/*HH.equals("7")|| HH.equals("20")*/intHH < 8 || intHH > 19) {
+                    expDelAlert();
+                    express = "00";
+                } else {
+                    express = "1";
+                    StringHours = HH;
+                    StringMinute = MM;
+                }
                 stndTime.setText("");
             }
 
@@ -669,7 +739,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 expressDelv.setChecked(false);
                 StandardTimeCheckbox();
                 express = "0";
-                expTime.setText("");
+                //expTime.setText("");
             }
         }
         if (id == R.id.slot1) {

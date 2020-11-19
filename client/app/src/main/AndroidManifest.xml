@@ -76,7 +76,6 @@
         <activity
             android:name=".ride.MapsActivity2"
             android:label="@string/title_activity_maps2" />
-        <activity android:name=".deliver.ActivityDeliverPayment" />
         <activity
             android:name=".deliver.ActivityFillDropAddress"
             android:windowSoftInputMode="stateHidden" />

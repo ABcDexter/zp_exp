@@ -284,6 +284,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         } else if (id == R.id.pod) {
             payOnDelivery.setBackgroundResource(R.drawable.rect_box_outline_color_change);
             payOnPickup.setBackgroundResource(R.drawable.rect_box_outline);
+            upiPayment.setBackgroundResource(R.drawable.rect_box_outline);
             pMode = "3";
             //userDeliverySchedule();
         }

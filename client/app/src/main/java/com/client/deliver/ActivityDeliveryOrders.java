@@ -146,7 +146,7 @@ public class ActivityDeliveryOrders extends ActivityDrawer implements View.OnCli
                         editor.putString(DELIVERY_ID, scid);
                         editor.apply();*/
 
-                    Intent payment = new Intent(ActivityDeliveryOrders.this, ActivityDeliverPayment.class);
+                    Intent payment = new Intent(ActivityDeliveryOrders.this, ActivityDeliverConfirm.class);
                     startActivity(payment);
                 }
 

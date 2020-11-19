@@ -242,7 +242,7 @@
     <string name="package_pick_up_time">Package Pick up time</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
-    <string name="first_order_at_8_00am_nlast_order_at_8_00pm_nwithin_2_hours_upto_10km">First order at 8:00am\nlast order at 8:00pm\nWithin 2 hours up to 10km</string>
+    <string name="first_order_at_8_00am_nlast_order_at_8_00pm_nwithin_2_hours_upto_10km">First order can be placed at 8:00am\nLast order can be placed at 8:00pm\nDelivery within 2 hours for up to 10km</string>
     <string name="log_out">LOG OUT</string>
     <string name="profile">PROFILE</string>
     <string name="home">HOME</string>
