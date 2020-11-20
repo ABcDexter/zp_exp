@@ -92,7 +92,7 @@ public class MapsReceiverLocation extends AppCompatActivity implements OnMapRead
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, "");
 
-        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(getString(R.string.del_pick_up));
+        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(getString(R.string.del_drop));
         dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title(getString(R.string.your_loc));
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapNearBy);

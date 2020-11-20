@@ -190,7 +190,7 @@
     <string name="click_choose_picture">Click/Choose Picture</string>
     <string name="change_language">Change Language</string>
     <string name="night_mode">Dark Mode</string>
-    <string name="delivery_order_no">Delivery Order No</string>
+    <string name="delivery_order_no">Delivery Item</string>
     <string name="gender">GENDER</string>
     <string name="female">FEMALE</string>
     <string name="male">MALE</string>
@@ -372,4 +372,6 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="upload_aadhar_card">Upload Aadhar Card</string>
     <string name="_name">NAME</string>
     <string name="_mobile">MOBILE</string>
+    <string name="latest_to_oldest_u_2193">Latest to oldest U+2193</string>
+    <string name="assign_nearest_agent">We will assign the nearest agent with the highest rating within 10 minutes for faster delivery.</string>
 </resources>

@@ -13,6 +13,7 @@
     <string name="title_activity_maps_new_delivery">Map</string>
     <string name="title_activity_maps_client_location">Map</string>
     <string name="incorrect_otp">Incorrect OTP.</string>
+    <string name="first_reach_loc">You have not yet reached the pickup location.</string>
     <string name="something_wrong">Something went wrong. Please try again later.</string>
     <string name="offline">YOU ARE OFFLINE !</string>
     <string name="locked">YOU ARE CURRENTLY LOCKED ! \nCONTACT ADMIN</string>
@@ -23,5 +24,6 @@
     <string name="verification_failed">Verification Failed</string>
     <string name="no_new_delivery">NO new delivery</string>
     <string name="del_pick_up">Delivery Pick Up</string>
+    <string name="del_drop">Delivery Drop</string>
     <string name="your_loc">You Are Here</string>
 </resources>

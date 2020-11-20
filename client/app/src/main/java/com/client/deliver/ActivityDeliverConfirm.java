@@ -258,7 +258,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
                 ShowPopup(1);
                 break;*/
         } else if (id == R.id.infoPayment) {
-            ShowPopup(2);
+            ShowPopup();
                 /* case R.id.cancelRequest:
                 cancelRequest();
                 break;*/
@@ -510,33 +510,14 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         }, a::onFailure);
     }
 
-    private void deliveryRetire() {
-        String auth = stringAuth;
-        params.put("auth", auth);
-        // params.put("scid", did);
-        JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-delivery-retire");
-        UtilityApiRequestPost.doPOST(a, "user-delivery-retire", parameters, 20000, 0, response -> {
-            try {
-                a.onSuccess(response, 5);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-        }, a::onFailure);
-    }
 
-    private void ShowPopup(int id) {
+    private void ShowPopup() {
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
-        if (id == 1) {
-            infoText.setText(R.string.the_amount_shall_be_directly_credited_to_our_agent_account);
-        }
-        if (id == 2) {
-            infoText.setText(getString(R.string.base_price) + " ₹ 15" + "\n" + getString(R.string.distance) + distance + " km");
-        }
+
+        infoText.setText(getString(R.string.base_price) + " ₹ 15" + "\n" + getString(R.string.distance) + distance + " km");
+
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
@@ -563,7 +544,11 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
             sp_cookie.edit().putString(DELIVERY_ID, did).apply();
             /*Intent as = new Intent(ActivityDeliverConfirm.this, ActivityDeliverPayment.class);
             startActivity(as);*/
-            checkStatus();
+            //deliveryRetire();
+            Intent home = new Intent(ActivityDeliverConfirm.this, ActivityDeliverThankYou.class);
+            startActivity(home);
+            finish();
+            //checkStatus();
         }
         //response on hitting user-delivery-get-status API
         if (id == 3) {
@@ -583,7 +568,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
                 }
                 if (active.equals("false")) {
 
-                    deliveryRetire();
+                    //deliveryRetire();
                     Intent home = new Intent(ActivityDeliverConfirm.this, ActivityDeliverThankYou.class);
                     startActivity(home);
                     finish();

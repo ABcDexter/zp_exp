@@ -178,7 +178,7 @@
     <string name="click_choose_picture">फ़ोटो खींचें या चुनें</string>
     <string name="change_language">भाषा बदलें</string>
     <string name="night_mode">नाईट मोड</string>
-    <string name="delivery_order_no">डिलीवरी आर्डर संख्या</string>
+    <string name="delivery_order_no">डडिलीवरी आइटम</string>
     <string name="gender">लिंग</string>
     <string name="female">स्त्री</string>
     <string name="male">पुरुष</string>
@@ -231,7 +231,7 @@
     <string name="package_pick_up_time">पार्सल को उठाने का समय</string>
     <string name="today">आज</string>
     <string name="tomorrow">कल</string>
-    <string name="first_order_at_8_00am_nlast_order_at_8_00pm_nwithin_2_hours_upto_10km">सुबह 8:00 बजे पहला ऑर्डर \nरात 8:00 बजे अंतिम ऑर्डर  \n10 किमी तक के आर्डर २ घंटे के भीतर</string>
+    <string name="first_order_at_8_00am_nlast_order_at_8_00pm_nwithin_2_hours_upto_10km">पहला ऑर्डर सुबह 8 बजे किया जा सकता है\nअंतिम ऑर्डर रात 8 बजे किया जा सकता है\n10 किलोमीटर तक 2 घंटे के भीतर डिलीवरी</string>
     <string name="log_out">लॉग आउट</string>
     <string name="profile">प्रोफ़ाइल</string>
     <string name="home">होम</string>
@@ -359,4 +359,6 @@
     <string name="drop_point_mobile">कृपया उस व्यक्ति का मोबाइल नम्बर बतायें, जिस को जिससे पार्सल देना है</string>
     <string name="terms_amp_conditions"><![CDATA[" TERMS & CONDITIONS"]]></string>
     <string name="upload_aadhar_card">Upload Aadhar Card</string>
+    <string name="latest_to_oldest_u_2193">सबसे नए से सबसे पुराने तक U+2193</string>
+    <string name="assign_nearest_agent">हम तेज डिलीवरी के लिए 10 मिनट के भीतर उच्चतम रेटिंग वाले निकटतम एजेंट को नियुक्त करेंगे।</string>
 </resources>

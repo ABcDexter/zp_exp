@@ -38,16 +38,17 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
     public void onBindViewHolder(DeliveryListAdapter.ViewHolder holder, int position) {
 
         DeliveryListData listData = delivery_list_data.get(position);
-        holder.txtID.setText(listData.getDeliveryID());
+        holder.txtID.setText(listData.getDeliveryIType());
         holder.txtStatus.setText(listData.getDeliveryStatus());
         holder.txtPrice.setText(listData.getDeliveryPrice());
         holder.txtTip.setText(listData.getDeliveryTip());
+        holder.txtIType.setText(listData.getDeliveryID());
 
         holder.txtID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String valueScid = listData.getDeliveryID();
-                Log.d("DeliveryListAdapter","scid"+valueScid);
+                Log.d("DeliveryListAdapter","itype"+valueScid);
                 Intent details = new Intent(context, ActivityDeliverySummery.class);
                 details.putExtra("SCID",valueScid);
                 context.startActivity(details);
@@ -63,7 +64,7 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView txtID, txtStatus, txtPrice, txtTip;
+        private TextView txtID, txtStatus, txtPrice, txtTip, txtIType;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -71,6 +72,7 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
             txtStatus = itemView.findViewById(R.id.delivery_status);
             txtPrice = itemView.findViewById(R.id.delivery_price);
             txtTip = itemView.findViewById(R.id.delivery_tip);
+            txtIType = itemView.findViewById(R.id.delivery_itype);
 
         }
     }

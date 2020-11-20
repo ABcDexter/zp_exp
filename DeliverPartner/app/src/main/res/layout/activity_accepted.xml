@@ -23,25 +23,26 @@
                 android:text="Origin Information"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
+
             <Button
+                android:id="@+id/map"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View in map"
-                android:background="@drawable/btn_bkg"
-                android:textColor="#FFFFFF"
-                android:id="@+id/map"
                 android:layout_below="@id/txt"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="View in map"
+                android:textColor="#FFFFFF" />
 
             <LinearLayout
+                android:id="@+id/layout_name"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_below="@id/map"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/rect_box_outline"
                 android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_below="@id/map"
-                android:id="@+id/layout_name">
+                android:weightSum="2">
 
                 <TextView
                     android:id="@+id/txtr"
@@ -57,11 +58,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:layout_marginStart="28dp"
                     android:gravity="center|start"
                     android:text=":"
                     android:textAllCaps="true"
-                    android:textSize="23sp"
-                    android:layout_marginStart="28dp" />
+                    android:textSize="23sp" />
 
                 <TextView
                     android:id="@+id/src_per"
@@ -69,9 +70,9 @@
                     android:layout_height="50dp"
                     android:layout_weight="1"
                     android:gravity="center|end"
+                    android:maxLength="10"
                     android:paddingEnd="20dp"
                     android:text="XYZ"
-                    android:maxLength="10"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -85,14 +86,14 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_address"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_below="@id/layout_name"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/rect_box_outline"
                 android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_below="@id/layout_name"
-                android:id="@+id/layout_address">
+                android:weightSum="2">
 
                 <TextView
                     android:id="@+id/txtadd"
@@ -108,11 +109,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:layout_marginStart="28dp"
                     android:gravity="center|start"
                     android:text=":"
                     android:textAllCaps="true"
-                    android:textSize="23sp"
-                    android:layout_marginStart="28dp" />
+                    android:textSize="23sp" />
 
                 <TextView
                     android:id="@+id/src_add"
@@ -120,11 +121,12 @@
                     android:layout_height="50dp"
                     android:layout_weight="1"
                     android:gravity="center|end"
+                    android:maxLength="10"
                     android:paddingEnd="20dp"
                     android:text="XYZveferertrttrtrrtgtrgtrgtrgtrgtrgtrgt"
                     android:textAllCaps="true"
-                    android:textSize="20sp"
-                    android:maxLength="10"/>
+                    android:textSize="20sp" />
+
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/infoAdd"
                     android:layout_width="25dp"
@@ -135,14 +137,14 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_land"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_below="@id/layout_address"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/rect_box_outline"
                 android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_below="@id/layout_address"
-                android:id="@+id/layout_land">
+                android:weightSum="2">
 
                 <TextView
                     android:id="@+id/txtLand"
@@ -158,11 +160,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:layout_marginStart="28dp"
                     android:gravity="center|start"
                     android:text=":"
                     android:textAllCaps="true"
-                    android:textSize="23sp"
-                    android:layout_marginStart="28dp" />
+                    android:textSize="23sp" />
 
                 <TextView
                     android:id="@+id/src_land"
@@ -170,9 +172,9 @@
                     android:layout_height="50dp"
                     android:layout_weight="1"
                     android:gravity="center|end"
+                    android:maxLength="10"
                     android:paddingEnd="20dp"
                     android:text="XYZ"
-                    android:maxLength="10"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -186,14 +188,14 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_phn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_below="@id/layout_land"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/rect_box_outline"
                 android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_below="@id/layout_land"
-                android:id="@+id/layout_phn">
+                android:weightSum="2">
 
                 <TextView
                     android:id="@+id/txtPhn"
@@ -209,11 +211,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:layout_marginStart="28dp"
                     android:gravity="center|start"
                     android:text=":"
                     android:textAllCaps="true"
-                    android:textSize="23sp"
-                    android:layout_marginStart="28dp" />
+                    android:textSize="23sp" />
 
                 <TextView
                     android:id="@+id/src_phone"
@@ -221,9 +223,9 @@
                     android:layout_height="50dp"
                     android:layout_weight="1"
                     android:gravity="center|end"
+                    android:maxLength="10"
                     android:paddingEnd="20dp"
                     android:text="XYZ"
-                    android:maxLength="10"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -249,38 +251,38 @@
                 android:inputType="number"
                 android:maxLength="4"
                 android:padding="5dp"
-                android:textColor="@color/txtColor"
                 android:textAlignment="center"
                 android:textAllCaps="true"
+                android:textColor="@color/txtColor"
                 android:textSize="20sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:weightSum="2"
                 android:layout_below="@+id/enter_otp"
-                android:layout_marginTop="150dp">
+                android:layout_marginTop="150dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
                 <Button
+                    android:id="@+id/yes"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Start"
-                    android:background="@drawable/btn_bkg"
-                    android:textColor="#FFFFFF"
                     android:layout_marginEnd="5dp"
-                    android:id="@+id/yes"/>
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_bkg"
+                    android:text="Start"
+                    android:textColor="#FFFFFF" />
 
                 <Button
+                    android:id="@+id/no"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Reject"
                     android:layout_marginStart="5dp"
+                    android:layout_weight="1"
                     android:background="@drawable/btn_bkg"
-                    android:textColor="#FFFFFF"
-                    android:id="@+id/no"/>
+                    android:text="Reject"
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>

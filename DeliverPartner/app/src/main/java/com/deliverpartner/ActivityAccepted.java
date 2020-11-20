@@ -202,11 +202,16 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
             startActivity(home);
             finish();
         }
+        //response on hitting agent-delivery-start API
         if (id == 3) {
             try {
                 String status = response.getString("status");
                 if (status.equals("403")){
                     Toast.makeText(this, R.string.incorrect_otp, Toast.LENGTH_LONG).show();
+                    otp.requestFocus();
+                }
+                if (status.equals("402")){
+                    Toast.makeText(this, R.string.first_reach_loc, Toast.LENGTH_LONG).show();
                     otp.requestFocus();
                 }
                 /*Intent home = new Intent(ActivityRideAccepted.this, MapsActivity2.class);
