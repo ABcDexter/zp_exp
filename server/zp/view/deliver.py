@@ -1062,13 +1062,15 @@ def agentDeliveryReached(dct, _agent, deli):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkDeliveryStatus(['RC']) #,'AS'
+@checkDeliveryStatus(['RC','AS'])
 def agentDeliveryStart(dct, _agent, deli):
     '''
     Agent calls this to start the deli providing the OTP that the user shared
     HTTP Args:
         OTP
     '''
+    if deli.st == 'AS':
+        raise ZPException(402, 'Agent not reached')
     
     print(str(dct['otp']) , str(getOTP(deli.uan, deli.dan, deli.atime)))
     if str(dct['otp']) == str(getOTP(deli.uan, deli.dan, deli.atime)):
@@ -1077,7 +1079,7 @@ def agentDeliveryStart(dct, _agent, deli):
         deli.save()
     else:
         raise ZPException(403, 'Invalid OTP')
-
+        
     return HttpJSONResponse({})
 
 
