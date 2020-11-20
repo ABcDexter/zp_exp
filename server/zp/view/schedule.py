@@ -281,9 +281,14 @@ def userDeliverySchedule(dct, user):
     return HttpJSONResponse({})
     """
 
-
+    
     print("#######  ", len(dct), "Delivery scheduling request param : ",  dct)
 
+    # if user already has a delivery request, don't entertain this one
+    
+    if user.did not in  ['', '-1']:
+        raise ZPException(403, 'Already pending delivery')
+    
     delivery = Delivery()
     delivery.st = 'SC'
     delivery.uan = user.an  # 1 is used for auth of user
