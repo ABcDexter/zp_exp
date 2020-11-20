@@ -272,7 +272,7 @@ def userDeliveryRequest(dct, user): #, _delivery):
     delivery.srclat, delivery.srclng, delivery.dstlat, delivery.dstlng = dct['srclat'], dct['srclng'], \
                                                                          dct['dstlat'], dct['dstlng']
     # 3,4,5,6
-    delivery.srcpin, delivery.dstpin = dct['srcpin'],  dct['dstpin']
+    delivery.srcpin, delivery.dstpin = 263136, 263136 #dct['srcpin'],  dct['dstpin']
     # 7,8,9,10
     delivery.idim = dct['idim']
     delivery.itype = dct['itype']
