@@ -1219,7 +1219,7 @@ def authDeliveryHistory(dct, entity, deli):
     CATEGORIES = { 'DOC':'DOCUMENT' , 'CLO':'CLOTHES', 'FOO':'FOOD', 'HOU':'HOUSEHOLD', 'ELE':'ELETRONICS', 'OTH':'OTHER', 'MED':'MEDICINES'}
 
     qsDeli = Delivery.objects.filter(uan=entity.an).values() if type(entity) is User else Delivery.objects.filter(
-        dan=entity.an).order_by('rtime').values()
+        dan=entity.an).order_by('-rtime').values()
     ret = {}
     # print(qsDeli)
     # print("REEEEEEEEEEEE ",len(qsDeli))
