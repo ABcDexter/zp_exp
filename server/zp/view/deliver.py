@@ -408,6 +408,7 @@ def userDeliveryRQ(dct, user):
     
     deli = Delivery.objects.filter(scid=dct['scid'])[0]  # get that delivery
     deli.st = 'RQ' # now the delivery is in RQ
+    deli.rtime = datetime.now(timezone.utc) 
     deli.save()
     return HttpJSONResponse({})
 
@@ -872,13 +873,15 @@ def agentDeliveryGetStatus(_dct, agent):
                         'dstlng': deli.dstlng})
         # For ended delis that need payment send the price data
         if deli.st in Delivery.PAYABLE:
+            # SC, AS, RC, ST
             hs = User.objects.filter(an=deli.uan)[0].hs
             ret.update(getDelPrice(deli, hs))
 
         ret['active'] = deli.st in Delivery.AGENT_ACTIVE
         ret['st'] = deli.st
         ret['did'] = deli.id
-        ret['paid'] = True if len(Rate.objects.filter(id='deli' + str(deli.id))) > 0 else False #deli.pmode in ['0', '1']
+        ret['paid'] = deli.pmode #True if len(Rate.objects.filter(id='deli' + str(deli.id))) > 0 else False #deli.pmode in ['0', '1']
+        
         print(ret)
 
     return HttpJSONResponse(ret)
