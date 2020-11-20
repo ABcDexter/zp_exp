@@ -329,11 +329,11 @@ def userDeliverySchedule(dct, user):
     pMinute = int(dct['pMinute'])
     # 30, 31, 32, 33, 34
 
-    #if pMinute < 30:
-    #    pDinaank = datetime(pYear, pMonth, pDate, pHour - 6 , (pMinute + 30) % 60, 00)
-    #else:
-    #    pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , (pMinute - 30) % 60, 00)
-    pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , ( pMinute - 25 ) % 60  , 00)
+    if pMinute < 30:
+        pDinaank = datetime(pYear, pMonth, pDate, pHour - 6 , (pMinute + 35) % 60, 00)
+    else:
+        pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , (pMinute - 25) % 60, 00)
+    #pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , ( pMinute - 25 ) % 60  , 00) #does nto work for time with min <30, dated 20-11-2020
     print("DATETIME for RQ is : ", pDinaank)
 
     dYear = int(dct['pYear'])

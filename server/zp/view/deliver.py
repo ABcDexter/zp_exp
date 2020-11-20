@@ -1062,13 +1062,14 @@ def agentDeliveryReached(dct, _agent, deli):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkDeliveryStatus(['RC'])
+@checkDeliveryStatus(['RC']) #,'AS'
 def agentDeliveryStart(dct, _agent, deli):
     '''
     Agent calls this to start the deli providing the OTP that the user shared
     HTTP Args:
         OTP
     '''
+    
     print(str(dct['otp']) , str(getOTP(deli.uan, deli.dan, deli.atime)))
     if str(dct['otp']) == str(getOTP(deli.uan, deli.dan, deli.atime)):
         deli.st = 'ST'
@@ -1215,6 +1216,8 @@ def authDeliveryHistory(dct, entity, deli):
     '''
     returns the history of all Deliveries for a entity
     '''
+    CATEGORIES = { 'DOC': 'DOCUMENT' , 'CLO': 'CLOTHES', 'FOO':'FOOD',
+                'HOU':'HOUSEHOLD', 'ELE':'ELETRONIC', 'OTH':'OTHER'}
 
     qsDeli = Delivery.objects.filter(uan=entity.an).values() if type(entity) is User else Delivery.objects.filter(
         dan=entity.an).values()
@@ -1225,7 +1228,7 @@ def authDeliveryHistory(dct, entity, deli):
         states = []
         for i in qsDeli:
             # print(str(i['stime'])[:19])
-            print("Delivery state : ", str(i['st']))
+            #print("Delivery state : ", str(i['st']))
             if i['st'] in ['ST', 'FL', 'FN']:
                 strSTime = str(i['stime'])[:19]
                 sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
@@ -1239,8 +1242,8 @@ def authDeliveryHistory(dct, entity, deli):
                 eTime = 'ONGOING'
 
             hs = User.objects.filter(an=deli.uan)[0].hs
-            thisOneBro = {'scid': i['scid'],
-                          #'': i[],
+            thisOneBro = {#'scid': i['scid'], #TODO fix this with correct scid
+                          'scid': CATEGORIES[str(i['itype']),
                           'st': i['st'],
                           'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
                           'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
@@ -1250,7 +1253,7 @@ def authDeliveryHistory(dct, entity, deli):
                           }
 
             states.append(thisOneBro)
-        print(states)
+        #print(states)
         ret.update({'delis': states})
 
     return HttpJSONResponse(ret)
