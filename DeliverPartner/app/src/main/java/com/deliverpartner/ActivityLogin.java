@@ -74,7 +74,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     }
 
     public void onFailure(VolleyError error) {
-        Snackbar snackbar = Snackbar.make(scrollView, "LOGIN UNSUCCESSFUL! CHECK YOUR INTERNET CONNECTION", Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(scrollView, R.string.login_unsuccessful, Snackbar.LENGTH_LONG);
         snackbar.show();
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
@@ -106,40 +106,38 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     // called when any button is clicked
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.buttonVerifyPhoneNo:
-                verifyPhone();
-                break;
-            case R.id.login:
-                final ProgressBar simpleProgressBar = findViewById(R.id.simpleProgressBar);
-                String code = etOTP.getText().toString().trim();
-                loginKey = etLoginKey.getText().toString().trim();
-                if (code.length() != 6) {
-                    Log.d(TAG, "Error in OTP");
-                    etOTP.setError("Enter valid code");
-                    etOTP.requestFocus();
-                    return;
-                }
-                if (loginKey.isEmpty()|| loginKey.length() > 9) {
-                    Log.d(TAG, "Error in Login Key");
-                    etLoginKey.setError("Enter valid Login Key");
-                    etLoginKey.requestFocus();
-                    return;
-                }
-                //verifying the code entered manually
-                verifyVerificationCode(code);
+        int id = v.getId();
+        if (id == R.id.buttonVerifyPhoneNo) {
+            verifyPhone();
+        } else if (id == R.id.login) {
+            final ProgressBar simpleProgressBar = findViewById(R.id.simpleProgressBar);
+            String code = etOTP.getText().toString().trim();
+            loginKey = etLoginKey.getText().toString().trim();
+            if (code.length() != 6) {
+                Log.d(TAG, "Error in OTP");
+                etOTP.setError("Enter valid OTP");
+                etOTP.requestFocus();
+                return;
+            }
+            if (loginKey.isEmpty() || loginKey.length() > 9) {
+                Log.d(TAG, "Error in Login Key");
+                etLoginKey.setError("Enter valid Login Key");
+                etLoginKey.requestFocus();
+                return;
+            }
+            //verifying the code entered manually
+            verifyVerificationCode(code);
 
-                simpleProgressBar.setVisibility(View.VISIBLE);
-                Map<String, String> params = new HashMap();
-                params.put("pn", mobile);
-                params.put("key", loginKey);
+            simpleProgressBar.setVisibility(View.VISIBLE);
+            Map<String, String> params = new HashMap();
+            params.put("pn", mobile);
+            params.put("key", loginKey);
 
-                JSONObject parameters = new JSONObject(params);
-                ActivityLogin a = ActivityLogin.this;
-                Log.d(TAG, "Values: phone=" + mobile + "\n" + "key=" + loginKey);
-                Log.d(TAG, "UtilityApiRequestPost.doPOST login-agent");
-                UtilityApiRequestPost.doPOST(a, "login-agent", parameters, 30000, 0, a::onSuccess, a::onFailure);
-                break;
+            JSONObject parameters = new JSONObject(params);
+            ActivityLogin a = ActivityLogin.this;
+            Log.d(TAG, "Values: phone=" + mobile + "\n" + "key=" + loginKey);
+            Log.d(TAG, "UtilityApiRequestPost.doPOST login-agent");
+            UtilityApiRequestPost.doPOST(a, "login-agent", parameters, 30000, 0, a::onSuccess, a::onFailure);
         }
     }
 
@@ -185,7 +183,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         @Override
         public void onVerificationFailed(FirebaseException e) {
             Snackbar snackbar = Snackbar
-                    .make(scrollView, "Verification Failed: " + e.getMessage(), Snackbar.LENGTH_LONG);
+                    .make(scrollView, R.string.verification_failed + e.getMessage(), Snackbar.LENGTH_LONG);
             snackbar.show();
         }
     };

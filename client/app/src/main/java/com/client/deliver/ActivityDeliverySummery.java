@@ -24,13 +24,13 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivityDeliverySummery extends ActivityDrawer implements View.OnClickListener {
+public class ActivityDeliverySummery extends ActivityDrawer {
     private static final String TAG = "ActivityDeliverySummery";
     String stringAuthKey, stringSCID;
     TextView pName, pNum, dName, dNum;
     TextView pAddress, dAddress, content, size, deliveryType, time, date;
     //Dialog myDialog;
-    TextView dialog_txt, trackDelivery;
+    TextView dialog_txt;
     SwipeRefreshLayout swipeRefresh;
     ScrollView scrollView;
     ActivityDeliverySummery a = ActivityDeliverySummery.this;
@@ -99,7 +99,6 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
         date = findViewById(R.id.delv_date);
         userDeliverySummery();
 
-        trackDelivery = findViewById(R.id.track_delivery);
         swipeRefresh = findViewById(R.id.swipeRefresh);
         //trackDelivery.setOnClickListener(this);
 
@@ -221,7 +220,6 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
             }
 
 
-
         }
 
         //response on hitting user-delivery-get-info API
@@ -233,21 +231,21 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
                 String st = response.getString("st");
                 //String active = response.getString("active");
 
-                if (st.equals("SC")) {
+                /*if (st.equals("SC")) {
                     //String scid = response.getString("scid");
                     //String price = response.getString("price");
-                        /*SharedPreferences pref = this.getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
+                        *//*SharedPreferences pref = this.getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = pref.edit();
                         editor.putString(DELIVERY_ID, scid);
-                        editor.apply();*/
+                        editor.apply();*//*
 
-                    Intent payment = new Intent(ActivityDeliverySummery.this, ActivityDeliverPayment.class);
+                    Intent payment = new Intent(ActivityDeliverySummery.this, ActivityDeliverConfirm.class);
                     startActivity(payment);
-                }
+                    finish();
+                }*/
 
-                if (st.equals("RQ") || st.equals("PD")) {
-                    /*Intent delConfirm = new Intent(ActivityDeliveryOrders.this, ActivityDeliverConfirm.class);
-                    startActivity(delConfirm);*/
+                if (st.equals("RQ") || st.equals("PD") || st.equals("SC")) {
+
                     ShowPopup(0, "");
 
                     SharedPreferences preferencesD = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
@@ -351,15 +349,6 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
         }, a::onFailure);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.track_delivery:
-                //trackDelivery();
-                break;
-
-        }
-    }
 
     private void ShowPopup(int id, String info) {
 
@@ -377,7 +366,7 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
         if (id == 2) {
             //dialog_txt.setText(R.string.your_delivery_agent_will_arrive_shortly + info);
             dialog_txt.setText(String.format("OTP : %s", info));
-            Log.d(TAG, "AS OTP = "+ info);
+            Log.d(TAG, "AS OTP = " + info);
         }
         //FL
         if (id == 3) {
@@ -403,7 +392,7 @@ public class ActivityDeliverySummery extends ActivityDrawer implements View.OnCl
         if (id == 8) {
             //dialog_txt.setText(R.string.agent_has_arrived + INFO);
             dialog_txt.setText(String.format("OTP : %s", info));
-            Log.d(TAG, "RC OTP = "+ info);
+            Log.d(TAG, "RC OTP = " + info);
         }
 
     }

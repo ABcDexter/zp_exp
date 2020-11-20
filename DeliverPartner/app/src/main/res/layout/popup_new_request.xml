@@ -12,10 +12,49 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:text="text appears here"
+        android:text=""
         android:textAllCaps="false"
         android:textColor="#000"
         android:textSize="22sp"
-        android:padding="15dp" />
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="30dp"/>
+
+    <LinearLayout
+        android:id="@+id/layout_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/info_text"
+        android:layout_marginTop="35dp"
+        android:paddingBottom="30dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/reject_request"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_close"
+            android:text="@string/no"
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/accept_request"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableTop="@drawable/ic_check"
+            android:text="@string/yes"
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:textSize="18sp" />
+    </LinearLayout>
 
 </RelativeLayout>

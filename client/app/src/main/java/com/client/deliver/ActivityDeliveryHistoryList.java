@@ -44,7 +44,7 @@ public class ActivityDeliveryHistoryList extends AppCompatActivity {
             for (int i = 0; i < array.length(); i++) {
                 JSONObject ob = array.getJSONObject(i);
                 DeliveryListData ld = new DeliveryListData(ob.getString("scid"), ob.getString("st"),
-                        ob.getString("price"), ob.getString("tip"));
+                        ob.getString("price"), ob.getString("tip"),ob.getString("itype"));
                 list_data.add(ld);
             }
             rv.setAdapter(adapter);
@@ -89,7 +89,7 @@ public class ActivityDeliveryHistoryList extends AppCompatActivity {
         JSONObject parameters = new JSONObject(params);
         ActivityDeliveryHistoryList a = ActivityDeliveryHistoryList.this;
         Log.d(TAG, "auth = " + auth);
-        Log.d("CONTROL", "Control moved to to UtilityApiRequestPost auth-delivery-history");
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost auth-delivery-history");
         UtilityApiRequestPost.doPOST(a, "auth-delivery-history", parameters, 30000, 0,
                 a::onSuccess, a::onFailure);
 

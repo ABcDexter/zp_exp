@@ -58,10 +58,6 @@ public class ActivityWelcome extends AppCompatActivity {
         zippe_iv = findViewById(R.id.iv_zippee);
         zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
 
-
-
-
-
         moveit();//animation of zbee
     }
 

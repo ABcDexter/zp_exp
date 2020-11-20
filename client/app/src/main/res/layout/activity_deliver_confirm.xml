@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
-                android:text="@string/are_you_ready_to_confirm_your_delivery"
+                android:text="@string/please_make_payment_to_nconfirm_your_delivery"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="23sp" />
@@ -37,7 +37,6 @@
                     android:id="@+id/rl_cost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="30dp"
                     android:background="@drawable/rect_box_outline"
                     android:orientation="horizontal"
                     android:weightSum="2">
@@ -125,24 +124,26 @@
 
                  </RelativeLayout>
  -->
-                <ImageView
+                <!--<ImageView
                     android:id="@+id/image_zbee"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/scooty_left" />
+                    android:src="@drawable/scooty_left" />-->
 
                 <include
                     android:id="@+id/layoutZippeee"
                     layout="@layout/zippe_logo"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp" />
+                    android:layout_height="70dp"
+                    android:layout_marginBottom="50dp"
+                    android:layout_marginTop="50dp"/>
 
-                <ImageView
+                <!--<ImageView
                     android:id="@+id/image_zbee_below"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/scooty_right"
-                    android:visibility="invisible" />
+                    android:visibility="invisible" />-->
 
                 <!--<TextView
                     android:layout_width="wrap_content"
@@ -217,38 +218,79 @@
 
                 </RelativeLayout>-->
 
+                <TextView
+                    android:id="@+id/upi"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/rect_box_outline"
+                    android:drawableEnd="@drawable/ic_bhim"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@string/make_payment_using_upi"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+                <TextView
+                    android:id="@+id/pay_pickup"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/rect_box_outline"
+                    android:drawableEnd="@drawable/money"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@string/cash_on_pickup"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/pod"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/rect_box_outline"
+                        android:drawableEnd="@drawable/money"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="@string/pay_on_delivery"
+                        android:textAllCaps="true"
+                        android:textSize="23sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignEnd="@id/pod"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginEnd="40dp"
+                        android:src="@drawable/ic_bhim" />
+                </RelativeLayout>
 
             </LinearLayout>
 
-
-            <LinearLayout
+            <ImageButton
+                android:id="@+id/confirm_btn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="20dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <!-- <Button
-                     android:id="@+id/cancelRequest"
-                     android:layout_width="0dp"
-                     android:layout_height="50dp"
-                     android:layout_marginEnd="5dp"
-                     android:layout_weight="1"
-                     android:background="@drawable/rect_box_solid"
-                     android:text="CANCEL" />-->
-
-                <ImageButton
-                    android:id="@+id/confirm_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="2"
-                    android:background="@drawable/btn_bkg"
-                    android:padding="15dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/confirm"
-                    android:textAllCaps="true" />
-            </LinearLayout>
+                android:background="@drawable/btn_bkg"
+                android:padding="15dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/confirm"
+                android:textAllCaps="true" />
+            <Button
+                android:id="@+id/dummy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:text="dummy"
+                android:visibility="visible" />
         </RelativeLayout>
     </ScrollView>
 

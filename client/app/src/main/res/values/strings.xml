@@ -92,9 +92,11 @@
     <string name="thank_your_agent">Thank your agent</string>
     <string name="enter_tip">Enter Tip</string>
     <string name="colon">:</string>
-    <string name="please_make_payment_to_nconfirm_your_delivery">Please make payment to \nconfirm your delivery</string>
+    <string name="please_make_payment_to_nconfirm_your_delivery">Please choose payment mode to \nconfirm your delivery</string>
     <string name="please_pay">Please Pay \u0020</string>
-    <string name="make_payment_using_upi">make payment using upi</string>
+    <string name="make_payment_using_upi">pay now using upi</string>
+    <string name="pay_on_delivery">pay on delivery</string>
+    <string name="cash_on_pickup">pay by cash on pickup</string>
     <string name="your_agent_will_be_assigned_shortly_please_keep_you_your_package_ready_nthank_you_for_choosing">Your agent will be assigned shortly. Please keep you your package ready.</string>
     <string name="thank_you_for_choosing">Thank you for choosing</string>
     <string name="to_view_your_order">to view your order</string>
@@ -190,7 +192,7 @@
     <string name="click_choose_picture">Click/Choose Picture</string>
     <string name="change_language">Change Language</string>
     <string name="night_mode">Dark Mode</string>
-    <string name="delivery_order_no">Delivery Order No</string>
+    <string name="delivery_order_no">Delivery Item</string>
     <string name="gender">GENDER</string>
     <string name="female">FEMALE</string>
     <string name="male">MALE</string>
@@ -242,7 +244,7 @@
     <string name="package_pick_up_time">Package Pick up time</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
-    <string name="first_order_at_8_00am_nlast_order_at_8_00pm_nwithin_2_hours_upto_10km">First order at 8:00am\nlast order at 8:00pm\nWithin 2 hours up to 10km</string>
+    <string name="first_order_at_8_00am_nlast_order_at_8_00pm_nwithin_2_hours_upto_10km">First order can be placed at 8:00am\nLast order can be placed at 8:00pm\nDelivery within 2 hours for up to 10km</string>
     <string name="log_out">LOG OUT</string>
     <string name="profile">PROFILE</string>
     <string name="home">HOME</string>
@@ -377,4 +379,6 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="supervisor_phone" translatable="false">Supervisor Phone</string>
     <string name="otp_unlock" translatable="false">Otp Unlock</string>
     <string name="upload_aadhar_card">Upload Aadhar Card</string>
+    <string name="latest_to_oldest_u_2193">Latest to oldest U+2193</string>
+    <string name="assign_nearest_agent">We will assign the nearest agent with the highest rating within 10 minutes for faster delivery.</string>
 </resources>

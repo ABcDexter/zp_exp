@@ -20,18 +20,11 @@ import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
 import com.client.R;
-import com.client.UtilityApiRequestPost;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ActivityDeliveryReview extends ActivityDrawer implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
@@ -76,7 +69,6 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
     String lat, lng, stringAuth, stringAN, pickLat, pickLng, pickLand, pickPin, pickMobile;
 
     private static final String TAG = "ActivityDeliveryReview";
-
 
     public static final String PICK_LAT = "com.client.delivery.PickLatitude";
     public static final String PICK_LNG = "com.client.delivery.PickLongitude";
@@ -192,7 +184,7 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
         }
         time = findViewById(R.id.delv_time);
         if (!stndHour.equals("")) {
-            time.setText(stndHour + ":" + stndMin);
+            time.setText(expHour);
         }
         if (!expHour.equals("")) {
             time.setText(expHour + ":" + expMin);
@@ -208,35 +200,28 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.confirm_deliver:
-                if (agree == 0) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                    } else {
-                        vibrator.vibrate(1000);
-                    }
-                    Snackbar snackbar1 = Snackbar.make(scrollView, R.string.agree_to_terms, Snackbar.LENGTH_LONG);
-                    View sbView1 = snackbar1.getView();
-                    TextView textView1 = (TextView) sbView1.findViewById(R.id.snackbar_text);
-                    textView1.setTextColor(Color.YELLOW);
-                    snackbar1.show();
+        if (v.getId() == R.id.confirm_deliver) {
+            if (agree == 0) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                 } else {
-                    storeData();
-                    /*Intent confirm = new Intent(ActivityDeliveryReview.this, ActivityDeliverConfirm.class);
-                    startActivity(confirm);*/
-                    deliveryEstimate();
+                    vibrator.vibrate(1000);
                 }
-                break;
-
+                Snackbar snackbar1 = Snackbar.make(scrollView, R.string.agree_to_terms, Snackbar.LENGTH_LONG);
+                View sbView1 = snackbar1.getView();
+                TextView textView1 = (TextView) sbView1.findViewById(R.id.snackbar_text);
+                textView1.setTextColor(Color.YELLOW);
+                snackbar1.show();
+            } else {
+                    Intent confirm = new Intent(ActivityDeliveryReview.this, ActivityDeliverConfirm.class);
+                    startActivity(confirm);
+                //deliveryEstimate();
+            }
         }
     }
 
-    private void storeData() {
 
-    }
-
-    public void onSuccess(JSONObject response, int id) throws JSONException {
+    /*public void onSuccess(JSONObject response, int id) throws JSONException {
         //response on hitting user-delivery-estimate API
         Log.d("DeliveryReview" + "jsObjRequest", "RESPONSE:" + response);
         if (id == 1) {
@@ -254,12 +239,12 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
     public void onFailure(VolleyError error) {
         Log.d("DeliveryReview", "onErrorResponse: " + error.toString());
         Log.d("DeliveryReview", "Error:" + error.toString());
-    }
+    }*/
 
-    ActivityDeliveryReview a = ActivityDeliveryReview.this;
-    Map<String, String> params = new HashMap();
-
-    private void deliveryEstimate() {
+    /* ActivityDeliveryReview a = ActivityDeliveryReview.this;
+     Map<String, String> params = new HashMap();
+ */
+   /* private void deliveryEstimate() {
         String auth = stringAuth;
         params.put("auth", auth);
         params.put("srclat", pickLat);
@@ -270,7 +255,6 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
         params.put("idim", conSize);
         params.put("express", EXPress);//0,1
         params.put("pmode", "1");
-
 
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth + " srclat= " + pickLat
@@ -286,7 +270,7 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
             }
         }, a::onFailure);
     }
-
+*/
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         int id = buttonView.getId();

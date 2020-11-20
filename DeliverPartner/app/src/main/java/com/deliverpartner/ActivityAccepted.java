@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,22 +44,18 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
     public static final String SRC_PHN = "SrcPhn";
     public static final String SRCLAT = "DeliverySrcLat";
     public static final String SRCLNG = "DeliverySrcLng";
-    public static final String DST_PER = "DSTPer";
-    public static final String DST_ADD = "DSTAdd";
-    public static final String DST_LND = "DSTLnd";
-    public static final String DST_PHN = "DSTPhn";
-    public static final String DSTLAT = "DeliveryDstLat";
-    public static final String DSTLNG = "DeliveryDstLng";
-    String strAuth;
+
     ActivityAccepted a = ActivityAccepted.this;
     Map<String, String> params = new HashMap();
 
-    TextView person, address, landmark, phone;
-    String strName, strAddress, strLandmark;
+    TextView person, address, landmark, phone, amount, yesPayment, noPayment;
+    String strName, strAddress, strLandmark, price, strAuth, checkOtp;
+    String paid="00";
     Button yes, no, map;
     EditText otp;
-    ImageButton nameInfo, addInfo, landInfo, phoneDial;
+    ImageButton nameInfo, addInfo, landInfo, phoneDial, infoCash;
     Dialog myDialog;
+    LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +78,9 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
         addInfo = findViewById(R.id.infoAdd);
         landInfo = findViewById(R.id.infoLand);
         phoneDial = findViewById(R.id.dialPhn);
+        linearLayout = findViewById(R.id.layout_pay);
+        amount = findViewById(R.id.amount);
+        infoCash = findViewById(R.id.infoAmount);
 
         yes.setOnClickListener(this);
         no.setOnClickListener(this);
@@ -88,6 +88,7 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
         nameInfo.setOnClickListener(this);
         addInfo.setOnClickListener(this);
         landInfo.setOnClickListener(this);
+        infoCash.setOnClickListener(this);
         phoneDial.setOnClickListener(this);
         phone.setOnClickListener(this);
         getStatus();
@@ -154,10 +155,17 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
                 if (active.equals("true")) {
                     String status = response.getString("st");
                     String did = response.getString("did");
+                    paid = response.getString("paid");
+
+                    if (paid.equals("2")) {
+                        linearLayout.setVisibility(View.VISIBLE);
+                        price = response.getString("price");
+                        amount.setText("₹ " + price);
+                    } else linearLayout.setVisibility(View.GONE);
                     SharedPreferences sp_cookie = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(DID, did).apply();
 
-                    if (status.equals("AS")) {
+                    if (status.equals("AS") || status.equals("RC")) {
                         String per = response.getString("srcper");
                         String add = response.getString("srcadd");
                         String land = response.getString("srcland");
@@ -180,9 +188,7 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
                         delvyPref.edit().putString(SRC_PHN, phn).apply();
                         delvyPref.edit().putString(SRCLAT, lat).apply();
                         delvyPref.edit().putString(SRCLNG, lng).apply();
-                        /*Intent home = new Intent(ActivityAccepted.this, ActivityHome.class);
-                        startActivity(home);
-                        finish();*/
+
                     }
 
                     if (status.equals("ST")) {
@@ -207,11 +213,16 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
             startActivity(home);
             finish();
         }
+        //response on hitting agent-delivery-start API
         if (id == 3) {
             try {
                 String status = response.getString("status");
-                if (status.equals("403")){
-                    Toast.makeText(this, "Incorrect OTP.", Toast.LENGTH_LONG).show();
+                if (status.equals("403")) {
+                    Toast.makeText(this, R.string.incorrect_otp, Toast.LENGTH_LONG).show();
+                    otp.requestFocus();
+                }
+                if (status.equals("402")) {
+                    Toast.makeText(this, R.string.first_reach_loc, Toast.LENGTH_LONG).show();
                     otp.requestFocus();
                 }
                 /*Intent home = new Intent(ActivityRideAccepted.this, MapsActivity2.class);
@@ -228,6 +239,7 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
     }
 
     public void onFailure(VolleyError error) {
+        Toast.makeText(a, R.string.something_wrong, Toast.LENGTH_LONG).show();
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
     }
@@ -236,15 +248,31 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
-
+        LinearLayout ln = (LinearLayout) myDialog.findViewById(R.id.layout_btn);
+        yesPayment = (TextView) myDialog.findViewById(R.id.reject_request);
+        noPayment = (TextView) myDialog.findViewById(R.id.accept_request);
         if (id == 1) {
             infoText.setText(strName);
+            myDialog.setCanceledOnTouchOutside(true);
         }
         if (id == 2) {
             infoText.setText(strAddress);
+            myDialog.setCanceledOnTouchOutside(true);
         }
         if (id == 3) {
             infoText.setText(strLandmark);
+            myDialog.setCanceledOnTouchOutside(true);
+        }
+        if (id == 4) {
+            infoText.setText("Please collect ₹ " + price + " in cash");
+            myDialog.setCanceledOnTouchOutside(true);
+        }
+        if (id == 5) {
+            ln.setVisibility(View.VISIBLE);
+            infoText.setText("Have you collected ₹ " + price + " in cash ?");
+            yesPayment.setOnClickListener(this);
+            noPayment.setOnClickListener(this);
+            myDialog.setCanceledOnTouchOutside(false);
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
@@ -264,36 +292,37 @@ public class ActivityAccepted extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.yes:
-                String checkOtp = otp.getText().toString();
-                if (!checkOtp.isEmpty()) {
-                    delvyStart(checkOtp);//method to check if the OTP entered is correct or not
+        int id = v.getId();
+        if (id == R.id.yes) {
+            checkOtp = otp.getText().toString();
+            if (!checkOtp.isEmpty()) {
+                if (paid.equals("1")|| paid.equals("3")) {
+                    delvyStart(checkOtp);
                 } else
-                    otp.requestFocus();// if OTP field is empty, then driverStartTrip method will not be called
-                break;
-            case R.id.no:
-                delvyCancel();
-                break;
-            case R.id.map:
-                Intent map = new Intent(ActivityAccepted.this, MapsClientLocation.class);
-                startActivity(map);
-                finish();
-                break;
-
-            case R.id.infoName:
-                ShowPopup(1);
-                break;
-            case R.id.infoAdd:
-                ShowPopup(2);
-                break;
-            case R.id.infoLand:
-                ShowPopup(3);
-                break;
-            case R.id.dialPhn:
-            case R.id.src_phone:
-                callClientPhn();
-                break;
+                    ShowPopup(5);
+            } else
+                otp.requestFocus();// if OTP field is empty, then driverStartTrip method will not be called
+        } else if (id == R.id.no) {
+            delvyCancel();
+        } else if (id == R.id.map) {
+            Intent map = new Intent(ActivityAccepted.this, MapsClientLocation.class);
+            startActivity(map);
+            finish();
+        } else if (id == R.id.infoName) {
+            ShowPopup(1);
+        } else if (id == R.id.infoAdd) {
+            ShowPopup(2);
+        } else if (id == R.id.infoLand) {
+            ShowPopup(3);
+        } else if (id == R.id.infoAmount) {
+            ShowPopup(4);
+        } else if (id == R.id.reject_request) {
+            myDialog.dismiss();
+        } else if (id == R.id.accept_request) {
+            delvyStart(checkOtp);//method to check if the OTP entered is correct or not
+            myDialog.dismiss();
+        } else if (id == R.id.dialPhn || id == R.id.src_phone) {
+            callClientPhn();
         }
     }
 }

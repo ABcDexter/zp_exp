@@ -55,8 +55,8 @@
     <string name="pick_up">Pick Up</string>
     <string name="destination">Destination</string>
     <string name="your_location">You are here</string>
-    <string name="completed_rides">COMPLETED RIDES</string>
-    <string name="total_earnings">total earnings</string>
+    <string name="completed_rides">COMPLETED RIDE HISTORY</string>
+    <string name="total_earnings">Today\'s earnings</string>
     <string name="enter_mobile">ENTER MOBILE</string>
     <string name="request_otp">request otp</string>
     <string name="enter_otp_to_verify">ENTER OTP TO VERIFY</string>

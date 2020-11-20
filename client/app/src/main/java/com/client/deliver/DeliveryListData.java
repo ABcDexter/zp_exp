@@ -5,6 +5,7 @@ public class DeliveryListData {
     private String deliveryPrice;
     private String deliveryStatus;
     private String deliveryTip;
+    private String deliveryIType;
 
 
     public String getDeliveryID() {
@@ -18,14 +19,20 @@ public class DeliveryListData {
     public String getDeliveryStatus() {
         return deliveryStatus;
     }
+
     public String getDeliveryTip() {
         return deliveryTip;
     }
 
-    public DeliveryListData(String deliveryID, String deliveryPrice, String deliveryStatus, String deliveryTip) {
+    public String getDeliveryIType() {
+        return deliveryIType;
+    }
+
+    public DeliveryListData(String deliveryID, String deliveryPrice, String deliveryStatus, String deliveryTip, String deliveryIType) {
         this.deliveryID = deliveryID;
         this.deliveryPrice = deliveryPrice;
         this.deliveryStatus = deliveryStatus;
         this.deliveryTip = deliveryTip;
+        this.deliveryIType = deliveryIType;
     }
 }
