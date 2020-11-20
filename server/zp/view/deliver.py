@@ -872,7 +872,7 @@ def agentDeliveryGetStatus(_dct, agent):
                         'dstlat': deli.dstlat,
                         'dstlng': deli.dstlng})
         # For ended delis that need payment send the price data
-        if deli.st in Delivery.PAYABLE:
+        if deli.st in ['SC', 'AS', 'RC', 'ST']: # Delivery.PAYABLE:
             # SC, AS, RC, ST
             hs = User.objects.filter(an=deli.uan)[0].hs
             ret.update(getDelPrice(deli, hs))
