@@ -875,7 +875,7 @@ def agentDeliveryGetStatus(_dct, agent):
         if deli.st in ['SC', 'AS', 'RC', 'ST']: # Delivery.PAYABLE:
             # SC, AS, RC, ST
             hs = User.objects.filter(an=deli.uan)[0].hs
-            ret.update(getDelPrice(deli, hs))
+            ret['price'] = getDelPrice(deli, hs)['price']
 
         ret['active'] = deli.st in Delivery.AGENT_ACTIVE
         ret['st'] = deli.st
