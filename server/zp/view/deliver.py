@@ -1243,7 +1243,7 @@ def authDeliveryHistory(dct, entity, deli):
             hs = User.objects.filter(an=deli.uan)[0].hs
             val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
             thisOneBro = {#'scid': i['scid'], #TODO fix this with correct scid
-                          'scid': ,
+                          'scid': val,
                           'st': i['st'],
                           'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
                           'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
