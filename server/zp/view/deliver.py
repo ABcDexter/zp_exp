@@ -11,7 +11,7 @@ from django.db.utils import OperationalError, IntegrityError
 
 from url_magic import makeView
 from ..models import Place, Delivery, Progress, Location
-from ..models import User, Vehicle, Agent
+from ..models import User, Vehicle, Agent, Rate
 from ..utils import ZPException, HttpJSONResponse, saveTmpImgFile, doOCR, log, aadhaarNumVerify, renameTmpImgFiles, \
     googleDistAndTime
 from ..utils import getOTP
