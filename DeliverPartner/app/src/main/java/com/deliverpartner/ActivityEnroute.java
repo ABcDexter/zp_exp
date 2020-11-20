@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,15 +42,17 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
     public static final String DST_PHN = "DSTPhn";
     public static final String DSTLAT = "DeliveryDstLat";
     public static final String DSTLNG = "DeliveryDstLng";
-    String strAuth;
+
     ActivityEnroute a = ActivityEnroute.this;
     Map<String, String> params = new HashMap();
 
-    TextView person, address, landmark, phone, senderPhn;
-    Button yes, no, map;
-    ImageButton nameInfo, addInfo, landInfo, phoneDial, sendPhnDial;
+    TextView person, address, landmark, phone, senderPhn, amount, yesPayment, noPayment;
+    Button yes, no, map, btnCash, btnUPI;
+    ImageButton nameInfo, addInfo, landInfo, phoneDial, sendPhnDial, infoCash;
     Dialog myDialog;
-    String strName, strAddress, strLandmark;
+    String strName, strAddress, strLandmark, price, strAuth;
+    String paid = "00";
+    LinearLayout linearLayout, layoutMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +75,16 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
         landInfo = findViewById(R.id.infoLand);
         phoneDial = findViewById(R.id.dialPhn);
         sendPhnDial = findViewById(R.id.dialSendPhn);
+        linearLayout = findViewById(R.id.layout_pay);
+        layoutMode = findViewById(R.id.layout_mode);
+        amount = findViewById(R.id.amount);
+        infoCash = findViewById(R.id.infoAmount);
+        btnCash = findViewById(R.id.cash);
+        btnUPI = findViewById(R.id.upi);
 
         yes.setOnClickListener(this);
+        btnCash.setOnClickListener(this);
+        btnUPI.setOnClickListener(this);
         no.setOnClickListener(this);
         map.setOnClickListener(this);
         nameInfo.setOnClickListener(this);
@@ -83,6 +94,9 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
         sendPhnDial.setOnClickListener(this);
         phone.setOnClickListener(this);
         sendPhnDial.setOnClickListener(this);
+        infoCash.setOnClickListener(this);
+        btnCash.setOnClickListener(this);
+        btnUPI.setOnClickListener(this);
 
         getStatus();
         myDialog = new Dialog(this);
@@ -148,6 +162,18 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
                     SharedPreferences sp_cookie = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(DID, did).apply();
 
+                    paid = response.getString("paid");
+
+                    if (paid.equals("3")) {
+                        linearLayout.setVisibility(View.VISIBLE);
+                        layoutMode.setVisibility(View.VISIBLE);
+                        price = response.getString("price");
+                        amount.setText("₹ " + price);
+                    } else {
+                        linearLayout.setVisibility(View.GONE);
+                        layoutMode.setVisibility(View.GONE);
+                    }
+
                     if (status.equals("ST")) {
                         String per = response.getString("dstper");
                         String add = response.getString("dstadd");
@@ -193,6 +219,11 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
 
         //response on hitting agent-delivery-done API
         if (id == 3) {
+            retireAgent();
+
+        }
+        //response on hitting agent-delivery-retire API
+        if (id == 4) {
             Intent home = new Intent(ActivityEnroute.this, ActivityHome.class);
             startActivity(home);
             finish();
@@ -205,19 +236,52 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
         Log.d(TAG, "Error:" + error.toString());
     }
 
+    private void retireAgent() {
+        String auth = strAuth;
+        params.put("auth", auth);
+        // params.put("scid", did);
+        JSONObject parameters = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME agent-delivery-retire");
+        UtilityApiRequestPost.doPOST(a, "agent-delivery-retire", parameters, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 4);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+    }
+
     private void ShowPopup(int id) {
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
-
+        LinearLayout ln = (LinearLayout) myDialog.findViewById(R.id.layout_btn);
+        yesPayment = (TextView) myDialog.findViewById(R.id.reject_request);
+        noPayment = (TextView) myDialog.findViewById(R.id.accept_request);
         if (id == 1) {
             infoText.setText(strName);
+            myDialog.setCanceledOnTouchOutside(true);
         }
         if (id == 2) {
             infoText.setText(strAddress);
+            myDialog.setCanceledOnTouchOutside(true);
         }
         if (id == 3) {
             infoText.setText(strLandmark);
+            myDialog.setCanceledOnTouchOutside(true);
+        }
+        if (id == 4) {
+            infoText.setText("Please collect ₹ " + price + " in cash");
+            myDialog.setCanceledOnTouchOutside(true);
+        }
+        if (id == 5) {
+            ln.setVisibility(View.VISIBLE);
+            infoText.setText("Have you collected ₹ " + price);
+            yesPayment.setOnClickListener(this);
+            noPayment.setOnClickListener(this);
+            myDialog.setCanceledOnTouchOutside(false);
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
@@ -238,7 +302,10 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.completed) {
-            delvyEnd();
+            if (paid.equals("1") || paid.equals("2")) {
+                delvyEnd();
+            } else
+                ShowPopup(5);
         } else if (id == R.id.failed) {
             delvyFail();
         } else if (id == R.id.map) {
@@ -257,6 +324,22 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
         } else if (id == R.id.dst_phone || id == R.id.dst_send_phone) {
             String senderNo = senderPhn.getText().toString();
             callClientPhn(senderNo);
+        } else if (id == R.id.infoAmount) {
+            ShowPopup(4);
+        } else if (id == R.id.reject_request) {
+            myDialog.dismiss();
+        } else if (id == R.id.accept_request) {
+            delvyEnd();
+            myDialog.dismiss();
+        } else if (id == R.id.cash) {
+            btnCash.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            btnUPI.setBackgroundResource(R.drawable.rect_box_outline);
+        } else if (id == R.id.upi) {
+            btnUPI.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            btnCash.setBackgroundResource(R.drawable.rect_box_outline);
+            Intent qrCode = new Intent(ActivityEnroute.this, ActivityUPICode.class);
+            startActivity(qrCode);
+            finish();
         }
     }
 }

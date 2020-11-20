@@ -17,10 +17,10 @@
             <TextView
                 android:id="@+id/txt"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="Origin Information"
+                android:text="@string/delivery_pickup_information"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
 
@@ -31,7 +31,7 @@
                 android:layout_below="@id/txt"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/btn_bkg"
-                android:text="View in map"
+                android:text="@string/view_in_map"
                 android:textColor="#FFFFFF" />
 
             <LinearLayout
@@ -51,16 +51,16 @@
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
-                    android:text="Name"
+                    android:text="@string/name"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_marginStart="28dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp" />
 
@@ -72,7 +72,7 @@
                     android:gravity="center|end"
                     android:maxLength="10"
                     android:paddingEnd="20dp"
-                    android:text="XYZ"
+                    android:text=""
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -102,16 +102,16 @@
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
-                    android:text="Address"
+                    android:text="@string/address"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_marginStart="28dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp" />
 
@@ -123,7 +123,7 @@
                     android:gravity="center|end"
                     android:maxLength="10"
                     android:paddingEnd="20dp"
-                    android:text="XYZveferertrttrtrrtgtrgtrgtrgtrgtrgtrgt"
+                    android:text=""
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -153,16 +153,16 @@
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
-                    android:text="Landmark"
+                    android:text="@string/landmark"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_marginStart="28dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp" />
 
@@ -174,7 +174,7 @@
                     android:gravity="center|end"
                     android:maxLength="10"
                     android:paddingEnd="20dp"
-                    android:text="XYZ"
+                    android:text=""
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -204,16 +204,16 @@
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
-                    android:text="Phone"
+                    android:text="@string/phone"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_marginStart="28dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp" />
 
@@ -225,7 +225,7 @@
                     android:gravity="center|end"
                     android:maxLength="10"
                     android:paddingEnd="20dp"
-                    android:text="XYZ"
+                    android:text=""
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
@@ -238,16 +238,69 @@
                     android:background="@drawable/ic_phone" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/layout_pay"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/layout_phn"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rect_box_outline"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtamount"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="@string/collect_cash"
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="28dp"
+                    android:gravity="center|start"
+                    android:text="@string/colon"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+                <TextView
+                    android:id="@+id/amount"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:maxLength="10"
+                    android:paddingEnd="20dp"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textSize="20sp"/>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoAmount"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_info" />
+
+            </LinearLayout>
+
 
             <EditText
                 android:id="@+id/enter_otp"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@id/layout_phn"
+                android:layout_below="@id/layout_pay"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="50dp"
                 android:background="@drawable/rect_box_outline"
-                android:hint="Enter OTP Provided by User"
+                android:hint="@string/enter_otp_provided_by_user"
                 android:inputType="number"
                 android:maxLength="4"
                 android:padding="5dp"
@@ -260,7 +313,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_below="@+id/enter_otp"
-                android:layout_marginTop="150dp"
+                android:layout_marginTop="100dp"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
@@ -271,7 +324,7 @@
                     android:layout_marginEnd="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_bkg"
-                    android:text="Start"
+                    android:text="@string/start"
                     android:textColor="#FFFFFF" />
 
                 <Button
@@ -281,7 +334,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_bkg"
-                    android:text="Reject"
+                    android:text="@string/reject"
                     android:textColor="#FFFFFF" />
             </LinearLayout>
         </RelativeLayout>

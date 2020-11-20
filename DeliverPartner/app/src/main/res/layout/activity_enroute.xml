@@ -17,16 +17,16 @@
             <TextView
                 android:id="@+id/txt"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="Delivery En route"
+                android:text="@string/delivery_drop_information"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View in map"
+                android:text="@string/view_in_map"
                 android:background="@drawable/btn_bkg"
                 android:textColor="#FFFFFF"
                 android:id="@+id/map"
@@ -50,7 +50,7 @@
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
-                    android:text="Name"
+                    android:text="@string/name"
                     android:textAllCaps="true"
                     android:textSize="16sp" />
 
@@ -58,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp"
                     android:layout_marginStart="28dp" />
@@ -70,7 +70,7 @@
                     android:layout_weight="1"
                     android:gravity="center|end"
                     android:paddingEnd="20dp"
-                    android:text="XYZ"
+                    android:text=""
                     android:maxLength="10"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
@@ -101,7 +101,7 @@
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
-                    android:text="Address"
+                    android:text="@string/address"
                     android:textAllCaps="true"
                     android:textSize="16sp" />
 
@@ -109,7 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp"
                     android:layout_marginStart="28dp" />
@@ -121,7 +121,7 @@
                     android:layout_weight="1"
                     android:gravity="center|end"
                     android:paddingEnd="20dp"
-                    android:text="XYZveferertrttrtrrtgtrgtrgtrgtrgtrgtrgt"
+                    android:text=""
                     android:textAllCaps="true"
                     android:textSize="20sp"
                     android:maxLength="10"/>
@@ -151,7 +151,7 @@
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
-                    android:text="Landmark"
+                    android:text="@string/landmark"
                     android:textAllCaps="true"
                     android:textSize="16sp" />
 
@@ -159,7 +159,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp"
                     android:layout_marginStart="28dp" />
@@ -171,7 +171,7 @@
                     android:layout_weight="1"
                     android:gravity="center|end"
                     android:paddingEnd="20dp"
-                    android:text="XYZ"
+                    android:text=""
                     android:maxLength="10"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
@@ -202,7 +202,7 @@
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
-                    android:text="Receiver Phone"
+                    android:text="@string/receiver_phone"
                     android:textAllCaps="true"
                     android:textSize="16sp" />
 
@@ -210,7 +210,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp"
                     android:layout_marginStart="28dp" />
@@ -222,7 +222,7 @@
                     android:layout_weight="1"
                     android:gravity="center|end"
                     android:paddingEnd="20dp"
-                    android:text="XYZ"
+                    android:text=""
                     android:maxLength="10"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
@@ -253,7 +253,7 @@
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
-                    android:text="Sender Phone"
+                    android:text="@string/sender_phone"
                     android:textAllCaps="true"
                     android:textSize="16sp" />
 
@@ -261,7 +261,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:gravity="center|start"
-                    android:text=":"
+                    android:text="@string/colon"
                     android:textAllCaps="true"
                     android:textSize="23sp"
                     android:layout_marginStart="28dp" />
@@ -273,7 +273,7 @@
                     android:layout_weight="1"
                     android:gravity="center|end"
                     android:paddingEnd="20dp"
-                    android:text="XYZ"
+                    android:text=""
                     android:maxLength="10"
                     android:textAllCaps="true"
                     android:textSize="20sp" />
@@ -288,6 +288,101 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_pay"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/layout_send_phn"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rect_box_outline"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtamount"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="@string/collect_amount"
+                    android:textAllCaps="true"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="28dp"
+                    android:gravity="center|start"
+                    android:text="@string/colon"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+                <TextView
+                    android:id="@+id/amount"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:maxLength="10"
+                    android:paddingEnd="20dp"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textSize="20sp"/>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoAmount"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_info" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_below="@id/layout_pay"
+                android:id="@+id/layout_mode"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/cash"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rect_box_outline"
+                    android:drawableEnd="@drawable/money"
+                    android:gravity="center"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="15dp"
+                    android:text="@string/cash"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+                <Button
+                    android:id="@+id/upi"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rect_box_outline"
+                    android:drawableEnd="@drawable/ic_bhim"
+                    android:gravity="center"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="@string/upi"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
@@ -298,7 +393,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Done"
+                    android:text="@string/done"
                     android:layout_marginEnd="5dp"
                     android:background="@drawable/btn_bkg"
                     android:textColor="#FFFFFF"
@@ -308,7 +403,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Fail"
+                    android:text="@string/fail"
                     android:layout_marginStart="5dp"
                     android:background="@drawable/btn_bkg"
                     android:textColor="#FFFFFF"

@@ -24,13 +24,15 @@
         android:weightSum="2"
         android:id="@+id/layout_btn"
         android:visibility="gone"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:paddingBottom="20dp">
         <TextView
             android:id="@+id/reject_request"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/ic_close"
-            android:text="no"
+            android:text="@string/no"
             android:textAlignment="center"
             android:textColor="#000"
             android:textSize="18sp"
@@ -43,7 +45,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/ic_check"
-            android:text="yes"
+            android:text="@string/yes"
             android:layout_weight="1"
             android:textAlignment="center"
             android:textColor="#000"

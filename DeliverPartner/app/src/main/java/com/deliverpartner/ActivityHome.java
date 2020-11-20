@@ -45,10 +45,6 @@ import java.util.Map;
 public class ActivityHome extends ActivityDrawer implements View.OnClickListener {
     private static final String TAG = "ActivityHome";
 
-    Dialog myDialog;
-    Switch status_duty;
-    String driverStatus = "";
-    ScrollView scrollView;
     public static final String DELIVERY_DETAILS = "com.agent.DeliveryDetails";
     public static final String DID = "DeliveryID";
     public static final String SRCLAT = "DeliverySrcLat";
@@ -57,20 +53,21 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public static final String MY_LNG = "MYSrcLng";
     public static final String AUTH_COOKIE = "com.agent.cookie";
     public static final String AUTH_KEY = "Auth";
-    FusedLocationProviderClient mFusedLocationClient;
-    TextView newOrder, inProgress, completedOrder, totalEarnings;
-    String lat, lng, aadhar;
     public static final String PICTURE_UPLOAD_STATUS = "com.agent.pictureUploadStatus";
     public static final String AADHAR = "Aadhar";
     public static final String DRIVER_STATUS = "DriverStatus";
     public static final String STATUS = "Status";
-    String earn;
+
+    FusedLocationProviderClient mFusedLocationClient;
+    Dialog myDialog;
+    Switch status_duty;
+    String driverStatus = "";
+    ScrollView scrollView;
+    TextView newOrder, inProgress, completedOrder, totalEarnings, notify;
+    String lat, lng, aadhar, earn,strAuth,auth,deliveryID;
     Vibrator vibrator;
-    TextView notify;
     private static ActivityHome instance;
-    String strAuth;
-    String auth;
-    String deliveryID;
+
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -181,7 +178,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             myDialog.setCanceledOnTouchOutside(false);
         }
         if (id == 4) {
-            infoText.setText(R.string.delivery_successful + earn);
+            infoText.setText(getString(R.string.delivery_successful, earn));
             retireDelvy();
         }
         if (id == 5) {
@@ -444,12 +441,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     break;
             }
         }
-        //response on hitting auth-location-update API
-        if (id == 2) {
-           /* Intent i = new Intent(this, UtilityPollingService.class);
-            i.setAction("01");
-            startService(i);*/
-        }
+
         //response on hitting agent-delivery-get-status API
         if (id == 3) {
             try {
@@ -462,13 +454,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     deliveryID = did;
                     if (status.equals("AS")) {
 
-                        String srcAdd = response.getString("srcadd");
-                        String srcPhn = response.getString("srcphone");
-                        String srcName = response.getString("srcper");
-                        String srcLat = response.getString("srclat");
-                        String srcLng = response.getString("srclng");
-                        String srcLand = response.getString("srcland");
-                        //ShowPopup(1);
                         Intent reachClient = new Intent(ActivityHome.this, ActivityAccepted.class);
                         startActivity(reachClient);
                         finish();
