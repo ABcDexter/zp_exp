@@ -333,7 +333,7 @@ def userDeliverySchedule(dct, user):
     #    pDinaank = datetime(pYear, pMonth, pDate, pHour - 6 , (pMinute + 30) % 60, 00)
     #else:
     #    pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , (pMinute - 30) % 60, 00)
-    pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , pMinute , 00)
+    pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , ( pMinute - 25 ) % 60  , 00)
     print("DATETIME for RQ is : ", pDinaank)
 
     dYear = int(dct['pYear'])
