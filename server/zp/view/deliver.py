@@ -110,7 +110,7 @@ def userDeliveryGetStatus(dct, user):
         ret = {'st': deli.st, 'scid': deli.scid, 'active': deli.st in Delivery.USER_ACTIVE}
 
         if ret['active']:
-            if deli.st == 'SC':  # Delivery.PAYABLE:
+            if deli.st in Delivery.PAYABLE:
                 price = getDelPrice(deli, user.hs)
                 ret.update(price)
         '''
