@@ -82,11 +82,11 @@ def authProductUpdate(dct, entity):
         version="wc/v3"
     )
     ret = wcapi.get("products")
-    print(r.status_code)
+    print(ret.status_code)
     
     product = {}
     
-    for i in r.json():
+    for i in ret.json():
         print(i['id'], i['sku'])
         product[str(i['sku'])] = str(i['id'])
 
