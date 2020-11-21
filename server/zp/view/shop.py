@@ -81,7 +81,7 @@ def authProductUpdate(dct, entity):
         consumer_secret=settings.WP_CONSUMER_SECRET_KEY,
         version="wc/v3"
     )
-    ret= = wcapi.get("products")
+    ret = wcapi.get("products")
     print(r.status_code)
     
     product = {}

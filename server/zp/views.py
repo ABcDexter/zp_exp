@@ -890,7 +890,7 @@ def adminRefresh(dct):
         # For requested deliveries if settings.DEL_RQ_TIMEOUT seconds passed since del.rtime set to TO (timeout)
         if deli.st == 'RQ':
             tmDelta = datetime.now(timezone.utc) - deli.rtime
-            if tmDelta.total_seconds() > settings.DEL_SC_TIMEOUT:
+            if tmDelta.total_seconds() > settings.DEL_RQ_TIMEOUT:
                 deli.st = 'TO'
 
         # For assigned deliveries if settings.DEL_AS_TIMEOUT seconds passed since deli.atime set to TO (user times out)
