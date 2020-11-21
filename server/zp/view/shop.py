@@ -74,7 +74,7 @@ def authProductUpdate(dct, entity):
     rec.save()
     print(rec)
     
-    
+    #WooCommerce update
     wcapi = API(
         url="https://zippe.in",
         consumer_key=settings.WP_CONSUMER_KEY,
@@ -84,13 +84,18 @@ def authProductUpdate(dct, entity):
     ret = wcapi.get("products")
     print(ret.status_code)
     
-    product = {}
+    products = {}
     
     for i in ret.json():
         print(i['id'], i['sku'])
-        product[str(i['sku'])] = str(i['id'])
+        products[str(i['sku'])] = str(i['id'])
+        
 
     print(products)
+    data = dct
+    URI = 'products/'+ str(products['sku'])
+    print(wcapi.put(URI, data).json())
+
 
     return HttpJSONResponse({})
 
