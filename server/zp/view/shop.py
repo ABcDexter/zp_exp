@@ -16,11 +16,15 @@ from ..utils import ZPException, HttpJSONResponse, saveTmpImgFile, doOCR, log, a
     googleDistAndTime
 from ..utils import getOTP
 from ..utils import handleException, extractParams, checkAuth, retireDelEntity, getClientAuth
+
 import googlemaps
 from ..utils import extract_name_from_pin
 from django.forms.models import model_to_dict
 import json
 import urllib.request
+from woocommerce import API
+
+
 ###########################################
 # Types
 Filename = str
@@ -42,7 +46,7 @@ makeView.APP_NAME = 'zp'
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def authProductSet(dct, entity):
+def authProductUpdate(dct, entity):
     '''
     Adds or edits a product with sku,
 
@@ -69,6 +73,25 @@ def authProductSet(dct, entity):
         setattr(rec, key, val)
     rec.save()
     print(rec)
+    
+    
+    wcapi = API(
+        url="https://zippe.in",
+        consumer_key=settings.WP_CONSUMER_KEY,
+        consumer_secret=settings.WP_CONSUMER_SECRET_KEY,
+        version="wc/v3"
+    )
+    ret= = wcapi.get("products")
+    print(r.status_code)
+    
+    product = {}
+    
+    for i in r.json():
+        print(i['id'], i['sku'])
+        product[str(i['sku'])] = str(i['id'])
+
+    print(products)
+
     return HttpJSONResponse({})
 
 

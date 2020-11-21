@@ -614,4 +614,34 @@ class Product(models.Model):
     class Meta:
         db_table = 'product'
         managed = True
+        
+        
+class Purchaser(models.Model):
+    '''
+    an(int):    Aadhaar number
+    pn(str):    Phone number
+    auth(str):  Purchaser auth token
+    dl(str):    Driving licence no.
+    name(str):  Real name
+    gdr(str):   Gender
+    age(int):   Age
+    pid(int):   Index of current place - see Place table
+    hs(str):    Home state of the Purchaser
+    '''
+
+    an   = models.BigIntegerField(primary_key=True)
+    pn   = models.CharField(max_length=32, db_index=True)
+    auth = models.CharField(max_length=16, db_index=True)
+    pid  = models.IntegerField(null=True, db_index=True)
+
+    dl   = models.CharField(null=True, max_length=20)
+    name = models.CharField(null=True, max_length=64, db_index=True)
+    gdr  = models.CharField(null=True, max_length=16, db_index=True)
+    age  = models.IntegerField(null=True, db_index=True)
+    hs   = models.CharField(null=True, max_length=50)
+
+    class Meta:
+        db_table = 'purchaser'
+        managed = True
+
 
