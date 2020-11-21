@@ -93,7 +93,7 @@ def authProductUpdate(dct, entity):
 
     print(products)
     data = dct
-    URI = 'products/'+ str(products['sku'])
+    URI = 'products/'+ str(products[dct['sku']])
     print(wcapi.put(URI, data).json())
 
 
