@@ -42,7 +42,7 @@ makeView.APP_NAME = 'zp'
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def authProductSet(dct):
+def authProductSet(dct, entity):
     '''
     Adds or edits a product with sku,
 
