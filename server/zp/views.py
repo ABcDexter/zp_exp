@@ -30,7 +30,7 @@ from .utils import handleException, extractParams, checkAuth, checkTripStatus, r
 from .utils import headers
 
 from url_magic import makeView
-from zp.view import rent, ride, deliver, pwa
+from zp.view import rent, ride, deliver, pwa, shop
 from .utils import googleDistAndTime
 from zp.view import schedule
 from .models import Rate, Supervisor
