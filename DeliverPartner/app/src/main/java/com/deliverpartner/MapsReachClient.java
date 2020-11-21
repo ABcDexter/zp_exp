@@ -1,5 +1,6 @@
 package com.deliverpartner;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -95,8 +96,8 @@ public class MapsReachClient extends AppCompatActivity implements OnMapReadyCall
         strAuth = cookie.getString(AUTH_KEY, "");
 
         getStatus();
-        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title("Delivery Pick Up");
-        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title("You Are Here");
+        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(getString(R.string.del_pick_up));
+        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title(getString(R.string.your_loc));
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapNearBy);
         mapFragment.getMapAsync(this);
@@ -167,6 +168,10 @@ public class MapsReachClient extends AppCompatActivity implements OnMapReadyCall
         if (hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+                return;
+            }
             mFusedLocationClient.getLastLocation().addOnCompleteListener(
                     new OnCompleteListener<Location>() {
                         @Override
@@ -197,6 +202,10 @@ public class MapsReachClient extends AppCompatActivity implements OnMapReadyCall
         mLocationRequest.setNumUpdates(1);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+            return;
+        }
         mFusedLocationClient.requestLocationUpdates(
                 mLocationRequest, mLocationCallback,
                 Looper.myLooper()
@@ -225,15 +234,13 @@ public class MapsReachClient extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.accept_request:
-                deliveryAccept();
-                break;
-            case R.id.reject_request:
-                Intent home = new Intent(MapsReachClient.this, ActivityHome.class);
-                startActivity(home);
-                finish();
-                break;
+        int id = v.getId();
+        if (id == R.id.accept_request) {
+            deliveryAccept();
+        } else if (id == R.id.reject_request) {
+            Intent home = new Intent(MapsReachClient.this, ActivityHome.class);
+            startActivity(home);
+            finish();
         }
     }
 
@@ -316,7 +323,7 @@ public class MapsReachClient extends AppCompatActivity implements OnMapReadyCall
     }
 
     public void onFailure(VolleyError error) {
-        Toast.makeText(a, "Something went wrong. Please try again later. ", Toast.LENGTH_SHORT).show();
+        Toast.makeText(a, R.string.something_wrong, Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
     }

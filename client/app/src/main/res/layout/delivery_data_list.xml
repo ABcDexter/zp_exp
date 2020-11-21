@@ -49,7 +49,7 @@
                 android:textAllCaps="true"
                 android:textColor="@android:color/background_dark"
                 android:textSize="20sp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -80,6 +80,16 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="tip"
+            android:textAllCaps="true"
+            android:textColor="@android:color/background_dark"
+            android:textSize="23sp"
+            android:visibility="gone" />
+        <TextView
+            android:id="@+id/delivery_itype"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="iType"
             android:textAllCaps="true"
             android:textColor="@android:color/background_dark"
             android:textSize="23sp"

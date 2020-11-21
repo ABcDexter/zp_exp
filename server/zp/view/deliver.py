@@ -3,7 +3,6 @@ import datetime
 from datetime import datetime, timedelta
 from decimal import getcontext
 import random
-
 from django.db import transaction
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -12,7 +11,7 @@ from django.db.utils import OperationalError, IntegrityError
 
 from url_magic import makeView
 from ..models import Place, Delivery, Progress, Location
-from ..models import User, Vehicle, Agent
+from ..models import User, Vehicle, Agent, Rate
 from ..utils import ZPException, HttpJSONResponse, saveTmpImgFile, doOCR, log, aadhaarNumVerify, renameTmpImgFiles, \
     googleDistAndTime
 from ..utils import getOTP
@@ -111,7 +110,7 @@ def userDeliveryGetStatus(dct, user):
         ret = {'st': deli.st, 'scid': deli.scid, 'active': deli.st in Delivery.USER_ACTIVE}
 
         if ret['active']:
-            if deli.st == 'SC':  # Delivery.PAYABLE:
+            if deli.st in Delivery.PAYABLE:
                 price = getDelPrice(deli, user.hs)
                 ret.update(price)
         '''
@@ -273,7 +272,7 @@ def userDeliveryRequest(dct, user): #, _delivery):
     delivery.srclat, delivery.srclng, delivery.dstlat, delivery.dstlng = dct['srclat'], dct['srclng'], \
                                                                          dct['dstlat'], dct['dstlng']
     # 3,4,5,6
-    delivery.srcpin, delivery.dstpin = dct['srcpin'],  dct['dstpin']
+    delivery.srcpin, delivery.dstpin = 263136, 263136 #dct['srcpin'],  dct['dstpin']
     # 7,8,9,10
     delivery.idim = dct['idim']
     delivery.itype = dct['itype']
@@ -317,21 +316,34 @@ def userDeliveryRequest(dct, user): #, _delivery):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkDeliveryStatus(['SC'])
-def userDeliveryPay(dct, user, delivery):
+@checkDeliveryStatus(['SC', 'RQ', 'AS', 'RC', 'ST'])
+def authDeliveryPay(dct, entity, delivery):
     '''
-        Pay for the Delivery for a user after scheduled
-        Https args:
-            auth,
-            scid
+    Pay for the Delivery for an antity after scheduled
+    Https args:
+        auth,
+        scid
     '''
-    print(delivery.scid, delivery.id)
-    delivery = Delivery.objects.filter(scid=dct['scid'])[0]
-    user.did = ''  # retire the user, #TODO move this logic to userDeliveryRetire() and comment this out
-    user.save()
-
-    delivery.st = 'PD'  # paid now
-    delivery.save()
+    if type(entity) is Agent:
+        
+        print(delivery.scid, delivery.id)
+        #delivery = Delivery.objects.filter(scid=dct['scid'])[0]
+        rate = Rate()
+        rate.id = 'deli' + str(delivery.id)
+        rate.type = 'deli' 
+        rate.rev = ''
+        user = User.objects.filter(an=delivery.uan)[0]
+        rate.money = float(getDelPrice(delivery, user.hs)['price'])
+        rate.save()        
+    
+        # delivery.st = 'PD' # paid now
+        delivery.save()
+    
+    else:
+        pass
+        #user.did = ''  # retire the user, #DONE move this logic to userDeliveryRetire() and comment this out
+        #user.save()
+    
 
     return HttpJSONResponse({})
 
@@ -396,6 +408,7 @@ def userDeliveryRQ(dct, user):
     
     deli = Delivery.objects.filter(scid=dct['scid'])[0]  # get that delivery
     deli.st = 'RQ' # now the delivery is in RQ
+    deli.rtime = datetime.now(timezone.utc) 
     deli.save()
     return HttpJSONResponse({})
 
@@ -407,7 +420,7 @@ def userDeliveryRQ(dct, user):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkDeliveryStatus(['PD'])
+@checkDeliveryStatus(['PD', 'SC', 'RQ'])
 def userDeliveryRetire(dct, user, _deli):
     '''
         retires the delivery for the use
@@ -562,7 +575,7 @@ def adminAgentReached(dct):
         *: Any other fields that need to be updated/corrected (except state)
 
     Note:
-        this uses Google distance, assigns closest as per time, so might not be accurate
+        this uses Google distance, so might not be accurate
     '''
     # Get the deliveries and look for RQ ones
     qsDeli = Delivery.objects.filter(st__in=['AS']) #[0]
@@ -859,13 +872,16 @@ def agentDeliveryGetStatus(_dct, agent):
                         'dstlat': deli.dstlat,
                         'dstlng': deli.dstlng})
         # For ended delis that need payment send the price data
-        if deli.st in Delivery.PAYABLE:
+        if deli.st in ['SC', 'AS', 'RC', 'ST']: # Delivery.PAYABLE:
+            # SC, AS, RC, ST
             hs = User.objects.filter(an=deli.uan)[0].hs
-            ret.update(getDelPrice(deli, hs))
+            ret['price'] = getDelPrice(deli, hs)['price']
 
         ret['active'] = deli.st in Delivery.AGENT_ACTIVE
         ret['st'] = deli.st
         ret['did'] = deli.id
+        ret['paid'] = deli.pmode #True if len(Rate.objects.filter(id='deli' + str(deli.id))) > 0 else False #deli.pmode in ['0', '1']
+        
         print(ret)
 
     return HttpJSONResponse(ret)
@@ -1049,13 +1065,16 @@ def agentDeliveryReached(dct, _agent, deli):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkDeliveryStatus(['RC'])
+@checkDeliveryStatus(['RC','AS'])
 def agentDeliveryStart(dct, _agent, deli):
     '''
     Agent calls this to start the deli providing the OTP that the user shared
     HTTP Args:
         OTP
     '''
+    if deli.st == 'AS':
+        raise ZPException(402, 'Agent not reached')
+    
     print(str(dct['otp']) , str(getOTP(deli.uan, deli.dan, deli.atime)))
     if str(dct['otp']) == str(getOTP(deli.uan, deli.dan, deli.atime)):
         deli.st = 'ST'
@@ -1063,7 +1082,7 @@ def agentDeliveryStart(dct, _agent, deli):
         deli.save()
     else:
         raise ZPException(403, 'Invalid OTP')
-
+        
     return HttpJSONResponse({})
 
 
@@ -1081,6 +1100,21 @@ def agentDeliveryDone(_dct, agent, deli):
     deli.st = 'FN'
     deli.etime = datetime.now(timezone.utc)
     deli.save()
+    print("Completing delivery : ", deli.id)
+    params = {"to": "/topics/all", "notification":{
+                                    "title":"Let's ZIPPE !",
+                                    "body":"Your DELIVERY has been successfully completed.",
+                                    "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+                                    "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+    }
+    }
+    dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+    jsonData = json.dumps(params).encode()
+    sUrl = 'https://fcm.googleapis.com/fcm/send'
+    req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+    jsonResp = urllib.request.urlopen(req, timeout=30).read()
+    ret = json.loads(jsonResp)
+
 
     # Get the vehicle
     # recVehicle = Vehicle.objects.filter(an=deli.van)[0]
@@ -1187,9 +1221,10 @@ def authDeliveryHistory(dct, entity, deli):
     '''
     returns the history of all Deliveries for a entity
     '''
+    CATEGORIES = { 'DOC':'DOCUMENT' , 'CLO':'CLOTHES', 'FOO':'FOOD', 'HOU':'HOUSEHOLD', 'ELE':'ELETRONICS', 'OTH':'OTHER', 'MED':'MEDICINES'}
 
     qsDeli = Delivery.objects.filter(uan=entity.an).values() if type(entity) is User else Delivery.objects.filter(
-        dan=entity.an).values()
+        dan=entity.an).order_by('-rtime').values()
     ret = {}
     # print(qsDeli)
     # print("REEEEEEEEEEEE ",len(qsDeli))
@@ -1197,7 +1232,7 @@ def authDeliveryHistory(dct, entity, deli):
         states = []
         for i in qsDeli:
             # print(str(i['stime'])[:19])
-            print("Delivery state : ", str(i['st']))
+            #print("Delivery state : ", str(i['st']))
             if i['st'] in ['ST', 'FL', 'FN']:
                 strSTime = str(i['stime'])[:19]
                 sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
@@ -1211,7 +1246,10 @@ def authDeliveryHistory(dct, entity, deli):
                 eTime = 'ONGOING'
 
             hs = User.objects.filter(an=deli.uan)[0].hs
-            thisOneBro = {'scid': i['scid'], 'st': i['st'],
+            val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
+            thisOneBro = {'scid': i['scid'],
+                          'itype': val,
+                          'st': i['st'],
                           'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
                           'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
                           'tip': i['tip'],
@@ -1220,7 +1258,7 @@ def authDeliveryHistory(dct, entity, deli):
                           }
 
             states.append(thisOneBro)
-        print(states)
+        #print(states)
         ret.update({'delis': states})
 
     return HttpJSONResponse(ret)

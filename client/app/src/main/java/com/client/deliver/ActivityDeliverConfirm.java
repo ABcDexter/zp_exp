@@ -1,13 +1,14 @@
 package com.client.deliver;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,28 +17,28 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
-import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnClickListener {
-
-    TextView cost;
+    TextView upiPayment, cost, payOnPickup, payOnDelivery;
+    final int UPI_PAYMENT = 0;
     //EditText edTip;
     ScrollView scrollView;
     ImageButton infoPayment; //infoTip;
@@ -70,8 +71,6 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     public static final String PICK_HOUR = "PickHour";
     public static final String PICK_MINUTE = "PickMinute";
     public static final String ADD_INFO_PICK_POINT = "AddInfoPickPoint";
-
-
     public static final String ADDRESS_DROP = "com.client.ride.AddressDrop";
     public static final String DROP_LAT = "com.client.delivery.PickLatitude";
     public static final String DROP_LNG = "com.client.delivery.DropLongitude";
@@ -93,6 +92,17 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     public static final String EXPRESS = "Express";
 
+    public static final String REVIEW = "com.delivery.Review";//TODO find better way
+    public static final String R_C_TYPE = "CTYPE";
+    public static final String R_C_SIZE = "CSIZE";
+    public static final String R_C_FRAGILE = "CFRAGILE";
+    public static final String R_C_LIQUID = "CLIQUID";
+    public static final String R_C_COLD = "CCOLD";
+    public static final String R_C_WARM = "CWARM";
+    public static final String R_C_PERISHABLE = "CPERISHABLE";
+    public static final String R_C_NONE = "CNONE";
+    public static final String R_EXP_DELVY = "R_EXP_DELVY";//TODO find better way
+    public static final String R_STND_DELVY = "R_STND_DELVY";//TODO find better way
     private static ActivityDeliverConfirm instance;
     Dialog myDialog;
 
@@ -104,9 +114,13 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
             fr, li, none, kw, kc, pe, br, no, detailsPackage, conType, conSize, express,
             dLat, dLng, dName, dAddress, dLand, dPin, dMobile, dHour, dMinute, dYear, dMonth, dDay, detailsDrop;
 
-    ImageView zbeeR, zbeeL;
+    //ImageView zbeeR, zbeeL;
     // Button cancel;
     Animation animMoveL2R, animMoveR2L;
+    String standtime;
+    String pMode = "00";
+    String strAuth, DID, costOnly;
+    Button dummy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +173,12 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         detailsPick = pref.getString(ADD_INFO_PICK_POINT, "");
         express = pref.getString(EXPRESS, "");
 
-
+        if (express.equals("0")) {
+            String[] splitArray = pHour.split(":");
+            standtime = splitArray[0];
+            Log.d(TAG, "time slot = " + standtime);
+            //pHour=standtime;
+        }
         cost = findViewById(R.id.payment);
         //edTip = findViewById(R.id.tip);
         infoPayment = findViewById(R.id.infoPayment);
@@ -175,15 +194,25 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
 
         myDialog = new Dialog(this);
         //deliveryEstimate();
-        zbeeR = findViewById(R.id.image_zbee);
-        zbeeL = findViewById(R.id.image_zbee_below);
+        /*zbeeR = findViewById(R.id.image_zbee);
+        zbeeL = findViewById(R.id.image_zbee_below);*/
 
-        Intent intent = getIntent();
+       /* Intent intent = getIntent();
         String price = intent.getStringExtra("PRICE");
-        distance = intent.getStringExtra("DISTANCE");
-        cost.setText("₹ " + price);
+        distance = intent.getStringExtra("DISTANCE");*/
+        deliveryEstimate();
+
         animMoveL2R = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r);
         animMoveR2L = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_r2l);
+        upiPayment = findViewById(R.id.upi);
+        payOnPickup = findViewById(R.id.pay_pickup);
+        payOnDelivery = findViewById(R.id.pod);
+        dummy = findViewById(R.id.dummy);
+
+        upiPayment.setOnClickListener(this);
+        payOnDelivery.setOnClickListener(this);
+        payOnPickup.setOnClickListener(this);
+        dummy.setOnClickListener(this);
 
 
     }
@@ -192,31 +221,181 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         return instance;
     }
 
+    private void deliveryEstimate() {
+        String auth = stringAuth;
+        params.put("auth", auth);
+        params.put("srclat", pLat);
+        params.put("srclng", pLng);
+        params.put("dstlat", dLat);
+        params.put("dstlng", dLng);
+        params.put("itype", conType);
+        params.put("idim", conSize);
+        params.put("express", express);//0,1
+        params.put("pmode", "1");
+
+        JSONObject parameters = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + auth + " srclat= " + pLat
+                + " srclng= " + pLng + " dstlat=" + dLat + " dstlng=" + dLng
+                + " itype= " + conType + " idim= " + conSize + " express= " + express + " pmode= " + "1");
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-delivery-estimate");
+
+        UtilityApiRequestPost.doPOST(a, "user-delivery-estimate", parameters, 2000, 0, response -> {
+            try {
+                a.onSuccess(response, 1);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+    }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.confirm_btn:
-                moveit();
-                userDeliverySchedule();
-                break;
-            /*case R.id.infoTip:
+        int id = v.getId();
+        if (id == R.id.confirm_btn) {
+            //moveit();
+            userDeliverySchedule();
+                /*case R.id.infoTip:
                 ShowPopup(1);
                 break;*/
-            case R.id.infoPayment:
-                ShowPopup(2);
-                break;
-           /* case R.id.cancelRequest:
+        } else if (id == R.id.infoPayment) {
+            ShowPopup();
+                /* case R.id.cancelRequest:
                 cancelRequest();
                 break;*/
+        } else if (id == R.id.upi) {
+            upiPayment.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            payOnDelivery.setBackgroundResource(R.drawable.rect_box_outline);
+            payOnPickup.setBackgroundResource(R.drawable.rect_box_outline);
+            String amount = costOnly;
+            String note = "Payment for rental service";
+            String name = "Zipp-E";
+            String upiId = "rajnilakshmi@ybl";
+            payUsingUpi(amount, upiId, name, note);
+        } else if (id == R.id.dummy) {
+            pMode = "1";
+            userDeliverySchedule();
+
+        } else if (id == R.id.pay_pickup) {
+            upiPayment.setBackgroundResource(R.drawable.rect_box_outline);
+            payOnDelivery.setBackgroundResource(R.drawable.rect_box_outline);
+            payOnPickup.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            pMode = "2";
+            //userDeliverySchedule();
+        } else if (id == R.id.pod) {
+            payOnDelivery.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            payOnPickup.setBackgroundResource(R.drawable.rect_box_outline);
+            upiPayment.setBackgroundResource(R.drawable.rect_box_outline);
+            pMode = "3";
+            //userDeliverySchedule();
         }
     }
 
-    private void moveit() {
+    void payUsingUpi(String amount, String upiId, String name, String note) {
+
+        Uri uri = Uri.parse("upi://pay").buildUpon()
+                .appendQueryParameter("pa", upiId)
+                .appendQueryParameter("pn", name)
+                .appendQueryParameter("tn", note)
+                .appendQueryParameter("am", amount)
+                .appendQueryParameter("cu", "INR")
+                .build();
+        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
+        upiPayIntent.setData(uri);
+        // will always show a dialog to user to choose an app
+        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
+        // check if intent resolves
+        if (null != chooser.resolveActivity(getPackageManager())) {
+            startActivityForResult(chooser, UPI_PAYMENT);
+        } else {
+            Toast.makeText(ActivityDeliverConfirm.this, R.string.no_upi_found, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case UPI_PAYMENT:
+                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                    if (data != null) {
+                        String trxt = data.getStringExtra("response");
+                        Log.d("UPI", "onActivityResult: " + trxt);
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add(trxt);
+                        upiPaymentDataOperation(dataList);
+                    } else {
+                        Log.d("UPI", "onActivityResult: " + "Return data is null");
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add("nothing");
+                        upiPaymentDataOperation(dataList);
+                    }
+                } else {
+                    Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                    ArrayList<String> dataList = new ArrayList<>();
+                    dataList.add("nothing");
+                    upiPaymentDataOperation(dataList);
+                }
+                break;
+        }
+    }
+
+    private void upiPaymentDataOperation(ArrayList<String> data) {
+        if (isConnectionAvailable(this)) {
+            String str = data.get(0);
+            Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
+            String paymentCancel = "";
+            if (str == null) str = "discard";
+            String status = "";
+            String approvalRefNo = "";
+            String response[] = str.split("&");
+            for (int i = 0; i < response.length; i++) {
+                String equalStr[] = response[i].split("=");
+                if (equalStr.length >= 2) {
+                    if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
+                        status = equalStr[1].toLowerCase();
+                    } else if (equalStr[0].toLowerCase().equals("ApprovalRefNo".toLowerCase()) || equalStr[0].toLowerCase().equals("txnRef".toLowerCase())) {
+                        approvalRefNo = equalStr[1];
+                    }
+                } else {
+                    paymentCancel = "Payment cancelled by user.";
+                }
+            }
+
+            if (status.equals("success")) {
+                //Code to handle successful transaction here.
+                Toast.makeText(ActivityDeliverConfirm.this, R.string.transaction_successful, Toast.LENGTH_SHORT).show();
+                Log.d("UPI", "responseStr: " + approvalRefNo);
+                pMode = "1";
+                userDeliverySchedule();
+            } else if ("Payment cancelled by user.".equals(paymentCancel)) {
+                Toast.makeText(ActivityDeliverConfirm.this, R.string.payment_cancelled_by_user, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(ActivityDeliverConfirm.this, R.string.transaction_failed, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(ActivityDeliverConfirm.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static boolean isConnectionAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnected()
+                    && netInfo.isConnectedOrConnecting()
+                    && netInfo.isAvailable()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*private void moveit() {
         zbeeL.setVisibility(View.VISIBLE);
         zbeeR.startAnimation(animMoveL2R);
         zbeeL.startAnimation(animMoveR2L);
-        /*ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zbeeL, "translationX", 1500, 0f);
+        *//*ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zbeeL, "translationX", 1500, 0f);
         objectAnimator.setDuration(1500);
         objectAnimator.start();
         objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
@@ -224,8 +403,8 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zbeeR, "translationX", 0f, 1500);
         objectAnimator1.setDuration(1500);
         objectAnimator1.start();
-        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
-    }
+        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*//*
+    }*/
 
     protected void userDeliverySchedule() {
         String auth = stringAuth;
@@ -258,12 +437,15 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         params.put("pe", pe);
         //params.put("no", no);
         params.put("express", express);//0,1
-        params.put("pYear", pYear);//TODO remove hard coded values
-        params.put("pMonth", pMonth);//TODO remove hard coded values
-        params.put("pDate", pDay);//TODO remove hard coded values
-        params.put("pHour", pHour);
+        params.put("pYear", pYear);
+        params.put("pMonth", pMonth);
+        params.put("pDate", pDay);
+        if (express.equals("0")) {
+            params.put("pHour", standtime);
+        } else params.put("pHour", pHour);
+
         params.put("pMinute", pMinute);
-        params.put("pmode", "1");
+        params.put("pmode", pMode);
         /*if (edTip.getText().toString().isEmpty()){
             params.put("tip", "0");
         }else{
@@ -272,6 +454,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
 
 
         JSONObject parameters = new JSONObject(params);
+
         Log.d(TAG, "Values: auth=" + auth + " srclat= " + pLat
                 + " srclng= " + pLng + " dstlat=" + dLat + " dstlng=" + dLng + " srcphone=" + pMobile
                 + " dstphone=" + dMobile + " srcper=" + pName + " dstper=" + dName + " srcadd=" + pAddress
@@ -280,7 +463,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
                 + " express=" + express + " pYear=" + pYear + " pMonth=" + pMonth + " pDate=" + pDay
                 + " pHour=" + pHour + " pMinute=" + pMinute + " itype= " + conType + " idim= "
                 + conSize + " fr= " + fr + " br= " + br + " li= " + li + " pe= " + pe + " kc= "
-                + kc + " kw= " + kw + " no= " + no);
+                + kc + " kw= " + kw + " no= " + no + " pmode=" + pMode);
         Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-delivery-schedule");
 
         UtilityApiRequestPost.doPOST(a, "user-delivery-schedule", parameters, 2000, 0, response -> {
@@ -327,16 +510,14 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         }, a::onFailure);
     }
 
-    private void ShowPopup(int id) {
+
+    private void ShowPopup() {
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
-        if (id == 1) {
-            infoText.setText(R.string.the_amount_shall_be_directly_credited_to_our_agent_account);
-        }
-        if (id == 2) {
-            infoText.setText(getString(R.string.base_price) + " ₹ 15" + "\n"+ getString(R.string.distance) + distance + " km");
-        }
+
+        infoText.setText(getString(R.string.base_price) + " ₹ 15" + "\n" + getString(R.string.distance) + distance + " km");
+
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
@@ -350,14 +531,23 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
-
+        if (id == 1) {
+            String price = response.getString("price");
+            distance = response.getString("dist");
+            cost.setText("₹ " + price);
+            costOnly = price;
+        }
         //response on hitting user-delivery-schedule API
         if (id == 2) {
             did = response.getString("scid");
             SharedPreferences sp_cookie = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
             sp_cookie.edit().putString(DELIVERY_ID, did).apply();
-            Intent as = new Intent(ActivityDeliverConfirm.this, ActivityDeliverPayment.class);
-            startActivity(as);
+            /*Intent as = new Intent(ActivityDeliverConfirm.this, ActivityDeliverPayment.class);
+            startActivity(as);*/
+            //deliveryRetire();
+            Intent home = new Intent(ActivityDeliverConfirm.this, ActivityDeliverThankYou.class);
+            startActivity(home);
+            finish();
             //checkStatus();
         }
         //response on hitting user-delivery-get-status API
@@ -368,17 +558,63 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
                     String status = response.getString("st");
                     if (status.equals("SC")) {
                         String price = response.getString("price");
-                        Intent as = new Intent(ActivityDeliverConfirm.this, ActivityDeliverPayment.class);
-                        startActivity(as);
+                        cost.setText("₹ " + price);
+                        costOnly = price;
+                        /*Intent as = new Intent(ActivityDeliverConfirm.this, ActivityDeliverPayment.class);
+                        startActivity(as);*/
                         SharedPreferences sp_price = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
                         sp_price.edit().putString(DELIVERY_PRICE, price).apply();
                     }
-                } else {
+                }
+                if (active.equals("false")) {
+
+                    //deliveryRetire();
+                    Intent home = new Intent(ActivityDeliverConfirm.this, ActivityDeliverThankYou.class);
+                    startActivity(home);
+                    finish();
+
+                    SharedPreferences preferencesD = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor1 = preferencesD.edit();
+                    editor1.remove(DELIVERY_ID);
+                    editor1.apply();
+                    SharedPreferences pref = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.remove(PICK_LAT);
+                    editor.remove(PICK_LNG);
+                    editor.remove(ADDRESS_PICK);
+                    editor.remove(PICK_PIN);
+                    editor.remove(PICK_LANDMARK);
+                    editor.remove(PICK_MOBILE);
+                    editor.remove(PICK_NAME);
+                    editor.remove(DROP_LAT);
+                    editor.remove(DROP_LNG);
+                    editor.remove(ADDRESS_DROP);
+                    editor.remove(DROP_PIN);
+                    editor.remove(DROP_LANDMARK);
+                    editor.remove(DROP_MOBILE);
+                    editor.remove(DROP_NAME);
+                    editor.apply();
+
+                    SharedPreferences review = getSharedPreferences(REVIEW, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor reditor = review.edit();
+                    reditor.remove(R_C_COLD);
+                    reditor.remove(R_C_FRAGILE);
+                    reditor.remove(R_C_LIQUID);
+                    reditor.remove(R_C_NONE);
+                    reditor.remove(R_C_WARM);
+                    reditor.remove(R_C_PERISHABLE);
+                    reditor.remove(R_C_TYPE);
+                    reditor.remove(R_C_SIZE);
+                    reditor.remove(R_EXP_DELVY);
+                    reditor.remove(R_STND_DELVY);
+                    reditor.apply();
+
+                }/*else {
                     Intent homePage = new Intent(ActivityDeliverConfirm.this, ActivityWelcome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
-                }
+                }*/
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -389,6 +625,12 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         //response on hitting user-delivery-cancel API
         if (id == 4) {
             Intent home = new Intent(ActivityDeliverConfirm.this, ActivityPackageDetails.class);
+            startActivity(home);
+            finish();
+        }
+        //response on hitting user-delivery-retire API
+        if (id == 5) {
+            Intent home = new Intent(ActivityDeliverConfirm.this, ActivityDeliverThankYou.class);
             startActivity(home);
             finish();
         }

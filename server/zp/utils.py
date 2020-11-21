@@ -764,7 +764,7 @@ def getDelPrice(deli, hs):
     '''
     # vehicle = Vehicle.objects.filter(an=deli.van)[0]
     # home state of user
-    print(" TIP IS : ", deli.tip)
+    # print(" TIP IS : ", deli.tip)
     exp = '1' if deli.express is True else '0'
     return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, exp, hs, deli.tip)
 
@@ -998,7 +998,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
     srcCoOrds = ['%s,%s' % (srclat,srclng)]
     dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
 
-    print(srcCoOrds,dstCoOrds)
+    # print(srcCoOrds,dstCoOrds)
 
     gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
     nDist, nTime = gMapsRet['dist'], gMapsRet['time']
@@ -1019,13 +1019,13 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
     price = fBaseFare  # + (fDist / 1000) * vehiclePricePerKM * avgWt
     if fDist > 5000:
         price += ceil((fDist - 5000) / 1000) * 10.00
-        print(fDist, ceil((fDist - 5000) / 1000), price )
+        #print(fDist, ceil((fDist - 5000) / 1000), price )
     #if iPayMode == Trip.UPI:
     #    price *= 0.9
-    print("EXPRESS : ", express)
+    # print("EXPRESS : ", express)
     if express == '1':
         price += 20.00  # 20 Rs extra for express
-        print('Expresss okay############')
+        # print('Expresss okay############')
     '''
     # L = 10
     # XL = 20
@@ -1039,7 +1039,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
         price += 30.00
 
     price += tip
-    print( "PRICE : ", price)
+    # print( "PRICE : ", price)
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
@@ -1073,7 +1073,7 @@ class checkDeliveryStatus(object):
                 # arrValid == ['INACTIVE'] means "No delivery    should be active for this entity"
                 if self.arrValid and len(self.arrValid) > 0 and self.arrValid[0] == 'INACTIVE':
                     return HttpJSONError('Delivery already active', 400)
-                print(qsDel)
+                # print(qsDel)
                 # Ensure the delivery has an allowed status
                 bAllowAll = self.arrValid is None
                 if bAllowAll or qsDel[len(qsDel)-1].st in self.arrValid:

@@ -500,32 +500,6 @@ public class UtilityPollingService extends Service {
             //stopTimer2 = stopTimerFlag2;
 *//*
             if (stop) {
-*//*
-            final Handler handler = new Handler();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    secondsActLocSel--;
-                    if (secondsActLocSel < 0) {
-                        Log.d("ActivityDeliveryOrders.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
-
-                        stopTimerActLocSel = true;
-                        ActivityDeliveryOrders.getInstance().checkStatus();
-
-                    } else {
-                        stopTimerActLocSel = false;
-                    }
-
-                    if (stopTimerActLocSel == false) {
-                        Log.d("ActivityDeliveryOrders.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
-
-                        handler.postDelayed(this, 1000);
-                    } else {
-                        stopSelf();
-                    }
-                }
-            });
-        }
 */
         return START_STICKY;
     }

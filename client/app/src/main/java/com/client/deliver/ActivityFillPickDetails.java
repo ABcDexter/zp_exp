@@ -171,71 +171,64 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.confirm_address:
-                String str_name = name.getText().toString();
-                String str_mobile = mobile.getText().toString();
-                String str_landmark = edPickAddress.getText().toString();
-                if (TextUtils.isEmpty(placeName)) {
-                    Toast.makeText(instance, R.string.mandatory_fields, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (TextUtils.isEmpty(str_landmark)) {
-                    edPickAddress.setError(getString(R.string.this_mandatory_field));
-                    return;
-                }
-                if (TextUtils.isEmpty(str_name)) {
-                    name.setError(getString(R.string.this_mandatory_field));
-                    return;
-                }
+        int id = v.getId();
+        if (id == R.id.confirm_address) {
+            String str_name = name.getText().toString();
+            String str_mobile = mobile.getText().toString();
+            String str_landmark = edPickAddress.getText().toString();
+            if (TextUtils.isEmpty(placeName)) {
+                Toast.makeText(instance, R.string.mandatory_fields, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (TextUtils.isEmpty(str_landmark)) {
+                edPickAddress.setError(getString(R.string.this_mandatory_field));
+                return;
+            }
+            if (TextUtils.isEmpty(str_name)) {
+                name.setError(getString(R.string.this_mandatory_field));
+                return;
+            }
 
-                if (TextUtils.isEmpty(str_mobile)) {
-                    mobile.setError(getString(R.string.this_mandatory_field));
-                    return;
-                }
-                if (lat.isEmpty()) {
-                    Toast.makeText(this, R.string.pick_point_land, Toast.LENGTH_SHORT).show();
-                } else {
-                    SharedPreferences pref = this.getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putString(PICK_LAT, lat);
-                    editor.putString(PICK_LNG, remainder);
-                    editor.putString(ADDRESS_PICK, edPickAddress.getText().toString());
-                    editor.putString(PICK_PIN, pinCode.getText().toString());
-                    editor.putString(PICK_LANDMARK, placeName);
-                    editor.putString(PICK_MOBILE, mobile.getText().toString());
-                    editor.putString(PICK_NAME, name.getText().toString());
-                    Log.d(TAG, "&&&&&&&" + "PICK_LANDMARK: " + placeName + " ADDRESS_PICK:" + edPickAddress.getText().toString());
-                    editor.apply();
-                    Intent intent = new Intent(ActivityFillPickDetails.this, ActivityFillDropAddress.class);
-                    startActivity(intent);
-                    finish();
-                }
-                break;
-            case R.id.next_pin:
-                String pin_code = pinCode.getText().toString();
-                if (TextUtils.isEmpty(pin_code)) {
-                    pinCode.setError(getString(R.string.this_mandatory_field));
-                    return;
-                } else {
-                    addressAlert();
-                }
-                break;
-            case R.id.infoPickPin:
-                ShowPopup(1);
-                break;
-            case R.id.infoPickAddress:
-                ShowPopup(2);
-                break;
-            case R.id.infoLand:
-                ShowPopup(3);
-                break;
-            case R.id.infoName:
-                ShowPopup(4);
-                break;
-            case R.id.infoMobile:
-                ShowPopup(5);
-                break;
+            if (TextUtils.isEmpty(str_mobile)) {
+                mobile.setError(getString(R.string.this_mandatory_field));
+                return;
+            }
+            if (lat.isEmpty()) {
+                Toast.makeText(this, R.string.pick_point_land, Toast.LENGTH_SHORT).show();
+            } else {
+                SharedPreferences pref = this.getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString(PICK_LAT, lat);
+                editor.putString(PICK_LNG, remainder);
+                editor.putString(ADDRESS_PICK, edPickAddress.getText().toString());
+                editor.putString(PICK_PIN, pinCode.getText().toString());
+                editor.putString(PICK_LANDMARK, placeName);
+                editor.putString(PICK_MOBILE, mobile.getText().toString());
+                editor.putString(PICK_NAME, name.getText().toString());
+                Log.d(TAG, "&&&&&&&" + "PICK_LANDMARK: " + placeName + " ADDRESS_PICK:" + edPickAddress.getText().toString());
+                editor.apply();
+                Intent intent = new Intent(ActivityFillPickDetails.this, ActivityFillDropAddress.class);
+                startActivity(intent);
+                finish();
+            }
+        } else if (id == R.id.next_pin) {
+            String pin_code = pinCode.getText().toString();
+            if (TextUtils.isEmpty(pin_code)) {
+                pinCode.setError(getString(R.string.this_mandatory_field));
+                return;
+            } else {
+                addressAlert();
+            }
+        } else if (id == R.id.infoPickPin) {
+            ShowPopup(1);
+        } else if (id == R.id.infoPickAddress) {
+            ShowPopup(2);
+        } else if (id == R.id.infoLand) {
+            ShowPopup(3);
+        } else if (id == R.id.infoName) {
+            ShowPopup(4);
+        } else if (id == R.id.infoMobile) {
+            ShowPopup(5);
         }
 
     }
