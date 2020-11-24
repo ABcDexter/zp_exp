@@ -151,6 +151,7 @@ def purchaserProductGet(dct, entity):
 
     '''
     
+    """
     #WooCommerce get
     wcapi = API(
         url="https://zippe.in",
@@ -161,14 +162,19 @@ def purchaserProductGet(dct, entity):
     ret = wcapi.get("products")
     print(ret.status_code)
     
-    products = {}
+    products = ret.json() #{}
     
-    for i in ret.json():
-        print(i['id'], i['sku'])
-        products[str(i['sku'])] = str(i['id'])
-        
+    
+    #for i in ret.json():
+    #    print(i['id'], i['sku'])
+    #    products[str(i['sku'])] = str(i['id'])
+    doesnt work because WooCommerce returns only 10 by default, can be maxed at 100, so 50 callss with paginations
+    https://stackoverflow.com/questions/38593048/woo-commerce-rest-api-give-only-10-order-per-call/38593201
+    
+    """
+    
+    #getcontext().prec = 1000
+    qsProduct = Product.objects.all().values()
+    return HttpJSONResponse({'product': list(qsProduct)})
 
     return HttpJSONResponse(products)
-
-
-
