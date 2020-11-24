@@ -11,7 +11,7 @@ from django.db.utils import OperationalError, IntegrityError
 
 from url_magic import makeView
 from ..models import Product, Location
-from ..models import User, Product, Rate
+from ..models import User, Product, Rate, Purchaser
 from ..utils import ZPException, HttpJSONResponse, saveTmpImgFile, doOCR, log, aadhaarNumVerify, renameTmpImgFiles, \
     googleDistAndTime
 from ..utils import getOTP
@@ -98,5 +98,77 @@ def authProductUpdate(dct, entity):
 
 
     return HttpJSONResponse({})
+
+
+
+# ============================================================================
+# Purchaser views
+# ============================================================================
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
+def loginPurchaser(_, dct):
+    '''
+    Purchaser login
+    makes the purchaser login with phone number
+    
+    HTTP Args:
+        pn: phone number of the purchaser without the ISD code
+        key: auth of purchaser
+        
+    '''
+
+    sPhone = str(dct['pn'])
+    sAuth = str(dct['key'])
+    
+    qsPurchaser = Purchaser.objects.filter(auth=sAuth, pn=sPhone)
+    bPurchaserExists = len(qsPurchaser) != 0
+    if not bPurchaserExists:
+        log('Purchaser not registered with phone : %s' % (dct['pn']))
+        return HttpJSONResponse({'status':'false'})
+    else:
+        log('Auth exists for: %s' % (dct['pn']))
+        ret = {'status': True, 'auth':qsPurchaser[0].auth, 'an':qsPurchaser[0].an, 'pn' : qsPurchaser[0].pn, 'name': qsPurchaser[0].name}    
+        return HttpJSONResponse(ret)
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def purchaserProductGet(dct, entity):
+    '''
+    Get the list of all products from zippe.in website
+        
+    HTTP params:
+        auth
+
+    '''
+    
+    #WooCommerce get
+    wcapi = API(
+        url="https://zippe.in",
+        consumer_key=settings.WP_CONSUMER_KEY,
+        consumer_secret=settings.WP_CONSUMER_SECRET_KEY,
+        version="wc/v3"
+    )
+    ret = wcapi.get("products")
+    print(ret.status_code)
+    
+    products = {}
+    
+    for i in ret.json():
+        print(i['id'], i['sku'])
+        products[str(i['sku'])] = str(i['id'])
+        
+
+    return HttpJSONResponse(products)
+
 
 

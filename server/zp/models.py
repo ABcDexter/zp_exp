@@ -597,7 +597,15 @@ class Product(models.Model):
     '''
     sku  = models.CharField(primary_key=True, max_length=100)
     name  = models.CharField(null=True, max_length=100)
-    type = models.BooleanField(default=False, db_index=True)
+    #
+    #TYPE = [
+    #    ('simple', 'simple'),
+    #    ('grouped', 'rental'),
+    #    ('external', 'delivery'),
+    #    ('variable', 'null')
+    #]
+
+    #type = models.BooleanField(default=False, db_index=True)
     
     regular_price = models.FloatField(db_index=True, default=0.0)
     cost_price = models.FloatField(db_index=True, default=0.0)
