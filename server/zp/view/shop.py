@@ -10,7 +10,7 @@ from django.conf import settings
 from django.db.utils import OperationalError, IntegrityError
 
 from url_magic import makeView
-from ..models import Product, Location
+from ..models import Location
 from ..models import User, Product, Rate, Purchaser
 from ..utils import ZPException, HttpJSONResponse, saveTmpImgFile, doOCR, log, aadhaarNumVerify, renameTmpImgFiles, \
     googleDistAndTime
@@ -174,7 +174,7 @@ def purchaserProductGet(dct, entity):
     """
     
     #getcontext().prec = 1000
-    qsProduct = Product.objects.all().values() #('sku','name')
+    qsProduct = Product.objects.all().values('id','name','categories')
     return HttpJSONResponse({'product': list(qsProduct)})
 
     return HttpJSONResponse(products)

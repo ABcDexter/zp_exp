@@ -151,3 +151,4 @@ select * from route;
 
 # command to be run from command line to dump a table to a csv.
 # sudo mariadb zp -e "select * from trip" -B | sed "s/'/\'/;s/\t/\",\"/g;s/^/\"/;s/$/\"/;s/\n//g" > rides_simul_001.csv
+# ALTER TABLE product CHANGE COLUMN `crosssell_ids` `abcd` VARCHAR(10);
