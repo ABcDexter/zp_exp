@@ -634,9 +634,9 @@ class Product(models.Model):
     tax_class = models.FloatField(db_index=True, default=0.0)
     purchase_note = models.CharField(max_length=250, default='Thanks :) kindly check the package for expiry details.', null=True)
     # 21
-    upsell_ids  = models.CharField(null=True, max_length=200)
-    crosssell_ids  = models.CharField(null=True, max_length=200)
-    parent_ids  = models.CharField(null=True, max_length=200)
+    upsell_ids = models.CharField(null=True, max_length=200)
+    cross_sell_ids = models.CharField(null=True, max_length=200)
+    parent_id = models.CharField(null=True, max_length=200)
     # 24
     low_stock_amount  = models.SmallIntegerField(default=1, db_index=True)
     images = models.CharField(max_length=250, default='https://cdn.business2community.com/wp-content/uploads/2014/01/product-coming-soon.jpg', null=True)
