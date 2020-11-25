@@ -608,38 +608,38 @@ class Product(models.Model):
     type = models.CharField(max_length=10, choices=TYPE, default='simple')
     catalog_visibility = models.CharField(max_length=10, default='visible')
     published = models.CharField(max_length=10, default='publish')
-    
+    # 4 
     published = models.CharField(max_length=10, default='publish', )
     description = models.CharField(max_length=1000, default='', null=True)
     short_description = models.CharField(max_length=250, default='', null=True)
-    
+    # 7 
     regular_price = models.FloatField(db_index=True, default=0.0)
     sale_price = models.FloatField(db_index=True, default=0.0)
     stock_quantity = models.IntegerField(default=0, db_index=True)
-    
+    # 10
     backorders = models.CharField(max_length=10, default='yes')
     categories = models.CharField(null=True, db_index=True, max_length=50)
-    weight  = models.FloatField(db_index=True, default=0.0)
-    
+    weight = models.FloatField(db_index=True, default=0.0)
+    # 13
     sold_individually = models.CharField(max_length=10, default='FALSE')
     tags = models.CharField(null=True, max_length=50)
     menu_order = models.IntegerField(default=1, db_index=True)
-
+    # 16
     grouped = models.CharField(max_length=10, default='FALSE')
     sku  = models.CharField(null=True, max_length=200, db_index=True)
     tax_status = models.CharField(null=True,default='taxable', max_length=10)
-    
+    # 19
     tax_class = models.FloatField(db_index=True, default=0.0)
     purchase_note = models.CharField(max_length=250, default='Thanks :) kindly check the package for expiry details.', null=True)
-
+    # 21
     upsell_ids  = models.CharField(null=True, max_length=200)
     crosssell_ids  = models.CharField(null=True, max_length=200)
     parent_ids  = models.CharField(null=True, max_length=200)
-
+    # 24
     low_stock_amount  = models.SmallIntegerField(null=True, db_index=True)
     images = models.CharField(max_length=250, default='https://cdn.business2community.com/wp-content/uploads/2014/01/product-coming-soon.jpg', null=True)
-    cost_price = models.FloatField(db_index=True, default=0.0, db_index=True)
-    
+    cost_price = models.FloatField(default=0.0, db_index=True)
+    #27
     
     def save(self, *args, **kwargs):
         self.menu_order = self.menu_order + 1
@@ -647,7 +647,6 @@ class Product(models.Model):
     
     class Meta:
         db_table = 'product'
-        
         managed = True
         
         
