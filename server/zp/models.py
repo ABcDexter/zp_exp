@@ -612,8 +612,8 @@ class Product(models.Model):
     published = models.CharField(max_length=10, default='publish')
     # 4 
     published = models.CharField(max_length=10, default='publish', )
-    description = models.CharField(max_length=1000, default='', null=True)
-    short_description = models.CharField(max_length=250, default='', null=True)
+    description = models.CharField(max_length=2000, default='', null=True)
+    short_description = models.CharField(max_length=500, default='', null=True)
     # 7 
     regular_price = models.FloatField(db_index=True, default=0.0)
     sale_price = models.FloatField(db_index=True, default=0.0)
