@@ -174,7 +174,7 @@ def purchaserProductGet(dct, entity):
     """
     
     #getcontext().prec = 1000
-    qsProduct = Product.objects.all().values()
+    qsProduct = Product.objects.all().values() #('sku','name')
     return HttpJSONResponse({'product': list(qsProduct)})
 
     return HttpJSONResponse(products)

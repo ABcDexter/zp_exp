@@ -595,32 +595,59 @@ class Product(models.Model):
     tax_class(float): how much tax on the product
     low_stock_amount(int): low stock alert
     '''
-    sku  = models.CharField(primary_key=True, max_length=100)
-    name  = models.CharField(null=True, max_length=100)
-    #
-    #TYPE = [
-    #    ('simple', 'simple'),
-    #    ('grouped', 'rental'),
-    #    ('external', 'delivery'),
-    #    ('variable', 'null')
-    #]
+    #id is given by default
+    name  = models.CharField(null=True, max_length=200, db_index=True)
+    
+    TYPE = [
+        ('simple', 'simple'),
+        ('grouped', 'grouped'),
+        ('external', 'external'),
+        ('variable', 'variable')
+    ]
 
-    #type = models.BooleanField(default=False, db_index=True)
+    type = models.CharField(max_length=10, choices=TYPE, default='simple')
+    catalog_visibility = models.CharField(max_length=10, default='visible')
+    published = models.CharField(max_length=10, default='publish')
+    
+    published = models.CharField(max_length=10, default='publish', )
+    description = models.CharField(max_length=1000, default='', null=True)
+    short_description = models.CharField(max_length=250, default='', null=True)
     
     regular_price = models.FloatField(db_index=True, default=0.0)
-    cost_price = models.FloatField(db_index=True, default=0.0)
     sale_price = models.FloatField(db_index=True, default=0.0)
-    
     stock_quantity = models.IntegerField(default=0, db_index=True)
-    categories = models.CharField(null=True, db_index=True, max_length=50)
     
+    backorders = models.CharField(max_length=10, default='yes')
+    categories = models.CharField(null=True, db_index=True, max_length=50)
     weight  = models.FloatField(db_index=True, default=0.0)
+    
+    sold_individually = models.CharField(max_length=10, default='FALSE')
+    tags = models.CharField(null=True, max_length=50)
+    menu_order = models.IntegerField(default=1, db_index=True)
 
+    grouped = models.CharField(max_length=10, default='FALSE')
+    sku  = models.CharField(null=True, max_length=200, db_index=True)
+    tax_status = models.CharField(null=True,default='taxable', max_length=10)
+    
     tax_class = models.FloatField(db_index=True, default=0.0)
+    purchase_note = models.CharField(max_length=250, default='Thanks :) kindly check the package for expiry details.', null=True)
+
+    upsell_ids  = models.CharField(null=True, max_length=200)
+    crosssell_ids  = models.CharField(null=True, max_length=200)
+    parent_ids  = models.CharField(null=True, max_length=200)
+
     low_stock_amount  = models.SmallIntegerField(null=True, db_index=True)
+    images = models.CharField(max_length=250, default='https://cdn.business2community.com/wp-content/uploads/2014/01/product-coming-soon.jpg', null=True)
+    cost_price = models.FloatField(db_index=True, default=0.0, db_index=True)
+    
+    
+    def save(self, *args, **kwargs):
+        self.menu_order = self.menu_order + 1
+        super().save(*args, **kwargs)
     
     class Meta:
         db_table = 'product'
+        
         managed = True
         
         
