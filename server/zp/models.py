@@ -596,6 +596,8 @@ class Product(models.Model):
     low_stock_amount(int): low stock alert
     '''
     #id is given by default
+    id = models.AutoField(primary_key=True)
+    #0 
     name  = models.CharField(null=True, max_length=200, db_index=True)
     
     TYPE = [
