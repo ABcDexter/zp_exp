@@ -636,7 +636,7 @@ class Product(models.Model):
     crosssell_ids  = models.CharField(null=True, max_length=200)
     parent_ids  = models.CharField(null=True, max_length=200)
     # 24
-    low_stock_amount  = models.SmallIntegerField(null=True, db_index=True)
+    low_stock_amount  = models.SmallIntegerField(default=1, db_index=True)
     images = models.CharField(max_length=250, default='https://cdn.business2community.com/wp-content/uploads/2014/01/product-coming-soon.jpg', null=True)
     cost_price = models.FloatField(default=0.0, db_index=True)
     #27
