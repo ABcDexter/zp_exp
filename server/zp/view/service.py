@@ -86,8 +86,8 @@ def authBookingGet(dct, entity):
 
         if 'start' in z['value']:
             orders = {"servitor": arrOrder,
-                      "start": datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S'),
-                      "end" : datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S'),
+                      "start": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
+                      "end" : str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
                       "billing": i['billing'],
                       "customer_note": i['customer_note']
                     }
