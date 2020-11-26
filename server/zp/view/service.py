@@ -72,24 +72,28 @@ def authBookingGet(dct, entity):
     orders = {}
     
     for i in ret.json():
-        orig = "'"+str(i['line_items']).replace('\'','\"')[1:-1] + "'"
-        
-        #for r in (("\'", '\"'), ("None", "\"None\"") , ("False", "\"False\""), ("True", "\"True\"")):
-        y = json.loads(orig.replace("None", "\"None\"").replace("False", "\"False\"").replace("True", "\"True\""))
-        
-        zz = str(y['meta_data']).replace('\'','\"')[1:-1]
-            
-        z=json.loads(zz.replace("None", "\"None\"").replace("False", "\"False\"").replace("True", "\"True\""))
+        orig = "'" + str(i['line_items']).replace('\'', '\"')[1:-1] + "'"
+        # print(1, orig)
+        rep = orig.replace("None", "\"None\"").replace("False", "\"False\"").replace("True", "\"True\"") #.replace("[]", "\"\"")
+        # print(1.5, rep, type(rep))
+        # print("value ", rep[356:])
+        y = json.loads(rep)
+        # print(2, y)
+        zz = str(y['meta_data'])[1:-1]
 
-        # start time, DONE
-        # end time, DONE
+        # rep = reduce(lambda a, kv: a.replace(*kv), replacemnts, orig)
+        # reps = {"None": "\"None\"", "False": "\"False\"", "True": "\"True\"", "[]": "\"[]\""}
+        # rep = orig
+        # for x, y in reps.items():
+        #    rep = rep.replace(x,y)
+        #print(2, rep)
+        # y = json.loads(rep)
+        # print(3, zz)
+        #zz = str(y['meta_data']).replace('\'','\"')[1:-1]
+        #print(4)
+        z = json.loads(zz)  # .replace("None", "\"None\"").replace("False", "\"False\"").replace("True", "\"True\""))
         print(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S'), datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S'))
-        
-        #orders[str(i['sku'])] = str(i['id'])
-        # location 'billing': {'first_name': 'Anubhav', 'last_name': 'Pandey', 'company': '', 'address_1': 'House no. 34, Village Chanoti, Naukuchiatal, Bhimtal', 'address_2': '', 'city': 'nainital', 'state': 'UK', 'postcode': '263136', 'country': 'IN', 'email': 'ap.2580.100@gmail.com', 'phone': '9084083967'},
         print(i['billing'])
-        
-        # note  'customer_note': ''
         print(i['customer_note'])
     print(orders)
     #data = dct
