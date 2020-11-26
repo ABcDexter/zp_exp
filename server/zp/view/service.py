@@ -23,7 +23,7 @@ from django.forms.models import model_to_dict
 import json
 import urllib.request
 from woocommerce import API
-
+from ast import literal_eval
 
 ###########################################
 # Types
@@ -68,39 +68,36 @@ def authBookingGet(dct, entity):
     #WooCommerce update
     wcapi = API(url="https://zippe.in", consumer_key=settings.WP_CONSUMER_KEY, consumer_secret=settings.WP_CONSUMER_SECRET_KEY, version="wc/v3")
     ret = wcapi.get("orders")
-    print(ret.status_code)
-    orders = {}
-    
+    # print(ret.status_code)
+    ordersResp = []
     for i in ret.json():
         orig = "'" + str(i['line_items']).replace('\'', '\"')[1:-1] + "'"
-        # print(1, orig)
-        rep = orig.replace("None", "\"None\"").replace("False", "\"False\"").replace("True", "\"True\"") #.replace("[]", "\"\"")
-        # print(1.5, rep, type(rep))
-        # print("value ", rep[356:])
-        y = json.loads(rep)
-        # print(2, y)
-        zz = str(y['meta_data'])[1:-1]
 
-        # rep = reduce(lambda a, kv: a.replace(*kv), replacemnts, orig)
-        # reps = {"None": "\"None\"", "False": "\"False\"", "True": "\"True\"", "[]": "\"[]\""}
-        # rep = orig
-        # for x, y in reps.items():
-        #    rep = rep.replace(x,y)
-        #print(2, rep)
-        # y = json.loads(rep)
-        # print(3, zz)
-        #zz = str(y['meta_data']).replace('\'','\"')[1:-1]
-        #print(4)
-        z = json.loads(zz)  # .replace("None", "\"None\"").replace("False", "\"False\"").replace("True", "\"True\""))
-        print(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S'), datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S'))
-        print(i['billing'])
-        print(i['customer_note'])
-    print(orders)
-    #data = dct
-    #URI = 'products/'+ str(products[dct['sku']])
-    #print(wcapi.put(URI, data).json())
+        rep = orig.replace("None", "\"None\"").replace("False", "\"False\"").replace("True", "\"True\"")
 
-    return HttpJSONResponse({})
+        from ast import literal_eval
+        a = literal_eval(rep)
+        y = json.loads(a)
+
+        zz = str(y['meta_data']).replace('\'','\"')[1:-1]
+
+        arrOrder = json.loads( "[" + zz + "]")
+        z = arrOrder[0]
+
+        if 'start' in z['value']:
+            orders = {"servitor": arrOrder,
+                      "start": datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S'),
+                      "end" : datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S'),
+                      "billing": i['billing'],
+                      "customer_note": i['customer_note']
+                    }
+            #print(orders)
+            ordersResp.append(orders)
+
+    print(ordersResp)
+
+
+    return HttpJSONResponse({"booking":ordersResp})
 
 
 
