@@ -122,10 +122,10 @@ def authProductSync(dct, entity):
         return resp
         
     ret = {}
-    for i in range(1,100):
+    for i in range(1,31):
         resp = pros(str(i), str(10))
         ret.update(resp)
-        time.sleep(10)
+        #time.sleep()
         
     #print(ret)
     status = 'false'
