@@ -118,7 +118,7 @@ def authProductSync(dct, entity):
         resp = {}
         for i in ret.json():
             print(i['id'], i['name'], i['sku'])
-            resp[i['sku']] = i['id'])
+            resp[i['sku']] = i['id']
         return resp
         
     ret = {}
