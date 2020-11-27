@@ -96,9 +96,43 @@ def authProductUpdate(dct, entity):
     URI = 'products/'+ str(products[dct['sku']])
     print(wcapi.put(URI, data).json())
 
-
     return HttpJSONResponse({})
 
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def authProductSync(dct, entity):
+    '''
+    updated and syncs the mysql DB id with that from woocommerce
+    
+    HTTP params:
+        auth
+    '''
+    def pros(m,n):
+        wcapi = API(url="https://zippe.in", consumer_key="ck_97e691622c4bd5e13fb7b18cbb266c8277257372", consumer_secret="cs_63badebe75887e2f94142f9484d06f257194e2c3", version="wc/v3")
+        ret = wcapi.get("products/?page="+ str(m) + "&per_page=" + str(n))
+        print(ret.status_code)
+        resp = {}
+        for i in ret.json():
+            print(i['id'], i['name'], i['sku'])
+            resp[i['sku']] = i['id'])
+        return resp
+        
+    ret = {}
+    for i in range(1,100):
+        resp = pros(str(i), str(10))
+        ret.update(resp)
+        time.sleep(10)
+        
+    #print(ret)
+    status = 'false'
+    for i in ret:
+        qsNextHubs = Product.objects.raw('update product set id = %s where sku = %s;', [ret[i], i])
+        status = 'true'
+    return HttpJSONResponse({'status':status})
 
 
 # ============================================================================

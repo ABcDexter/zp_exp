@@ -25,6 +25,7 @@ import urllib.request
 from woocommerce import API
 from ast import literal_eval
 
+
 ###########################################
 # Types
 Filename = str
