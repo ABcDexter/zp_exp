@@ -23,7 +23,7 @@ from django.forms.models import model_to_dict
 import json
 import urllib.request
 from woocommerce import API
-
+import time
 
 ###########################################
 # Types
