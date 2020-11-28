@@ -73,8 +73,8 @@ def authProductUpdate(dct, entity):
     for key, val in dct.items():
         setattr(rec, key, val)
     rec.save()
-    print(rec)
-    
+    #print(rec)
+    print('local DB updated')
     #WooCommerce update
     wcapi = API(
         url="https://zippe.in",
@@ -86,7 +86,7 @@ def authProductUpdate(dct, entity):
     data = dct
     URI = 'products/'+ str(dct['id'])
     print(wcapi.put(URI, data).json())
-
+    print('WooCommerce DB updated')
     return HttpJSONResponse({})
 
 
@@ -98,7 +98,7 @@ def authProductUpdate(dct, entity):
 @checkAuth()
 def authProductBatchUpdate(dct, entity):
     '''
-    Adds or edits a list of product with sku,
+    Adds or edits a list of product with id (the primary key),
 
         name(str): name of the product
         type(bool): simple 0 or grouped 1
@@ -114,33 +114,10 @@ def authProductBatchUpdate(dct, entity):
         tax_class(float): how much tax on the product
         low_stock_amount(int): low stock alert
 
-    '''
-    sSKU = dct['sku']
-    qsProduct = Product.objects.filter(sku=sSKU)
-    rec =  Product() if len(qsProduct) == 0 else qsProduct[0]
-        
-    for key, val in dct.items():
-        setattr(rec, key, val)
-    rec.save()
-    print(rec)
+    example 
+    {
+    "auth":"pur01",
     
-    #WooCommerce update
-    wcapi = API(
-        url="https://zippe.in",
-        consumer_key=settings.WP_CONSUMER_KEY,
-        consumer_secret=settings.WP_CONSUMER_SECRET_KEY,
-        version="wc/v3"
-    )
-    ret = wcapi.get("products")
-    print(ret.status_code)
-    
-    products = {}
-    
-    for i in ret.json():
-        print(i['id'], i['sku'])
-        products[str(i['sku'])] = str(i['id'])
-        
-    data = {
     "update": [
         {
             "id": 1483,
@@ -157,11 +134,31 @@ def authProductBatchUpdate(dct, entity):
         }
     ]
     }
-    print(products)
-    data = dct
+
+    '''
+    data = dct 
+    
+    for ith in data['update']:
+        qsProduct = Product.objects.filter(id=ith['id'])
+        rec =  Product() if len(qsProduct) == 0 else qsProduct[0]
+        
+        for key, val in ith.items():
+            setattr(rec, key, val)
+        rec.save()
+        #print(rec)
+    print('local DB batch updated')
+    #WooCommerce update
+    wcapi = API(
+        url="https://zippe.in",
+        consumer_key=settings.WP_CONSUMER_KEY,
+        consumer_secret=settings.WP_CONSUMER_SECRET_KEY,
+        version="wc/v3"
+    )
+    
+    # data = dct
     URI = 'products/batch'
     print(print(wcapi.post(URI, data).json()))
-
+    print('WooCommerce DB batch updated')
     return HttpJSONResponse({})
 
 
