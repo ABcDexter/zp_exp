@@ -48,7 +48,57 @@ makeView.APP_NAME = 'zp'
 @checkAuth()
 def authProductUpdate(dct, entity):
     '''
-    Adds or edits a product with sku,
+    Adds or edits a product with ID,
+        id : the ACTUAL id of the product in woocommerce
+        
+        name(str): name of the product
+        type(bool): simple 0 or grouped 1
+        regular_price (float): MRP of the product 
+        cost_price (float): price we are getting the product at
+        sale_price (float): selling price of the product 
+        
+        stock_quantity(int):   quantity of the item in the stock
+        categories(str): product categories( see Category table)
+        weight (float): weight (in grams) of one unit of the product 
+        SKU(str): sku of the product
+        
+        tax_class(float): how much tax on the product
+        low_stock_amount(int): low stock alert
+
+    '''
+    #sSKU = dct['sku']
+    qsProduct = Product.objects.filter(id=dct['id'] # match the id in the mysql product table sku=sSKU)
+    rec =  Product() if len(qsProduct) == 0 else qsProduct[0]
+    
+    for key, val in dct.items():
+        setattr(rec, key, val)
+    rec.save()
+    print(rec)
+    
+    #WooCommerce update
+    wcapi = API(
+        url="https://zippe.in",
+        consumer_key=settings.WP_CONSUMER_KEY,
+        consumer_secret=settings.WP_CONSUMER_SECRET_KEY,
+        version="wc/v3"
+    )
+    
+    data = dct
+    URI = 'products/'+ str(dct['id'])
+    print(wcapi.put(URI, data).json())
+
+    return HttpJSONResponse({})
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def authProductBatchUpdate(dct, entity):
+    '''
+    Adds or edits a list of product with sku,
 
         name(str): name of the product
         type(bool): simple 0 or grouped 1
@@ -90,7 +140,23 @@ def authProductUpdate(dct, entity):
         print(i['id'], i['sku'])
         products[str(i['sku'])] = str(i['id'])
         
-
+    data = {
+    "update": [
+        {
+            "id": 799,
+            "sku":"badshah-black-pepper-powder-1-kg",
+            "name": "Badshah Black Pepper Powder 1 kg",
+            "regular_price": "499",
+            "cost_price": "299",
+            "sale_price": "469",
+            "stock_quantity": "10",
+            "weight": "100",
+            "tax_class": "5" ,
+            "low_stock_amount" :"5",
+            "images":[{"src":"https://p0.pikrepo.com/preview/709/295/king-of-hearts-playing-card.jpg"}]
+        }
+    ]
+    }
     print(products)
     data = dct
     URI = 'products/'+ str(products[dct['sku']])
