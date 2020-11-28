@@ -1,9 +1,23 @@
 # imports 
+import os
+import sys
 import time
 import json
 import urllib.request
 from woocommerce import API
-from django.db.utils import OperationalError, IntegrityError
+from pymysql.err import IntegrityError
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../' )
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../api' )
+
+os.environ.setdefault('ZP_DB_NAME', 'zp')
+os.environ.setdefault('ZP_DB_USER', 'zpadmin')
+os.environ.setdefault('ZP_DB_PASSWD', 'appleelppa')
+os.environ.setdefault('ZP_DB_HOST', 'localhost')
+os.environ.setdefault('ZP_DB_PORT', '3306')
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api.settings')
+
 
 def pros(m,n):
         wcapi = API(url="https://zippe.in", consumer_key="ck_97e691622c4bd5e13fb7b18cbb266c8277257372", consumer_secret="cs_63badebe75887e2f94142f9484d06f257194e2c3", version="wc/v3")
@@ -30,9 +44,9 @@ def main():
         sys.exit(-1)
 
     delay = float(sys.argv[3])
-    m = float(sys.argv[1])
-    n = float(sys.argv[2])
-    
+    m = int(sys.argv[1])
+    n = int(sys.argv[2])
+    print (m, n, delay)
     ret = {}
     for i in range(1,m+1):
         resp = pros(str(i), str(n))
