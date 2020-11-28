@@ -121,17 +121,25 @@ def authProductSync(dct, entity):
             resp[i['sku']] = i['id']
         return resp
         
+        
     ret = {}
     for i in range(1,31):
-        resp = pros(str(i), str(10))
+        resp = pros(str(i), str(20))
         ret.update(resp)
         #time.sleep()
-        
+
     #print(ret)
     status = 'false'
+    from django.db import connection
+    cursor = connection.cursor()
     for i in ret:
-        qsNextHubs = Product.objects.raw('update product set id = %s where sku = %s;', [ret[i], i])
+        try :
+        #qsNextHubs = Product.objects.raw('update product set id = %s where sku = %s;', [ret[i], i])
+            cursor.execute('update product set id = %s where sku = %s;', [ret[i],i])
+        except IntegrityError:
+            print(' Product with sku : %s didn\'t get updated' % (i))
         status = 'true'
+
     return HttpJSONResponse({'status':status})
 
 
