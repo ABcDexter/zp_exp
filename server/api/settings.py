@@ -39,18 +39,22 @@ M_PER_DEG_LNG = 97220.765  # These values are specific to fleet location
 M_PER_DEG_LAT = 110839.613
 DSQUARE_THRESH = 2500 # 50*50
 
-RIDE_RQ_TIMEOUT = 180 # 3 minutes
-RIDE_AS_TIMEOUT = 300 # 5 mintues
+RIDE_RQ_TIMEOUT = 180 # 3 mins
+RIDE_AS_TIMEOUT = 1800 # 30 minutes
 LOG_DIR = '/srv/data/logs/'
 #DRIVER_OF_TIMEOUT = 240
 
 RENT_RQ_TIMEOUT = 1800  # 30 mins
 RENT_AS_TIMEOUT = 3600  # 60 minutes
 
-DEL_SC_TIMEOUT = 900   # 15 minutes
+DEL_RQ_TIMEOUT = 900   # 15 mins
 DEL_AS_TIMEOUT = 1800  # 30 minutes
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 26214400 # 25 MB
+
+WP_CONSUMER_KEY = 'ck_97e691622c4bd5e13fb7b18cbb266c8277257372'
+
+WP_CONSUMER_SECRET_KEY ='cs_63badebe75887e2f94142f9484d06f257194e2c3'
 
 # Application definition
 

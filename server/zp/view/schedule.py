@@ -281,9 +281,14 @@ def userDeliverySchedule(dct, user):
     return HttpJSONResponse({})
     """
 
-
+    
     print("#######  ", len(dct), "Delivery scheduling request param : ",  dct)
 
+    # if user already has a delivery request, don't entertain this one
+    
+    if user.did not in  ['', '-1']:
+        raise ZPException(403, 'Already pending delivery')
+    
     delivery = Delivery()
     delivery.st = 'SC'
     delivery.uan = user.an  # 1 is used for auth of user
@@ -291,7 +296,7 @@ def userDeliverySchedule(dct, user):
     delivery.srclat, delivery.srclng, delivery.dstlat, delivery.dstlng = dct['srclat'], dct['srclng'], \
                                                                          dct['dstlat'], dct['dstlng']
     # 2, 3, 4, 5,
-    delivery.srcpin, delivery.dstpin = dct['srcpin'],  dct['dstpin']
+    delivery.srcpin, delivery.dstpin = 263136, 246149 #  dct['srcpin'],  dct['dstpin']
     # 6,7
     delivery.idim = dct['idim']
     delivery.itype = dct['itype']
@@ -330,9 +335,10 @@ def userDeliverySchedule(dct, user):
     # 30, 31, 32, 33, 34
 
     if pMinute < 30:
-        pDinaank = datetime(pYear, pMonth, pDate, pHour - 6, (pMinute + 30) % 60, 00)
+        pDinaank = datetime(pYear, pMonth, pDate, pHour - 6 , (pMinute + 35) % 60, 00)
     else:
-        pDinaank = datetime(pYear, pMonth, pDate, pHour - 5, (pMinute - 30) % 60, 00)
+        pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , (pMinute - 25) % 60, 00)
+    #pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , ( pMinute - 25 ) % 60  , 00) #does nto work for time with min <30, dated 20-11-2020
     print("DATETIME for RQ is : ", pDinaank)
 
     dYear = int(dct['pYear'])

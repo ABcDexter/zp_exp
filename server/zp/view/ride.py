@@ -19,6 +19,9 @@ import googlemaps
 from django.conf import settings
 from django.db.utils import OperationalError, IntegrityError
 
+import urllib.request
+import json
+
 ###########################################
 # Types
 Filename = str
@@ -257,6 +260,19 @@ def driverRideAccept(dct, driver):
         #dst = Place.objects.filter(id=trip.dstid)[0]
         #ret.update({'srcname': src.pn, 'dstname': dst.pn})
         print("Accepting trip : ", ret)
+        params = {"to": "/topics/all", "notification":{
+                                    "title":"Let's ZIPPE !",
+                                    "body":"Your RIDE has been accepted.",
+                                    "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+                                    "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+        }
+        }
+        dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+        jsonData = json.dumps(params).encode()
+        sUrl = 'https://fcm.googleapis.com/fcm/send'
+        req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+        jsonResp = urllib.request.urlopen(req, timeout=30).read()
+        ret = json.loads(jsonResp)
     else:
         raise ZPException(400, 'Trip already assigned')
 
@@ -623,3 +639,68 @@ def userRideRequest(dct, user):#, _trip):
 
     return HttpJSONResponse(ret)
 
+
+# ============================================================================
+# Admin views
+# ============================================================================
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Agent not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Transaction error', 500)
+@transaction.atomic
+@extractParams
+@checkAuth()
+def adminDriverReached(dct):
+    '''
+    Checks for trips in AS state and check whether the agent has reached or not.
+        if yes, then notify user
+
+    HTTP args:
+        *: Any other fields that need to be updated/corrected (except state)
+
+    Note:
+        this uses Google distance, so might not be accurate
+    '''
+    # Get the trips and look for RQ ones
+    qsTrip = Trip.objects.filter(st__in=['AS']) #[0]
+    tId = 0
+    auth = ''
+    
+    for trip in qsTrip: 
+        srcCoOrds = ['%s, %s' % (trip.srclat, trip.srclng)]
+        iterAn = 0
+        minDist, minTime = 1_000, 5 # 1000 metres and 5 minutes
+        locDriver = Location.objects.filter(an=trip.dan)[0]
+
+        dstCoOrds = ['%s,%s' % (locDriver.lat, locDriver.lng)]
+        print(srcCoOrds, dstCoOrds)
+
+        gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+        nDist, nTime = gMapsRet['dist'], gMapsRet['time']
+        print(" dist : ", nDist, " time : ", nTime)
+        if  (nTime < minTime) or (nDist < minDist):
+            minTime = nTime
+            minDist = nDist
+            iterAn = trip.dan
+            print("The driver is : ", minDist, " metres away and ", minTime, " minutes away")
+            params = {"to": "/topics/all", "notification":{
+                                    "title":"Let's ZIPPE !",
+                                    "body":"Your RIDE driver is reaching soon. Please be ready.",
+                                    "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+                                    "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+            }
+            }
+            dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+            jsonData = json.dumps(params).encode()
+            sUrl = 'https://fcm.googleapis.com/fcm/send'
+            req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+            jsonResp = urllib.request.urlopen(req, timeout=30).read()
+            ret = json.loads(jsonResp)
+
+            tId = trip.id
+            choosenDriver = Driver.objects.filter(an=iterAn)[0]
+            auth = choosenDriver.auth
+            
+    return HttpJSONResponse({'babua': auth, 'tid': tId})
