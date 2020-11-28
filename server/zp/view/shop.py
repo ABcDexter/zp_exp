@@ -67,7 +67,7 @@ def authProductUpdate(dct, entity):
 
     '''
     #sSKU = dct['sku']
-    qsProduct = Product.objects.filter(id=dct['id'] # match the id in the mysql product table sku=sSKU)
+    qsProduct = Product.objects.filter(id=dct['id']) # match the id in the mysql product table sku=sSKU)
     rec =  Product() if len(qsProduct) == 0 else qsProduct[0]
     
     for key, val in dct.items():
@@ -143,7 +143,7 @@ def authProductBatchUpdate(dct, entity):
     data = {
     "update": [
         {
-            "id": 799,
+            "id": 1483,
             "sku":"badshah-black-pepper-powder-1-kg",
             "name": "Badshah Black Pepper Powder 1 kg",
             "regular_price": "499",
@@ -159,8 +159,8 @@ def authProductBatchUpdate(dct, entity):
     }
     print(products)
     data = dct
-    URI = 'products/'+ str(products[dct['sku']])
-    print(wcapi.put(URI, data).json())
+    URI = 'products/batch'
+    print(print(wcapi.post(URI, data).json()))
 
     return HttpJSONResponse({})
 
