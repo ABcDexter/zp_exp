@@ -350,7 +350,7 @@ def supRentLogin(_, dct):
         sa : super auth
     '''
     sup = Supervisor.objects.filter(pn=dct['pn'], auth=dct['sa'])[0]
-    ret = {'auth': sup.auth, 'name':sup.name, 'redirect':True,"redirect_url": "index.html"}
+    ret = {'auth': sup.auth, 'name':sup.name, 'redirect':True,"redirect_url": "dashboard.html"} #index.html"}
     return HttpJSONResponse(ret)
 
 
