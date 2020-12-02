@@ -735,7 +735,7 @@ def adminVehicleAssign(dct):
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
-def adminRentLogin(dct):
+def adminRentLogin(_, dct):
     '''
     Makes the admin login 
     HTTPS args:
@@ -744,4 +744,54 @@ def adminRentLogin(dct):
     '''
     
     ret = {'auth': 'adminAuth007', 'name':'admin', 'redirect':True,"redirect_url": "dashboard.html"}
+    return HttpJSONResponse(ret)
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Trip/User/Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+def admRentCheck(_, dct):
+    '''
+    Returns a list of requested trips
+    Only trips which start from this Supervisors PID are returned
+    # No trips are returned if there are no vehicles there
+
+    HTTP args :
+        state : for rentals are required
+    '''
+    if dct['auth'] != 'adminAuth007':
+        raise ZPException(403, 'Admin auth wrong!')
+
+
+    qsTrip = Trip.objects.filter(rtype=1, st=dct['state'])
+    print("%d trips found" % (len(qsTrip)))
+    rentals = []
+    for trip in qsTrip :
+        uName = User.objects.filter(an=trip.uan)[0].name
+        vals = {'tid': trip.id, 'st': trip.st, 'uname': uName}
+        if trip.rvtype == 0:
+            vals['rvtype'] = 'CYCLE'
+        elif trip.rvtype == 1:
+            vals['rvtype'] = 'SCOOTY'
+        elif trip.rvtype == 2:
+            vals['rvtype'] = 'BIKE'
+        elif trip.rvtype == 3:
+            vals['rvtype'] = 'ZBEE'
+
+        if trip.st == 'ST':
+            vals['price'] = getTripPrice(trip)['price']
+        elif trip.st == 'FN':
+            vals['price'] = getTripPrice(trip)['price']
+        else:
+            vals['price'] = getRentPrice(trip.hrs)['price']
+        uAuth = User.objects.filter(an=trip.uan)[0].auth
+        vals['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
+
+        vals['van'] = trip.van
+        rentals.append(vals)
+        
+    ret = {} if not len(qsTrip) else {'rentals': rentals}
     return HttpJSONResponse(ret)
