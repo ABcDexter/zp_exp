@@ -730,3 +730,18 @@ def adminVehicleAssign(dct):
         raise ZPException(400, 'Trip already assigned')
 
     return HttpJSONResponse({'vid': vid, 'tid': trip.id})
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+def adminRentLogin(dct):
+    '''
+    Makes the admin login 
+    HTTPS args:
+        pn : phone number,
+        auth : admin auth
+    '''
+    
+    ret = {'auth': 'adminAuth007', 'name':'admin', 'redirect':True,"redirect_url": "dashboard.html"}
+    return HttpJSONResponse(ret)
