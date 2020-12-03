@@ -151,3 +151,8 @@ select * from route;
 
 # command to be run from command line to dump a table to a csv.
 # sudo mariadb zp -e "select * from trip" -B | sed "s/'/\'/;s/\t/\",\"/g;s/^/\"/;s/$/\"/;s/\n//g" > rides_simul_001.csv
+# ALTER TABLE product CHANGE COLUMN `crosssell_ids` `abcd` VARCHAR(10);
+
+# DELETE duplicate skus from product table
+# SELECT sku, COUNT(sku) FROM product GROUP BY sku HAVING COUNT(sku) > 1;
+# DELETE t1 FROM product t1 INNER JOIN product t2 WHERE t1.id < t2.id AND t1.sku = t2.sku;
