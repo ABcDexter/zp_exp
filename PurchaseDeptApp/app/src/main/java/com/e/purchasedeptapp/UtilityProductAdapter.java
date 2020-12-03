@@ -3,6 +3,7 @@ package com.e.purchasedeptapp;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,11 +18,11 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 public class UtilityProductAdapter extends ArrayAdapter<Product> {
-
     Context mCtx;
     int listLayoutRes;
     List<Product> productList;
     SQLiteDatabase mDatabase;
+    UpdateProductDatabaseHandler db;
 
     public UtilityProductAdapter(Context mCtx, int listLayoutRes, List<Product> productList, SQLiteDatabase mDatabase) {
         super(mCtx, listLayoutRes, productList);
@@ -65,22 +65,25 @@ public class UtilityProductAdapter extends ArrayAdapter<Product> {
                 updateProduct(product);
             }
         });
+        db = new UpdateProductDatabaseHandler(mCtx);
+        //db.deleteContact();
         return view;
-
     }
 
     private void updateProduct(final Product product) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(mCtx);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(mCtx, R.style.MyAlertDialogStyle);
 
         LayoutInflater inflater = LayoutInflater.from(mCtx);
         View view = inflater.inflate(R.layout.dialog_update_product, null);
         builder.setView(view);
 
+        final TextView txName = view.findViewById(R.id.nameProduct);
         final EditText edUnit = view.findViewById(R.id.edUnit);
         final EditText edRateUnit = view.findViewById(R.id.edRateUnit);
         final EditText edMRP = view.findViewById(R.id.edMRP);
         final EditText edWeight = view.findViewById(R.id.edWeight);
 
+        txName.setText(product.getName());
         edMRP.setText(product.getRegularPrice());
         edWeight.setText(product.getWeight());
 
@@ -90,6 +93,7 @@ public class UtilityProductAdapter extends ArrayAdapter<Product> {
         view.findViewById(R.id.buttonUpdateProduct).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 String unit = edUnit.getText().toString().trim();
                 String rate = edRateUnit.getText().toString().trim();
                 String mrp = edMRP.getText().toString().trim();
@@ -107,25 +111,33 @@ public class UtilityProductAdapter extends ArrayAdapter<Product> {
                     return;
                 }
 
-                String sql = "UPDATE products \n" +
+                //String sql = "INSERT INTO updateproducts (keyy, name,stock_qnt,cost_price,regular_price,weight) VALUES ( keyy = ? , name = ? ,stock_qnt = ?,cost_price = ?,regular_price = ?,weight = ?)";
+
+                /*String sql = "UPDATE updateproducts \n" +
                         "SET stock_qnt = ?, \n" +
                         "cost_price = ?, \n" +
                         "regular_price = ?, \n" +
                         "weight = ? \n" +
-                        "WHERE id = ?;\n";
+                        "WHERE id = ?;\n";*/
 
-                mDatabase.execSQL(sql, new String[]{unit, rate, mrp, weight, String.valueOf(product.getId())});
+
+                /*db.addProduct(new ProductFromServer("String.valueOf(product.getId())",
+                        "product.getName()", "unit", "rate","mrp" ,"weight"));*/
+                Log.d("TAG"," id = "+ product.getId()+" key = "+product.getKeyy());
+                db.addProduct(new ProductFromApp(String.valueOf(product.getKeyy()), unit, rate,mrp ,weight));
+                //mDatabase.execSQL(sql, new String[]{String.valueOf(product.getId()),product.getName(), unit, rate, mrp, weight});
                 Toast.makeText(mCtx, "Saved", Toast.LENGTH_SHORT).show();
+
                 //reloadEmployeesFromDatabase();
+
+                //viewAll();
 
                 dialog.dismiss();
             }
         });
-
-
     }
 
-    private void reloadEmployeesFromDatabase() {
+    /*private void reloadEmployeesFromDatabase() {
         Cursor cursorEmployees = mDatabase.rawQuery("SELECT * FROM products", null);
         if (cursorEmployees.moveToFirst()) {
             productList.clear();
@@ -144,6 +156,6 @@ public class UtilityProductAdapter extends ArrayAdapter<Product> {
         }
         cursorEmployees.close();
         notifyDataSetChanged();
-    }
+    }*/
 }
 

@@ -10,7 +10,8 @@
         android:layout_height="wrap_content"
         android:text="Product Name"
         android:textAlignment="center"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:id="@+id/nameProduct"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -105,6 +106,9 @@
         android:id="@+id/buttonUpdateProduct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Update" />
+        android:text="Save"
+        android:background="#9DD541"
+        android:textColor="#000000"
+        android:textSize="16sp"/>
 
 </LinearLayout>

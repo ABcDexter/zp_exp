@@ -1,38 +1,25 @@
 package com.e.purchasedeptapp;
 
-public class ProductFromServer {
+public class ProductFromApp {
     int _id;
     String _key;
     String _name;
-    String _category;
     String _stock_quantity;
     String _cost_price;
     String _regular_price;
     String _weight;
 
-    public ProductFromServer() {
+    public ProductFromApp() {
     }
 
-    public ProductFromServer(int id, String key, String name, String _category) {
+    public ProductFromApp(int id, String key, String name) {
         this._id = id;
         this._key = key;
         this._name = name;
-        this._category = _category;
     }
 
-    public ProductFromServer(String _key, String _name, String _category, String _stock_quantity, String _cost_price, String _regular_price, String _weight) {
+    public ProductFromApp(String _key, String _stock_quantity, String _cost_price, String _regular_price, String _weight) {
         this._key = _key;
-        this._name = _name;
-        this._category = _category;
-        this._stock_quantity = _stock_quantity;
-        this._cost_price = _cost_price;
-        this._regular_price = _regular_price;
-        this._weight = _weight;
-    }
-
-    public ProductFromServer(String _key, String _name, String _stock_quantity, String _cost_price, String _regular_price, String _weight) {
-        this._key = _key;
-        this._name = _name;
         this._stock_quantity = _stock_quantity;
         this._cost_price = _cost_price;
         this._regular_price = _regular_price;
@@ -61,14 +48,6 @@ public class ProductFromServer {
 
     public void setName(String name) {
         this._name = name;
-    }
-
-    public String getCategory() {
-        return this._category;
-    }
-
-    public void setCategory(String category) {
-        this._category = category;
     }
 
     public String getStockQuantity() {

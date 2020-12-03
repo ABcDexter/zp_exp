@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,9 +24,9 @@ public class ActivityOilGhee extends AppCompatActivity {
     SQLiteDatabase mDatabase;
     ListView listViewProducts;
     UtilityProductAdapter adapter;
-
     TextView textView;
     SearchView searchView;
+    Button saveBTN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class ActivityOilGhee extends AppCompatActivity {
         textView.setText(R.string.oil_ghee);
         listViewProducts = findViewById(R.id.listViewProducts);
         searchView = findViewById(R.id.etSearch);
+        saveBTN = findViewById(R.id.saveBtn);
 
         productList = new ArrayList<>();
 
@@ -58,6 +61,16 @@ public class ActivityOilGhee extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 searchContact(newText);
                 return false;
+            }
+        });
+
+
+        saveBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent update = new Intent(ActivityOilGhee.this, UpdateToServer.class);
+                startActivity(update);
+                finish();
             }
         });
     }
@@ -125,4 +138,6 @@ public class ActivityOilGhee extends AppCompatActivity {
         startActivity(home);
         finish();
     }
+
+
 }

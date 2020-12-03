@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,6 +26,8 @@ public class ActivityDiapers extends AppCompatActivity {
     UtilityProductAdapter adapter;
     TextView textView;
     SearchView searchView;
+    Button saveBTN;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +36,8 @@ public class ActivityDiapers extends AppCompatActivity {
         listViewProducts = findViewById(R.id.listViewProducts);
         productList = new ArrayList<>();
         textView = findViewById(R.id.txtCatName);
+        saveBTN = findViewById(R.id.saveBtn);
+
         textView.setText(R.string.diapers_wipes);
         //opening the database
         mDatabase = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
@@ -56,7 +62,16 @@ public class ActivityDiapers extends AppCompatActivity {
         });
         //this method will display the employees in the list
         showEmployeesFromDatabase();
+        saveBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent update = new Intent(ActivityDiapers.this, UpdateToServer.class);
+                startActivity(update);
+                finish();
+            }
+        });
     }
+
     private void searchContact(String word) {
         // Cursor cursorEmployees = mDatabase.rawQuery("SELECT * FROM products", null);
         Cursor cursorEmployees = mDatabase.rawQuery("SELECT * FROM products WHERE category = 'Diapers & Wipes'" + " AND name" + " like ?", new String[]{"%" + word + "%"});

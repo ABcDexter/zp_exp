@@ -1,10 +1,12 @@
 package com.e.purchasedeptapp;
 
+import java.util.List;
+
 public class Product {
     //int id;
     String id, keyy, name, category, stock_qnt, cost_price, regular_price, weight;
 
-
+    private List<String> list;
    /* public Product(String id, String keyy, String name, String category) {
         this.id = id;
         this.name = name;
@@ -12,6 +14,12 @@ public class Product {
         this.category = category;
 
     }*/
+   public List<String> getList() {
+       return list;
+   }
+
+    public Product() {
+    }
 
     public Product(String id, String keyy, String name, String category, String stock_qnt, String cost_price, String regular_price, String weight) {
         this.id = id;

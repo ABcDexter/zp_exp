@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import androidx.appcompat.widget.SearchView;
@@ -27,7 +29,7 @@ public class ActivitySpicesMasalaHerbs extends AppCompatActivity {
     TextView textView;
     EditText units, rate, mrp, weight;
     SearchView searchView ;
-
+    Button saveBTN;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,8 @@ public class ActivitySpicesMasalaHerbs extends AppCompatActivity {
 
         textView.setText(R.string.spices_masala_herbs);
         listViewProducts = findViewById(R.id.listViewProducts);
+        saveBTN = findViewById(R.id.saveBtn);
+
         productList = new ArrayList<>();
 
         //opening the database
@@ -65,6 +69,14 @@ public class ActivitySpicesMasalaHerbs extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 searchContact(newText);
                 return false;
+            }
+        });
+        saveBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent update = new Intent(ActivitySpicesMasalaHerbs.this, UpdateToServer.class);
+                startActivity(update);
+                finish();
             }
         });
     }

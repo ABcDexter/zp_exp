@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,8 +24,10 @@ public class ActivityFrozenNonVeg extends AppCompatActivity {
     SQLiteDatabase mDatabase;
     ListView listViewProducts;
     UtilityProductAdapter adapter;
-TextView textView;
+    TextView textView;
     SearchView searchView;
+    Button saveBTN;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +35,14 @@ TextView textView;
         textView = findViewById(R.id.txtCatName);
         textView.setText(R.string.frozen_packaged_non_Veg);
         listViewProducts = findViewById(R.id.listViewProducts);
+        saveBTN = findViewById(R.id.saveBtn);
+
         productList = new ArrayList<>();
 
         //opening the database
         mDatabase = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
         //creating the adapter object
-        adapter = new UtilityProductAdapter(this, R.layout.list_layout_product, productList,mDatabase);
+        adapter = new UtilityProductAdapter(this, R.layout.list_layout_product, productList, mDatabase);
         searchView = findViewById(R.id.etSearch);
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -56,7 +62,16 @@ TextView textView;
         });
         //this method will display the employees in the list
         showEmployeesFromDatabase();
+        saveBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent update = new Intent(ActivityFrozenNonVeg.this, UpdateToServer.class);
+                startActivity(update);
+                finish();
+            }
+        });
     }
+
     private void searchContact(String word) {
         // Cursor cursorEmployees = mDatabase.rawQuery("SELECT * FROM products", null);
         Cursor cursorEmployees = mDatabase.rawQuery("SELECT * FROM products WHERE category = 'Frozen packaged non-Veg'" + " AND name" + " like ?", new String[]{"%" + word + "%"});
@@ -84,7 +99,7 @@ TextView textView;
 
         //we used rawQuery(sql, selectionargs) for fetching all the employees
         //Cursor cursorEmployees = mDatabase.rawQuery("SELECT * FROM contacts", null);
-        String query = "SELECT * FROM products WHERE category = 'Frozen packaged non-Veg'" ;
+        String query = "SELECT * FROM products WHERE category = 'Frozen packaged non-Veg'";
         Cursor cursorEmployees = mDatabase.rawQuery(query, null);
 
         //if the cursor has some data
@@ -111,6 +126,7 @@ TextView textView;
         //adding the adapter to listview
         listViewProducts.setAdapter(adapter);
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

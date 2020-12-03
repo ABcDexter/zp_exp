@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,6 +26,7 @@ public class ActivityBabyCare extends AppCompatActivity {
     UtilityProductAdapter adapter;
     TextView textView;
     SearchView searchView;
+    Button saveBTN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,8 @@ public class ActivityBabyCare extends AppCompatActivity {
 
         //this method will display the employees in the list
         searchView = findViewById(R.id.etSearch);
+        saveBTN = findViewById(R.id.saveBtn);
+
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setSubmitButtonEnabled(true);
@@ -58,7 +63,16 @@ public class ActivityBabyCare extends AppCompatActivity {
             }
         });
         showEmployeesFromDatabase();
+        saveBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent update = new Intent(ActivityBabyCare.this, UpdateToServer.class);
+                startActivity(update);
+                finish();
+            }
+        });
     }
+
     private void searchContact(String word) {
         // Cursor cursorEmployees = mDatabase.rawQuery("SELECT * FROM products", null);
         Cursor cursorEmployees = mDatabase.rawQuery("SELECT * FROM products WHERE category = 'Baby care'" + " AND name" + " like ?", new String[]{"%" + word + "%"});

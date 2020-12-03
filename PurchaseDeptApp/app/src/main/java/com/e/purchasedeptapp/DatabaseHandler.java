@@ -10,7 +10,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "purchaserProducts";
@@ -70,22 +69,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //2nd argument is String containing nullColumnHack
         db.close(); // Closing database connection
     }
-
-    // code to get the single product
-    /*ProductFromServer getContact(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(TABLE_CONTACTS, new String[] { KEY_ID,
-                        KEY_KEY, KEY_NAME, KEY_PH_NO }, KEY_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
-
-        ProductFromServer product = new ProductFromServer(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1),cursor.getString(2), cursor.getString(3));
-        // return product
-        return product;
-    }*/
 
     public Cursor getData() {
         SQLiteDatabase db = this.getWritableDatabase();

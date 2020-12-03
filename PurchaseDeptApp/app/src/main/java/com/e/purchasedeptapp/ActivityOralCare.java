@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,6 +26,7 @@ public class ActivityOralCare extends AppCompatActivity {
     UtilityProductAdapter adapter;
 TextView textView;
     SearchView searchView;
+    Button saveBTN;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +34,8 @@ TextView textView;
         textView = findViewById(R.id.txtCatName);
         textView.setText(R.string.oral_care);
         listViewProducts = findViewById(R.id.listViewProducts);
+        saveBTN = findViewById(R.id.saveBtn);
+
         productList = new ArrayList<>();
 
         //opening the database
@@ -56,6 +61,14 @@ TextView textView;
         });
         //this method will display the employees in the list
         showEmployeesFromDatabase();
+        saveBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent update = new Intent(ActivityOralCare.this, UpdateToServer.class);
+                startActivity(update);
+                finish();
+            }
+        });
     }
     private void searchContact(String word) {
         // Cursor cursorEmployees = mDatabase.rawQuery("SELECT * FROM products", null);

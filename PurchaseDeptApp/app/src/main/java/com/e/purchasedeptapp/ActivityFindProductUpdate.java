@@ -78,9 +78,9 @@ public class ActivityFindProductUpdate extends AppCompatActivity {
 
                         for (int i = 0; i < array.length(); i++) {
                             if (i == array.length()) {
-                                looking.setText(R.string.products_updated);
+                                /*looking.setText(R.string.products_updated);
                                 progressBar.setVisibility(View.GONE);
-                                textView.setVisibility(View.GONE);
+                                textView.setVisibility(View.GONE);*/
                             } else {
                                 try {
                                     JSONObject ob = array.getJSONObject(i);
@@ -104,6 +104,11 @@ public class ActivityFindProductUpdate extends AppCompatActivity {
                                         textView.setText(progressStatus + "/" + array.length());
                                     }
                                 });
+                                /*if (progressStatus == array.length()){
+                                    looking.setText(R.string.products_updated);
+                                    progressBar.setVisibility(View.GONE);
+                                    textView.setVisibility(View.GONE);
+                                }  */
                                 try {
                                     // Sleep for 200 milliseconds.
                                     Thread.sleep(200);
