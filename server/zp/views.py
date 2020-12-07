@@ -1139,8 +1139,13 @@ def authProfileUpdate(dct, entity):
         gdr:  gender of the entity
     Note:
     '''
-    entity.gdr = dct['gdr']
-    entity.name = dct['name']
+    if 'gdr' in dct:
+        entity.gdr = dct['gdr']
+    if 'name' in dct:
+        entity.name = dct['name']
+    if 'email' in dct:
+        # only for user
+        entity.email = dct['email']
     entity.save()
 
     return HttpJSONResponse({})
