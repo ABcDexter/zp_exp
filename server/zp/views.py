@@ -535,7 +535,7 @@ def userTripCancel(_dct, user, trip):
 @transaction.atomic
 @checkAuth()
 @checkTripStatus(['TO', 'DN', 'PD'])
-def userTripRetire(_dct, user, _trip):
+def userTripRetire(_dct, user, trip):
     '''
     Resets users active trip
     This is called when the user has seen the message pertaining to trip end for these states:
@@ -547,8 +547,19 @@ def userTripRetire(_dct, user, _trip):
     FL : admin retires this via adminHandleFailedTrip()
     TR/FN : Driver will retire via driverConfirmPayment() after user pays money
     '''
+    import yagmail
+    from codecs import encode
+    eP_S_W_D = encode(str(settings.GM_PSWD), 'rot13')
+
+    receiver = str(user.email)
+    body = "Hi, \n Your Trip costed Rs " + str(getTripPrice(trip)['price'])+"\n Thanks for riding with Zippe!\n -VillageConnect"
+    #attachment = "some.pdf"
+    yag = yagmail.SMTP("villaget3ch@gmail.com", eP_S_W_D)
+    yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
+    
     # reset the tid to -1
     retireEntity(user)
+    
     return HttpJSONResponse({})
 
 
