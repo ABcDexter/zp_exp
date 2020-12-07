@@ -668,7 +668,18 @@ def authTripRetire(dct, entity, trip):
         vehicle = Vehicle.objects.filter(tid=trip.id)[0]
         vehicle.tid = Vehicle.AVAILABLE
         vehicle.save()
+    else:
+        import yagmail
+        from codecs import encode
+        eP_S_W_D = encode(str(settings.GM_PSWD), 'rot13')
 
+        receiver = str(entity.email)
+        body = "Hi, \n Your Trip costed Rs " + str(getTripPrice(trip)['price'])+"\n Thanks for riding with Zippe!\n -VillageConnect"
+        #attachment = "some.pdf"
+        yag = yagmail.SMTP("villaget3ch@gmail.com", eP_S_W_D)
+        yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
+
+    
     retireEntity(entity)
 
     return HttpJSONResponse({})

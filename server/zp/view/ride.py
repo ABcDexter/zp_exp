@@ -420,6 +420,7 @@ def driverRideRetire(dct, driver, trip):
     vehicle = Vehicle.objects.filter(tid=trip.id)[0]
     vehicle.tid = Vehicle.AVAILABLE
     vehicle.save()
+    
     return HttpJSONResponse({})
 
 
