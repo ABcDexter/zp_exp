@@ -547,15 +547,36 @@ def userTripRetire(_dct, user, trip):
     FL : admin retires this via adminHandleFailedTrip()
     TR/FN : Driver will retire via driverConfirmPayment() after user pays money
     '''
-    import yagmail
+    #import yagmail
     from codecs import encode
     eP_S_W_D = encode(str(settings.GM_PSWD), 'rot13')
 
     receiver = str(user.email)
-    body = "Hi, \n Your Trip costed Rs " + str(getTripPrice(trip)['price'])+"\n Thanks for riding with Zippe!\n -VillageConnect"
+    body = """\
+    Subject: Hello from Zippe :)
+    Hi, \n Your Trip costed Rs " + str(getTripPrice(trip)['price'])+"\n Thanks for riding with Zippe!\n -VillageConnect"""
     #attachment = "some.pdf"
-    yag = yagmail.SMTP("villaget3ch@gmail.com", eP_S_W_D)
-    yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
+    #print("user details : ", receiver)
+    #yag = yagmail.SMTP("villaget3ch@gmail.com", eP_S_W_D)
+    #yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
+    import smtplib, ssl
+
+    port = 465  # For SSL
+    smtp_server = "smtp.gmail.com"
+    sender_email = "villaget3ch@gmail.com"  # Enter your address
+    receiver_email = str(user.email)  # Enter receiver address
+    password = str(eP_S_W_D)
+    message = """\
+    Subject: Hi there
+
+    This message is automatically sent from Python."""
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message)
+        print("email successfully sent")
+    
     
     # reset the tid to -1
     retireEntity(user)
