@@ -587,7 +587,7 @@ def userTripRetire(_dct, user, trip):
     server = smtplib.SMTP('smtp.gmail.com')
     try :
         server.starttls()
-    excet Exception:
+    except Exception:
         print("Error, tls not set")
     
     if sender_email and password:
