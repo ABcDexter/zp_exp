@@ -498,8 +498,8 @@ class Location(models.Model):
     time  = models.DateTimeField(auto_now=True)
     kind  = models.IntegerField(db_index=True, default=0)
 
-    KINDS = {User: 0, Driver: 1, Vehicle: 2, Supervisor: 3, Agent: 4}
-    ENTITIES = [User, Driver, Vehicle, Supervisor, Agent]
+    KINDS = {User: 0, Driver: 1, Vehicle: 2, Supervisor: 3, Agent: 4, Servitor:5}
+    ENTITIES = [User, Driver, Vehicle, Supervisor, Agent, Servitor]
 
     def save(self, *args, **kwargs):
         '''
