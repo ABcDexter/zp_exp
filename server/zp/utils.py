@@ -23,6 +23,7 @@ from .models import Place, Trip, Progress, Route
 from .models import Vehicle, User, Driver, Supervisor
 from .models import Delivery, Agent
 from .models import Purchaser
+from .models import Servitor
 
 from django.conf import settings
 import requests
@@ -858,7 +859,8 @@ class checkAuth(object):
             isSuper = sFnName.startswith('sup')
             isAgent = sFnName.startswith('agent')
             isPurchaser = sFnName.startswith('purchase')
-
+            isServitor = sFnName.startswith('servi')
+            
             if isAdmin:
                 if dct.get('auth', '') != settings.ADMIN_AUTH:
                     return HttpJSONError('Forbidden', 403)
@@ -900,6 +902,12 @@ class checkAuth(object):
                 qsPur = Purchaser.objects.filter(auth=auth)
                 if (qsPur is not None) and (len(qsPur) > 0):
                     return func(dct, qsPur[0])
+                    
+            if isServitor or isAuth:
+                qsSer = Servitor.objects.filter(auth=auth)
+                if (qsSer is not None) and (len(qsSer) > 0):
+                    return func(dct, qsSer[0])
+
 
             return HttpJSONError('Unauthorized', 403)
 
