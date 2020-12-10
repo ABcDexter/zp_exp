@@ -561,6 +561,7 @@ def userTripRetire(_dct, user, trip):
     #yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
     import smtplib, ssl
 
+    '''
     port = 465  # For SSL
     smtp_server = "smtp.gmail.com"
     sender_email = "villaget3ch@gmail.com"  # Enter your address
@@ -576,7 +577,24 @@ def userTripRetire(_dct, user, trip):
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, message)
         print("email successfully sent")
+    '''
     
+    smtp_server = "smtp.gmail.com"
+    sender_email = "villaget3ch@gmail.com"  # Enter your address
+    receiver_email = str(user.email)  # Enter receiver address
+    password = str(eP_S_W_D)
+   
+    server = smtplib.SMTP('smtp.gmail.com')
+    try :
+        server.starttls()
+    excet Exception:
+        print("Error, tls not set")
+    
+    if sender_email and password:
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message)
+    
+    server.quit()
     
     # reset the tid to -1
     retireEntity(user)
