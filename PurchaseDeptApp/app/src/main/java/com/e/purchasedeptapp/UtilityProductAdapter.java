@@ -55,7 +55,6 @@ public class UtilityProductAdapter extends ArrayAdapter<Product> {
         //adding data to views
         textViewName.setText(product.getName());
         textViewDept.setText(product.getKeyy());
-        //textViewSalary.setText(String.valueOf(employee.getCategory()));
 
         //we will use these buttons later for update and delete operation
 
@@ -111,26 +110,10 @@ public class UtilityProductAdapter extends ArrayAdapter<Product> {
                     return;
                 }
 
-                //String sql = "INSERT INTO updateproducts (keyy, name,stock_qnt,cost_price,regular_price,weight) VALUES ( keyy = ? , name = ? ,stock_qnt = ?,cost_price = ?,regular_price = ?,weight = ?)";
-
-                /*String sql = "UPDATE updateproducts \n" +
-                        "SET stock_qnt = ?, \n" +
-                        "cost_price = ?, \n" +
-                        "regular_price = ?, \n" +
-                        "weight = ? \n" +
-                        "WHERE id = ?;\n";*/
-
-
-                /*db.addProduct(new ProductFromServer("String.valueOf(product.getId())",
-                        "product.getName()", "unit", "rate","mrp" ,"weight"));*/
-                Log.d("TAG"," id = "+ product.getId()+" key = "+product.getKeyy());
-                db.addProduct(new ProductFromApp(String.valueOf(product.getKeyy()), unit, rate,mrp ,weight));
-                //mDatabase.execSQL(sql, new String[]{String.valueOf(product.getId()),product.getName(), unit, rate, mrp, weight});
+                Log.d("UtilityProductAdapter"," name = "+product.getName()+" id = "+ product.getId()+" key = "+product.getKeyy());
+                db.addProduct(new ProductFromApp(product.getName(),String.valueOf(product.getKeyy()), unit, rate,mrp ,weight));
+                Log.d("UtilityProductAdapter"," name = "+product.getName()+" keyy = "+product.getKeyy()+" unit"+unit+" rate"+rate+" mrp"+mrp+" weight"+weight);
                 Toast.makeText(mCtx, "Saved", Toast.LENGTH_SHORT).show();
-
-                //reloadEmployeesFromDatabase();
-
-                //viewAll();
 
                 dialog.dismiss();
             }

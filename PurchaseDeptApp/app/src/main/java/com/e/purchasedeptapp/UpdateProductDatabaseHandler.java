@@ -5,13 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UpdateProductDatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
@@ -23,6 +16,7 @@ public class UpdateProductDatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_COST_PRICE = "cost_price";
     private static final String KEY_REGULAR_PRICE = "regular_price";
     private static final String KEY_WEIGHT = "weight";
+    private static final String KEY_NAME = "name";
 
     public UpdateProductDatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -34,7 +28,7 @@ public class UpdateProductDatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_PRODUCTS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_KEY + " TEXT,"
+                + KEY_NAME + " TEXT,"+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_KEY + " TEXT,"
                 + KEY_STOCK_QNT + " TEXT," + KEY_COST_PRICE + " TEXT,"
                 + KEY_REGULAR_PRICE + " TEXT," + KEY_WEIGHT + " TEXT" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
@@ -54,11 +48,12 @@ public class UpdateProductDatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(KEY_NAME, productFromApp.get_name()); // ProductFromApp Name
         values.put(KEY_KEY, productFromApp.get_key()); // ProductFromApp Key
-        values.put(KEY_STOCK_QNT, productFromApp.getStockQuantity()); // ProductFromApp StockQuantity
-        values.put(KEY_COST_PRICE, productFromApp.getCostPrice()); // ProductFromApp CostPrice
-        values.put(KEY_REGULAR_PRICE, productFromApp.getRegularPrice()); // ProductFromApp RegularPrice
-        values.put(KEY_WEIGHT, productFromApp.getWeight()); // ProductFromApp Weight
+        values.put(KEY_STOCK_QNT, productFromApp.get_stock_quantity()); // ProductFromApp StockQuantity
+        values.put(KEY_COST_PRICE, productFromApp.get_cost_price()); // ProductFromApp CostPrice
+        values.put(KEY_REGULAR_PRICE, productFromApp.get_regular_price()); // ProductFromApp RegularPrice
+        values.put(KEY_WEIGHT, productFromApp.get_weight()); // ProductFromApp Weight
 
         // Inserting Row
         db.insert(TABLE_PRODUCTS, null, values);
@@ -72,35 +67,6 @@ public class UpdateProductDatabaseHandler extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select * from " + TABLE_PRODUCTS, null);
         return res;
     }
-
-    // code to get all products in a list view
-    /*public List<ProductFromApp> getAllContacts() {
-        List<ProductFromApp> productFromAppList = new ArrayList<ProductFromApp>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_PRODUCTS;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                ProductFromApp productFromApp = new ProductFromApp();
-                productFromApp.setID(Integer.parseInt(cursor.getString(0)));
-                productFromApp.set_key(cursor.getString(1));
-                productFromApp.setName(cursor.getString(2));
-                productFromApp.setStockQuantity(cursor.getString(3));
-                productFromApp.setCostPrice(cursor.getString(4));
-                productFromApp.setRegularPrice(cursor.getString(5));
-                productFromApp.setWeight(cursor.getString(6));
-                // Adding productFromApp to list
-                productFromAppList.add(productFromApp);
-            } while (cursor.moveToNext());
-        }
-
-        // return product list
-        return productFromAppList;
-    }*/
 
     public void deleteContact() {
         try {

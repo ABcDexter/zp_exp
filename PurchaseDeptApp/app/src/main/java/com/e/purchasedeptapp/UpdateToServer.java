@@ -1,6 +1,7 @@
-package com.e.purchasedeptapp;
+ package com.e.purchasedeptapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateToServer extends AppCompatActivity {
-    Button update;
-    SQLiteDatabase mDatabase;
+
     private static final String DATABASE_NAME = "purchaserProductsUpdate";
     private static final String TAG = "UpdateToServer";
     public static final String AUTH_COOKIE = "com.purchasedeptapp.cookie";
@@ -31,21 +32,28 @@ public class UpdateToServer extends AppCompatActivity {
     String strAuth;
     JSONArray resultSet = new JSONArray();
     int totalColumn;
-    List<Product> productList;
+    List<ProductFromApp> productList;
+    Button update;
+    SQLiteDatabase mDatabase;
+    ListView displayProductsToUpdate;
+    UtilityUpdateProductAdapter adapter;
+
+    private static final String TABLE_PRODUCTS = "updateproducts";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_to_server);
+        Log.d(TAG, " inside the activity");
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
         productList = new ArrayList<>();
         update = findViewById(R.id.updateBtn);
-
+        displayProductsToUpdate = findViewById(R.id.listViewProductsUpdateList);
         //opening the database
         mDatabase = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
-
-        //divideArray();
+        adapter = new UtilityUpdateProductAdapter(this, R.layout.update_product, productList, mDatabase);
+        showEmployeesFromDatabase();
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +61,8 @@ public class UpdateToServer extends AppCompatActivity {
                 divideArray();
             }
         });
+
+
     }
 
     public void convertToJson(int posStart, int posEnd) {
@@ -66,7 +76,7 @@ public class UpdateToServer extends AppCompatActivity {
 
             JSONObject rowObject = new JSONObject();
 
-            for (int i = 0; i < totalColumn; i++) {
+            for (int i = 2; i < totalColumn; i++) {
                 if (cursor.getColumnName(i) != null) {
                     try {
                         if (cursor.getString(i) != null) {
@@ -103,7 +113,7 @@ public class UpdateToServer extends AppCompatActivity {
         Log.d(TAG, "totalItems = " + totalItems);
         Log.d(TAG, "position = " + cursor.getPosition());
 
-        for (int f = cursor.getPosition(); f < 5; f++) {
+        for (int f = cursor.getPosition(); f < 100; f++) {
             Log.d(TAG, "for loop value of f " + f);
             cursor.moveToPosition(f);
             Log.d(TAG, "cursor position inside for loop = " + cursor.getPosition());
@@ -138,7 +148,7 @@ public class UpdateToServer extends AppCompatActivity {
         Log.d(TAG, "RESPONSE:" + response);
 
         String ALTER_TBL = "delete from updateproducts " +
-                " where " + KEY_ID + " in (select " + KEY_ID + " from updateproducts " + " order by keyy LIMIT 2);";
+                " where " + KEY_ID + " in (select " + KEY_ID + " from updateproducts " + " order by keyy LIMIT 99);";
         mDatabase.execSQL(ALTER_TBL);
         String query = "SELECT * FROM updateproducts ";
         Cursor cursor = mDatabase.rawQuery(query, null);
@@ -162,34 +172,38 @@ public class UpdateToServer extends AppCompatActivity {
     private void showEmployeesFromDatabase() {
 
         //we used rawQuery(sql, selectionargs) for fetching all the employees
-        //Cursor cursorEmployees = mDatabase.rawQuery("SELECT * FROM products", null);
-        String query = "SELECT * FROM products WHERE category = 'Oil & Ghee'";
-        Cursor cursorEmployees = mDatabase.rawQuery(query, null);
+
+        Cursor res = mDatabase.rawQuery("select * from " + TABLE_PRODUCTS, null);
 
         //if the cursor has some data
-        if (cursorEmployees.moveToFirst()) {
+        if (res.moveToFirst()) {
             //looping through all the records
             do {
                 //pushing each record in the employee list
-                productList.add(new Product(
-                        cursorEmployees.getString(0),
-                        cursorEmployees.getString(1),
-                        cursorEmployees.getString(2),
-                        cursorEmployees.getString(3),
-                        cursorEmployees.getString(4),
-                        cursorEmployees.getString(5),
-                        cursorEmployees.getString(6),
-                        cursorEmployees.getString(7)
+                productList.add(new ProductFromApp(
+                        res.getString(0),
+                        res.getString(1),
+                        res.getString(2),
+                        res.getString(3),
+                        res.getString(4)
                 ));
 
-            } while (cursorEmployees.moveToNext());
+            } while (res.moveToNext());
         }
         //closing the cursor
-        cursorEmployees.close();
+        res.close();
 
         //adding the adapter to listview
-       // listViewProducts.setAdapter(adapter);
+        displayProductsToUpdate.setAdapter(adapter);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent home = new Intent(UpdateToServer.this, ActivityHome.class);
+        startActivity(home);
+        finish();
     }
 
 }

@@ -7,13 +7,7 @@ public class Product {
     String id, keyy, name, category, stock_qnt, cost_price, regular_price, weight;
 
     private List<String> list;
-   /* public Product(String id, String keyy, String name, String category) {
-        this.id = id;
-        this.name = name;
-        this.keyy = keyy;
-        this.category = category;
 
-    }*/
    public List<String> getList() {
        return list;
    }
@@ -31,7 +25,15 @@ public class Product {
         this.regular_price = regular_price;
         this.weight = weight;
     }
+    public Product(String name,String keyy, String stock_qnt, String cost_price, String regular_price, String weight) {
 
+        this.keyy = keyy;
+        this.name = name;
+        this.stock_qnt = stock_qnt;
+        this.cost_price = cost_price;
+        this.regular_price = regular_price;
+        this.weight = weight;
+    }
     public String getId() {
         return id;
     }
