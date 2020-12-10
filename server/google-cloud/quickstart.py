@@ -1,3 +1,4 @@
+# [START gmail_quickstart]
 from __future__ import print_function
 import pickle
 import os.path
@@ -46,3 +47,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+# [END gmail_quickstart]
