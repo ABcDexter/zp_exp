@@ -1,4 +1,4 @@
- package com.e.purchasedeptapp;
+package com.e.purchasedeptapp;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,10 +23,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateToServer extends AppCompatActivity {
+public class ActivityUpdateToServer extends AppCompatActivity {
 
     private static final String DATABASE_NAME = "purchaserProductsUpdate";
-    private static final String TAG = "UpdateToServer";
+    private static final String TAG = "ActivityUpdateToServer";
     public static final String AUTH_COOKIE = "com.purchasedeptapp.cookie";
     public static final String AUTH_KEY = "Auth";
     String strAuth;
@@ -37,7 +37,6 @@ public class UpdateToServer extends AppCompatActivity {
     SQLiteDatabase mDatabase;
     ListView displayProductsToUpdate;
     UtilityUpdateProductAdapter adapter;
-
     private static final String TABLE_PRODUCTS = "updateproducts";
 
     @Override
@@ -85,19 +84,20 @@ public class UpdateToServer extends AppCompatActivity {
                             rowObject.put(cursor.getColumnName(i), "");
                         }
                     } catch (Exception e) {
-                        Log.d("UpdateToServer", e.getMessage());
+                        Log.d("ActivityUpdateToServer", e.getMessage());
                     }
                 }
             }
             resultSet.put(rowObject);
             cursor.moveToNext();
         }
-        Log.d("UpdateToServer resultSet ", resultSet.toString());
+        Log.d("ActivityUpdateToServer resultSet ", resultSet.toString());
         if (resultSet.length() != 0) {
             findProductUpdate();
         } else {
             Log.d(TAG, " Json Array empty");
             Toast.makeText(this, "All Items have bee uploaded to server.", Toast.LENGTH_SHORT).show();
+            adapter.clear(); //clear the entire list
         }
         cursor.close();
     }
@@ -136,7 +136,7 @@ public class UpdateToServer extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        UpdateToServer a = UpdateToServer.this;
+        ActivityUpdateToServer a = ActivityUpdateToServer.this;
         Log.d(TAG, "Values: auth=" + strAuth);
         Log.d(TAG, "parameters = " + parameters.toString());
         Log.d(TAG, "UtilityApiRequestPost.doPOST auth-product-batch-update");
@@ -170,11 +170,8 @@ public class UpdateToServer extends AppCompatActivity {
     }
 
     private void showEmployeesFromDatabase() {
-
         //we used rawQuery(sql, selectionargs) for fetching all the employees
-
         Cursor res = mDatabase.rawQuery("select * from " + TABLE_PRODUCTS, null);
-
         //if the cursor has some data
         if (res.moveToFirst()) {
             //looping through all the records
@@ -182,10 +179,12 @@ public class UpdateToServer extends AppCompatActivity {
                 //pushing each record in the employee list
                 productList.add(new ProductFromApp(
                         res.getString(0),
-                        res.getString(1),
                         res.getString(2),
                         res.getString(3),
-                        res.getString(4)
+                        res.getString(4),
+                        res.getString(5)/*,
+                        res.getString(4),
+                        res.getString(5)*/
                 ));
 
             } while (res.moveToNext());
@@ -195,13 +194,12 @@ public class UpdateToServer extends AppCompatActivity {
 
         //adding the adapter to listview
         displayProductsToUpdate.setAdapter(adapter);
-
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent home = new Intent(UpdateToServer.this, ActivityHome.class);
+        Intent home = new Intent(ActivityUpdateToServer.this, ActivityHome.class);
         startActivity(home);
         finish();
     }

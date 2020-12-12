@@ -65,7 +65,7 @@ public class ActivityCleaners extends AppCompatActivity {
         saveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent update = new Intent(ActivityCleaners.this, UpdateToServer.class);
+                Intent update = new Intent(ActivityCleaners.this, ActivityUpdateToServer.class);
                 startActivity(update);
                 finish();
             }

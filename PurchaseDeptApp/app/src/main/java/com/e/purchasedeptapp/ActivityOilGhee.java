@@ -70,7 +70,7 @@ public class ActivityOilGhee extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("OIL AND GHEE Activity","review and update btn clicked");
-                Intent update = new Intent(ActivityOilGhee.this, UpdateToServer.class);
+                Intent update = new Intent(ActivityOilGhee.this, ActivityUpdateToServer.class);
                 startActivity(update);
                 finish();
             }

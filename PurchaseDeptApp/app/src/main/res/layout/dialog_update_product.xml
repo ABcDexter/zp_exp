@@ -92,13 +92,15 @@
             android:text="Weight"
             android:textSize="18sp" />
 
-        <EditText
+        <TextView
             android:id="@+id/edWeight"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Enter Weight"
-            android:inputType="number" />
+            android:text="Enter Weight"
+            android:textSize="18sp"
+            android:layout_marginStart="8dp"
+            android:textColor="#000"/>
     </LinearLayout>
 
 
@@ -109,6 +111,7 @@
         android:text="Save"
         android:background="#9DD541"
         android:textColor="#000000"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"/>
 
 </LinearLayout>

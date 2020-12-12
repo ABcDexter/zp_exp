@@ -21,6 +21,14 @@ public class ProductFromApp {
         this._name = name;
     }
 
+    public ProductFromApp(String _name, String _key, String _stock_quantity, String _cost_price, String _regular_price) {
+        this._name = _name;
+        this._key = _key;
+        this._stock_quantity = _stock_quantity;
+        this._cost_price = _cost_price;
+        this._regular_price = _regular_price;
+        //this._weight = _weight;
+    }
     public ProductFromApp(String _name, String _key, String _stock_quantity, String _cost_price, String _regular_price, String _weight) {
         this._name = _name;
         this._key = _key;
@@ -30,24 +38,31 @@ public class ProductFromApp {
         this._weight = _weight;
     }
 
-    public ProductFromApp(String _name, String _stock_quantity, String _cost_price, String _regular_price, String _weight) {
+    /*public ProductFromApp(String _name, String _stock_quantity, String _cost_price, String _regular_price, String _weight) {
         this._name = _name;
         this._stock_quantity = _stock_quantity;
         this._cost_price = _cost_price;
         this._regular_price = _regular_price;
         this._weight = _weight;
+    }*/
+
+    public ProductFromApp(String _name, String _stock_quantity, String _cost_price, String _regular_price) {
+        this._name = _name;
+        this._stock_quantity = _stock_quantity;
+        this._cost_price = _cost_price;
+        this._regular_price = _regular_price;
     }
 
-    public int getID() {
+    public int get_id() {
         return this._id;
-    }
-
-    public String get_key() {
-        return _key;
     }
 
     public String get_name() {
         return this._name;
+    }
+
+    public String get_key() {
+        return _key;
     }
 
     public String get_stock_quantity() {

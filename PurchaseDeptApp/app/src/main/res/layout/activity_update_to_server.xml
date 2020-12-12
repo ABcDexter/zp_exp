@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UpdateToServer">
+    tools:context=".ActivityUpdateToServer">
 
     <LinearLayout
         android:id="@+id/ln"
@@ -19,9 +19,8 @@
             android:textAlignment="center"
             android:textSize="16sp"/>
         <TextView
-            android:layout_width="50dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="UNIT"
             android:textAlignment="center"
             android:textSize="16sp" />
@@ -29,7 +28,6 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="RATE"
             android:textAlignment="center"
             android:textSize="16sp" />
@@ -37,18 +35,24 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="MRP"
             android:textAlignment="center"
             android:textSize="16sp"/>
 
-        <TextView
+        <!--<TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="WEIGHT"
             android:textAlignment="center"
             android:textSize="16sp"/>
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="key"
+            android:textAlignment="center"
+            android:textSize="16sp"/>-->
     </LinearLayout>
 
     <ListView

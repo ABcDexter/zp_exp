@@ -65,7 +65,7 @@ public class ActivityDairy extends AppCompatActivity {
         saveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent update = new Intent(ActivityDairy.this, UpdateToServer.class);
+                Intent update = new Intent(ActivityDairy.this, ActivityUpdateToServer.class);
                 startActivity(update);
                 finish();
             }

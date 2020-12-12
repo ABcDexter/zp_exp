@@ -3,6 +3,7 @@ package com.e.serviceproviderapp;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -125,8 +127,16 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         if (stringStatus.equals("AV")) {
             status_duty.setChecked(true);
-            //getLastLocation();// method for getting the last know latitude and longitude of driver
-            getStatus();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent i = new Intent(ActivityHome.this, UtilityPollingService.class);
+                    i.setAction("01");
+                    startService(i);
+                }
+            }, 5000);
+            getLastLocation();// method for getting the last know latitude and longitude of driver
+            //getStatus();
         }
         if (!stringStatus.equals("AV")) {
             status_duty.setChecked(false);
@@ -140,9 +150,9 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     SharedPreferences sp_cookie = getSharedPreferences(DRIVER_STATUS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(STATUS, driverStatus).apply(); // storing driver status locally for later use
                     Log.d(TAG, "driverStatus = " + driverStatus);
-                    agentSetMode(driverStatus);
-                    //getLastLocation();// method for getting the last know latitude and longitude of driver
-                    getStatus();
+                    //agentSetMode(driverStatus);
+                    getLastLocation();// method for getting the last know latitude and longitude of driver
+                    //getStatus();
 
                 } else {
                     driverStatus = "OF";//agent offline
@@ -151,7 +161,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     sp_cookie.edit().putString(STATUS, driverStatus).apply();
                     ShowPopup(2);
                     Log.d(TAG, "driverStatus = " + driverStatus);
-                    agentSetMode(driverStatus);
+                    //agentSetMode(driverStatus);
                 }
             }
         });
@@ -211,7 +221,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
     //method to check and record the last know location of the driver
 
-   /* public void getLastLocation() {
+    public void getLastLocation() {
         if (hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
@@ -244,10 +254,10 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                         }
                     });
         }
-    }*/
+    }
     //gps tracking with high accuracy. This means that the location is checked every 1 millisecond
 
-   /* private void requestNewLocationData() {
+    private void requestNewLocationData() {
 
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -271,34 +281,34 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                 Looper.myLooper()
         );
 
-    }*/
+    }
     // with every change in location this method is called
 
-   /* private LocationCallback mLocationCallback = new LocationCallback() {
+    private LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             Location mLastLocation = locationResult.getLastLocation();
             lat = mLastLocation.getLatitude() + "";
             lng = mLastLocation.getLongitude() + "";
         }
-    };*/
+    };
 
-    /*@Override
+    @Override
     public void onResume() {
         super.onResume();
         if (hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else
             getLastLocation();
-    }*/
+    }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.new_order) {
-            agentDelCheck();
-                /*Intent newOrderIntent = new Intent(ActivityHome.this, ActivityNewOrders.class);
-                startActivity(newOrderIntent);*/
+            //agentDelCheck();
+                Intent newOrderIntent = new Intent(ActivityHome.this, ActivityNewBooking.class);
+                startActivity(newOrderIntent);
         } else if (id == R.id.order_in_progress) {
            /* Intent inProgressIntent = new Intent(ActivityHome.this, ActivityAccepted.class);
             startActivity(inProgressIntent);*/
@@ -331,7 +341,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
     }
 
-   /* public void sendLocation() {
+    public void sendLocation() {
 
         params.put("an", aadhar);
         params.put("auth", auth);
@@ -349,7 +359,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             }
         }, a::onFailure);
 
-    }*/
+    }
 
     public void getStatus() {
 
@@ -421,12 +431,16 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG, "RESPONSE:" + response);
+
+        if (id==2){
+            Log.d(TAG, "RESPONSE of auth-location-update :" + response);
+        }
         //response on hitting agent-set-mode API
         if (id == 1) {
             String st = response.getString("st");
             switch (st) {
                 case "AV":
-                    //getLastLocation();
+                    getLastLocation();
                     status_duty.setChecked(true);
                     break;
                 case "LK":
@@ -505,7 +519,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     finish();*/
 
                 } else {
-                   /* Intent i = new Intent(this, UtilityPollingService.class);
+                    /*Intent i = new Intent(this, UtilityPollingService.class);
                     i.setAction("02");
                     startService(i);*/
                 }

@@ -64,7 +64,7 @@ TextView textView;
         saveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent update = new Intent(ActivityPackagedEss.this, UpdateToServer.class);
+                Intent update = new Intent(ActivityPackagedEss.this, ActivityUpdateToServer.class);
                 startActivity(update);
                 finish();
             }

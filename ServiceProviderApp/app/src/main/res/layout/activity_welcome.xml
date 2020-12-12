@@ -31,7 +31,8 @@
         android:layout_height="50dp"
         android:src="@drawable/zbee_right"
         android:layout_above="@id/zippe_logo"
-        android:id="@+id/iv_zippee"/>
+        android:id="@+id/iv_zippee"
+        android:visibility="gone"/>
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -44,5 +45,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_below="@id/zippe_logo"
-        android:src="@drawable/zbee_left" />
+        android:src="@drawable/zbee_left"
+        android:visibility="gone"/>
 </RelativeLayout>

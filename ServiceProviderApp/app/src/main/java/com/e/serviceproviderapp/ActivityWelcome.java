@@ -1,12 +1,9 @@
 package com.e.serviceproviderapp;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,23 +33,14 @@ public class ActivityWelcome extends AppCompatActivity {
 
         //checking if the user is registered or not.
         if (auth.equals("")) {
-            /*if (!token.equals("")){
-                Intent verifyUser = new Intent(ActivityWelcome.this, ActivityVerifyDLDetails.class);
-                startActivity(verifyUser);
-                finish();
-            }else {*/
-                Intent registerUser = new Intent(ActivityWelcome.this, ActivityLogin.class);
-                startActivity(registerUser);
-                finish();
-            /*}*/
+
+            Intent registerUser = new Intent(ActivityWelcome.this, ActivityLogin.class);
+            startActivity(registerUser);
+            finish();
+
         } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(ActivityWelcome.this, ActivityHome.class);
-                    startActivity(intent);
-                }
-            }, 500);
+            Intent intent = new Intent(ActivityWelcome.this, ActivityHome.class);
+            startActivity(intent);
         }
 
         zippe_iv = findViewById(R.id.iv_zippee);

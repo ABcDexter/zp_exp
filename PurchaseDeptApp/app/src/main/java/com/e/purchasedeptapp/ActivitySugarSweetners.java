@@ -63,7 +63,7 @@ public class ActivitySugarSweetners extends AppCompatActivity {
         saveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent update = new Intent(ActivitySugarSweetners.this, UpdateToServer.class);
+                Intent update = new Intent(ActivitySugarSweetners.this, ActivityUpdateToServer.class);
                 startActivity(update);
                 finish();
             }

@@ -27,7 +27,6 @@ public class ActivitySpicesMasalaHerbs extends AppCompatActivity {
     ListView listViewProducts;
     UtilityProductAdapter adapter;
     TextView textView;
-    EditText units, rate, mrp, weight;
     SearchView searchView ;
     Button saveBTN;
     @Override
@@ -36,10 +35,6 @@ public class ActivitySpicesMasalaHerbs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_view);
         textView = findViewById(R.id.txtCatName);
-        units = findViewById(R.id.edUnit);
-        rate = findViewById(R.id.edRateUnit);
-        mrp = findViewById(R.id.edMRP);
-        weight = findViewById(R.id.edWeight);
         searchView  = findViewById(R.id.etSearch);
 
         textView.setText(R.string.spices_masala_herbs);
@@ -74,7 +69,7 @@ public class ActivitySpicesMasalaHerbs extends AppCompatActivity {
         saveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent update = new Intent(ActivitySpicesMasalaHerbs.this, UpdateToServer.class);
+                Intent update = new Intent(ActivitySpicesMasalaHerbs.this, ActivityUpdateToServer.class);
                 startActivity(update);
                 finish();
             }

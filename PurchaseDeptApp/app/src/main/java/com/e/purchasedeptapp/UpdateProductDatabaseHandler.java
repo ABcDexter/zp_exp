@@ -15,8 +15,8 @@ public class UpdateProductDatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_STOCK_QNT = "stock_qnt";
     private static final String KEY_COST_PRICE = "cost_price";
     private static final String KEY_REGULAR_PRICE = "regular_price";
-    private static final String KEY_WEIGHT = "weight";
     private static final String KEY_NAME = "name";
+    private static final String KEY_WEIGHT = "weight";
 
     public UpdateProductDatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

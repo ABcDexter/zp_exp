@@ -36,8 +36,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ZExp"></activity>
-        <activity android:name=".UpdateToServer" />
+        <activity android:name=".ActivityUpdateToServer" />
         <activity android:name=".ActivityFindProductUpdate" />
         <activity android:name=".ActivityPremixes" />
         <activity android:name=".ActivityBeverages" />

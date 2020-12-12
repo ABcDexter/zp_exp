@@ -65,7 +65,7 @@ public class ActivityBreakfastEss extends AppCompatActivity {
         saveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent update = new Intent(ActivityBreakfastEss.this, UpdateToServer.class);
+                Intent update = new Intent(ActivityBreakfastEss.this, ActivityUpdateToServer.class);
                 startActivity(update);
                 finish();
             }

@@ -65,7 +65,7 @@ public class ActivityDeos extends AppCompatActivity {
         saveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent update = new Intent(ActivityDeos.this, UpdateToServer.class);
+                Intent update = new Intent(ActivityDeos.this, ActivityUpdateToServer.class);
                 startActivity(update);
                 finish();
             }

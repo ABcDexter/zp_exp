@@ -65,7 +65,7 @@ public class ActivityEverydayMeds extends AppCompatActivity {
         saveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent update = new Intent(ActivityEverydayMeds.this, UpdateToServer.class);
+                Intent update = new Intent(ActivityEverydayMeds.this, ActivityUpdateToServer.class);
                 startActivity(update);
                 finish();
             }

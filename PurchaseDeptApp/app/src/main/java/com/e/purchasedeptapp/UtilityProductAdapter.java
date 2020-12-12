@@ -80,7 +80,7 @@ public class UtilityProductAdapter extends ArrayAdapter<Product> {
         final EditText edUnit = view.findViewById(R.id.edUnit);
         final EditText edRateUnit = view.findViewById(R.id.edRateUnit);
         final EditText edMRP = view.findViewById(R.id.edMRP);
-        final EditText edWeight = view.findViewById(R.id.edWeight);
+        final TextView edWeight = view.findViewById(R.id.edWeight);
 
         txName.setText(product.getName());
         edMRP.setText(product.getRegularPrice());
@@ -111,7 +111,7 @@ public class UtilityProductAdapter extends ArrayAdapter<Product> {
                 }
 
                 Log.d("UtilityProductAdapter"," name = "+product.getName()+" id = "+ product.getId()+" key = "+product.getKeyy());
-                db.addProduct(new ProductFromApp(product.getName(),String.valueOf(product.getKeyy()), unit, rate,mrp ,weight));
+                db.addProduct(new ProductFromApp(product.getName(),String.valueOf(product.getKeyy()), unit, rate,mrp, weight));
                 Log.d("UtilityProductAdapter"," name = "+product.getName()+" keyy = "+product.getKeyy()+" unit"+unit+" rate"+rate+" mrp"+mrp+" weight"+weight);
                 Toast.makeText(mCtx, "Saved", Toast.LENGTH_SHORT).show();
 

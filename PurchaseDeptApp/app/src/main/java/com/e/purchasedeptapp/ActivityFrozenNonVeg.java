@@ -65,7 +65,7 @@ public class ActivityFrozenNonVeg extends AppCompatActivity {
         saveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent update = new Intent(ActivityFrozenNonVeg.this, UpdateToServer.class);
+                Intent update = new Intent(ActivityFrozenNonVeg.this, ActivityUpdateToServer.class);
                 startActivity(update);
                 finish();
             }
