@@ -35,6 +35,8 @@ GOOGLE_MAPS_KEY = "AIzaSyBMFQPIDHSPfdiQqjX2ieF4l-qQB2tB61c"
 GOOGLE_PLACES_KEY = "AIzaSyATYNx4G8xXuwss9a_W4owqGgFTeRLiZX8"
 DB_FILE_PATH  = '/srv/data/db'
 ADMIN_AUTH    = '437468756c68752066687461676e'
+GM_PSWD = 'ivyyntr+pbaarpg@2103'
+
 M_PER_DEG_LNG = 97220.765  # These values are specific to fleet location
 M_PER_DEG_LAT = 110839.613
 DSQUARE_THRESH = 2500 # 50*50

@@ -48,7 +48,57 @@ makeView.APP_NAME = 'zp'
 @checkAuth()
 def authProductUpdate(dct, entity):
     '''
-    Adds or edits a product with sku,
+    Adds or edits a product with ID,
+        id : the ACTUAL id of the product in woocommerce
+        
+        name(str): name of the product
+        type(bool): simple 0 or grouped 1
+        regular_price (float): MRP of the product 
+        cost_price (float): price we are getting the product at
+        sale_price (float): selling price of the product 
+        
+        stock_quantity(int):   quantity of the item in the stock
+        categories(str): product categories( see Category table)
+        weight (float): weight (in grams) of one unit of the product 
+        SKU(str): sku of the product
+        
+        tax_class(float): how much tax on the product
+        low_stock_amount(int): low stock alert
+
+    '''
+    #sSKU = dct['sku']
+    qsProduct = Product.objects.filter(id=dct['id']) # match the id in the mysql product table sku=sSKU)
+    rec =  Product() if len(qsProduct) == 0 else qsProduct[0]
+    
+    for key, val in dct.items():
+        setattr(rec, key, val)
+    rec.save()
+    #print(rec)
+    print('local DB updated')
+    #WooCommerce update
+    wcapi = API(
+        url="https://zippe.in",
+        consumer_key=settings.WP_CONSUMER_KEY,
+        consumer_secret=settings.WP_CONSUMER_SECRET_KEY,
+        version="wc/v3"
+    )
+    
+    data = dct
+    URI = 'products/'+ str(dct['id'])
+    print(wcapi.put(URI, data).json())
+    print('WooCommerce DB updated')
+    return HttpJSONResponse({})
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def authProductBatchUpdate(dct, entity):
+    '''
+    Adds or edits a list of product with id (the primary key),
 
         name(str): name of the product
         type(bool): simple 0 or grouped 1
@@ -64,16 +114,39 @@ def authProductUpdate(dct, entity):
         tax_class(float): how much tax on the product
         low_stock_amount(int): low stock alert
 
-    '''
-    sSKU = dct['sku']
-    qsProduct = Product.objects.filter(sku=sSKU)
-    rec =  Product() if len(qsProduct) == 0 else qsProduct[0]
-        
-    for key, val in dct.items():
-        setattr(rec, key, val)
-    rec.save()
-    print(rec)
+    example 
+    {
+    "auth":"pur01",
     
+    "update": [
+        {
+            "id": 1483,
+            "sku":"badshah-black-pepper-powder-1-kg",
+            "name": "Badshah Black Pepper Powder 1 kg",
+            "regular_price": "499",
+            "cost_price": "299",
+            "sale_price": "469",
+            "stock_quantity": "10",
+            "weight": "100",
+            "tax_class": "5" ,
+            "low_stock_amount" :"5",
+            "images":[{"src":"https://p0.pikrepo.com/preview/709/295/king-of-hearts-playing-card.jpg"}]
+        }
+    ]
+    }
+
+    '''
+    data = dct 
+    
+    for ith in data['update']:
+        qsProduct = Product.objects.filter(id=ith['id'])
+        rec =  Product() if len(qsProduct) == 0 else qsProduct[0]
+        
+        for key, val in ith.items():
+            setattr(rec, key, val)
+        rec.save()
+        #print(rec)
+    print('local DB batch updated')
     #WooCommerce update
     wcapi = API(
         url="https://zippe.in",
@@ -81,21 +154,11 @@ def authProductUpdate(dct, entity):
         consumer_secret=settings.WP_CONSUMER_SECRET_KEY,
         version="wc/v3"
     )
-    ret = wcapi.get("products")
-    print(ret.status_code)
     
-    products = {}
-    
-    for i in ret.json():
-        print(i['id'], i['sku'])
-        products[str(i['sku'])] = str(i['id'])
-        
-
-    print(products)
-    data = dct
-    URI = 'products/'+ str(products[dct['sku']])
-    print(wcapi.put(URI, data).json())
-
+    # data = dct
+    URI = 'products/batch'
+    print(print(wcapi.post(URI, data).json()))
+    print('WooCommerce DB batch updated')
     return HttpJSONResponse({})
 
 

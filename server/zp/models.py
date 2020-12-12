@@ -480,65 +480,6 @@ class Agent(models.Model):
         managed = True
 
 
-
-class Location(models.Model):
-    '''
-    Locations logs the the locations of the drivers/users updated periodically
-    --------------------------------------------------------------------------
-    an(int):      User/Driver Aadhaar number or vehicle ID
-    time:         Log entry timestamp
-    lat(float):   Latitude of user/driver
-    long(float):  Longitude of user/driver
-    kind(int):    0 is user, 1 is driver, 2 rental user, 3 is a vehicle
-
-    '''
-    an    = models.BigIntegerField(primary_key=True, default=0)
-    lat   = models.FloatField()
-    lng   = models.FloatField()
-    time  = models.DateTimeField(auto_now=True)
-    kind  = models.IntegerField(db_index=True, default=0)
-
-    KINDS = {User: 0, Driver: 1, Vehicle: 2, Supervisor: 3, Agent: 4}
-    ENTITIES = [User, Driver, Vehicle, Supervisor, Agent]
-
-    def save(self, *args, **kwargs):
-        '''
-        When saving, update user/driver or vehicle pid
-        '''
-        # Do the default superclass actions for save first
-        #self.full_clean() # this method calls any validators we set ( will add later )
-        super(Location, self).save(*args, **kwargs)
-
-        # Get any  places within DSQUARE_THRESH of this lat/long
-        # sqlite
-        # qsNearest = Place.objects.raw('SELECT id, ABS(%s * %s * (place.lat-%s) * (place.lng-%s)) AS dsquare from place '
-        #                               'WHERE dsquare < %s ORDER BY dsquare ASC',
-        #                               [ settings.M_PER_DEG_LAT, settings.M_PER_DEG_LNG,
-        #                                 self.lat, self.lng, settings.DSQUARE_THRESH])
-        # mysql
-        qsNearest = Place.objects.raw('SELECT id, ABS(%s * %s * (place.lat-%s) * (place.lng-%s)) AS \'dsquare\' from place '
-                                      'WHERE \'dsquare\' < %s ORDER BY dsquare ASC',
-                                      [settings.M_PER_DEG_LAT, settings.M_PER_DEG_LNG,
-                                       self.lat, self.lng, settings.DSQUARE_THRESH])
-
-        if len(qsNearest) > 0:
-            idNew = qsNearest[0].id
-
-            # Get the proper class, for which update of pid should take place
-            theClass = Location.ENTITIES[self.kind]
-            qsObj = theClass.objects.filter(pk=self.an)[0]
-
-            # if place changed, update and save
-            if qsObj.pid != idNew:
-                qsObj.pid = idNew
-                qsObj.save()
-
-    class Meta:
-        db_table = 'location'
-        ordering = ['lat', 'lng']
-        managed = True
-
-
 class Rate(models.Model):
     '''
     id (int): Autoincrement primary key
@@ -681,3 +622,102 @@ class Purchaser(models.Model):
         managed = True
 
 
+
+########################
+#Service module
+########################
+
+class Servitor(models.Model):
+    '''
+    an(int):    Aadhaar number
+    pn(str):    Phone number
+    auth(str):  Servitor auth token
+    dl(str):    Driving licence no.
+    name(str):  Real name
+    gdr(str):   Gender
+    age(int):   Age
+    pid(int):   Index of current place - see Place table
+    hs(str):    Home state of the Servitor
+    job(str):   What does that person does
+    wage(float) : hourly charge
+    '''
+
+    an   = models.BigIntegerField(primary_key=True)
+    pn   = models.CharField(max_length=32, db_index=True)
+    auth = models.CharField(max_length=16, db_index=True)
+    pid  = models.IntegerField(null=True, db_index=True)
+
+    dl   = models.CharField(null=True, max_length=20)
+    name = models.CharField(null=True, max_length=64, db_index=True)
+    gdr  = models.CharField(null=True, max_length=16, db_index=True)
+    age  = models.IntegerField(null=True, db_index=True)
+    hs   = models.CharField(null=True, max_length=50)
+    job  = models.CharField(null=True, max_length=50)
+    wage = models.FloatField(db_index=True, default=0.0)
+    class Meta:
+        db_table = 'servitor'
+        managed = True
+
+
+
+
+########################
+# Location
+########################
+
+class Location(models.Model):
+    '''
+    Locations logs the the locations of the drivers/users updated periodically
+    --------------------------------------------------------------------------
+    an(int):      User/Driver Aadhaar number or vehicle ID
+    time:         Log entry timestamp
+    lat(float):   Latitude of user/driver
+    long(float):  Longitude of user/driver
+    kind(int):    0 is user, 1 is driver, 2 rental user, 3 is a vehicle
+
+    '''
+    an    = models.BigIntegerField(primary_key=True, default=0)
+    lat   = models.FloatField()
+    lng   = models.FloatField()
+    time  = models.DateTimeField(auto_now=True)
+    kind  = models.IntegerField(db_index=True, default=0)
+
+    KINDS = {User: 0, Driver: 1, Vehicle: 2, Supervisor: 3, Agent: 4, Servitor:5}
+    ENTITIES = [User, Driver, Vehicle, Supervisor, Agent, Servitor]
+
+    def save(self, *args, **kwargs):
+        '''
+        When saving, update user/driver or vehicle pid
+        '''
+        # Do the default superclass actions for save first
+        #self.full_clean() # this method calls any validators we set ( will add later )
+        super(Location, self).save(*args, **kwargs)
+
+        # Get any  places within DSQUARE_THRESH of this lat/long
+        # sqlite
+        # qsNearest = Place.objects.raw('SELECT id, ABS(%s * %s * (place.lat-%s) * (place.lng-%s)) AS dsquare from place '
+        #                               'WHERE dsquare < %s ORDER BY dsquare ASC',
+        #                               [ settings.M_PER_DEG_LAT, settings.M_PER_DEG_LNG,
+        #                                 self.lat, self.lng, settings.DSQUARE_THRESH])
+        # mysql
+        qsNearest = Place.objects.raw('SELECT id, ABS(%s * %s * (place.lat-%s) * (place.lng-%s)) AS \'dsquare\' from place '
+                                      'WHERE \'dsquare\' < %s ORDER BY dsquare ASC',
+                                      [settings.M_PER_DEG_LAT, settings.M_PER_DEG_LNG,
+                                       self.lat, self.lng, settings.DSQUARE_THRESH])
+
+        if len(qsNearest) > 0:
+            idNew = qsNearest[0].id
+
+            # Get the proper class, for which update of pid should take place
+            theClass = Location.ENTITIES[self.kind]
+            qsObj = theClass.objects.filter(pk=self.an)[0]
+
+            # if place changed, update and save
+            if qsObj.pid != idNew:
+                qsObj.pid = idNew
+                qsObj.save()
+
+    class Meta:
+        db_table = 'location'
+        ordering = ['lat', 'lng']
+        managed = True

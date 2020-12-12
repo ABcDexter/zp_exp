@@ -11,7 +11,7 @@ from django.db.utils import OperationalError, IntegrityError
 
 from url_magic import makeView
 from ..models import Location
-from ..models import User, Product, Rate #, Servitor
+from ..models import User, Product, Rate, Servitor
 from ..utils import ZPException, HttpJSONResponse, saveTmpImgFile, doOCR, log, aadhaarNumVerify, renameTmpImgFiles, \
     googleDistAndTime
 from ..utils import getOTP
@@ -125,7 +125,7 @@ def loginServitor(_, dct):
 
     sPhone = str(dct['pn'])
     sAuth = str(dct['key'])
-    """
+    
     qsServitor = Servitor.objects.filter(auth=sAuth, pn=sPhone)
     bServitorExists = len(qsServitor) != 0
     if not bServitorExists:
@@ -135,7 +135,7 @@ def loginServitor(_, dct):
         log('Auth exists for: %s' % (dct['pn']))
         ret = {'status': True, 'auth':qsServitor[0].auth, 'an':qsServitor[0].an, 'pn' : qsServitor[0].pn, 'name': qsServitor[0].name}    
         return HttpJSONResponse(ret)
-    """
+    
     return HttpJSONResponse({})
     
 
