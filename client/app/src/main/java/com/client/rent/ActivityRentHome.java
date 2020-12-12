@@ -302,7 +302,6 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
         pMode = pref.getString(PAYMENT_MODE, "");
 
-
         if (imgBtnConfirm.equals("false")) {
             Log.d(TAG, "confirmRentButton.setEnabled(false)");
         } else {
@@ -310,19 +309,23 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         }
         if (stringPick.isEmpty()) {
             pick.setText(R.string.pick_up_point_z_hub);
+            pick.setBackgroundResource(R.drawable.rect_box_outline);
             Log.d(TAG, "Pick Location  is " + stringPick);
         } else {
             pick.setText(stringPick);
             pickPoint = pick.getText().toString();
+            pick.setBackgroundResource(R.drawable.rect_box_outline_color_change);
             pickID = stringPickID;
             Log.d(TAG, "Pick Location  is " + stringPick + " ID is " + stringPickID);
         }
         if (stringDrop.isEmpty()) {
             drop.setText(R.string.drop_point_z_hub);
+            drop.setBackgroundResource(R.drawable.rect_box_outline);
             Log.d(TAG, "Drop Location  is " + stringDrop);
         } else {
             drop.setText(stringDrop);
             dropPoint = drop.getText().toString();
+            drop.setBackgroundResource(R.drawable.rect_box_outline_color_change);
             dropID = stringDropID;
             Log.d(TAG, "Drop Location  is " + stringDrop + " ID is " + stringDropID);
         }
@@ -538,71 +541,85 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             case R.id.txt2:
                 NoHours = "2";
                 imageDialog2.dismiss();
+                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 hours.setText(R.string._2_hr);
                 break;
             case R.id.txt3:
                 NoHours = "3";
                 imageDialog2.dismiss();
+                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 hours.setText(R.string._3_hr);
                 break;
             case R.id.txt4:
                 NoHours = "4";
                 imageDialog2.dismiss();
+                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 hours.setText(R.string._4_hr);
                 break;
             case R.id.txt5:
                 NoHours = "5";
                 imageDialog2.dismiss();
+                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 hours.setText(R.string._5_hr);
                 break;
             case R.id.txt6:
                 NoHours = "6";
                 imageDialog2.dismiss();
+                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 hours.setText(R.string._6_hr);
                 break;
             case R.id.txt7:
                 NoHours = "7";
                 imageDialog2.dismiss();
+                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 hours.setText(R.string._7_hr);
                 break;
             case R.id.txt8:
                 NoHours = "8";
                 imageDialog2.dismiss();
+                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 hours.setText(R.string._8_hr);
                 break;
             case R.id.txt9:
                 NoHours = "9";
                 imageDialog2.dismiss();
+                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 hours.setText(R.string._9_hr);
                 break;
             case R.id.txt10:
                 NoHours = "10";
                 imageDialog2.dismiss();
+                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 hours.setText(R.string._10_hr);
                 break;
             case R.id.txt11:
                 NoHours = "11";
                 imageDialog2.dismiss();
+                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 hours.setText(R.string._11_hr);
                 break;
             case R.id.txt12:
                 NoHours = "12";
                 imageDialog2.dismiss();
+                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 hours.setText(R.string._12_hr);
                 break;
             case R.id.rent_rl_1:
                 VehicleType = "0";
                 imageDialog.dismiss();
+                vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 vehicle.setText(R.string.e_cycle);
                 break;
             case R.id.rent_rl_2:
                 VehicleType = "1";
                 imageDialog.dismiss();
+                vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 vehicle.setText(R.string.e_scooty);
                 break;
             case R.id.rent_rl_3:
                 VehicleType = "2";
                 imageDialog.dismiss();
+                vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 vehicle.setText(R.string.e_bike);
                 break;
         }
