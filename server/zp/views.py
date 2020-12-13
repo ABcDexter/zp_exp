@@ -548,18 +548,18 @@ def userTripRetire(_dct, user, trip):
     TR/FN : Driver will retire via driverConfirmPayment() after user pays money
     '''
     #import yagmail
-    from codecs import encode
-    eP_S_W_D = encode(str(settings.GM_PSWD), 'rot13')
+    #from codecs import encode
+    #eP_S_W_D = encode(str(settings.GM_PSWD), 'rot13')
 
-    receiver = str(user.email)
+    #receiver = str(user.email)
     body = """\
     Subject: Hello from Zippe :)
     Hi, \n Your Trip costed Rs " + str(getTripPrice(trip)['price'])+"\n Thanks for riding with Zippe!\n -VillageConnect"""
-    #attachment = "some.pdf"
-    #print("user details : ", receiver)
-    #yag = yagmail.SMTP("villaget3ch@gmail.com", eP_S_W_D)
-    #yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
-    import smtplib, ssl
+    ##attachment = "some.pdf"
+    ##print("user details : ", receiver)
+    ##yag = yagmail.SMTP("villaget3ch@gmail.com", eP_S_W_D)
+    ##yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
+    #import smtplib, ssl
 
     '''
     port = 465  # For SSL
@@ -579,22 +579,22 @@ def userTripRetire(_dct, user, trip):
         print("email successfully sent")
     '''
     
-    smtp_server = "smtp.gmail.com"
-    sender_email = "villaget3ch@gmail.com"  # Enter your address
-    receiver_email = str(user.email)  # Enter receiver address
-    password = str(eP_S_W_D)
+    #smtp_server = "smtp.gmail.com"
+    #sender_email = "villaget3ch@gmail.com"  # Enter your address
+    #receiver_email = str(user.email)  # Enter receiver address
+    #password = str(eP_S_W_D)
    
-    server = smtplib.SMTP('smtp.gmail.com')
-    try :
-        server.starttls()
-    except Exception:
-        print("Error, tls not set")
+    #server = smtplib.SMTP('smtp.gmail.com')
+    #try :
+    #    server.starttls()
+    #except Exception:
+    #    print("Error, tls not set")
     
-    if sender_email and password:
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, message)
+    #if sender_email and password:
+    #    server.login(sender_email, password)
+    #    server.sendmail(sender_email, receiver_email, message)
     
-    server.quit()
+    #server.quit()
     
     # reset the tid to -1
     retireEntity(user)
