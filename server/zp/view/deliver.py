@@ -1216,7 +1216,7 @@ def authDeliveryFail(dct, agent, deli):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkDeliveryStatus(None) #['SC', 'RQ', 'RC', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
+@checkDeliveryStatus(['SC', 'RQ', 'RC', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
 def authDeliveryHistory(dct, entity, deli):
     '''
     returns the history of all Deliveries for a entity
@@ -1247,7 +1247,7 @@ def authDeliveryHistory(dct, entity, deli):
 
             hs = User.objects.filter(an=deli.uan)[0].hs
             val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
-            thisOneBro = {'scid': i['scid'],
+            retJson = {'scid': i['scid'],
                           'itype': val,
                           'st': i['st'],
                           'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
@@ -1257,7 +1257,7 @@ def authDeliveryHistory(dct, entity, deli):
                           'edate': str(eTime)
                           }
 
-            states.append(thisOneBro)
+            states.append(retJson)
         #print(states)
         ret.update({'delis': states})
 
