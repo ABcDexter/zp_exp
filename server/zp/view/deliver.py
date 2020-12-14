@@ -1216,7 +1216,7 @@ def authDeliveryFail(dct, agent, deli):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkDeliveryStatus(['SC', 'RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
+@checkDeliveryStatus(None) #['SC', 'RQ', 'RC', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
 def authDeliveryHistory(dct, entity, deli):
     '''
     returns the history of all Deliveries for a entity

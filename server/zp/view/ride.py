@@ -202,7 +202,7 @@ def driverRideCheck(_dct, driver):
     return HttpJSONResponse(ret)
 
 
-# Do we allow drivers this choice or jsut assign them automatically as I am doing with deliveries.
+# Do we allow drivers this choice or jsut assign them automatically as I am doing with tripveries.
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
@@ -705,3 +705,63 @@ def adminDriverReached(dct):
             auth = choosenDriver.auth
             
     return HttpJSONResponse({'babua': auth, 'tid': tId})
+    
+    
+
+# ============================================================================
+# Auth views
+# ============================================================================
+
+
+@makeView()
+@csrf_exempt
+@handleException()
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkDeliveryStatus(None) # ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
+def authRideHistory(dct, entity, trip):
+    '''
+    returns the history of all Trips for an entity
+    '''
+    #CATEGORIES = { 'DOC':'DOCUMENT' , 'CLO':'CLOTHES', 'FOO':'FOOD', 'HOU':'HOUSEHOLD', 'ELE':'ELETRONICS', 'OTH':'OTHER', 'MED':'MEDICINES'}
+
+    qsTrip = Delivery.objects.filter(uan=entity.an).values() if type(entity) is User else Delivery.objects.filter(
+        dan=entity.an).order_by('-rtime').values()
+    ret = {}
+    # print(qsTrip)
+    if len(qsTrip):
+        states = []
+        for i in qsTrip:
+            # print(str(i['stime'])[:19])
+            #print("Delivery state : ", str(i['st']))
+            if i['st'] in ['ST', 'FL', 'FN']:
+                strSTime = str(i['stime'])[:19]
+                sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+            # print(i['etime'])
+            else:
+                sTime = 'NOTSTARTED'
+            if i['st'] in ['FN', 'CN']:
+                strETime = str(i['etime'])[:19]
+                eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+            else:
+                eTime = 'ONGOING'
+
+            hs = User.objects.filter(an=trip.uan)[0].hs
+            val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
+            thisOneBro = {'scid': i['scid'],
+                          'itype': val,
+                          'st': i['st'],
+                          'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
+                          'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
+                          'tip': i['tip'],
+                          'sdate': str(sTime),
+                          'edate': str(eTime)
+                          }
+
+            states.append(thisOneBro)
+        #print(states)
+        ret.update({'trips': states})
+
+    return HttpJSONResponse(ret)
+
