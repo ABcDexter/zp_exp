@@ -748,12 +748,11 @@ def userRideHistory(dct, user):
 
             hs = user.hs
             #val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
-            retJson = {'scid': i['scid'],
-                          #'itype': val,
+            retJson = {  'tid': i['id'],
                           'st': i['st'],
-                          'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
-                          'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
-                          'tip': i['tip'],
+                          'price': float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], i['vtype'], i['pmode'],0)['price']) ,
+                          'tax': float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], i['vtype'], i['pmode'],0)['price'])*0.05,  # tax of 5%
+                          'time': float(100),
                           'sdate': str(sTime),
                           'edate': str(eTime)
                           }
