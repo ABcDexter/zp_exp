@@ -738,7 +738,10 @@ def userRideHistory(dct, user):
             if i['st'] in ['ST', 'FL', 'FN', 'PD']:
                 vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
                 strSTime = str(i['stime'])[:19]
-                sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+                if strSTime is None : 
+                    sTime = 'notSTARTED'
+                else:
+                    sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
                 
                 price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
             # print(i['etime'])
@@ -749,9 +752,12 @@ def userRideHistory(dct, user):
             if i['st'] in ['FN', 'TR' 'PD']:
                 vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip                
                 price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
-
+                
                 strETime = str(i['etime'])[:19]
-                eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+                if strETime is None:
+                    eTime = 'notEnded'
+                else:
+                    eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
             else:
                 price = price if price > 1 else price # ooo weee, what an insipid line to code
                 eTime = 'NOTENDED'
