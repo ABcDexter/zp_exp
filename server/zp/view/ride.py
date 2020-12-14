@@ -719,22 +719,22 @@ def adminDriverReached(dct):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkTripStatus(['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
+@checkTripStatus( ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
 def authRideHistory(dct, entity, trip):
     '''
     returns the history of all Trips for an entity
     '''
     #CATEGORIES = { 'DOC':'DOCUMENT' , 'CLO':'CLOTHES', 'FOO':'FOOD', 'HOU':'HOUSEHOLD', 'ELE':'ELETRONICS', 'OTH':'OTHER', 'MED':'MEDICINES'}
 
-    qsTrip = Delivery.objects.filter(uan=entity.an).values() if type(entity) is User else Delivery.objects.filter(
+    qsTrip = Trip.objects.filter(uan=entity.an).values() if type(entity) is User else Trip.objects.filter(
         dan=entity.an).order_by('-rtime').values()
     ret = {}
     # print(qsTrip)
     if len(qsTrip):
-        states = []
+        trips = []
         for i in qsTrip:
             # print(str(i['stime'])[:19])
-            #print("Delivery state : ", str(i['st']))
+            #print("Trip state : ", str(i['st']))
             if i['st'] in ['ST', 'FL', 'FN']:
                 strSTime = str(i['stime'])[:19]
                 sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
@@ -748,9 +748,9 @@ def authRideHistory(dct, entity, trip):
                 eTime = 'ONGOING'
 
             hs = User.objects.filter(an=trip.uan)[0].hs
-            val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
-            thisOneBro = {'scid': i['scid'],
-                          'itype': val,
+            #val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
+            retJson = {'scid': i['scid'],
+                          #'itype': val,
                           'st': i['st'],
                           'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
                           'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
@@ -759,9 +759,9 @@ def authRideHistory(dct, entity, trip):
                           'edate': str(eTime)
                           }
 
-            states.append(thisOneBro)
+            trips.append(retJson)
         #print(states)
-        ret.update({'trips': states})
+        ret.update({'trips': trips})
 
     return HttpJSONResponse(ret)
 
