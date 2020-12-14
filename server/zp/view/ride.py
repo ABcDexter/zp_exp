@@ -747,7 +747,7 @@ def userRideHistory(dct, user):
                 eTime = 'ONGOING'
 
             hs = user.hs
-            vtype = Vehicle.objects.filter(an=i['van'])[0]['vtype'] #select vtype of the vehicle of this trip
+            vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
             
             #val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
             retJson = {  'tid': i['id'],
