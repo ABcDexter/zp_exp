@@ -743,7 +743,7 @@ def userRideHistory(dct, user):
                 price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
             # print(i['etime'])
             else:
-                price = getRiPrice(i)['price']
+                price = 1.00 # getRiPrice(i)['price']
                 sTime = 'NOTSTARTED'
                 
             if i['st'] in ['FN', 'TR' 'PD']:
@@ -753,7 +753,7 @@ def userRideHistory(dct, user):
                 strETime = str(i['etime'])[:19]
                 eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
             else:
-                
+                price = price if price > 1 else price # ooo weee, what an insipid line to code
                 eTime = 'NOTENDED'
 
             #val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
