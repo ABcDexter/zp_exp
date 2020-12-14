@@ -732,28 +732,36 @@ def userRideHistory(dct, user):
     if len(qsTrip):
         trips = []
         for i in qsTrip:
-            # print(str(i['stime'])[:19])
+            hs = user.hs
+
             #print("Trip state : ", str(i['st']))
-            if i['st'] in ['ST', 'FL', 'FN']:
+            if i['st'] in ['ST', 'FL', 'FN', 'PD']:
+                vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
                 strSTime = str(i['stime'])[:19]
                 sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+                
+                price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
             # print(i['etime'])
             else:
+                price = getRiPrice(i)['price']
                 sTime = 'NOTSTARTED'
-            if i['st'] in ['FN', 'CN']:
+                
+            if i['st'] in ['FN', 'TR' 'PD']:
+                vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip                
+                price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
+
                 strETime = str(i['etime'])[:19]
                 eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
             else:
-                eTime = 'ONGOING'
+                
+                eTime = 'NOTENDED'
 
-            hs = user.hs
-            vtype = Vehicle.objects.filter(an=i['van'])[0]['vtype'] #select vtype of the vehicle of this trip
             
             #val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
             retJson = {  'tid': i['id'],
                           'st': i['st'],
-                          'price': float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price']) ,
-                          'tax': float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])*0.05,  # tax of 5%
+                          'price': str(price),
+                          'tax': str(price*0.05),  # tax of 5%
                           'time': float(100),
                           'sdate': str(sTime),
                           'edate': str(eTime)
