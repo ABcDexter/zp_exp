@@ -719,7 +719,7 @@ def adminDriverReached(dct):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkRideStatus(None) # ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
+@checkTripStatus(None) # ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
 def authRideHistory(dct, entity, trip):
     '''
     returns the history of all Trips for an entity
