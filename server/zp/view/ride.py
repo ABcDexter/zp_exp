@@ -747,11 +747,13 @@ def userRideHistory(dct, user):
                 eTime = 'ONGOING'
 
             hs = user.hs
+            vtype = Vehicle.objects.filter(an=i['van'])[0]['vtype'] #select vtype of the vehicle of this trip
+            
             #val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
             retJson = {  'tid': i['id'],
                           'st': i['st'],
-                          'price': float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], i['vtype'], i['pmode'],0)['price']) ,
-                          'tax': float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], i['vtype'], i['pmode'],0)['price'])*0.05,  # tax of 5%
+                          'price': float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price']) ,
+                          'tax': float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])*0.05,  # tax of 5%
                           'time': float(100),
                           'sdate': str(sTime),
                           'edate': str(eTime)
