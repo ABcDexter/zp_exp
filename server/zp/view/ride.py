@@ -719,15 +719,14 @@ def adminDriverReached(dct):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkTripStatus( ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
-def authRideHistory(dct, entity, trip):
+#@checkTripStatus( ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
+def userRideHistory(dct, user):
     '''
-    returns the history of all Trips for an entity
+    returns the history of all Trips for an entity (a User)
     '''
-    #CATEGORIES = { 'DOC':'DOCUMENT' , 'CLO':'CLOTHES', 'FOO':'FOOD', 'HOU':'HOUSEHOLD', 'ELE':'ELETRONICS', 'OTH':'OTHER', 'MED':'MEDICINES'}
-
-    qsTrip = Trip.objects.filter(uan=entity.an).values() if type(entity) is User else Trip.objects.filter(
-        dan=entity.an).order_by('-rtime').values()
+    #find all trips of the User
+    qsTrip = Trip.objects.filter(uan=user.an).values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
+    
     ret = {}
     # print(qsTrip)
     if len(qsTrip):
@@ -747,7 +746,7 @@ def authRideHistory(dct, entity, trip):
             else:
                 eTime = 'ONGOING'
 
-            hs = User.objects.filter(an=trip.uan)[0].hs
+            hs = user.hs
             #val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
             retJson = {'scid': i['scid'],
                           #'itype': val,
