@@ -756,7 +756,6 @@ def userRideHistory(dct, user):
                 
                 eTime = 'NOTENDED'
 
-            
             #val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
             retJson = {  'tid': i['id'],
                           'st': i['st'],
