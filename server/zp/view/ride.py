@@ -755,19 +755,23 @@ def userRideHistory(dct, user):
                 
                 if i['etime'] is None:
                     eTime = 'notEnded'
+                    time = 'NA'
                 else:
                     strETime = str(i['etime'])[:19]
                     eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+                    time = ((i['etime'] - i['stime']).seconds)/60
             else:
                 price = price if price > 1 else price # ooo weee, what an insipid line to code
                 eTime = 'NOTENDED'
-
-            #val = CATEGORIES[str(i['itype'])] if str(i['itype']) in CATEGORIES else str(i['itype'])
+                time = 'NA' 
+                
+            tax = str(round(float('%.2f' % (price*0.05)),0))+'0'  # tax of 5%
+            price = str(round(float('%.2f' % price),0))+'0' #2 chars
             retJson = {  'tid': i['id'],
                           'st': i['st'],
                           'price': str(price),
-                          'tax': str(price*0.05),  # tax of 5%
-                          'time': float(100),
+                          'tax': str(tax),  
+                          'time': str(time),
                           'sdate': str(sTime),
                           'edate': str(eTime)
                           }
