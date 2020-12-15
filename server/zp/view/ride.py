@@ -732,51 +732,51 @@ def userRideHistory(dct, user):
     if len(qsTrip):
         trips = []
         for i in qsTrip:
-            hs = user.hs
+            if i['rtype'] == '0':
+                hs = user.hs
 
-            #print("Trip state : ", str(i['st']))
-            if i['st'] in ['ST', 'FL', 'FN', 'PD']:
-                vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
-                if i['stime'] is None : 
-                    sTime = 'notSTARTED'
+                #print("Trip state : ", str(i['st']))
+                if i['st'] in ['ST', 'FL', 'FN', 'PD']:
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
+                    if i['stime'] is None : 
+                        sTime = 'notSTARTED'
+                    else:
+                        strSTime = str(i['stime'])[:19]
+                        sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+                    
+                    price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
+                # print(i['etime'])
                 else:
-                    strSTime = str(i['stime'])[:19]
-                    sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
-                
-                price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
-            # print(i['etime'])
-            else:
-                price = 1.00 # getRiPrice(i)['price']
-                sTime = 'NOTSTARTED'
-                
-            if i['st'] in ['FN', 'TR' 'PD']:
-                vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip                
-                price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
-                
-                if i['etime'] is None:
-                    eTime = 'notEnded'
-                    time = 'NA'
+                    price = 1.00 # getRiPrice(i)['price']
+                    sTime = 'NOTSTARTED'
+                    
+                if i['st'] in ['FN', 'TR' 'PD']:
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip                
+                    price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
+                    
+                    if i['etime'] is None:
+                        eTime = 'notEnded'
+                        time = 'NA'
+                    else:
+                        strETime = str(i['etime'])[:19]
+                        eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+                        time = ((i['etime'] - i['stime']).seconds)/60
                 else:
-                    strETime = str(i['etime'])[:19]
-                    eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
-                    time = ((i['etime'] - i['stime']).seconds)/60
-            else:
-                price = price if price > 1 else price # ooo weee, what an insipid line to code
-                eTime = 'NOTENDED'
-                time = 'NA' 
-                
-            tax = str(round(float('%.2f' % (price*0.05)),0))+'0'  # tax of 5%
-            price = str(round(float('%.2f' % price),0))+'0' #2 chars
-            retJson = {  'tid': i['id'],
-                          'st': i['st'],
-                          'price': str(price),
-                          'tax': str(tax),  
-                          'time': str(time),
-                          'sdate': str(sTime),
-                          'edate': str(eTime)
-                          }
-
-            trips.append(retJson)
+                    price = price if price > 1 else price # ooo weee, what an insipid line to code
+                    eTime = 'NOTENDED'
+                    time = 'NA' 
+                    
+                tax = str(round(float('%.2f' % (price*0.05)),0))+'0'  # tax of 5%
+                price = str(round(float('%.2f' % price),0))+'0' #2 chars
+                retJson = {  'tid': i['id'],
+                              'st': i['st'],
+                              'price': str(price),
+                              'tax': str(tax),  
+                              'time': str(time),
+                              'sdate': str(sTime),
+                              'edate': str(eTime)
+                              }
+                trips.append(retJson)
         #print(states)
         ret.update({'trips': trips})
 
