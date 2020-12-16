@@ -778,7 +778,8 @@ def userRideHistory(dct, user):
                               'srclat':str(i['srclat']),
                               'srcat': str(i['srclng']),
                               'dstlat': str(i['dstlat']),
-                              'dstlng': str(i['dstlng'])
+                              'dstlng': str(i['dstlng']),
+                              'vtype': str(i['rvtype']),
                               #TODO return source name as well, this may require changes in the trips model/table as well
                               }
                 trips.append(retJson)
