@@ -770,16 +770,16 @@ def userRideHistory(dct, user):
                 price = str(round(float('%.2f' % price),0))+'0' #2 chars
                 retJson = {  'tid': str(i['id']),
                               'st': str(i['st']),
-                              'price': str(price),
-                              'tax': str(tax),  
-                              'time': str(time),
+                              #'price': str(price),
+                              #'tax': str(tax),  
+                              #'time': str(time),
                               'sdate': str(sTime),
-                              'edate': str(eTime),
-                              'srclat':str(i['srclat']),
-                              'srcat': str(i['srclng']),
-                              'dstlat': str(i['dstlat']),
-                              'dstlng': str(i['dstlng']),
-                              'vtype': str(i['rvtype']),
+                              #'edate': str(eTime),
+                              #'srclat':str(i['srclat']),
+                              #'srclng': str(i['srclng']),
+                              #'dstlat': str(i['dstlat']),
+                              #'dstlng': str(i['dstlng']),
+                              'vtype': str(i['rvtype'])
                               #TODO return source name as well, this may require changes in the trips model/table as well
                               }
                 trips.append(retJson)

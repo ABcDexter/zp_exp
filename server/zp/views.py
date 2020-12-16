@@ -1427,12 +1427,43 @@ def authTripData(dct, entity):
         Https:
             auth, tid
     '''
-    trip = Trip.objects.filter(id=dct['tid']).values() 
+    trip = Trip.objects.filter(id=dct['tid']).values('id','st','uan','dan','van','rtime','srcid','dstid','srclat','srclng','dstlat','dstlng','hrs','rtype','rvtype')
     lstTrip = list(trip)
-    
     dctTrip = lstTrip[0]
-    dctRet = {}
-    for key, val in dctTrip.items():
-        dctRet.update({str(key): str(val)})
+    
+    #for key, val in dctTrip.items():
+    #    dctRet.update({str(key): str(val)})
+    
+    strRTime = str(dctTrip['rtime'])[:19]
+    rDate = datetime.strptime(strRTime, '%Y-%m-%d %H:%M:%S').date()
 
+    
+    srchub = Place.objects.filter(id=dctTrip['srcid'])[0].pn
+    dsthub = Place.objects.filter(id=dctTrip['dstid'])[0].pn
+
+    time = 0.00
+    #price = 99.00
+    #tax = 4.99
+    
+    dctRet = {
+            'id': str(dctTrip['id']),
+            'st':str(dctTrip['st']),
+            #'uan': str(dctTrip['uan']),
+            #'dan': str(dctTrip['dan']),
+            'van': str(dctTrip['van']),
+            'sdate': str(rDate),
+            'srchub': str(srchub),
+            'dsthub': str(dsthub),
+            'srclat': str(dctTrip[''srclat')],
+            'srclng':str(dctTrip['']),
+            'dstlat':str(dctTrip['']),
+            'dstlng':str(dctTrip['']),
+            'time': str(time),
+            'rtype':str(dctTrip['rtype']),
+            'rtype':str(dctTrip['rtype']),
+            'rvtype': str(dctTrip['rvtype']),
+            
+            
+             }
+    
     return HttpJSONResponse(dctRet)
