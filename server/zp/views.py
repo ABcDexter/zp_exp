@@ -1427,7 +1427,7 @@ def authTripData(dct, entity):
         Https:
             auth, tid
     '''
-    trip = Trip.objects.filter(scid=dct['tid']).values() 
+    trip = Trip.objects.filter(id=dct['tid']).values() 
     lstTrip = list(trip)
     
     dctTrip = lstTrip[0]
