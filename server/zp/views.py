@@ -1456,12 +1456,12 @@ def authTripData(dct, entity):
                 else:
                     strETime = str(i['etime'])[:19]
                     eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
-                    time = int(((i['etime'] - i['stime']).seconds)/60)
+                    time = float(((i['etime'] - i['stime']).seconds)/60)
                     
     
     
     time = float(time)
-    rate = 2.50 #need to update the price algo in utils.py
+    rate = 1.00 #need to update the price algo in utils.py
     print(time, rate, rate*time)
     price = rate*time #2 chars
     tax = price*0.05  # tax of 5%
@@ -1487,7 +1487,7 @@ def authTripData(dct, entity):
             
             'time': str(time),
             'rate': str(rate),
-            'price': str(round(float('%.2f' % price)),0)+'0', 
+            'price': str(round(float('%.2f' % price),0))+'0'
             'tax':  str(round(float('%.2f' % tax),0))+'0',
             'total': str(round(float('%.2f' % total),0))+'0',
             
