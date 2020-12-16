@@ -347,7 +347,7 @@ def userRentHistory(dct, user):
     qsTrip = Trip.objects.filter(uan=user.an).order_by('-id').values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
     
     ret = {}
-    # print(qsTrip)
+    print(len(qsTrip))
     if len(qsTrip):
         trips = []
         for i in qsTrip:

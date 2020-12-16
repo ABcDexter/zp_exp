@@ -728,7 +728,7 @@ def userRideHistory(dct, user):
     qsTrip = Trip.objects.filter(uan=user.an, rtype='0').order_by('-id').values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
     
     ret = {}
-    # print(qsTrip)
+    print(len(qsTrip))
     if len(qsTrip):
         trips = []
         for i in qsTrip:
@@ -768,13 +768,13 @@ def userRideHistory(dct, user):
                     
                 tax = str(round(float('%.2f' % (price*0.05)),0))+'0'  # tax of 5%
                 price = str(round(float('%.2f' % price),0))+'0' #2 chars
-                retJson = {  'tid': i['id'],
-                              'st': i['st'],
+                retJson = {  'tid': str(i['id']),
+                              'st': str(i['st']),
                               'price': str(price),
                               'tax': str(tax),  
                               'time': str(time),
                               'sdate': str(sTime),
-                              'edate': str(eTime)
+                              'edate': str(eTime),
                               'srclat':str(i['srclat']),
                               'srcat': str(i['srclng']),
                               'dstlat': str(i['dstlat']),
