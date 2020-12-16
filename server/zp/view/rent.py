@@ -344,7 +344,7 @@ def userRentHistory(dct, user):
     returns the history of all the rental Trips for an entity (a User)
     '''
     #find all trips of the User
-    qsTrip = Trip.objects.filter(uan=user.an).order_by('-id').values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
+    qsTrip = Trip.objects.filter(uan=user.an, rtype='1').order_by('-id').values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
     
     ret = {}
     print(len(qsTrip))
@@ -361,10 +361,10 @@ def userRentHistory(dct, user):
                         sTime = 'notSTARTED'
                     else:
                         strSTime = str(i['stime'])[:19]
-                        sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+                        sDate = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
                     
                     price = float(getRentPrice(i['hrs'])['price'])
-                # print(i['etime'])
+
                 else:
                     price = float(getRentPrice(i['hrs'])['price'])
                     sTime = 'NOTSTARTED'
@@ -385,16 +385,20 @@ def userRentHistory(dct, user):
                     
                 tax = str(round(float('%.2f' % (price*0.05)),0))+'0'  # tax of 5%
                 price = str(round(float('%.2f' % price),0))+'0' #2 chars
-                retJson = {   'tid': i['id'],
-                              'st': i['st'],
+                
+                srchub = Places.objects.filter(id=i['srcid']).name
+                dsthub = Places.objects.filter(id=i['dstid']).name
+                
+                retJson = {   'tid': str(i['id']),
+                              'st': str(i['st']),
                               'price': str(price),
-                              'tax': str(tax),  
-                              'rdate': str(sTime),
-                              'pickhub': str(srcid),
-                              'drophub': str(dstid),
-                              'date': sTime,
-                              'vtype': i['rvtype'], 
-                              'hrs': i['hrs']
+                              'tax': str(tax),
+                              'sdate': str(sTime),
+                              'pickhub': str(srchub),
+                              'drophub': str(dsthub),
+                              'date': str(sTime),
+                              'vtype': str(i['rvtype']),
+                              'hrs': str(i['hrs'])
                               
                               }
                 trips.append(retJson)
