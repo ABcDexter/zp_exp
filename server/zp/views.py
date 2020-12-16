@@ -1487,7 +1487,7 @@ def authTripData(dct, entity):
             
             'time': str(time),
             'rate': str(rate),
-            'price': str(round(float('%.2f' % price),0))+'0'
+            'price': str(round(float('%.2f' % price),0))+'0',
             'tax':  str(round(float('%.2f' % tax),0))+'0',
             'total': str(round(float('%.2f' % total),0))+'0',
             
