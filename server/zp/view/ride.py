@@ -760,7 +760,7 @@ def userRideHistory(dct, user):
                     else:
                         strETime = str(i['etime'])[:19]
                         eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
-                        time = ((i['etime'] - i['stime']).seconds)/60
+                        time = int((i['etime'] - i['stime']).seconds)/60
                 else:
                     price = price if price > 1 else price # ooo weee, what an insipid line to code
                     eTime = 'NOTENDED'
