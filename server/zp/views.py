@@ -1427,7 +1427,7 @@ def authTripData(dct, entity):
         Https:
             auth, tid
     '''
-    trip = Trip.objects.filter(id=dct['tid']).values('id','st','uan','dan','van','rtime','srcid','dstid','srclat','srclng','dstlat','dstlng','hrs','rtype','rvtype')
+    trip = Trip.objects.filter(id=dct['tid']).values('id','st','uan','dan','van','rtime','stime','etime','srcid','dstid','srclat','srclng','dstlat','dstlng','hrs','rtype','rvtype')
     lstTrip = list(trip)
     dctTrip = lstTrip[0]
     
@@ -1441,12 +1441,32 @@ def authTripData(dct, entity):
     srchub = Place.objects.filter(id=dctTrip['srcid'])[0].pn
     dsthub = Place.objects.filter(id=dctTrip['dstid'])[0].pn
 
-    time = 0.00
-    rate = 1.00
-    price = 99.00
-    tax = 4.99
-    total = price + tax
+    if dctTrip['rtype'] == '1':
+            # rental
+            time = float(dctTrip['hrs']*60) 
+    else:
+            #ride
+            if dctTrip['etime'] is None:
+                    eTime = 'notEnded'
+                    time = 1.00
+            else:
+                if dctTrip['stime'] is None:
+                    sTime = 'notStarted'
+                    time = 0.00
+                else:
+                    strETime = str(i['etime'])[:19]
+                    eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+                    time = int(((i['etime'] - i['stime']).seconds)/60)
+                    
     
+    
+    time = float(time)
+    rate = 2.50 #need to update the price algo in utils.py
+    print(time, rate, rate*time)
+    price = rate*time #2 chars
+    tax = price*0.05  # tax of 5%
+    total = price + tax
+    print(tax, total)
     dctRet = {
             'id': str(dctTrip['id']),
             'st':str(dctTrip['st']),
@@ -1456,7 +1476,7 @@ def authTripData(dct, entity):
             'sdate': str(rDate),
             'srchub': str(srchub),
             'dsthub': str(dsthub),
-            'srclat': str(dctTrip['srclat')],
+            'srclat': str(dctTrip['srclat']),
             'srclng':str(dctTrip['srclng']),
             'dstlat':str(dctTrip['dstlat']),
             'dstlng':str(dctTrip['dstlng']),
@@ -1467,9 +1487,9 @@ def authTripData(dct, entity):
             
             'time': str(time),
             'rate': str(rate),
-            'price': str(price),
-            'tax': str(tax),
-            'total': str(total),
+            'price': str(round(float('%.2f' % price)),0)+'0', 
+            'tax':  str(round(float('%.2f' % tax),0))+'0',
+            'total': str(round(float('%.2f' % total),0))+'0',
             
              }
     
