@@ -1456,7 +1456,7 @@ def authTripData(dct, entity):
                 else:
                     strETime = str(dctTrip['etime'])[:19]
                     eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
-                    time = float(((dctTrip['etime'] - dctTrip['stime']).seconds)/60)
+                    time = int(((dctTrip['etime'] - dctTrip['stime']).seconds)/60)
                     
     
     
