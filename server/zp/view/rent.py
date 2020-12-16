@@ -358,7 +358,7 @@ def userRentHistory(dct, user):
                 if i['st'] in ['ST', 'FN', 'TR', 'PD']:
                     vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
                     if i['stime'] is None : 
-                        sTime = 'notSTARTED'
+                        sDate = 'notSTARTED'
                     else:
                         strSTime = str(i['stime'])[:19]
                         sDate = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
@@ -367,21 +367,20 @@ def userRentHistory(dct, user):
 
                 else:
                     price = float(getRentPrice(i['hrs'])['price'])
-                    sTime = 'NOTSTARTED'
+                    sDate = 'NOTSTARTED'
                     
                 if i['st'] in ['FN', 'TR' 'PD']:
                     vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip                
                     price = float(getRentPrice(i['hrs'])['price'])
                     
                     if i['etime'] is None:
-                        eTime = 'notEnded'
+                        eDate = 'notEnded'
 
                     else:
                         strETime = str(i['etime'])[:19]
-                        eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+                        eDate = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
                 else:
-                    price = price if price > 1 else price # ooo weee, what an insipid line to code
-                    eTime = 'NOTENDED'
+                    eDate = 'NOTENDED'
                     
                 tax = str(round(float('%.2f' % (price*0.05)),0))+'0'  # tax of 5%
                 price = str(round(float('%.2f' % price),0))+'0' #2 chars
@@ -393,7 +392,7 @@ def userRentHistory(dct, user):
                               'st': str(i['st']),
                               'price': str(price),
                               'tax': str(tax),
-                              'sdate': str(sTime),
+                              'sdate': str(sDate),
                               'pickhub': str(srchub),
                               'drophub': str(dsthub),
                               'date': str(sTime),
