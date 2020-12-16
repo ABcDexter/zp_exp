@@ -331,6 +331,80 @@ def userRentPay(dct, _user, trip):
     return HttpJSONResponse({'otp': getOTP(trip.uan, trip.dan, trip.atime)})
 
 
+
+@makeView()
+@csrf_exempt
+@handleException()
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkTripStatus( ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
+def userRentHistory(dct, user):
+    '''
+    returns the history of all the rental Trips for an entity (a User)
+    '''
+    #find all trips of the User
+    qsTrip = Trip.objects.filter(uan=user.an).order_by('-id').values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
+    
+    ret = {}
+    # print(qsTrip)
+    if len(qsTrip):
+        trips = []
+        for i in qsTrip:
+            if i['rtype'] == '1':
+                hs = user.hs
+
+                #print("Trip state : ", str(i['st']))
+                if i['st'] in ['ST', 'FN', 'TR', 'PD']:
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
+                    if i['stime'] is None : 
+                        sTime = 'notSTARTED'
+                    else:
+                        strSTime = str(i['stime'])[:19]
+                        sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+                    
+                    price = float(getRentPrice(i['hrs'])['price'])
+                # print(i['etime'])
+                else:
+                    price = float(getRentPrice(i['hrs'])['price'])
+                    sTime = 'NOTSTARTED'
+                    
+                if i['st'] in ['FN', 'TR' 'PD']:
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip                
+                    price = float(getRentPrice(i['hrs'])['price'])
+                    
+                    if i['etime'] is None:
+                        eTime = 'notEnded'
+
+                    else:
+                        strETime = str(i['etime'])[:19]
+                        eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+                else:
+                    price = price if price > 1 else price # ooo weee, what an insipid line to code
+                    eTime = 'NOTENDED'
+                    
+                tax = str(round(float('%.2f' % (price*0.05)),0))+'0'  # tax of 5%
+                price = str(round(float('%.2f' % price),0))+'0' #2 chars
+                retJson = {   'tid': i['id'],
+                              'st': i['st'],
+                              'price': str(price),
+                              'tax': str(tax),  
+                              'rdate': str(sTime),
+                              'pickhub': str(srcid),
+                              'drophub': str(dstid),
+                              'date': sTime,
+                              'vtype': i['rvtype'], 
+                              'hrs': i['hrs']
+                              
+                              }
+                trips.append(retJson)
+        #print(states)
+        ret.update({'trips': trips})
+
+    return HttpJSONResponse(ret)
+
+
+
 # ============================================================================
 # Supervisor views
 # ============================================================================

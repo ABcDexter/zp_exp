@@ -722,10 +722,10 @@ def adminDriverReached(dct):
 #@checkTripStatus( ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
 def userRideHistory(dct, user):
     '''
-    returns the history of all Trips for an entity (a User)
+    returns the history of all ride Trips for an entity (a User)
     '''
     #find all trips of the User
-    qsTrip = Trip.objects.filter(uan=user.an).order_by('-id').values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
+    qsTrip = Trip.objects.filter(uan=user.an, rtype='0').order_by('-id').values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
     
     ret = {}
     # print(qsTrip)
@@ -747,7 +747,7 @@ def userRideHistory(dct, user):
                     price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
                 # print(i['etime'])
                 else:
-                    price = 1.00 # getRiPrice(i)['price']
+                    price = 0.00 # getRiPrice(i)['price']
                     sTime = 'NOTSTARTED'
                     
                 if i['st'] in ['FN', 'TR' 'PD']:
@@ -760,7 +760,7 @@ def userRideHistory(dct, user):
                     else:
                         strETime = str(i['etime'])[:19]
                         eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
-                        time = int((i['etime'] - i['stime']).seconds)/60
+                        time = int(((i['etime'] - i['stime']).seconds)/60)
                 else:
                     price = price if price > 1 else price # ooo weee, what an insipid line to code
                     eTime = 'NOTENDED'
@@ -775,6 +775,11 @@ def userRideHistory(dct, user):
                               'time': str(time),
                               'sdate': str(sTime),
                               'edate': str(eTime)
+                              'srclat':str(i['srclat']),
+                              'srcat': str(i['srclng']),
+                              'dstlat': str(i['dstlat']),
+                              'dstlng': str(i['dstlng'])
+                              #TODO return source name as well, this may require changes in the trips model/table as well
                               }
                 trips.append(retJson)
         #print(states)
