@@ -1442,8 +1442,10 @@ def authTripData(dct, entity):
     dsthub = Place.objects.filter(id=dctTrip['dstid'])[0].pn
 
     time = 0.00
-    #price = 99.00
-    #tax = 4.99
+    rate = 1.00
+    price = 99.00
+    tax = 4.99
+    total = price + tax
     
     dctRet = {
             'id': str(dctTrip['id']),
@@ -1454,16 +1456,22 @@ def authTripData(dct, entity):
             'sdate': str(rDate),
             'srchub': str(srchub),
             'dsthub': str(dsthub),
-            'srclat': str(dctTrip[''srclat')],
-            'srclng':str(dctTrip['']),
-            'dstlat':str(dctTrip['']),
-            'dstlng':str(dctTrip['']),
+            'srclat': str(dctTrip['srclat')],
+            'srclng':str(dctTrip['srclng']),
+            'dstlat':str(dctTrip['dstlat']),
+            'dstlng':str(dctTrip['dstlng']),
             'time': str(time),
             'rtype':str(dctTrip['rtype']),
             'rtype':str(dctTrip['rtype']),
             'rvtype': str(dctTrip['rvtype']),
             
+            'time': str(time),
+            'rate': str(rate),
+            'price': str(price),
+            'tax': str(tax),
+            'total': str(total),
             
              }
     
     return HttpJSONResponse(dctRet)
+
