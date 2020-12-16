@@ -386,8 +386,8 @@ def userRentHistory(dct, user):
                 tax = str(round(float('%.2f' % (price*0.05)),0))+'0'  # tax of 5%
                 price = str(round(float('%.2f' % price),0))+'0' #2 chars
                 
-                srchub = Place.objects.filter(id=i['srcid']).pn
-                dsthub = Place.objects.filter(id=i['dstid']).pn
+                srchub = Place.objects.filter(id=i['srcid'])[0].pn
+                dsthub = Place.objects.filter(id=i['dstid'])[0].pn
                 
                 retJson = {   'tid': str(i['id']),
                               'st': str(i['st']),
