@@ -438,7 +438,7 @@ def userDeliveryRetire(dct, user, _deli):
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def authDeliveryDATA(dct, entity):
+def authDeliveryData(dct, entity):
     '''
     Returns athe data of a delivery
         Https:

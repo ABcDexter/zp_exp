@@ -395,7 +395,7 @@ def userRentHistory(dct, user):
                               'sdate': str(sDate),
                               'pickhub': str(srchub),
                               'drophub': str(dsthub),
-                              'date': str(sDate),
+                              #'date': str(sDate),
                               'vtype': str(i['rvtype']),
                               'hrs': str(i['hrs'])
                               

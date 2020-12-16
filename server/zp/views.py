@@ -1415,3 +1415,24 @@ def authAadhaarSave(dct, entity):
     return HttpJSONResponse({})
 
 
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def authTripData(dct, entity):
+    '''
+    Returns all the data of a Trip
+        Https:
+            auth, tid
+    '''
+    trip = Trip.objects.filter(scid=dct['tid']).values() 
+    lstTrip = list(trip)
+    
+    dctTrip = lstTrip[0]
+    dctRet = {}
+    for key, val in dctTrip.items():
+        dctRet.update({str(key): str(val)})
+
+    return HttpJSONResponse(dctRet)
