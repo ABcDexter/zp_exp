@@ -1140,11 +1140,11 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     srcCoOrds = ['%s,%s' % (srclat,srclng)]
     dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
 
-    print(srcCoOrds, dstCoOrds)
+    #print(srcCoOrds, dstCoOrds)
 
     gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
     nDist, nTime = gMapsRet['dist'], gMapsRet['time']
-    print(nDist, nTime)
+    #print(nDist, nTime)
     fDist = nDist
     iVType, iPayMode = int(iVType), int(iPayMode)  # need explicit type conversion to int
     iTimeSec = nTime*60 if iTime == 0 else iTime
@@ -1190,7 +1190,7 @@ def getRiPrice(trip):
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)
     vType = vehicle[0].vtype if len(vehicle)>0 else 1
-    print(vType)
+    #print(vType)
     return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)#, (trip.etime - trip.stime).seconds)
 
 ###############

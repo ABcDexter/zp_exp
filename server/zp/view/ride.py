@@ -725,7 +725,7 @@ def userRideHistory(dct, user):
     returns the history of all Trips for an entity (a User)
     '''
     #find all trips of the User
-    qsTrip = Trip.objects.filter(uan=user.an).values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
+    qsTrip = Trip.objects.filter(uan=user.an).order_by('-id').values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
     
     ret = {}
     # print(qsTrip)
