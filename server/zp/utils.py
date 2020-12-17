@@ -1130,8 +1130,22 @@ def headers(h):
 
 def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     '''
-    Determines the price given the rent details and time taken
-    time is etime - stime
+    #Get this route distance using google's APIs
+    
+    Determines the price given 
+        srclat : latitude of the source 
+        srclng : longitude of the source 
+        dstlat : latitude of the destination
+        dstlng : longitude of the destination
+        iVType : type of the vehicle (0 for cycle, 1 for scooty, 2 for bike, 3 for ZBee)
+        iPayMode : payment type (0 for cash, 1 for UPI)
+        iTime : time taken for the ride in seconds, this is required to calculate actual price (for eg drierRideEnd )
+    
+    returns 
+        'price': Price for t,
+        'time': time taken in minutes  # converted seconds to minutes
+        'dist': Distance in Kilometers,
+        'speed': Average speed 
     '''
     # Get this route distance
 
