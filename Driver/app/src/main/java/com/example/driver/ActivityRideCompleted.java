@@ -25,15 +25,10 @@ import java.util.Map;
 public class ActivityRideCompleted extends ActivityDrawer implements View.OnClickListener {
 
     private static final String TAG = "ActivityRideCompleted";
-    public static final String TRIP_ID = "TripId";
     public static final String TRIP_DETAILS = "com.driver.tripDetails";
     public static final String AUTH_KEY = "Auth";
     public static final String AUTH_COOKIE = "com.agent.cookie";
     public static final String TID = "RideID";
-    public static final String SRCLAT = "TripSrcLat";
-    public static final String SRCLNG = "TripSrcLng";
-    public static final String DSTLAT = "TripDstLat";
-    public static final String DSTLNG = "TripDstLng";
     TextView price;
     Button home;
     String authCookie, paymentMode;
@@ -153,7 +148,7 @@ public class ActivityRideCompleted extends ActivityDrawer implements View.OnClic
         }*/
         if (id == 2) {
             //payment made, now move to the home page
-            Intent home = new Intent(ActivityRideCompleted.this, ActivityHome.class);
+            Intent home = new Intent(ActivityRideCompleted.this, ActivityRateClient.class);
             startActivity(home);
             finish();
         }

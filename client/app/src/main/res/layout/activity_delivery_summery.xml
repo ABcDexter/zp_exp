@@ -82,7 +82,7 @@
                     android:layout_height="50dp"
                     android:background="@android:color/transparent"
                     android:drawableStart="@drawable/ic_person"
-                    android:text="Jane Doe"
+                    android:text=""
                     android:gravity="center"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
@@ -102,7 +102,7 @@
                     android:background="@android:color/transparent"
                     android:drawableStart="@drawable/ic_phone"
                     android:gravity="center"
-                    android:text="7894561230"
+                    android:text=""
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
                     android:textAllCaps="true"
@@ -123,7 +123,7 @@
                     android:gravity="center"
                     android:paddingStart="10dp"
                     android:paddingEnd="25dp"
-                    android:text="99 eml street"
+                    android:text=""
                     android:textSize="20sp" />
 
                 <View
@@ -164,7 +164,7 @@
                     android:background="@android:color/transparent"
                     android:drawableStart="@drawable/ic_person"
                     android:gravity="center"
-                    android:text="Jane Doe"
+                    android:text=""
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
                     android:textAllCaps="true"
@@ -182,7 +182,7 @@
                     android:background="@android:color/transparent"
                     android:drawableStart="@drawable/ic_phone"
                     android:gravity="center"
-                    android:text="7894561230"
+                    android:text=""
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
                     android:textAllCaps="true"
@@ -203,7 +203,7 @@
                     android:gravity="center"
                     android:paddingStart="10dp"
                     android:paddingEnd="25dp"
-                    android:text="99 eml street"
+                    android:text=""
                     android:textSize="20sp" />
 
                 <View
@@ -244,7 +244,7 @@
                     android:layout_height="50dp"
                     android:gravity="center"
                     android:paddingEnd="10dp"
-                    android:text="Clothes / Accessories"
+                    android:text=""
                     android:textAllCaps="true"
                     android:textSize="22sp" />
 
@@ -259,14 +259,10 @@
                     android:layout_height="50dp"
                     android:gravity="center"
                     android:paddingEnd="10dp"
-                    android:text="Small"
+                    android:text=""
                     android:textAllCaps="true"
                     android:textSize="22sp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#ffffff" />
 <!--
 
                 <TextView
@@ -343,7 +339,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:paddingEnd="10dp"
-                        android:text="Standard"
+                        android:text=""
                         android:textAllCaps="true"
                         android:textSize="22sp" />
                 </LinearLayout>
@@ -384,7 +380,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:paddingEnd="10dp"
-                        android:text="10 am"
+                        android:text=""
                         android:textAllCaps="true"
                         android:textSize="22sp" />
                 </LinearLayout>
@@ -424,7 +420,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="31 / 07 / 2020"
+                        android:text=""
                         android:textSize="22sp" />
                 </LinearLayout>
 

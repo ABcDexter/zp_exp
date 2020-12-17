@@ -22,6 +22,8 @@ from django.http import HttpResponse
 from .models import Place, Trip, Progress, Route
 from .models import Vehicle, User, Driver, Supervisor
 from .models import Delivery, Agent
+from .models import Purchaser
+from .models import Servitor
 
 from django.conf import settings
 import requests
@@ -509,6 +511,7 @@ def getOTP(an: int, dan: int, rtime: datetime) -> int:
     '''
     Generates a deterministic 4 digit OTP
     '''
+    print((str(an), str(dan), str(rtime)))
     sText = 'zippee-otp-%s-%s-%s' % (str(an), str(dan), str(rtime))
     shaText = sText.encode('utf-8')
     m = hashlib.new('ripemd160')
@@ -763,7 +766,7 @@ def getDelPrice(deli, hs):
     '''
     # vehicle = Vehicle.objects.filter(an=deli.van)[0]
     # home state of user
-    print(" TIP IS : ", deli.tip)
+    # print(" TIP IS : ", deli.tip)
     exp = '1' if deli.express is True else '0'
     return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, exp, hs, deli.tip)
 
@@ -855,7 +858,9 @@ class checkAuth(object):
             isAuth = sFnName.startswith('auth')
             isSuper = sFnName.startswith('sup')
             isAgent = sFnName.startswith('agent')
-
+            isPurchaser = sFnName.startswith('purchase')
+            isServitor = sFnName.startswith('servi')
+            
             if isAdmin:
                 if dct.get('auth', '') != settings.ADMIN_AUTH:
                     return HttpJSONError('Forbidden', 403)
@@ -892,6 +897,17 @@ class checkAuth(object):
                 qsSuper = Supervisor.objects.filter(auth=auth)
                 if (qsSuper is not None) and (len(qsSuper) > 0):
                     return func(dct, qsSuper[0])
+
+            if isPurchaser or isAuth:
+                qsPur = Purchaser.objects.filter(auth=auth)
+                if (qsPur is not None) and (len(qsPur) > 0):
+                    return func(dct, qsPur[0])
+                    
+            if isServitor or isAuth:
+                qsSer = Servitor.objects.filter(auth=auth)
+                if (qsSer is not None) and (len(qsSer) > 0):
+                    return func(dct, qsSer[0])
+
 
             return HttpJSONError('Unauthorized', 403)
 
@@ -997,7 +1013,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
     srcCoOrds = ['%s,%s' % (srclat,srclng)]
     dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
 
-    print(srcCoOrds,dstCoOrds)
+    # print(srcCoOrds,dstCoOrds)
 
     gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
     nDist, nTime = gMapsRet['dist'], gMapsRet['time']
@@ -1018,13 +1034,13 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
     price = fBaseFare  # + (fDist / 1000) * vehiclePricePerKM * avgWt
     if fDist > 5000:
         price += ceil((fDist - 5000) / 1000) * 10.00
-        print(fDist, ceil((fDist - 5000) / 1000), price )
+        #print(fDist, ceil((fDist - 5000) / 1000), price )
     #if iPayMode == Trip.UPI:
     #    price *= 0.9
-    print("EXPRESS : ", express)
+    # print("EXPRESS : ", express)
     if express == '1':
         price += 20.00  # 20 Rs extra for express
-        print('Expresss okay############')
+        # print('Expresss okay############')
     '''
     # L = 10
     # XL = 20
@@ -1038,7 +1054,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
         price += 30.00
 
     price += tip
-    print( "PRICE : ", price)
+    # print( "PRICE : ", price)
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
@@ -1072,7 +1088,7 @@ class checkDeliveryStatus(object):
                 # arrValid == ['INACTIVE'] means "No delivery    should be active for this entity"
                 if self.arrValid and len(self.arrValid) > 0 and self.arrValid[0] == 'INACTIVE':
                     return HttpJSONError('Delivery already active', 400)
-                print(qsDel)
+                # print(qsDel)
                 # Ensure the delivery has an allowed status
                 bAllowAll = self.arrValid is None
                 if bAllowAll or qsDel[len(qsDel)-1].st in self.arrValid:
@@ -1124,11 +1140,11 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     srcCoOrds = ['%s,%s' % (srclat,srclng)]
     dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
 
-    print(srcCoOrds, dstCoOrds)
+    #print(srcCoOrds, dstCoOrds)
 
     gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
     nDist, nTime = gMapsRet['dist'], gMapsRet['time']
-    print(nDist, nTime)
+    #print(nDist, nTime)
     fDist = nDist
     iVType, iPayMode = int(iVType), int(iPayMode)  # need explicit type conversion to int
     iTimeSec = nTime*60 if iTime == 0 else iTime
@@ -1174,7 +1190,7 @@ def getRiPrice(trip):
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)
     vType = vehicle[0].vtype if len(vehicle)>0 else 1
-    print(vType)
+    #print(vType)
     return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)#, (trip.etime - trip.stime).seconds)
 
 ###############

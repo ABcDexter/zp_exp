@@ -60,6 +60,16 @@ class Admin(Entity):
                         if not self.logIfErr(dctRetUser):
                             self.log('Freed user with auth : %s' % failed['uauth'] )
                         time.sleep(fDelay)
+                
+                self.log('Checking for Driver reaching')
+
+                resp = self.callAPI('admin-driver-reached')
+                if not self.logIfErr(resp):
+                    tid = resp['tid']
+                    auth = resp['babua']
+                    print(" values : ", tid, "auth of driver reached ", auth)
+                    #response = self.callAPI('agent-driver-reached', {'did': did}, auth)
+
 
             pass
 

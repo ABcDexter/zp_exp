@@ -28,7 +28,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="END"
-            android:textColor="#000"
+            android:background="@drawable/btn_bkg"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="5dp"
             android:id="@+id/completedRide"/>
 
         <Button
@@ -36,7 +38,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Fail"
-            android:textColor="#000"
+            android:background="@drawable/btn_bkg"
+            android:textColor="#FFFFFF"
+            android:layout_marginStart="5dp"
             android:id="@+id/failedRide"/>
     </LinearLayout>
 </LinearLayout>

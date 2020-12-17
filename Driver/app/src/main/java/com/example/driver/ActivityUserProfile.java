@@ -10,7 +10,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -40,10 +39,6 @@ import com.google.android.material.navigation.NavigationView;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,9 +52,11 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
     Locale myLocale;
     String currentLanguage = "en", currentLang;
     NavigationView nv;
-    TextView mobiletxt;
+    TextView mobiletxt, nameText;
     public static final String AUTH_KEY = "Auth";
     public static final String AUTH_COOKIE = "com.agent.cookie";
+    public static final String MOBILE = "Mobile";
+    public static final String NAME = "Name";
 
     private ImageView imgProfilePic;
     private TextView upload;
@@ -71,7 +68,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.INTERNET};
-    String stringAuth;
+    String stringAuth, stringName, stringMobile;
 
     public void onSuccess(JSONObject response) {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
@@ -85,7 +82,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(this, "Something went wrong! Please try again later.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
         simpleProgressBar.setVisibility(View.GONE);
     }
 
@@ -122,18 +119,17 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
             }
         });
         mobiletxt = findViewById(R.id.mobile);
+        nameText = findViewById(R.id.user_name);
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         stringAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
+        stringName = cookie.getString(NAME, ""); // retrieve name value stored locally
+        stringMobile = cookie.getString(MOBILE, ""); // retrieve mobile value stored locally
 
         Log.d("AUTH", "Auth Key from server: " + stringAuth);
-        if (stringAuth.isEmpty())
-            mobiletxt.setText("XXXXXXXXXX");
-        else {
-            mobiletxt.setText(stringAuth);
 
-            String original = "manchester united (with nice players)";
-            String newString = original.replace(" (with nice players)", "");
-        }
+        mobiletxt.setText(stringMobile);
+        nameText.setText(stringName);
+
 
         currentLanguage = getIntent().getStringExtra(currentLang);
         List<String> list = new ArrayList<>();
@@ -172,12 +168,12 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         upload = findViewById(R.id.upload_file_txt);
         imgProfilePic = findViewById(R.id.profile_picture);
         imgProfilePic.setOnClickListener(this);
-        String imageURL = "https://api.villageapps.in:8090/media/dp_"+stringAuth+"_.jpg";
+        String imageURL = "https://api.villageapps.in:8090/media/dp_" + stringAuth + "_.jpg";
 
         try {
             Glide.with(this).load(imageURL).into(imgProfilePic);
         } catch (Exception e) {
-            Log.d(TAG,"imageURL="+ imageURL);
+            Log.d(TAG, "imageURL=" + imageURL);
             Log.d(TAG, "Display Picture Error:" + e.toString());
             e.printStackTrace();
         }

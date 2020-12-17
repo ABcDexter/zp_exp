@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+8^8@0w0p1)6yr-g)!3l04&qp-ggjwz@9f_-fvpm_qta0g&36r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "media.villageapps.in", "8ee0edfb6206.ngrok.io", "159.65.144.72","86d9a981a121.ngrok.io" ] # ngrok http http://127.0.0.1:9999
 
@@ -35,22 +35,28 @@ GOOGLE_MAPS_KEY = "AIzaSyBMFQPIDHSPfdiQqjX2ieF4l-qQB2tB61c"
 GOOGLE_PLACES_KEY = "AIzaSyATYNx4G8xXuwss9a_W4owqGgFTeRLiZX8"
 DB_FILE_PATH  = '/srv/data/db'
 ADMIN_AUTH    = '437468756c68752066687461676e'
+GM_PSWD = 'ivyyntr+pbaarpg@2103'
+
 M_PER_DEG_LNG = 97220.765  # These values are specific to fleet location
 M_PER_DEG_LAT = 110839.613
 DSQUARE_THRESH = 2500 # 50*50
 
-RIDE_RQ_TIMEOUT = 180 # 3 minutes
-RIDE_AS_TIMEOUT = 300 # 5 mintues
+RIDE_RQ_TIMEOUT = 180 # 3 mins
+RIDE_AS_TIMEOUT = 1800 # 30 minutes
 LOG_DIR = '/srv/data/logs/'
 #DRIVER_OF_TIMEOUT = 240
 
 RENT_RQ_TIMEOUT = 1800  # 30 mins
 RENT_AS_TIMEOUT = 3600  # 60 minutes
 
-DEL_SC_TIMEOUT = 900   # 15 minutes
+DEL_RQ_TIMEOUT = 900   # 15 mins
 DEL_AS_TIMEOUT = 1800  # 30 minutes
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 26214400 # 25 MB
+
+WP_CONSUMER_KEY = 'ck_97e691622c4bd5e13fb7b18cbb266c8277257372'
+
+WP_CONSUMER_SECRET_KEY ='cs_63badebe75887e2f94142f9484d06f257194e2c3'
 
 # Application definition
 

@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,9 +40,15 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
     private static final String TAG = "ActivityRideAccepted";
     public static final String TRIP_NAME = "TripName";
     public static final String TRIP_PHN = "TripPhn";
+
+    public static final String SRCLAT = "TripSrcLat";
+    public static final String SRCLNG = "TripSrcLng";
+    public static final String DSTLAT = "TripDstLat";
+    public static final String DSTLNG = "TripDstLng";
     TextView phone, name;
     EditText OTP;
-    Button startRide, cancleRideBtn,viewMap;
+    ImageView clientPhoto;
+    Button startRide, cancleRideBtn, viewMap;
     String authCookie;
     Dialog myDialog;
     private static ActivityRideAccepted instance;
@@ -52,10 +60,24 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        //response on hitting driver-ride-start API
         if (id == 1) {
-           Intent home = new Intent(ActivityRideAccepted.this, ActivityHome.class);
-           startActivity(home);
-
+            try {
+                String status = response.getString("status");
+                if (status.equals("403")){
+                    Toast.makeText(this, "Incorrect OTP.", Toast.LENGTH_LONG).show();
+                    OTP.requestFocus();
+                }
+                /*Intent home = new Intent(ActivityRideAccepted.this, MapsActivity2.class);
+                startActivity(home);
+                finish();*/
+            } catch (Exception e) {
+                Intent home = new Intent(ActivityRideAccepted.this, MapsActivity2.class);
+                startActivity(home);
+                finish();
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
         }
         if (id == 3) {
             //return to the home activity
@@ -64,6 +86,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
             startActivity(home);
             finish();
         }
+        //response on hitting driver-ride-get-status API
         if (id == 4) {
             String active = response.getString("active");
             if (active.equals("false")) {
@@ -83,35 +106,43 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
                 String tid = response.getString("tid");
                 String st = response.getString("st");
                 if (st.equals("AS")) {
-                        String srcLat = response.getString("srclat");
-                        String srcLng = response.getString("srclng");
-                        String dstLat = response.getString("dstlat");
-                        String dstLng = response.getString("dstlng");
-                        String phn = response.getString("uphone");
-                        String nm = response.getString("uname");
-
+                    String srcLat = response.getString("srclat");
+                    String srcLng = response.getString("srclng");
+                    String dstLat = response.getString("dstlat");
+                    String dstLng = response.getString("dstlng");
+                    String phn = response.getString("uphone");
+                    String nm = response.getString("uname");
+                    String photo = response.getString("photourl");
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+                    sp_cookie.edit().putString(SRCLAT, srcLat).apply();
+                    sp_cookie.edit().putString(SRCLNG, srcLng).apply();
+                    sp_cookie.edit().putString(DSTLAT, dstLat).apply();
+                    sp_cookie.edit().putString(DSTLNG, dstLng).apply();
                     sp_cookie.edit().putString(TRIP_NAME, nm).apply();
                     sp_cookie.edit().putString(TRIP_PHN, phn).apply();
 
                     phone.setText(phn);
                     name.setText(nm);
+                    Glide.with(this).load(photo).into(clientPhoto);
 
+                    //start polling for driver-ride-get-status
+                    Intent i = new Intent(this, UtilityPollingService.class);
+                    i.setAction("4");
+                    startService(i);
                 }
                 if (st.equals("ST")) {
                     //go on to the next activity
-                    Intent inProgress = new Intent(ActivityRideAccepted.this, ActivityHome.class);
+                    Intent inProgress = new Intent(ActivityRideAccepted.this, MapsActivity2.class);
                     startActivity(inProgress);
                     finish();
                 }
+
             }
             /*Intent inProgress = new Intent(ActivityRideAccepted.this, ActivityHome.class);
             startActivity(inProgress);
             finish();*/
-            //start polling for driver-ride-get-status
-            Intent i = new Intent(this, UtilityPollingService.class);
-            i.setAction("4");
-            startService(i);
+
+
         }
     }
 
@@ -142,6 +173,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
         //initializing variables
 
         phone = findViewById(R.id.userPhone);
+        clientPhoto = findViewById(R.id.photo_client);
         name = findViewById(R.id.userName);
         viewMap = findViewById(R.id.viewMap);
         OTP = findViewById(R.id.otp);
@@ -193,7 +225,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
         LinearLayout ln = myDialog.findViewById(R.id.layout_btn);
         //called when the user cancels the ride
         if (id == 1) {
-            infoText.setText("TRIP HAS BEEN CANCELED BY USER ! ");
+            infoText.setText(R.string.canceled_by_user);
             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             myDialog.show();
             myDialog.setCanceledOnTouchOutside(true);
@@ -201,7 +233,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
         //called when driver cancels the ride
         if (id == 2) {
             ln.setVisibility(View.VISIBLE);
-            infoText.setText("YOU WILL BE MARKED OFFLINE !\nCONTINUE? ");
+            infoText.setText(R.string.mark_offline);
             reject_rq.setOnClickListener(this);
             accept_rq.setOnClickListener(this);
             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -255,7 +287,10 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
                 }
                 break;
             case R.id.viewMap:
-                Toast.makeText(this, "Map Opens Here", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Map Opens Here", Toast.LENGTH_SHORT).show();
+                Intent map = new Intent(ActivityRideAccepted.this, MapUserLocation.class);
+                startActivity(map);
+
                 break;
         }
     }

@@ -331,6 +331,83 @@ def userRentPay(dct, _user, trip):
     return HttpJSONResponse({'otp': getOTP(trip.uan, trip.dan, trip.atime)})
 
 
+
+@makeView()
+@csrf_exempt
+@handleException()
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkTripStatus( ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
+def userRentHistory(dct, user):
+    '''
+    returns the history of all the rental Trips for an entity (a User)
+    '''
+    #find all trips of the User
+    qsTrip = Trip.objects.filter(uan=user.an, rtype='1').order_by('-id').values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
+    
+    ret = {}
+    print(len(qsTrip))
+    if len(qsTrip):
+        trips = []
+        for i in qsTrip:
+            if i['rtype'] == '1':
+                hs = user.hs
+
+                #print("Trip state : ", str(i['st']))
+                if i['st'] in ['ST', 'FN', 'TR', 'PD']:
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
+                    if i['stime'] is None : 
+                        sDate = 'notSTARTED'
+                    else:
+                        strSTime = str(i['stime'])[:19]
+                        sDate = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+                    
+                    price = float(getRentPrice(i['hrs'])['price'])
+
+                else:
+                    price = float(getRentPrice(i['hrs'])['price'])
+                    sDate = 'NOTSTARTED'
+                    
+                if i['st'] in ['FN', 'TR' 'PD']:
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip                
+                    price = float(getRentPrice(i['hrs'])['price'])
+                    
+                    if i['etime'] is None:
+                        eDate = 'notEnded'
+
+                    else:
+                        strETime = str(i['etime'])[:19]
+                        eDate = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+                else:
+                    eDate = 'NOTENDED'
+                    
+                tax = str(round(float('%.2f' % (price*0.05)),0))+'0'  # tax of 5%
+                price = str(round(float('%.2f' % price),0))+'0' #2 chars
+                
+                srchub = Place.objects.filter(id=i['srcid'])[0].pn
+                dsthub = Place.objects.filter(id=i['dstid'])[0].pn
+                
+                retJson = {   'tid': str(i['id']),
+                              'st': str(i['st']),
+                              #'price': str(price),
+                              #'tax': str(tax),
+                              'sdate': str(sDate),
+                              #'pickhub': str(srchub),
+                              #'drophub': str(dsthub),
+                              #'date': str(sDate),
+                              'vtype': str(i['rvtype'])
+                              #'hrs': str(i['hrs'])
+                              
+                              }
+                trips.append(retJson)
+        #print(states)
+        ret.update({'trips': trips})
+
+    return HttpJSONResponse(ret)
+
+
+
 # ============================================================================
 # Supervisor views
 # ============================================================================
@@ -350,7 +427,7 @@ def supRentLogin(_, dct):
         sa : super auth
     '''
     sup = Supervisor.objects.filter(pn=dct['pn'], auth=dct['sa'])[0]
-    ret = {'auth': sup.auth, 'redirect':True,"redirect_url": "index.html"}
+    ret = {'auth': sup.auth, 'name':sup.name, 'redirect':True,"redirect_url": "dashboard.html"} #index.html"}
     return HttpJSONResponse(ret)
 
 
@@ -730,3 +807,68 @@ def adminVehicleAssign(dct):
         raise ZPException(400, 'Trip already assigned')
 
     return HttpJSONResponse({'vid': vid, 'tid': trip.id})
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+def adminRentLogin(_, dct):
+    '''
+    Makes the admin login 
+    HTTPS args:
+        pn : phone number,
+        auth : admin auth
+    '''
+    
+    ret = {'auth': 'adminAuth007', 'name':'admin', 'redirect':True,"redirect_url": "dashboard.html"}
+    return HttpJSONResponse(ret)
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Trip/User/Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+def admRentCheck(_, dct):
+    '''
+    Returns a list of requested trips
+    Only trips which start from this Supervisors PID are returned
+    # No trips are returned if there are no vehicles there
+
+    HTTP args :
+        state : for rentals are required
+    '''
+    if dct['auth'] != 'adminAuth007':
+        raise ZPException(403, 'Admin auth wrong!')
+
+
+    qsTrip = Trip.objects.filter(rtype=1, st=dct['state'])
+    print("%d trips found" % (len(qsTrip)))
+    rentals = []
+    for trip in qsTrip :
+        uName = User.objects.filter(an=trip.uan)[0].name
+        vals = {'tid': trip.id, 'st': trip.st, 'uname': uName}
+        if trip.rvtype == 0:
+            vals['rvtype'] = 'CYCLE'
+        elif trip.rvtype == 1:
+            vals['rvtype'] = 'SCOOTY'
+        elif trip.rvtype == 2:
+            vals['rvtype'] = 'BIKE'
+        elif trip.rvtype == 3:
+            vals['rvtype'] = 'ZBEE'
+
+        if trip.st == 'ST':
+            vals['price'] = getTripPrice(trip)['price']
+        elif trip.st == 'FN':
+            vals['price'] = getTripPrice(trip)['price']
+        else:
+            vals['price'] = getRentPrice(trip.hrs)['price']
+        uAuth = User.objects.filter(an=trip.uan)[0].auth
+        vals['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
+
+        vals['van'] = trip.van
+        rentals.append(vals)
+        
+    ret = {} if not len(qsTrip) else {'rentals': rentals}
+    return HttpJSONResponse(ret)

@@ -32,7 +32,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
     private ActionBarDrawerToggle mDrawerToggle = null;
     NavigationView nv;
     Toolbar toolbar;
-    ImageView menuBtn, backBtn;
+    ImageView menuBtn;
     TextView nameText;
 
     public static final String USER_DATA = "com.client.UserData";
@@ -152,31 +152,25 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
-        switch (id) {
+        if (id == R.id.nav_logout) {
+            FirebaseAuth.getInstance().signOut();
 
-            case R.id.nav_logout:
-                FirebaseAuth.getInstance().signOut();
-
-                Intent intent = new Intent(ActivityDrawer.this, ActivityLogin.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                break;
+            Intent intent = new Intent(ActivityDrawer.this, ActivityLogin.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             /*case R.id.nav_partner:toolbar_back
              *//*Intent partner_intent = new Intent(ExperienceHomeActivity.this, BecomePartner.class);
                         startActivity(partner_intent);*//*
                         break;*/
-
-            case R.id.nav_profile:
-                Intent profile = new Intent(ActivityDrawer.this, ActivityUserProfile.class);
-                startActivity(profile);
-                break;
-            case R.id.nav_home:
-                Intent home = new Intent(ActivityDrawer.this, ActivityHome.class);
-                home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(home);
-                break;
-            default:
-                return true;
+        } else if (id == R.id.nav_profile) {
+            Intent profile = new Intent(ActivityDrawer.this, ActivityUserProfile.class);
+            startActivity(profile);
+        } else if (id == R.id.nav_home) {
+            Intent home = new Intent(ActivityDrawer.this, ActivityHome.class);
+            home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(home);
+        } else {
+            return true;
         }
         return true;
     }

@@ -30,7 +30,7 @@ from .utils import handleException, extractParams, checkAuth, checkTripStatus, r
 from .utils import headers
 
 from url_magic import makeView
-from zp.view import rent, ride, deliver, pwa
+from zp.view import rent, ride, deliver, pwa, shop, service
 from .utils import googleDistAndTime
 from zp.view import schedule
 from .models import Rate, Supervisor
@@ -535,7 +535,7 @@ def userTripCancel(_dct, user, trip):
 @transaction.atomic
 @checkAuth()
 @checkTripStatus(['TO', 'DN', 'PD'])
-def userTripRetire(_dct, user, _trip):
+def userTripRetire(_dct, user, trip):
     '''
     Resets users active trip
     This is called when the user has seen the message pertaining to trip end for these states:
@@ -547,8 +547,58 @@ def userTripRetire(_dct, user, _trip):
     FL : admin retires this via adminHandleFailedTrip()
     TR/FN : Driver will retire via driverConfirmPayment() after user pays money
     '''
+    #import yagmail
+    #from codecs import encode
+    #eP_S_W_D = encode(str(settings.GM_PSWD), 'rot13')
+
+    #receiver = str(user.email)
+    body = """\
+    Subject: Hello from Zippe :)
+    Hi, \n Your Trip costed Rs " + str(getTripPrice(trip)['price'])+"\n Thanks for riding with Zippe!\n -VillageConnect"""
+    ##attachment = "some.pdf"
+    ##print("user details : ", receiver)
+    ##yag = yagmail.SMTP("villaget3ch@gmail.com", eP_S_W_D)
+    ##yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
+    #import smtplib, ssl
+
+    '''
+    port = 465  # For SSL
+    smtp_server = "smtp.gmail.com"
+    sender_email = "villaget3ch@gmail.com"  # Enter your address
+    receiver_email = str(user.email)  # Enter receiver address
+    password = str(eP_S_W_D)
+    message = """\
+    Subject: Hi there
+
+    This message is automatically sent from Python."""
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message)
+        print("email successfully sent")
+    '''
+    
+    #smtp_server = "smtp.gmail.com"
+    #sender_email = "villaget3ch@gmail.com"  # Enter your address
+    #receiver_email = str(user.email)  # Enter receiver address
+    #password = str(eP_S_W_D)
+   
+    #server = smtplib.SMTP('smtp.gmail.com')
+    #try :
+    #    server.starttls()
+    #except Exception:
+    #    print("Error, tls not set")
+    
+    #if sender_email and password:
+    #    server.login(sender_email, password)
+    #    server.sendmail(sender_email, receiver_email, message)
+    
+    #server.quit()
+    
     # reset the tid to -1
     retireEntity(user)
+    
     return HttpJSONResponse({})
 
 
@@ -668,7 +718,18 @@ def authTripRetire(dct, entity, trip):
         vehicle = Vehicle.objects.filter(tid=trip.id)[0]
         vehicle.tid = Vehicle.AVAILABLE
         vehicle.save()
+    else:
+        import yagmail
+        from codecs import encode
+        eP_S_W_D = encode(str(settings.GM_PSWD), 'rot13')
 
+        receiver = str(entity.email)
+        body = "Hi, \n Your Trip costed Rs " + str(getTripPrice(trip)['price'])+"\n Thanks for riding with Zippe!\n -VillageConnect"
+        #attachment = "some.pdf"
+        yag = yagmail.SMTP("villaget3ch@gmail.com", eP_S_W_D)
+        yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
+
+    
     retireEntity(entity)
 
     return HttpJSONResponse({})
@@ -704,7 +765,7 @@ def authLocationUpdate(dct, entity):
     # Create or edit
     if len(qsLoc) == 0:
         recLoc = Location()
-        recLoc.an = 731335266093 //dct['an']
+        recLoc.an = dct['an'] if 'an' in dct else '0'
     else:
         recLoc = qsLoc[0]
 
@@ -890,7 +951,7 @@ def adminRefresh(dct):
         # For requested deliveries if settings.DEL_RQ_TIMEOUT seconds passed since del.rtime set to TO (timeout)
         if deli.st == 'RQ':
             tmDelta = datetime.now(timezone.utc) - deli.rtime
-            if tmDelta.total_seconds() > settings.DEL_SC_TIMEOUT:
+            if tmDelta.total_seconds() > settings.DEL_RQ_TIMEOUT:
                 deli.st = 'TO'
 
         # For assigned deliveries if settings.DEL_AS_TIMEOUT seconds passed since deli.atime set to TO (user times out)
@@ -1139,8 +1200,13 @@ def authProfileUpdate(dct, entity):
         gdr:  gender of the entity
     Note:
     '''
-    entity.gdr = dct['gdr']
-    entity.name = dct['name']
+    if 'gdr' in dct:
+        entity.gdr = dct['gdr']
+    if 'name' in dct:
+        entity.name = dct['name']
+    if 'email' in dct:
+        # only for user
+        entity.email = dct['email']
     entity.save()
 
     return HttpJSONResponse({})
@@ -1348,4 +1414,85 @@ def authAadhaarSave(dct, entity):
     log('New photo saved: front %s | back %s' % (sAdharFrontFileName, sAdharBackFileName))
     return HttpJSONResponse({})
 
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+#@handleException(IndexError, 'Invalid trip', 501) #should NOT tell the API user whether a trip exists or not
+@extractParams
+@checkAuth()
+def authTripData(dct, entity):
+    '''
+    Returns all the data of a Trip
+        Https:
+            auth, tid
+    '''
+    trip = Trip.objects.filter(id=dct['tid']).values('id','st','uan','dan','van','rtime','stime','etime','srcid','dstid','srclat','srclng','dstlat','dstlng','hrs','rtype','rvtype')
+    lstTrip = list(trip)
+    dctTrip = lstTrip[0]
+    
+    #for key, val in dctTrip.items():
+    #    dctRet.update({str(key): str(val)})
+    
+    strRTime = str(dctTrip['rtime'])[:19]
+    rDate = datetime.strptime(strRTime, '%Y-%m-%d %H:%M:%S').date()
+
+    
+    srchub = Place.objects.filter(id=dctTrip['srcid'])[0].pn
+    dsthub = Place.objects.filter(id=dctTrip['dstid'])[0].pn
+
+    if dctTrip['rtype'] == '1':
+            # rental
+            time = float(dctTrip['hrs']*60) 
+    else:
+            #ride
+            if dctTrip['etime'] is None:
+                    eTime = 'notEnded'
+                    time = 1.00
+            else:
+                if dctTrip['stime'] is None:
+                    sTime = 'notStarted'
+                    time = 0.00
+                else:
+                    strETime = str(dctTrip['etime'])[:19]
+                    eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+                    time = int(((dctTrip['etime'] - dctTrip['stime']).seconds)/60)
+                    
+    
+    
+    time = float(time)
+    rate = 1.00 #need to update the price algo in utils.py
+    print(time, rate, rate*time)
+    price = rate*time #2 chars
+    tax = price*0.05  # tax of 5%
+    total = price + tax
+    print(tax, total)
+    dctRet = {
+            'id': str(dctTrip['id']),
+            'st':str(dctTrip['st']),
+            #'uan': str(dctTrip['uan']),
+            #'dan': str(dctTrip['dan']),
+            'van': str(dctTrip['van']),
+            'sdate': str(rDate),
+            'srchub': str(srchub),
+            'dsthub': str(dsthub),
+            'srclat': str(dctTrip['srclat']),
+            'srclng':str(dctTrip['srclng']),
+            'dstlat':str(dctTrip['dstlat']),
+            'dstlng':str(dctTrip['dstlng']),
+            'time': str(time),
+            'rtype':str(dctTrip['rtype']),
+            'rtype':str(dctTrip['rtype']),
+            'rvtype': str(dctTrip['rvtype']),
+            
+            'time': str(time),
+            'rate': str(rate),
+            'price': str(round(float('%.2f' % price),0))+'0',
+            'tax':  str(round(float('%.2f' % tax),0))+'0',
+            'total': str(round(float('%.2f' % total),0))+'0',
+            
+             }
+    
+    return HttpJSONResponse(dctRet)
 
