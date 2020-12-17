@@ -1,6 +1,5 @@
 package com.client.deliver;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -41,16 +40,16 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
         holder.txtID.setText(listData.getDeliveryIType());
         holder.txtStatus.setText(listData.getDeliveryStatus());
         holder.txtPrice.setText(listData.getDeliveryPrice());
-        holder.txtTip.setText(listData.getDeliveryTip());
         holder.txtIType.setText(listData.getDeliveryID());
+        holder.delText2.setText(R.string.price);
 
         holder.txtID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String valueScid = listData.getDeliveryID();
-                Log.d("DeliveryListAdapter","itype"+valueScid);
+                Log.d("DeliveryListAdapter", "itype" + valueScid);
                 Intent details = new Intent(context, ActivityDeliverySummery.class);
-                details.putExtra("SCID",valueScid);
+                details.putExtra("SCID", valueScid);
                 context.startActivity(details);
                 //((Activity) context).finish();
             }
@@ -64,14 +63,14 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView txtID, txtStatus, txtPrice, txtTip, txtIType;
+        private TextView txtID, txtStatus, txtPrice, txtIType, delText2;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            delText2 = itemView.findViewById(R.id.delText2);
             txtID = itemView.findViewById(R.id.delivery_id);
             txtStatus = itemView.findViewById(R.id.delivery_status);
             txtPrice = itemView.findViewById(R.id.delivery_price);
-            txtTip = itemView.findViewById(R.id.delivery_tip);
             txtIType = itemView.findViewById(R.id.delivery_itype);
 
         }
