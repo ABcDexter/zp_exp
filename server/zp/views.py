@@ -1419,6 +1419,7 @@ def authAadhaarSave(dct, entity):
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
+#@handleException(IndexError, 'Invalid trip', 501) #should NOT tell the API user whether a trip exists or not
 @extractParams
 @checkAuth()
 def authTripData(dct, entity):
