@@ -26,6 +26,10 @@
         android:id="@+id/nav_ride_history"
         android:icon="@drawable/ic_time"
         android:title="@string/ride_history" />
+    <item
+        android:id="@+id/nav_rent_history"
+        android:icon="@drawable/ic_time"
+        android:title="@string/rent_history" />
 
     <item
         android:id="@+id/nav_customer_support"

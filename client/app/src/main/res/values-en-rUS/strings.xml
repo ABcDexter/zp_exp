@@ -112,6 +112,15 @@
     <string name="pick_up_time">Pick Up Time</string>
     <string name="pick_up_date">Pick Up Date</string>
     <string name="delivery_summary">Delivery Summary</string>
+    <string name="price_breakup">Price Breakup</string>
+    <string name="ride_price">Price</string>
+    <string name="ride_rate">Rate</string>
+    <string name="ride_tax">Tax</string>
+    <string name="trip">Trip</string>
+    <string name="date">Date</string>
+    <string name="ride_total">Total</string>
+    <string name="ride_summary">Ride Summary</string>
+    <string name="rent_summary">Rent Summary</string>
     <string name="choose_delivery_type">Choose Delivery Type</string>
     <string name="express">Express</string>
     <string name="standard">Standard</string>
@@ -191,6 +200,9 @@
     <string name="change_language">Change Language</string>
     <string name="night_mode">Dark Mode</string>
     <string name="delivery_order_no">Delivery Item</string>
+    <string name="ride_text">Ride ID</string>
+    <string name="rent_text">Rent ID</string>
+    <string name="rent_history">RENT HISTORY</string>
     <string name="gender">GENDER</string>
     <string name="female">FEMALE</string>
     <string name="male">MALE</string>
@@ -372,6 +384,31 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="upload_aadhar_card">Upload Aadhar Card</string>
     <string name="_name">NAME</string>
     <string name="_mobile">MOBILE</string>
-    <string name="latest_to_oldest_u_2193">Latest to oldest U+2193</string>
+    <string name="latest_to_oldest_u_2193">Latest to oldest</string>
     <string name="assign_nearest_agent">We will assign the nearest agent with the highest rating within 10 minutes for faster delivery.</string>
+
+    <string name="title_activity_welcome">Home Screen</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="slide_1_title">ZIPP-E Ride</string>
+    <string name="slide_1_desc">The easiest way to book a taxi service!</string>
+
+    <string name="slide_2_title">ZIPP-E Rent</string>
+    <string name="slide_2_desc">Own a vehicle without the added headache!</string>
+
+    <string name="slide_3_title">ZIPP-E Delivery</string>
+    <string name="slide_3_desc">Want something delivered to your home? Use ZIPP-E Delivery!</string>
+
+    <string name="slide_4_title">ZIPP-e Shop</string>
+    <string name="slide_4_desc">Order every ranging from groceries to oevr the counter medicines!</string>
+    <string name="slide_5_title">ZIPP-e Services</string>
+    <string name="slide_5_desc">Find best handymen or professional service providers with ZIPP-E Services!</string>
+    <string name="itype">iType</string>
+    <string name="tip">tip</string>
+    <string name="price">price</string>
+    <string name="status">status</string>
+    <string name="id">id</string>
+    <string name="message_min">%1$s mins</string>
+    <string name="message_rs">₹ %1$s </string>
 </resources>

@@ -93,16 +93,12 @@ public class ActivityDeliverySummery extends ActivityDrawer {
         dAddress = findViewById(R.id.drop_address);
         content = findViewById(R.id.package_content);
         size = findViewById(R.id.package_size);
-        //care = findViewById(R.id.package_care);
         deliveryType = findViewById(R.id.delv_type);
         time = findViewById(R.id.delv_time);
         date = findViewById(R.id.delv_date);
         userDeliverySummery();
 
         swipeRefresh = findViewById(R.id.swipeRefresh);
-        //trackDelivery.setOnClickListener(this);
-
-        //myDialog = new Dialog(this);
         getInfo();
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -167,9 +163,6 @@ public class ActivityDeliverySummery extends ActivityDrawer {
             time.setText(ptime);
             date.setText(pDate);
 
-            /*if (fr.equals("True") || li.equals("True") || kc.equals("True") || pe.equals("True") || kw.equals("True")) {
-                care.setText(fr + " " + li + " " + kc + " " + pe + " " + " " + kw + " ");
-            }*/
             if (express.equals("True")) {
                 deliveryType.setText(R.string.express);
             } else deliveryType.setText(R.string.standard);
@@ -225,24 +218,8 @@ public class ActivityDeliverySummery extends ActivityDrawer {
         //response on hitting user-delivery-get-info API
         if (id == 1) {
             try {
-               /* Intent intent = new Intent(this, UtilityPollingService.class);
-                intent.setAction("33");
-                startService(intent);*/
+
                 String st = response.getString("st");
-                //String active = response.getString("active");
-
-                /*if (st.equals("SC")) {
-                    //String scid = response.getString("scid");
-                    //String price = response.getString("price");
-                        *//*SharedPreferences pref = this.getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = pref.edit();
-                        editor.putString(DELIVERY_ID, scid);
-                        editor.apply();*//*
-
-                    Intent payment = new Intent(ActivityDeliverySummery.this, ActivityDeliverConfirm.class);
-                    startActivity(payment);
-                    finish();
-                }*/
 
                 if (st.equals("RQ") || st.equals("PD") || st.equals("SC")) {
 

@@ -13,12 +13,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,14 +56,12 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
     private static final String TAG = "ActivityWelcome";
     ImageView zippe_iv, zippe_iv_below, scooty_up, scooty_down;
-    public static final String BUSS = "Buss";
     public static final String BUSS_FLAG = "com.client.ride.BussFlag";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String LOCATION_PICK = "PickLocation";
     public static final String LOCATION_DROP = "DropLocation";
     public static final String OTP_PICK = "OTPPick";
     public static final String VAN_PICK = "VanPick";
-    public static final String PRICE_RENT = "PriceRent";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
 
@@ -88,9 +88,14 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.CALL_PHONE};
     String lat, lng, stringAN;
-    private TextView mOutputText;
 
     Animation animMoveL2R, animMoveR2L;
+
+    private TextView textHelp;
+    private RelativeLayout rlOverlay, rlTopLayout;
+    private LinearLayout llRide, llRent, llDelivery, llShop, llServices, llInfo;
+    SharedPreferences sharedPreferences1;
+    SharedPreferences.Editor sharedEditor1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,17 +117,40 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         btnDeliver.setOnClickListener(this);
         btnShop.setOnClickListener(this);
         btnConnect.setOnClickListener(this);
+        textHelp = findViewById(R.id.textHelp);
+        textHelp.setOnClickListener(this);
+        rlOverlay = findViewById(R.id.rlOverlay);
+        rlTopLayout = findViewById(R.id.rlTopLayout);
+        llRide = findViewById(R.id.llRide);
+        llRent = findViewById(R.id.llRent);
+        llDelivery = findViewById(R.id.llDelivery);
+        llShop = findViewById(R.id.llShop);
+        llServices = findViewById(R.id.llServices);
+        llInfo = findViewById(R.id.llInfo);
         auth = stringAuth;
         if (auth.equals("")) {
             Intent registerUser = new Intent(ActivityWelcome.this, ActivityRegistration.class);
             startActivity(registerUser);
             finish();
         }
+        sharedPreferences1 = getPreferences(Context.MODE_PRIVATE);
+        sharedEditor1 = sharedPreferences1.edit();
+        /*if (isFirstTime()) {
+            rlOverlay.setVisibility(View.VISIBLE);
+        }*/
+        if (isItFirstTime()) {
+            Log.d(TAG, "First Time");
+            rlOverlay.setVisibility(View.VISIBLE);
+
+        } else {
+            rlOverlay.setVisibility(View.GONE);
+            Log.d(TAG, "Not a First Time");
+        }
+
         zippe_iv = findViewById(R.id.iv_zippee);
         zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
         scooty_up = findViewById(R.id.scooty_up);
         scooty_down = findViewById(R.id.scooty_down);
-        //moveZbee();
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityWelcome.this);
         getLastLocation();
@@ -131,70 +159,27 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
         animMoveL2R = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r);
         animMoveR2L = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_r2l);
-        //animMoveL2R_scooty = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r_scooty);
-        //zippe_iv.startAnimation(animMoveL2R);
-        //animMoveR2L_zbee = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_r2l_zbee);
-        //scooty_down.startAnimation(animMoveR2L);
+
         zippe_iv.startAnimation(animMoveL2R);
         scooty_down.startAnimation(animMoveR2L);
 
+
+    }
+
+    public boolean isItFirstTime() {
+        if (sharedPreferences1.getBoolean("firstTime", true)) {
+            sharedEditor1.putBoolean("firstTime", false);
+            sharedEditor1.commit();
+            sharedEditor1.apply();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static ActivityWelcome getInstance() {
         return instance;
     }
-
-    private void moveZbee() {
-        scooty_up.setVisibility(View.GONE);
-        scooty_down.setVisibility(View.VISIBLE);
-        zippe_iv_below.setVisibility(View.GONE);
-        zippe_iv.setVisibility(View.VISIBLE);
-
-        zippe_iv.startAnimation(animMoveL2R);
-        scooty_down.startAnimation(animMoveR2L);
-        /*ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scooty_down, "translationX", 1800, 0f);
-        objectAnimator.setDuration(1700);
-        objectAnimator.start();
-
-        *//*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*//*
-
-        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zippe_iv, "translationX", 0f, 1500);
-        objectAnimator1.setDuration(1700);
-        objectAnimator1.start();*/
-        /*objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
-
-        /*new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                moveScooty();
-            }
-        }, 1100);*/
-    }
-
-    /*private void moveScooty() {
-        scooty_up.setVisibility(View.VISIBLE);
-        scooty_down.setVisibility(View.GONE);
-        zippe_iv_below.setVisibility(View.VISIBLE);
-        zippe_iv.setVisibility(View.GONE);
-
-        zippe_iv_below.startAnimation(animMoveR2L_zbee);
-        scooty_up.startAnimation(animMoveL2R_scooty);
-        *//*ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zippe_iv_below, "translationX", 1800, 0f);
-        objectAnimator.setDuration(1700);
-        objectAnimator.start();
-        *//**//*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*//**//*
-
-        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(scooty_up, "translationX", 0f, 1500);
-        objectAnimator1.setDuration(1700);
-        objectAnimator1.start();*//*
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                moveZbee();
-            }
-        }, 1100);
-        *//* objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*//*
-    }*/
 
     public void sendLocation() {
         Log.d(TAG, "inside sendLocation()");
@@ -423,42 +408,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                             }
                         }
                     }
-                    /*if (rtype.equals("1")) {
-                        if (status.equals("RQ")) {
-                            Intent rq = new Intent(ActivityWelcome.this, ActivityRentRequest.class);
-                            startActivity(rq);
-                        }
-                        if (status.equals("AS")) {
-                            */
-                    /*String otp = response.getString("otp");
-                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                            sp_otp.edit().putString(OTP_PICK, otp).apply();*/
-                    /*
-                            Intent as = new Intent(ActivityWelcome.this, ActivityRentOTP.class);
-                            startActivity(as);
-                        }
-                        if (status.equals("ST")) {
-                            String van = response.getString("vno");
-                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                            sp_otp.edit().putString(VAN_PICK, van).apply();
-                            Intent as = new Intent(ActivityWelcome.this, ActivityRentInProgress.class);
-                            startActivity(as);
-                        }
-                        if (status.equals("FN") || status.equals("TR")) {
-                            //retireTrip();
-                            */
-                    /*Intent fntr = new Intent(ActivityWelcome.this, ActivityRentEnded.class);
-                            startActivity(fntr);*/
-                    /*
-                            Intent fntr = new Intent(ActivityWelcome.this, ActivityRateZippe.class);
-                            startActivity(fntr);
-                        }
 
-                        if (status.equals("TO")) {
-                            ShowPopup(7);
-                        }
-
-                    }*/
                 } else if (active.equals("false")) {
                     String tid = response.getString("tid");
                     Log.d(TAG, "active=" + active + " tid=" + tid);
@@ -614,33 +564,123 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    int counter = 1;
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_rent:
-                Intent rentIntent = new Intent(ActivityWelcome.this, ActivityRentHome.class);
-                startActivity(rentIntent);
-                break;
-            case R.id.btn_ride:
-                Intent rideIntent = new Intent(ActivityWelcome.this, ActivityRideHome.class);
-                startActivity(rideIntent);
-                break;
-            case R.id.btn_deliver:
-                Intent deliverIntent = new Intent(ActivityWelcome.this, ActivityPackageDetails.class);
-                startActivity(deliverIntent);
-                break;
-            case R.id.btn_shop:
-                String shopUrl = "https://zippe.in/en/shop-by-category/";
-                Intent shopIntent = new Intent(Intent.ACTION_VIEW);
-                shopIntent.setData(Uri.parse(shopUrl));
-                startActivity(shopIntent);
-                break;
-            case R.id.btn_connect:
-                String connectUrl = "https://zippe.in/en/zippe-connect/";
-                Intent connectIntent = new Intent(Intent.ACTION_VIEW);
-                connectIntent.setData(Uri.parse(connectUrl));
-                startActivity(connectIntent);
-                break;
+        int id = v.getId();
+        if (id == R.id.btn_rent) {
+            Intent rentIntent = new Intent(ActivityWelcome.this, ActivityRentHome.class);
+            startActivity(rentIntent);
+        } else if (id == R.id.btn_ride) {
+            Intent rideIntent = new Intent(ActivityWelcome.this, ActivityRideHome.class);
+            startActivity(rideIntent);
+        } else if (id == R.id.btn_deliver) {
+            Intent deliverIntent = new Intent(ActivityWelcome.this, ActivityPackageDetails.class);
+            startActivity(deliverIntent);
+        } else if (id == R.id.btn_shop) {
+            String shopUrl = "https://zippe.in/en/shop-by-category/";
+            Intent shopIntent = new Intent(Intent.ACTION_VIEW);
+            shopIntent.setData(Uri.parse(shopUrl));
+            startActivity(shopIntent);
+        } else if (id == R.id.btn_connect) {
+            String connectUrl = "https://zippe.in/en/zippe-connect/";
+            Intent connectIntent = new Intent(Intent.ACTION_VIEW);
+            connectIntent.setData(Uri.parse(connectUrl));
+            startActivity(connectIntent);
+        } else if (id == R.id.textHelp) {
+            Log.d(TAG, "counter = " + counter);
+            //counter++;
+            if (counter == 1) {
+                /*if (textHelp.getText().toString().equals("Next")) {*/
+                llRide.setVisibility(View.INVISIBLE);
+                llRent.setVisibility(View.VISIBLE);
+                llDelivery.setVisibility(View.INVISIBLE);
+                llShop.setVisibility(View.INVISIBLE);
+                llServices.setVisibility(View.INVISIBLE);
+                llInfo.setVisibility(View.INVISIBLE);
+                rlOverlay.setVisibility(View.VISIBLE);
+
+                textHelp.setText("Next");
+                counter = counter + 1;
+                Log.d(TAG, "counter = " + counter);
+                //textHelp.setText("Got It");
+                /*}*/ /*else {
+                        rlOverlay.setVisibility(View.GONE);
+                    }*/
+            } else if (counter == 2) {
+                llRide.setVisibility(View.INVISIBLE);
+                llRent.setVisibility(View.INVISIBLE);
+                llDelivery.setVisibility(View.VISIBLE);
+                llShop.setVisibility(View.INVISIBLE);
+                llServices.setVisibility(View.INVISIBLE);
+                llInfo.setVisibility(View.INVISIBLE);
+                rlOverlay.setVisibility(View.VISIBLE);
+
+                textHelp.setText("Next");
+                counter = counter + 1;
+            } else if (counter == 3) {
+                llRide.setVisibility(View.INVISIBLE);
+                llRent.setVisibility(View.INVISIBLE);
+                llDelivery.setVisibility(View.INVISIBLE);
+                llShop.setVisibility(View.VISIBLE);
+                llServices.setVisibility(View.INVISIBLE);
+                llInfo.setVisibility(View.INVISIBLE);
+                rlOverlay.setVisibility(View.VISIBLE);
+
+                textHelp.setText("Next");
+                counter = counter + 1;
+            } else if (counter == 4) {
+                llRide.setVisibility(View.INVISIBLE);
+                llRent.setVisibility(View.INVISIBLE);
+                llDelivery.setVisibility(View.INVISIBLE);
+                llShop.setVisibility(View.INVISIBLE);
+                llServices.setVisibility(View.VISIBLE);
+                llInfo.setVisibility(View.INVISIBLE);
+                rlOverlay.setVisibility(View.VISIBLE);
+
+                textHelp.setText("Next");
+                counter = counter + 1;
+            } else if (counter == 5) {
+                llRide.setVisibility(View.INVISIBLE);
+                llRent.setVisibility(View.INVISIBLE);
+                llDelivery.setVisibility(View.INVISIBLE);
+                llShop.setVisibility(View.INVISIBLE);
+                llServices.setVisibility(View.INVISIBLE);
+                llInfo.setVisibility(View.VISIBLE);
+                rlOverlay.setVisibility(View.VISIBLE);
+
+                textHelp.setText("Got It");
+                counter = counter + 1;
+            } else if (counter == 6) {
+                rlOverlay.setVisibility(View.GONE);
+                //rlTopLayout.setVisibility(View.VISIBLE);
+            }
         }
     }
+
+    /*private boolean isFirstTime() {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        boolean ranBefore = preferences.getBoolean("RanBefore", false);
+        if (!ranBefore) {
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("RanBefore", true);
+            editor.apply();
+            rlOverlay.setVisibility(View.VISIBLE);
+
+            rlOverlay.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    rlOverlay.setVisibility(View.GONE);
+                    return false;
+                }
+
+            });
+
+
+        }
+        return ranBefore;
+    }*/
 }
