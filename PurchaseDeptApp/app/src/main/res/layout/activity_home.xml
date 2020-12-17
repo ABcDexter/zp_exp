@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        tools:context=".ActivityHome">
+
+        <LinearLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/layoutZippeee"
+                layout="@layout/zippe_logo"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="20dp" />
+
+            <Button
+                android:id="@+id/cat_spices_masala_herbs"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/spices_masala_herbs" />
+
+
+            <Button
+                android:id="@+id/cat_flour_grains_pulses"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/flour_grains_pulses" />
+
+            <Button
+                android:id="@+id/cat_oil_ghee"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/oil_ghee" />
+
+            <Button
+                android:id="@+id/cat_sugar_sweetners"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/sugar_sweetners" />
+
+            <Button
+                android:id="@+id/cat_dairy"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/dairy" />
+
+            <Button
+                android:id="@+id/cat_snacks"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/snacks" />
+
+            <Button
+                android:id="@+id/cat_confectionary_dessert"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/confectionary_dessert" />
+
+            <Button
+                android:id="@+id/cat_breakfast_essentials_cereals"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/breakfast_essentials_cereals" />
+
+            <Button
+                android:id="@+id/cat_beverages"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/beverages" />
+
+            <Button
+                android:id="@+id/cat_premixes"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/premixes" />
+
+            <Button
+                android:id="@+id/cat_dry_fruit"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/dry_fruits" />
+
+            <Button
+                android:id="@+id/cat_cooking_paste"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/cooking_paste" />
+
+            <Button
+                android:id="@+id/cat_baking_essentials"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/baking_essentials" />
+
+            <Button
+                android:id="@+id/cat_ready_meals_mixes"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/ready_meals_mixes" />
+
+            <Button
+                android:id="@+id/cat_packaged_essentials"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/packaged_essentials" />
+
+            <Button
+                android:id="@+id/cat_frozen_packaged_veg"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/frozen_packaged_veg" />
+
+            <Button
+                android:id="@+id/cat_frozen_packaged_non_Veg"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/frozen_packaged_non_Veg" />
+
+            <Button
+                android:id="@+id/cat_cleaners"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/cleaners" />
+
+            <Button
+                android:id="@+id/cat_paper_towels"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/paper_towels" />
+
+            <Button
+                android:id="@+id/cat_misc_household"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/misc_household" />
+
+            <Button
+                android:id="@+id/cat_skin_care"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/skin_care" />
+
+            <Button
+                android:id="@+id/cat_hair_care"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/hair_care" />
+
+            <Button
+                android:id="@+id/cat_oral_care"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/oral_care" />
+
+            <Button
+                android:id="@+id/cat_deos_perfumes"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/deos_perfumes" />
+
+            <Button
+                android:id="@+id/cat_shaving_hair_removal"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/shaving_hair_removal" />
+
+            <Button
+                android:id="@+id/cat_baby_care"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/baby_care" />
+
+            <Button
+                android:id="@+id/cat_diapers_wipes"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/diapers_wipes" />
+
+            <Button
+                android:id="@+id/cat_female_hygiene"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/female_hygiene" />
+
+            <Button
+                android:id="@+id/cat_everyday_medicine_sexual_wellness"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/everyday_medicine_sexual_wellness" />
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.drawerlayout.widget.DrawerLayout>

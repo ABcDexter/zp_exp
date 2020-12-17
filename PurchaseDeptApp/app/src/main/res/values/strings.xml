@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">Purchase Department</string>
+    <string name="enter_mobile">ENTER MOBILE</string>
+    <string name="request_otp">request otp</string>
+    <string name="enter_otp_to_verify">ENTER OTP TO VERIFY</string>
+    <string name="login_key">LOGIN KEY</string>
+    <string name="Open" />
+    <string name="Close" />
+    <string name="spices_masala_herbs">Spices / Masala / Herbs</string>
+    <string name="flour_grains_pulses">Flour / Grains / Pulses</string>
+    <string name="oil_ghee">Oil &amp; Ghee</string>
+    <string name="sugar_sweetners">Sugar &amp; Sweetners</string>
+    <string name="dairy">Dairy</string>
+    <string name="snacks">Snacks</string>
+    <string name="confectionary_dessert">Confectionary &amp; dessert</string>
+    <string name="breakfast_essentials_cereals">Breakfast Essentials &amp; Cereals</string>
+    <string name="beverages">Beverages</string>
+    <string name="premixes">Premixes &amp; Health/Energy drinks</string>
+    <string name="dry_fruits">Dry fruits, Nuts &amp; Seeds</string>
+    <string name="cooking_paste">Cooking paste, Sauces &amp; Spreads</string>
+    <string name="baking_essentials">Baking Essentials</string>
+    <string name="ready_meals_mixes">Ready meals &amp; mixes </string>
+    <string name="packaged_essentials">Packaged Essentials</string>
+    <string name="frozen_packaged_veg">Frozen packaged Veg</string>
+    <string name="frozen_packaged_non_Veg">Frozen packaged non-Veg</string>
+    <string name="cleaners">Cleaners</string>
+    <string name="paper_towels">Paper towels / Napkins/ Tissues</string>
+    <string name="misc_household">Misc Household</string>
+    <string name="skin_care">Skin care/Eye care</string>
+    <string name="hair_care">Hair Care</string>
+    <string name="oral_care">Oral Care</string>
+    <string name="deos_perfumes">Deos &amp; Perfumes</string>
+    <string name="shaving_hair_removal">Shaving &amp; hair removal</string>
+    <string name="baby_care">Baby care</string>
+    <string name="diapers_wipes">Diapers &amp; Wipes</string>
+    <string name="female_hygiene">Female Hygiene</string>
+    <string name="everyday_medicine_sexual_wellness">Everyday Medicine &amp; Sexual Wellness</string>
+    <string name="click_choose_picture">Click/Choose Picture</string>
+    <string name="upload">UPLOAD</string>
+    <string name="driver_name" />
+    <string name="mobile" />
+    <string name="change_language" />
+    <string name="dark_mode">DARK MODE</string>
+    <string name="history">History</string>
+    <string name="something_wrong">Something went wrong! Please try again later.</string>
+    <string name="title_activity_seasonal">ActivitySeasonal</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
+    <string name="looking_for_updates">Looking for updates...</string>
+    <string name="products_updated">All Products Updated</string>
+    <string name="search_hint">SEARCH</string>
+
+</resources>

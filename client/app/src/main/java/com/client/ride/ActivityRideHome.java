@@ -80,6 +80,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     String srcLat, srcLng, dstLat, dstLng;
     String dstName = "";
     String srcName = "";
+    RelativeLayout rl_pick, rl_drop, rl_v, rl_r;
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
@@ -106,6 +107,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                     ShowPopup(1);
             } else {
                 //next.setEnabled(true);
+
                 Intent rideIntent = new Intent(ActivityRideHome.this, ActivityRideRequest.class);
                 rideIntent.putExtra("npas", RiderNo);
                 rideIntent.putExtra("vtype", VehicleType);
@@ -141,6 +143,10 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         vehicle = findViewById(R.id.vehicle_type);
         riders = findViewById(R.id.no_riders);
         next = findViewById(R.id.letsGo_ride);
+        rl_pick = findViewById(R.id.rl_pick);
+        rl_drop = findViewById(R.id.rl_drop);
+        rl_v = findViewById(R.id.rl_v);
+        rl_r = findViewById(R.id.rl_r);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         next.setOnClickListener(this);
@@ -172,6 +178,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
 
         dstAutocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment_drop);
+
         etDst = (EditText) dstAutocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
         //etDst.setHint("DROP POINT");
         etDst.setHint(getString(R.string.drop_point));
@@ -188,6 +195,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         srcAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place srcPlace) {
+                rl_pick.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+
                 srcName = srcPlace.getName();
 
                 Log.i(TAG, "SRC Place: " + srcPlace.getName() + ", " + srcPlace.getLatLng());
@@ -219,6 +228,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
             @Override
             public void onPlaceSelected(Place dstPlace) {
                 dstName = dstPlace.getName();
+                rl_drop.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+
                 Log.i(TAG, "DST Place: " + dstPlace.getName() + ", " + dstPlace.getLatLng());
 
                 String dstLatLng = Objects.requireNonNull(dstPlace.getLatLng()).toString();
@@ -298,7 +309,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
 
         //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
         //wmlp.x = 100;   //x position
-        wmlp.y = 80 ;   //y position
+        wmlp.y = 80;   //y position
         imageDialog.show();
         Window window = imageDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
@@ -401,32 +412,38 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 break;
             case R.id.ride_rl_1:
                 vehicle.setText(R.string.e_scooty);
+                vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 imageDialog.dismiss();
                 VehicleType = "1";
                 break;
             case R.id.ride_rl_2:
                 vehicle.setText(R.string.e_bike);
+                vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 VehicleType = "2";
                 imageDialog.dismiss();
                 break;
             case R.id.ride_rl_3:
                 vehicle.setText(R.string.zbee);
+                vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 VehicleType = "3";
                 imageDialog.dismiss();
                 break;
             case R.id.per_1:
                 riders.setText("1");
                 RiderNo = "1";
+                riders.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 imageDialog2.dismiss();
                 break;
             case R.id.per_2:
                 riders.setText("2");
                 RiderNo = "2";
+                riders.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 imageDialog2.dismiss();
                 break;
             case R.id.per_3:
                 riders.setText("2 + 1");
                 RiderNo = "3";
+                riders.setBackgroundResource(R.drawable.rect_box_outline_color_change);
                 imageDialog2.dismiss();
                 break;
         }

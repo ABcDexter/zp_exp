@@ -1,6 +1,6 @@
 package com.client;
 
-import android.animation.ObjectAnimator;
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +31,6 @@ import com.client.deliver.ActivityPackageDetails;
 import com.client.rent.ActivityRateRent;
 import com.client.rent.ActivityRentEnded;
 import com.client.rent.ActivityRentHome;
-import com.client.rent.ActivityRentInProgress;
 import com.client.ride.ActivityRideEnded;
 import com.client.ride.ActivityRideHome;
 import com.client.ride.ActivityRideInProgress;
@@ -45,8 +43,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,6 +91,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     private TextView mOutputText;
 
     Animation animMoveL2R, animMoveR2L;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -289,6 +286,16 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
             Log.d(TAG, "inside else of getLastLocation()");
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             mFusedLocationClient.getLastLocation().addOnCompleteListener(
                     new OnCompleteListener<Location>() {
                         @Override
@@ -329,6 +336,16 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         mLocationRequest.setNumUpdates(1);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mFusedLocationClient.requestLocationUpdates(
                 mLocationRequest, mLocationCallback,
                 Looper.myLooper());
@@ -392,7 +409,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                         }
                     }
 
-                    if (rtype.equals("1")){
+                    if (rtype.equals("1")) {
                         if (status.equals("FN") || status.equals("TR")) {
                             String price = response.getString("price");
                             if (price.equals("0.00")) {
@@ -442,9 +459,9 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                         }
 
                     }*/
-                } else if (active.equals("false")){
+                } else if (active.equals("false")) {
                     String tid = response.getString("tid");
-                    Log.d(TAG, "active=" + active + " tid="+tid);
+                    Log.d(TAG, "active=" + active + " tid=" + tid);
 
                     SharedPreferences prefTripDetails = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     String tripIDExists = prefTripDetails.getString(TRIP_ID, "");
@@ -455,7 +472,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                         finish();*/
                         //tripInfo(tripIDExists);
                     }
-                    if (!tid.equals("-1")){
+                    if (!tid.equals("-1")) {
                         tripInfo(tripIDExists);
                     }
                 }
