@@ -1169,11 +1169,11 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     if iPayMode == Trip.UPI:  # UPI has 10% off
         price *= 0.9
 
-    #if str(hs) == 'UK': # 50% off for natives
-    #	price *= 0.5
+    #if str(hs) == 'UK': # 10% off for natives
+    #   price *= 0.9
 
-    #if str(hs) == 'UK': # 50% off for natives
-    #   price *= 0.5
+    #if str(hs) == 'F': # 25% off for females
+    #   price *= 0.75
 
  
     return {
