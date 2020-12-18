@@ -1180,7 +1180,32 @@ def agentDeliveryRetire(dct, agent, deli):
     # vehicle.save()
     return HttpJSONResponse({})
 
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth(['AV'])
+def agentDeliveryEarning(dct, agent):
+    '''
+    The agent can see month earnings from this
+    
+    HTTP args:
+        auth  : auth of the agent
+        month : month in numeric format (1 for January, ... 12 for December)
+        
+    return 
+        money : float amount in INR
+    '''
+    print(dct['month', agent.an)
+    rawQuery = Trip.objects.raw('''SELECT COALESCE(SUM(money),0) AS total FROM rate WHERE time BETWEEN '2020-%s-1' and NOW() and dan = '%s';''', [dct['month', agent.an])
+    total = json.dumps([{'total': out.total} for out in rawQuery], cls=DjangoJSONEncoder)
+    return HttpResponse(total, content_type='application/json')
 
+
+# ============================================================================
+# Auth views
+# ============================================================================
 
 @makeView()
 @csrf_exempt
