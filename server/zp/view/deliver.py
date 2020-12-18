@@ -22,7 +22,10 @@ import googlemaps
 from ..utils import extract_name_from_pin
 from django.forms.models import model_to_dict
 import json
+from django.core.serializers.json import DjangoJSONEncoder
 import urllib.request
+from django.http import HttpResponse
+
 ###########################################
 # Types
 Filename = str
@@ -1183,8 +1186,8 @@ def agentDeliveryRetire(dct, agent, deli):
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
+@handleException(ValueError, 'Invalid month entered', 502)
 @extractParams
-@transaction.atomic
 @checkAuth(['AV'])
 def agentDeliveryEarning(dct, agent):
     '''
@@ -1195,10 +1198,10 @@ def agentDeliveryEarning(dct, agent):
         month : month in numeric format (1 for January, ... 12 for December)
         
     return 
-        money : float amount in INR
+        total : float amount in INR
     '''
-    print(dct['month', agent.an)
-    rawQuery = Trip.objects.raw('''SELECT COALESCE(SUM(money),0) AS total FROM rate WHERE time BETWEEN '2020-%s-1' and NOW() and dan = '%s';''', [dct['month', agent.an])
+    #print(dct['month'], agent.an)
+    rawQuery = Rate.objects.raw('SELECT id, COALESCE(SUM(money),0) as total FROM rate WHERE time BETWEEN \'2020-%s-1\' and NOW() and dan = \'%s\';', [ int(dct['month']), agent.an])
     total = json.dumps([{'total': out.total} for out in rawQuery], cls=DjangoJSONEncoder)
     return HttpResponse(total, content_type='application/json')
 
