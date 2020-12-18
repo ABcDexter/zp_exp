@@ -58,6 +58,8 @@ WP_CONSUMER_KEY = 'ck_97e691622c4bd5e13fb7b18cbb266c8277257372'
 
 WP_CONSUMER_SECRET_KEY ='cs_63badebe75887e2f94142f9484d06f257194e2c3'
 
+DEL_AGENT_EARN = 0.10 # 10% earning to agent 
+
 # Application definition
 
 INSTALLED_APPS = [

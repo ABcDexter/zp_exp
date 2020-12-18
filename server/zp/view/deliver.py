@@ -69,7 +69,7 @@ def authDeliveryGetInfo(dct, entity):
     elif deli.st in ['PD', 'FN']:
         ret.update({'tip': deli.tip,
                     'price': getDelPrice(deli, hs)['price'],
-                    'earn':float(getDelPrice(deli, hs)['price'])/10})  # TODO return earning from delivery
+                    'earn':float(getDelPrice(deli, hs)['price'])*float(settings.DEL_AGENT_EARN)}) 
     elif deli.st in ['AS', 'RC']:
         ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
 
@@ -1202,7 +1202,7 @@ def agentDeliveryEarning(dct, agent):
     '''
     #print(dct['month'], agent.an)
     rawQuery = Rate.objects.raw('SELECT id, COALESCE(SUM(money),0) as total FROM rate WHERE time BETWEEN \'2020-%s-1\' and NOW() and dan = \'%s\';', [ int(dct['month']), agent.an])
-    total = json.dumps([{'total': out.total} for out in rawQuery], cls=DjangoJSONEncoder)
+    total = json.dumps([{'total': str(round(float('%.2f' % float(out.total)*float(settings.DEL_AGENT_EARN)),0))+'0'} for out in rawQuery], cls=DjangoJSONEncoder)
     return HttpResponse(total, content_type='application/json')
 
 
@@ -1279,7 +1279,7 @@ def authDeliveryHistory(dct, entity, deli):
                           'itype': val,
                           'st': i['st'],
                           'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
-                          'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
+                          'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])*float(settings.DEL_AGENT_EARN), #earns 10%
                           'tip': i['tip'],
                           'sdate': str(sTime),
                           'edate': str(eTime)
