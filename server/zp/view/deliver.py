@@ -1201,10 +1201,12 @@ def agentDeliveryEarning(dct, agent):
         total : float amount in INR
     '''
     #print(dct['month'], agent.an)
-    rawQuery = Rate.objects.raw('SELECT id, COALESCE(SUM(money),0) as total FROM rate WHERE time BETWEEN \'2020-%s-1\' and NOW() and dan = \'%s\';', [ int(dct['month']), agent.an])
-    total = json.dumps([{'total': str(round(float('%.2f' % float(out.total)*float(settings.DEL_AGENT_EARN)),0))+'0'} for out in rawQuery], cls=DjangoJSONEncoder)
-    return HttpResponse(total, content_type='application/json')
-
+    rawQuery = Rate.objects.raw('SELECT id, COALESCE(SUM(money),0) as total FROM rate WHERE time BETWEEN \'2020-%s-1\' and NOW() and dan = \'%s\';', [ int(dct['month']), agent.an]) #start summign money from 1st of the month to this date 
+    #total = json.dumps([{'total': str(round(float('%.2f' % (out.total*settings.DEL_AGENT_EARN)),0))+'0'} for out in rawQuery], cls=DjangoJSONEncoder) 
+    total = {'total': str(round(float('%.2f' % (float(rawQuery[0].total)*settings.DEL_AGENT_EARN)),0))+'0'}
+    
+    return HttpJSONResponse(total) #, content_type='application/json')
+    
 
 # ============================================================================
 # Auth views
