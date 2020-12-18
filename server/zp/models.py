@@ -509,7 +509,8 @@ class Rate(models.Model):
     rating = models.CharField(max_length=20, choices=RATINGS, default='OT', db_index=True)
     money = models.FloatField(db_index=True, default=0.0)
     rev = models.CharField(max_length=280, default='')
-
+    time  = models.DateTimeField(db_index=True, auto_now=True)
+    dan   = models.BigIntegerField(db_index=True, default=-1)
     class Meta:
         db_table = 'rate'
         managed = True
