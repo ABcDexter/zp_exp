@@ -733,10 +733,10 @@ def authRideHistory(dct, entity):
     
     elif type(entity) is Driver:
         # find all trips of the Driver
-        qsTrips = Trip.objects.filter(dan=entity.an, rtype='0').order_by('-rtime').values()
+        qsTrip = Trip.objects.filter(dan=entity.an, rtype='0').order_by('-rtime').values()
         
     else: #admin access of all the trips
-        qsTrips = Trip.objects.filter(st__in=Trip.STATES, rtype='0').order_by('-rtime').values()
+        qsTrip = Trip.objects.filter(st__in=Trip.STATES, rtype='0').order_by('-rtime').values()
     
     ret = {}
     # print(len(qsTrip))
