@@ -719,72 +719,47 @@ def adminDriverReached(dct):
 @extractParams
 @transaction.atomic
 @checkAuth()
-#@checkTripStatus( ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
-def userRideHistory(dct, user):
+def authRideHistory(dct, entity):
     '''
-    returns the history of all ride Trips for an entity (a User)
+    returns the history of all ride Trips for an entity (a User or a Driver or Admin)
+    HTTP args :
+        auth
+    return :
+        JSONArray of trips
     '''
-    #find all trips of the User
-    qsTrip = Trip.objects.filter(uan=user.an, rtype='0').order_by('-id').values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
+    if type(entity) is User:
+        # find all trips of the User
+        qsTrip = Trip.objects.filter(uan=entity.an, rtype='0').order_by('-id').values()   
+    
+    elif type(entity) is Driver:
+        # find all trips of the Driver
+        qsTrip = Trip.objects.filter(dan=entity.an, rtype='0').order_by('-rtime').values()
+        
+    else: #admin access of all the trips
+        qsTrip = Trip.objects.filter(st__in=Trip.STATES, rtype='0').order_by('-rtime').values()
     
     ret = {}
-    print(len(qsTrip))
+    # print(len(qsTrip))
     if len(qsTrip):
         trips = []
         for i in qsTrip:
-            if i['rtype'] == '0':
-                hs = user.hs
-
-                #print("Trip state : ", str(i['st']))
-                if i['st'] in ['ST', 'FL', 'FN', 'PD']:
-                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
-                    if i['stime'] is None : 
-                        sTime = 'notSTARTED'
-                    else:
-                        strSTime = str(i['stime'])[:19]
-                        sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+            #print("Trip state : ", str(i['st']))
+            if i['stime'] is None : 
+                sTime = 'notSTARTED'
+            else:
+                # strip the stime and find the date
+                strSTime = str(i['stime'])[:19]
+                sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
                     
-                    price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
-                # print(i['etime'])
-                else:
-                    price = 0.00 # getRiPrice(i)['price']
-                    sTime = 'NOTSTARTED'
                     
-                if i['st'] in ['FN', 'TR' 'PD']:
-                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip                
-                    price = float(getRidePrice(i['srclat'], i['srclng'], i['dstlat'], i['dstlng'], vtype, i['pmode'],0)['price'])
-                    
-                    if i['etime'] is None:
-                        eTime = 'notEnded'
-                        time = 'NA'
-                    else:
-                        strETime = str(i['etime'])[:19]
-                        eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
-                        time = int(((i['etime'] - i['stime']).seconds)/60)
-                else:
-                    price = price if price > 1 else price # ooo weee, what an insipid line to code
-                    eTime = 'NOTENDED'
-                    time = 'NA' 
-                    
-                tax = str(round(float('%.2f' % (price*0.05)),0))+'0'  # tax of 5%
-                price = str(round(float('%.2f' % price),0))+'0' #2 chars
-                retJson = {  'tid': str(i['id']),
-                              'st': str(i['st']),
-                              #'price': str(price),
-                              #'tax': str(tax),  
-                              #'time': str(time),
-                              'sdate': str(sTime),
-                              #'edate': str(eTime),
-                              #'srclat':str(i['srclat']),
-                              #'srclng': str(i['srclng']),
-                              #'dstlat': str(i['dstlat']),
-                              #'dstlng': str(i['dstlng']),
-                              'vtype': str(i['rvtype'])
-                              #TODO return source name as well, this may require changes in the trips model/table as well
-                              }
-                trips.append(retJson)
-        #print(states)
+            retJson = {  'tid': str(i['id']),
+                          'st': str(i['st']),
+                          'sdate': str(sTime),
+                          'vtype': str(i['rvtype'])
+                      }
+            trips.append(retJson)
+        
         ret.update({'trips': trips})
 
     return HttpJSONResponse(ret)
-
+    
