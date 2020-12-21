@@ -547,7 +547,7 @@ def userTripRetire(_dct, user, trip):
     FL : admin retires this via adminHandleFailedTrip()
     TR/FN : Driver will retire via driverConfirmPayment() after user pays money
     '''
-    #import yagmail
+    #import yagmail, 
     from codecs import encode
     eP_S_W_D = encode(str(settings.GM_PSWD), 'rot13')
 
@@ -559,7 +559,7 @@ def userTripRetire(_dct, user, trip):
     ##print("user details : ", receiver)
     ##yag = yagmail.SMTP("villaget3ch@gmail.com", eP_S_W_D)
     ##yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
-    #import smtplib, ssl
+    import smtplib, ssl
 
     '''
     port = 465  # For SSL
