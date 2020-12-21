@@ -226,6 +226,7 @@ class Trip(models.Model):
     USER_ACTIVE = ['RQ', 'AS', 'ST', 'FN', 'TR']  # not TO, CN, DN, FL, PD
     DRIVER_ACTIVE = ['AS', 'ST', 'FN', 'TR']      # not TO, CN, DN, RQ, FL, PD
     SUPER_ACTIVE = ['AS', 'FN', 'TR', 'ST']             # not TO, CN, DN, RQ, ST, PD, FL
+    STATES = ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD']
     # States requiring payment to be done
     PAYABLE = ['FN', 'TR']
 

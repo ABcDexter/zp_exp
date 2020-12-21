@@ -579,22 +579,22 @@ def userTripRetire(_dct, user, trip):
         print("email successfully sent")
     '''
     
-    #smtp_server = "smtp.gmail.com"
-    #sender_email = "villaget3ch@gmail.com"  # Enter your address
-    #receiver_email = str(user.email)  # Enter receiver address
-    #password = str(eP_S_W_D)
+    smtp_server = "smtp.gmail.com"
+    sender_email = "villaget3ch@gmail.com"  # Enter your address
+    receiver_email = str(user.email)  # Enter receiver address
+    password = str(eP_S_W_D)
    
-    #server = smtplib.SMTP('smtp.gmail.com')
-    #try :
-    #    server.starttls()
-    #except Exception:
-    #    print("Error, tls not set")
+    server = smtplib.SMTP('smtp.gmail.com')
+    try :
+        server.starttls()
+    except Exception:
+        print("Error, tls not set")
     
-    #if sender_email and password:
-    #    server.login(sender_email, password)
-    #    server.sendmail(sender_email, receiver_email, message)
+    if sender_email and password:
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message)
     
-    #server.quit()
+    server.quit()
     
     # reset the tid to -1
     retireEntity(user)
