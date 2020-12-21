@@ -548,8 +548,8 @@ def userTripRetire(_dct, user, trip):
     TR/FN : Driver will retire via driverConfirmPayment() after user pays money
     '''
     #import yagmail
-    #from codecs import encode
-    #eP_S_W_D = encode(str(settings.GM_PSWD), 'rot13')
+    from codecs import encode
+    eP_S_W_D = encode(str(settings.GM_PSWD), 'rot13')
 
     #receiver = str(user.email)
     body = """\
