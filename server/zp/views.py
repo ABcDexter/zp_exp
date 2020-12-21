@@ -561,10 +561,10 @@ def userTripRetire(_dct, user, trip):
     ##yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
     import smtplib, ssl
 
-    '''
+    
     port = 465  # For SSL
-    smtp_server = "smtp.gmail.com"
-    sender_email = "villaget3ch@gmail.com"  # Enter your address
+    smtp_server = "villageapps.in"
+    sender_email = "dex@villageapps.in"  # Enter your address
     receiver_email = str(user.email)  # Enter receiver address
     password = str(eP_S_W_D)
     message = """\
@@ -595,7 +595,7 @@ def userTripRetire(_dct, user, trip):
         server.sendmail(sender_email, receiver_email, message)
     
     server.quit()
-    
+    '''
     # reset the tid to -1
     retireEntity(user)
     
