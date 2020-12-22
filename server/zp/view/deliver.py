@@ -22,7 +22,10 @@ import googlemaps
 from ..utils import extract_name_from_pin
 from django.forms.models import model_to_dict
 import json
+from django.core.serializers.json import DjangoJSONEncoder
 import urllib.request
+from django.http import HttpResponse
+
 ###########################################
 # Types
 Filename = str
@@ -66,7 +69,7 @@ def authDeliveryGetInfo(dct, entity):
     elif deli.st in ['PD', 'FN']:
         ret.update({'tip': deli.tip,
                     'price': getDelPrice(deli, hs)['price'],
-                    'earn':float(getDelPrice(deli, hs)['price'])/10})  # TODO return earning from delivery
+                    'earn':float(getDelPrice(deli, hs)['price'])*float(settings.DEL_AGENT_EARN)}) 
     elif deli.st in ['AS', 'RC']:
         ret['otp'] = getOTP(deli.uan, deli.dan, deli.atime)
 
@@ -1180,7 +1183,34 @@ def agentDeliveryRetire(dct, agent, deli):
     # vehicle.save()
     return HttpJSONResponse({})
 
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(ValueError, 'Invalid month entered', 502)
+@extractParams
+@checkAuth(['AV'])
+def agentDeliveryEarning(dct, agent):
+    '''
+    The agent can see month earnings from this
+    
+    HTTP args:
+        auth  : auth of the agent
+        month : month in numeric format (1 for January, ... 12 for December)
+        
+    return 
+        total : float amount in INR
+    '''
+    #print(dct['month'], agent.an)
+    rawQuery = Rate.objects.raw('SELECT id, COALESCE(SUM(money),0) as total FROM rate WHERE time BETWEEN \'2020-%s-1\' and NOW() and dan = \'%s\';', [ int(dct['month']), agent.an]) #start summign money from 1st of the month to this date 
+    #total = json.dumps([{'total': str(round(float('%.2f' % (out.total*settings.DEL_AGENT_EARN)),0))+'0'} for out in rawQuery], cls=DjangoJSONEncoder) 
+    total = {'total': str(round(float('%.2f' % (float(rawQuery[0].total)*settings.DEL_AGENT_EARN)),0))+'0'}
+    
+    return HttpJSONResponse(total) #, content_type='application/json')
+    
 
+# ============================================================================
+# Auth views
+# ============================================================================
 
 @makeView()
 @csrf_exempt
@@ -1251,7 +1281,7 @@ def authDeliveryHistory(dct, entity, deli):
                           'itype': val,
                           'st': i['st'],
                           'price': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price']) ,
-                          'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])/10, #earns 10%
+                          'earn': float(getDelPrice(Delivery.objects.filter(id=i['id'])[0], hs)['price'])*float(settings.DEL_AGENT_EARN), #earns 10%
                           'tip': i['tip'],
                           'sdate': str(sTime),
                           'edate': str(eTime)

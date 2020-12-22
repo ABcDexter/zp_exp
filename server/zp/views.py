@@ -1427,6 +1427,16 @@ def authTripData(dct, entity):
     Returns all the data of a Trip
         Https:
             auth, tid
+            
+        returns:
+      # for user
+      
+      #  for driver
+          # date 
+          # pickup point #can be dine
+          # pickup time (stime) #sdate and rdate are same 
+      
+
     '''
     trip = Trip.objects.filter(id=dct['tid']).values('id','st','uan','dan','van','rtime','stime','etime','srcid','dstid','srclat','srclng','dstlat','dstlng','hrs','rtype','rvtype')
     lstTrip = list(trip)
@@ -1437,7 +1447,7 @@ def authTripData(dct, entity):
     
     strRTime = str(dctTrip['rtime'])[:19]
     rDate = datetime.strptime(strRTime, '%Y-%m-%d %H:%M:%S').date()
-
+    sTime = 'None'
     
     srchub = Place.objects.filter(id=dctTrip['srcid'])[0].pn
     dsthub = Place.objects.filter(id=dctTrip['dstid'])[0].pn
@@ -1447,19 +1457,26 @@ def authTripData(dct, entity):
             time = float(dctTrip['hrs']*60) 
     else:
             #ride
-            if dctTrip['etime'] is None:
+            if dctTrip['stime'] is None:
+                #ride has not yet started
+                sTime = 'notStarted'
+                time = 0.00
+            else :
+                #ride has started, save start time
+                strSTime = str(dctTrip['stime'])[:19]
+                sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S')
+            
+                if dctTrip['etime'] is None:
+                    #ride has not yet ended
                     eTime = 'notEnded'
                     time = 1.00
-            else:
-                if dctTrip['stime'] is None:
-                    sTime = 'notStarted'
-                    time = 0.00
+            
                 else:
+                    #ride has ended
                     strETime = str(dctTrip['etime'])[:19]
                     eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
                     time = int(((dctTrip['etime'] - dctTrip['stime']).seconds)/60)
                     
-    
     
     time = float(time)
     rate = 1.00 #need to update the price algo in utils.py
@@ -1481,10 +1498,9 @@ def authTripData(dct, entity):
             'srclng':str(dctTrip['srclng']),
             'dstlat':str(dctTrip['dstlat']),
             'dstlng':str(dctTrip['dstlng']),
-            'time': str(time),
-            'rtype':str(dctTrip['rtype']),
             'rtype':str(dctTrip['rtype']),
             'rvtype': str(dctTrip['rvtype']),
+            'stime': str(sTime),
             
             'time': str(time),
             'rate': str(rate),
