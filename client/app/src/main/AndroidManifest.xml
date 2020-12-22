@@ -92,7 +92,6 @@
         <activity android:name=".rent.ActivityRentHome" />
         <activity android:name=".UtilityBaseClass" />
         <activity android:name=".ActivityTrackYourProgress" />
-        <activity android:name=".ActivityTripSummary" />
         <activity android:name=".ride.ActivityRideRequest" />
         <activity android:name=".ActivityProfileReview" />
         <activity android:name=".ActivityRateZippe" />
@@ -114,9 +113,6 @@
             android:theme="@style/AppThemeNoActionBar">
 
         </activity>
-        <activity
-            android:name=".ActivityMain"
-            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ActivityRegistration"
             android:windowSoftInputMode="stateHidden" />

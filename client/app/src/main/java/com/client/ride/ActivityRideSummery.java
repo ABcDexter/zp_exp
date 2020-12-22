@@ -10,11 +10,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
+import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.deliver.ActivityDeliveryTimeSlot;
@@ -219,12 +221,13 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
     public void onFailure(VolleyError error) {
         Log.d("TAG", "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(ActivityRideSummery.this, ActivityDeliveryTimeSlot.class));
+        startActivity(new Intent(ActivityRideSummery.this, ActivityWelcome.class));
         finish();
     }
 
@@ -298,8 +301,8 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         Log.d(TAG, "Added Markers");
-        mMap.addMarker(src);
-        mMap.addMarker(dst);
+        mMap.addMarker(src).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        mMap.addMarker(dst).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
         CameraPosition googlePlex = CameraPosition.builder()
                 .target(new LatLng(srcLat, srcLng))

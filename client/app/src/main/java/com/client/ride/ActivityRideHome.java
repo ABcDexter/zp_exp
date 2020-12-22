@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
@@ -81,7 +82,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     String dstName = "";
     String srcName = "";
     RelativeLayout rl_pick, rl_drop, rl_v, rl_r;
-
+    String auth;
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
 
@@ -124,6 +125,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     public static ActivityRideHome getInstance() {
@@ -156,7 +158,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         stringAuth = prefAuth.getString(AUTH_KEY, "");
         stringAN = prefAuth.getString(AN_KEY, "");
         prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
-
+        auth = stringAuth;
         myDialog = new Dialog(this);
         imageDialog = new Dialog(this);
         imageDialog2 = new Dialog(this);

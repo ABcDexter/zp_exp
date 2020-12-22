@@ -50,10 +50,24 @@
     <string name="destination">Destination</string>
     <string name="your_location">You are here</string>
     <string name="completed_rides">COMPLETED RIDE HISTORY</string>
-    <string name="total_earnings">Today\'s earnings</string>
+    <string name="total_earnings">Your earnings</string>
     <string name="enter_mobile">ENTER MOBILE</string>
     <string name="request_otp">request otp</string>
     <string name="enter_otp_to_verify">ENTER OTP TO VERIFY</string>
     <string name="login_key">LOGIN KEY</string>
+    <string name="no_new_rides">No new Ride Available currently.</string>
+    <string name="latest_to_oldest_u_2193">Latest to oldest</string>
+    <string name="e_cycle">E-CYCLE</string>
+    <string name="e_scooty">E-SCOOTY</string>
+    <string name="e_bike">E-BIKE</string>
+    <string name="zbee">ZBEE</string>
+    <string name="date">Date</string>
+    <string name="vehicle">Vehicle</string>
+    <string name="message_rs">₹ %1$s </string>
+    <string name="message_min">%1$s mins</string>
+    <string name="colon">:</string>
+    <string name="ride_summary">Ride Summary</string>
+    <string name="trip">Trip</string>
+    <string name="ride_time">ride time</string>
 
 </resources>

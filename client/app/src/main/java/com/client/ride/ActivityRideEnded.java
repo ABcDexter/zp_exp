@@ -161,36 +161,33 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.upi:
-                String amount = onlyPrice;
-                String note = "Payment for ride service";
-                String name = "Zipp-E";
-                String upiId = "9084083967@ybl";
-                payUsingUpi(amount, upiId, name, note);
-                break;
+        int id = v.getId();
+        if (id == R.id.upi) {
+            String amount = onlyPrice;
+            String note = "Payment for ride service";
+            String name = "Zipp-E";
+            String upiId = "9084083967@ybl";
+            payUsingUpi(amount, upiId, name, note);
 
             /*case R.id.confirm_btn:
                 paymentMade();
                 break;*/
-            case R.id.cash:
-                ShowPopup();
-                break;
-            case R.id.pay_now:
-                Snackbar snackbar = Snackbar
-                        .make(scrollView, R.string.make_payment_ride, Snackbar.LENGTH_INDEFINITE);
-                View sbView = snackbar.getView();
-                TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
-                textView.setTextColor(Color.YELLOW);
-                snackbar.show();
-                break;
-            case R.id.dummy:
-                paymentMade();
-                break;
+        } else if (id == R.id.cash) {
+            ShowPopup();
+        } else if (id == R.id.pay_now) {
+            Snackbar snackbar = Snackbar
+                    .make(scrollView, R.string.make_payment_ride, Snackbar.LENGTH_INDEFINITE);
+            View sbView = snackbar.getView();
+            TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
+            textView.setTextColor(Color.YELLOW);
+            snackbar.show();
+        } else if (id == R.id.dummy) {
+            paymentMade();
         }
     }
 

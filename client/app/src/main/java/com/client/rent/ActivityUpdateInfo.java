@@ -87,7 +87,7 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(this, "Updated Unsuccessful!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -137,18 +137,14 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.update_data:
-                /*alertDialog();*/
-                userUpdateTrip();
-                break;
-            case R.id.drop_hub:
-                Intent drop = new Intent(ActivityUpdateInfo.this, HubList.class);
-                drop.putExtra("Request", "destination_rental_in_progress");
-                Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
-                startActivity(drop);
-                break;
+        int id = v.getId();
+        if (id == R.id.update_data) {/*alertDialog();*/
+            userUpdateTrip();
+        } else if (id == R.id.drop_hub) {
+            Intent drop = new Intent(ActivityUpdateInfo.this, HubList.class);
+            drop.putExtra("Request", "destination_rental_in_progress");
+            Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
+            startActivity(drop);
         }
     }
 

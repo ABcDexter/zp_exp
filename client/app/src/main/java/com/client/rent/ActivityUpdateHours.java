@@ -97,7 +97,7 @@ String stringDropID;
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(this, "Updated Unsuccessful!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -165,74 +165,48 @@ String stringDropID;
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.infoCost:
-                ShowPopup(1);
-                break;
-            case R.id.dummy:
-                userUpdateTrip();
-                break;
-
-            case R.id.upiRental:
-
-                String amount = PriceOnly;
-                String note = "Payment for rental service";
-                String name = "Zipp-E";
-                String upiId = "9084083967@ybl";
-                payUsingUpi(amount, upiId, name, note);
-                break;
-
-            case R.id.drop_hub:
-                Intent drop = new Intent(ActivityUpdateHours.this, HubList.class);
-                drop.putExtra("Request", "destination_rental_in_progress");
-                Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
-                startActivity(drop);
-                break;
-            case R.id.hours:
-                ImagePopup2();
-                break;
-
-            case R.id.txt1:
-                //stringHrs = "1";
-                imageDialog2.dismiss();
-                userUpdateTime("1");
-                break;
-            case R.id.txt2:
-                //stringHrs = "2";
-                imageDialog2.dismiss();
-                userUpdateTime("2");
-                break;
-            case R.id.txt3:
-                //stringHrs = "3";
-                imageDialog2.dismiss();
-                userUpdateTime("3");
-                break;
-            case R.id.txt4:
-                //stringHrs = "4";
-                imageDialog2.dismiss();
-                userUpdateTime("4");
-                break;
-            case R.id.txt5:
-                //stringHrs = "5";
-                imageDialog2.dismiss();
-                userUpdateTime("5");
-                break;
-            case R.id.txt6:
-                //stringHrs = "6";
-                imageDialog2.dismiss();
-                userUpdateTime("6");
-                break;
-            case R.id.txt9:
-                //stringHrs = "9";
-                imageDialog2.dismiss();
-                userUpdateTime("9");
-                break;
-            case R.id.txt11:
-                //stringHrs = "12";
-                imageDialog2.dismiss();
-                userUpdateTime("12");
-                break;
-
+        int id = v.getId();
+        if (id == R.id.infoCost) {
+            ShowPopup(1);
+        } else if (id == R.id.dummy) {
+            userUpdateTrip();
+        } else if (id == R.id.upiRental) {
+            String amount = PriceOnly;
+            String note = "Payment for rental service";
+            String name = "Zipp-E";
+            String upiId = "9084083967@ybl";
+            payUsingUpi(amount, upiId, name, note);
+        } else if (id == R.id.drop_hub) {
+            Intent drop = new Intent(ActivityUpdateHours.this, HubList.class);
+            drop.putExtra("Request", "destination_rental_in_progress");
+            Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
+            startActivity(drop);
+        } else if (id == R.id.hours) {
+            ImagePopup2();
+        } else if (id == R.id.txt1) {//stringHrs = "1";
+            imageDialog2.dismiss();
+            userUpdateTime("1");
+        } else if (id == R.id.txt2) {//stringHrs = "2";
+            imageDialog2.dismiss();
+            userUpdateTime("2");
+        } else if (id == R.id.txt3) {//stringHrs = "3";
+            imageDialog2.dismiss();
+            userUpdateTime("3");
+        } else if (id == R.id.txt4) {//stringHrs = "4";
+            imageDialog2.dismiss();
+            userUpdateTime("4");
+        } else if (id == R.id.txt5) {//stringHrs = "5";
+            imageDialog2.dismiss();
+            userUpdateTime("5");
+        } else if (id == R.id.txt6) {//stringHrs = "6";
+            imageDialog2.dismiss();
+            userUpdateTime("6");
+        } else if (id == R.id.txt9) {//stringHrs = "9";
+            imageDialog2.dismiss();
+            userUpdateTime("9");
+        } else if (id == R.id.txt11) {//stringHrs = "12";
+            imageDialog2.dismiss();
+            userUpdateTime("12");
         }
     }
 

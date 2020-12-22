@@ -3,7 +3,7 @@
     <string name="app_name">Zipp-e</string>
     <string name="Open">OPEN</string>
     <string name="Close">CLOSE</string>
-    <string name="hi">HI!\u0020</string>
+    <string name="hi">HI!\u0020 %1$s</string>
     <string name="disclaimer">By confirming, I accept that this package does not contain any illegal / restricted items (as per The Indian Court of Law). ZIPP-E partner may ask to verify the contents of the package and has the liberty to refuse the delivery if the items are not verified.</string>
 
     <string-array name="gender_array">
@@ -255,7 +255,7 @@
     <string name="rent_history">RENT HISTORY</string>
     <string name="terms_and_conditions">TERMS AND CONDITIONS</string>
     <string name="the_amount_shall_be_directly_credited_to_our_agent_account">This is optional. The amount shall be directly credited to our  agent\'s account.</string>
-    <string name="base_price">Base price : </string>
+    <string name="base_price">Base price : ₹ 15 Distance : \u0020 %1$s km</string>
     <string name="distance">Distance : \u0020</string>
     <string name="your_agent_will_be_assigned_shortly">Your agent will be assigned shortly. Please keep your package ready.</string>
     <string name="the_package_is_en_route">The package is en route. Your delivery agent will call on reaching destination.</string>
@@ -398,6 +398,7 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="slide_3_title">ZIPP-E Delivery</string>
     <string name="slide_3_desc">Want something delivered to your home? Use ZIPP-E Delivery!</string>
 
+    <string name="something_wrong">Something went wrong. Please try again later.</string>
     <string name="slide_4_title">ZIPP-e Shop</string>
     <string name="slide_4_desc">Order every ranging from groceries to oevr the counter medicines!</string>
     <string name="slide_5_title">ZIPP-e Services</string>
@@ -409,5 +410,6 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="id">id</string>
     <string name="message_min">%1$s mins</string>
     <string name="message_rs">₹ %1$s </string>
+    <string name="add_email">Add Email</string>
 
 </resources>

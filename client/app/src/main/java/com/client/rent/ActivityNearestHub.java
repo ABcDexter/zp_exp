@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
@@ -108,27 +109,25 @@ public class ActivityNearestHub extends ActivityDrawer implements View.OnClickLi
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.loc1:
-                Intent map = new Intent(ActivityNearestHub.this, MapsHubLocation.class);
-                map.putExtra("lat", Lat1);
-                map.putExtra("lng", Lng1);
-                startActivity(map);
-                break;
-            case R.id.loc2:
-                Intent map2 = new Intent(ActivityNearestHub.this, MapsHubLocation.class);
-                map2.putExtra("lat", Lat2);
-                map2.putExtra("lng", Lng2);
-                startActivity(map2);
-                break;
-            case R.id.close:
-                startActivity(new Intent(ActivityNearestHub.this, ActivityRentInProgress.class));
-                finish();
-                break;
+        int id = v.getId();
+        if (id == R.id.loc1) {
+            Intent map = new Intent(ActivityNearestHub.this, MapsHubLocation.class);
+            map.putExtra("lat", Lat1);
+            map.putExtra("lng", Lng1);
+            startActivity(map);
+        } else if (id == R.id.loc2) {
+            Intent map2 = new Intent(ActivityNearestHub.this, MapsHubLocation.class);
+            map2.putExtra("lat", Lat2);
+            map2.putExtra("lng", Lng2);
+            startActivity(map2);
+        } else if (id == R.id.close) {
+            startActivity(new Intent(ActivityNearestHub.this, ActivityRentInProgress.class));
+            finish();
         }
     }
 

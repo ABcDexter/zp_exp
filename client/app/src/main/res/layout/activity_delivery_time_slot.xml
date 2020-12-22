@@ -118,7 +118,8 @@
                 android:layout_height="100dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/rect_box_outline"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/ll_add_details">
 
                 <TextView
                     android:layout_width="match_parent"

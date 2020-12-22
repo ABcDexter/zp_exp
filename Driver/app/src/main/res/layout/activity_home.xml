@@ -101,7 +101,7 @@
                 android:background="@drawable/btn_bkg"
                 android:text="@string/completed_rides" />
 
-            <Button
+            <!--<Button
                 android:id="@+id/earnings"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -110,7 +110,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/btn_bkg"
-                android:text="@string/total_earnings" />
+                android:text="@string/total_earnings" />-->
 
         </RelativeLayout>
     </ScrollView>

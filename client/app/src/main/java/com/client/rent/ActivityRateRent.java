@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
@@ -84,14 +85,11 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.satisfied:
-                ShowPopup();
-                break;
-            case R.id.notSatisfied:
-                CheckPopup();
-                break;
-
+        int id = v.getId();
+        if (id == R.id.satisfied) {
+            ShowPopup();
+        } else if (id == R.id.notSatisfied) {
+            CheckPopup();
         }
     }
 
@@ -203,6 +201,7 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     private void CheckPopup() {

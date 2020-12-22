@@ -23,6 +23,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -373,7 +374,9 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         } else if (id == R.id.add_details) {
             DetailsCheckbox();
         } else if (id == R.id.confirm_details) {
+            LinearLayout ll = findViewById(R.id.ll_add_details);
             additionalDetails.dismiss();
+            ll.setBackgroundResource(R.drawable.rect_box_outline_color_change);
         } else if (id == R.id.cancel_standard) {
             standardDialog.dismiss();
         }
@@ -499,124 +502,6 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
 
     }
 
-    /*private void PopupTime() {
-        timeDialog.setContentView(R.layout.popup_time);
-        TimePicker simpleTimePicker = timeDialog.findViewById(R.id.simpleTimePicker);
-        TextView confirm = (TextView) timeDialog.findViewById(R.id.confirm_exp);
-        TextView cancel = (TextView) timeDialog.findViewById(R.id.cancel_exp);
-        expTomorrow = (TextView) timeDialog.findViewById(R.id.exp_tomorrow);
-        expDay = timeDialog.findViewById(R.id.exp_day_switch);
-        confirm.setOnClickListener(this);
-        cancel.setOnClickListener(this);
-        expDay.setOnCheckedChangeListener(this);
-
-        simpleTimePicker.setIs24HourView(false); // used to display AM/PM mode
-        simpleTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                if (hourOfDay < 7.59) {
-                    simpleTimePicker.setHour(8);
-                    simpleTimePicker.setMinute(0);
-                    *//*hour = simpleTimePicker.getHour();
-                    min = simpleTimePicker.getMinute();*/
-    /*
-                } else if (hourOfDay > 19.59) {
-                    simpleTimePicker.setHour(20);
-                    simpleTimePicker.setMinute(0);
-                   *//* hour = simpleTimePicker.getHour();
-                    min = simpleTimePicker.getMinute();*//*
-                }
-
-                */
-    /*if (hour == 0) {
-
-                    hour += 12;
-
-                    format = "AM";
-                } else if (hour == 12) {
-
-                    format = "PM";
-
-                } else if (hour > 12) {
-
-                    hour -= 12;
-
-                    format = "PM";
-
-                } else {
-
-                    format = "AM";
-                }*/
-    /*
-
-                String str_minute = "";
-
-                if (hourOfDay > 20 && minute > 0) {
-                    hourOfDay = 20;
-                    minute = 0;
-                }
-                if (hourOfDay < 8 && minute > 0) {
-                    hourOfDay = 8;
-                    minute = 0;
-                }
-                if (minute < 10) {
-                    str_minute = "0" + minute;
-                } else {
-                    str_minute = Integer.toString(minute);
-                }
-                //check if the time chosen is before the current time
-                if (hourOfDay < datetime.get(Calendar.HOUR_OF_DAY)) {
-                    isBefore = true;
-                    expDay.setChecked(true);
-                    expTomorrow.setTextColor(ContextCompat.getColor(ActivityDeliveryTimeSlot.this, R.color.colorPrimaryDark));
-                    Toast.makeText(ActivityDeliveryTimeSlot.this, R.string.delivery_sch_tommorrow, Toast.LENGTH_LONG).show();
-
-                } else if (hourOfDay == datetime.get(Calendar.HOUR_OF_DAY)) {
-                    if (minute < datetime.get(Calendar.MINUTE)) {
-                        isBefore = true;
-                        expDay.setChecked(true);
-                        expTomorrow.setTextColor(ContextCompat.getColor(ActivityDeliveryTimeSlot.this, R.color.colorPrimaryDark));
-                        Toast.makeText(ActivityDeliveryTimeSlot.this, R.string.delivery_sch_tommorrow, Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    isBefore = false;
-                    expDay.setChecked(false);
-                    expTomorrow.setTextColor(Color.WHITE);
-
-                }
-                hour = hourOfDay;
-                StringMinute = str_minute;
-                *//*expTime.setText(hourOfDay + ":" + str_minute);
-     */
-    /* if (express.equals("1")) {*/
-    /*
-                SharedPreferences sharedPreferences = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(PICK_HOUR, Integer.toString(hourOfDay));
-                editor.putString(PICK_MINUTE, str_minute);
-                editor.putString(EXPRESS, "1");
-                editor.apply();
-                SharedPreferences review = getSharedPreferences(REVIEW, Context.MODE_PRIVATE);
-                SharedPreferences.Editor reditor = review.edit();
-                reditor.putString(R_EXP_DELVY, "express");
-                reditor.apply();*//*
-                Log.d(TAG, "hour=" + hourOfDay + " min = " + str_minute);
-                *//*}*/
-    /*
-            }
-        });
-
-        timeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        WindowManager.LayoutParams wmlp = timeDialog.getWindow().getAttributes();
-
-        wmlp.y = 80;   //y position
-        timeDialog.show();
-        Window window = timeDialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        timeDialog.setCanceledOnTouchOutside(true);
-
-    }
-*/
 
     private void TodayDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");

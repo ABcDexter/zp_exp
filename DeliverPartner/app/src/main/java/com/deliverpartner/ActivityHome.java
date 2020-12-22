@@ -64,7 +64,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     String driverStatus = "";
     ScrollView scrollView;
     TextView newOrder, inProgress, completedOrder, totalEarnings, notify;
-    String lat, lng, aadhar, earn,strAuth,auth,deliveryID;
+    String lat, lng, aadhar, earn, strAuth, auth, deliveryID;
     Vibrator vibrator;
     private static ActivityHome instance;
 
@@ -112,13 +112,13 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         newOrder = findViewById(R.id.new_order);
         inProgress = findViewById(R.id.order_in_progress);
         completedOrder = findViewById(R.id.completed_orders);
-        //totalEarnings = findViewById(R.id.earnings);
+        totalEarnings = findViewById(R.id.earnings);
         notify = findViewById(R.id.notifNo);
 
         newOrder.setOnClickListener(this);
         inProgress.setOnClickListener(this);
         completedOrder.setOnClickListener(this);
-        //totalEarnings.setOnClickListener(this);
+        totalEarnings.setOnClickListener(this);
 
         myDialog = new Dialog(this);
 
@@ -307,10 +307,10 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                 Intent completedOrderIntent = new Intent(ActivityHome.this, ActivityCompletedOrders.class);
                 startActivity(completedOrderIntent);
                 break;*/
-            /*case R.id.earnings:
-                Intent earningsIntent = new Intent(ActivityHome.this, ActivityTotalEarnings.class);
-                startActivity(earningsIntent);
-                break;*/
+
+        } else if (id == R.id.earnings) {
+            Intent earningsIntent = new Intent(ActivityHome.this, ActivityTotalEarnings.class);
+            startActivity(earningsIntent);
         }
     }
 

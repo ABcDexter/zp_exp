@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
@@ -145,6 +146,7 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -363,30 +365,22 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.cancel_ride_booking:
-                showAlertDialog();
-                break;
-            case R.id.infoTime:
-            case R.id.infomins:
-                ShowPopup(2);
-                break;
-            case R.id.infoCost:
-                ShowPopup(1);
-                break;
-            /*case R.id.give_otp: //TODO remove this later
+        int id = v.getId();
+        if (id == R.id.cancel_ride_booking) {
+            showAlertDialog();
+        } else if (id == R.id.infoTime || id == R.id.infomins) {
+            ShowPopup(2);
+        } else if (id == R.id.infoCost) {
+            ShowPopup(1);
+                /*case R.id.give_otp: //TODO remove this later
                 giveOtp();
                 break;*/
-            case R.id.rl_p:
-                callDriverPhn();
-                break;
-            case R.id.infoPick:
-                ShowPopup(3);
-                break;
-            case R.id.infoDrop:
-                ShowPopup(4);
-                break;
-
+        } else if (id == R.id.rl_p) {
+            callDriverPhn();
+        } else if (id == R.id.infoPick) {
+            ShowPopup(3);
+        } else if (id == R.id.infoDrop) {
+            ShowPopup(4);
         }
     }
 

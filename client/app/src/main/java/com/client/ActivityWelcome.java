@@ -281,22 +281,22 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                 // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-            mFusedLocationClient.getLastLocation().addOnCompleteListener(
-                    new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            Location location = task.getResult();
-                            if (location == null) {
-                                requestNewLocationData();
-                            } else {
-                                Log.d(TAG, "inside else of addOnCompleteListener()");
-                                lat = location.getLatitude() + "";
-                                lng = location.getLongitude() + "";
-                                Log.d(TAG, "lat = " + lat + " lng = " + lng);
-                                sendLocation();
-                            }
+        mFusedLocationClient.getLastLocation().addOnCompleteListener(
+                new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        Location location = task.getResult();
+                        if (location == null) {
+                            requestNewLocationData();
+                        } else {
+                            Log.d(TAG, "inside else of addOnCompleteListener()");
+                            lat = location.getLatitude() + "";
+                            lng = location.getLongitude() + "";
+                            Log.d(TAG, "lat = " + lat + " lng = " + lng);
+                            sendLocation();
                         }
-                    });
+                    }
+                });
         }
     }
 
@@ -560,7 +560,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(this, "Something went wrong! Please try again later.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
 
     }
 
