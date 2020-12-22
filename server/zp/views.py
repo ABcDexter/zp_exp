@@ -552,7 +552,7 @@ def userTripRetire(_dct, user, trip):
     
     SENDER_SERVER = "localhost"
     PORT = 465
-    FROM = "dex@villageapps.in"
+    FROM = "zippe@villageapps.in"
     TO = [str(user.email)]
 
     SUBJECT = "Hello!"
@@ -563,11 +563,23 @@ def userTripRetire(_dct, user, trip):
     body = """\
     Subject: Hello from Zippe :)
     Hi, \n Your Trip costed Rs """ + str(getTripPrice(trip)['price'])+"""\n Thanks for riding with Zippe!\n -VillageConnect"""
+    
+    message = """From: Zippe India <zippe@villageapps.in>
+    To: %s <%s>
+    MIME-Version: 1.0
+    Content-type: text/html
+    Subject: SMTP HTML e-mail test
+
+    This is an e-mail message to be sent in HTML format
+
+    <b>This is HTML message.</b>
+    <h1>This is headline.</h1>
+    """ % (str(user.name), TO)
 
     # Send the mail
     
     server = smtplib.SMTP(SENDER_SERVER)
-    server.sendmail(FROM, TO, body)
+    server.sendmail(FROM, TO, message)
     server.quit()
 
     
