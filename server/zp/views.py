@@ -551,9 +551,9 @@ def userTripRetire(_dct, user, trip):
     import smtplib, ssl
     
     SENDER_SERVER = "localhost"
-    PORT = 465
+    # PORT = 465
     FROM = "zippe@villageapps.in"
-    TO = [str(user.email)]
+    TO = str(user.email)
 
     SUBJECT = "Hello!"
     TEXT = "This message was sent with Python's smtplib using postfix"
@@ -564,7 +564,8 @@ def userTripRetire(_dct, user, trip):
     Subject: Hello from Zippe :)
     Hi, \n Your Trip costed Rs """ + str(getTripPrice(trip)['price'])+"""\n Thanks for riding with Zippe!\n -VillageConnect"""
     
-    message = """From: Zippe India <zippe@villageapps.in>
+    message = """\
+    From: Zippe India <zippe@villageapps.in>
     To: %s <%s>
     MIME-Version: 1.0
     Content-type: text/html
