@@ -549,38 +549,52 @@ def userTripRetire(_dct, user, trip):
     '''
     
     import smtplib, ssl
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
     
     SENDER_SERVER = "localhost"
-    # PORT = 465
     FROM = "zippe@villageapps.in"
     TO = str(user.email)
 
-    SUBJECT = "Hello!"
-    TEXT = "This message was sent with Python's smtplib using postfix"
-
-    context = ssl.create_default_context()
-    # Prepare actual message
-    body = """\
-    Subject: Hello from Zippe :)
-    Hi, \n Your Trip costed Rs """ + str(getTripPrice(trip)['price'])+"""\n Thanks for riding with Zippe!\n -VillageConnect"""
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Email html mutlipart testing"
+    message["From"] = FROM
+    message["To"] = TO
     
-    message = """\
-    From: Zippe India <zippe@villageapps.in>
-    To: %s <%s>
-    MIME-Version: 1.0
-    Content-type: text/html
-    Subject: SMTP HTML e-mail test
-
-    This is an e-mail message to be sent in HTML format
-
-    <b>This is HTML message.</b>
-    <h1>This is headline.</h1>
-    """ % (str(user.name), TO)
+    context = ssl.create_default_context()
+    
+    # Prepare textual message
+    body = """\
+    Hello from Zippe :)
+    
+    Hi anubhav, \n Your Trip costed Rs """ + str(getTripPrice(trip)['price'])+"""\n Thanks for riding with Zippe!\n -VillageConnect"""
+    print(body)
+    
+    html = """\
+    <html>
+      <body>
+        <p>Howdy,<br>
+           How are you?<br>
+           <a href="https://www.zippe.in">Zippe India</a> 
+           is our website.
+        </p>
+      </body>
+    </html>
+    """
+    print(html)
+    
+    #set the correct MIMETexts
+    part1 = MIMEText(body, "plain")
+    part2 = MIMEText(html, "html")
+    
+    #attach the parts to actual message
+    message.attach(part1)
+    message.attach(part2)
 
     # Send the mail
-    
+    print(message.as_string())
     server = smtplib.SMTP(SENDER_SERVER)
-    server.sendmail(FROM, TO, message)
+    server.sendmail(FROM, TO, message.as_string())
     server.quit()
 
     
