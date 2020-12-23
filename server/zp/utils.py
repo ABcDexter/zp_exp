@@ -1334,17 +1334,21 @@ def sendInvoiceMail(userEmail, userName, tripPrice ):
 
     # Prepare textual message
     body = """\
-    Hi %s, \n Your Trip costed Rs """ % str(userName) + str(tripPrice)+"""\n Thanks for riding with Zippe!\n"""
+    Hi %s, Your Trip costed Rs %s. Your trip lasted for %s minutes. """ % (str(userName) , str(tripPrice), str(tripTime))+"""\
+    \n
+    Thanks for riding with Zippe!\n"""
     print(body)
 
     html = """\
     <html>
       <body>
-        <p>Zippe<br>
+        <p>
           <a href = "https://www.zippe.in" target = "_self">
           <img src = "https://i.imgur.com/g2cNLf1.png" alt = "Zippe India" border = "0"/>
           </a>
+          <br>
            - Zippe India
+           </br>
         </p>
       </body>
     </html>
@@ -1354,16 +1358,17 @@ def sendInvoiceMail(userEmail, userName, tripPrice ):
 
     #set the correct MIMETexts
     part1 = MIMEText(body, "plain")
-    part2 = MIMEText(html, "html")
+    #part2 = MIMEText(html, "html")
     part3 = MIMEText(msg, "html")
 
     #attach the parts to actual message
     message.attach(part1)
-    message.attach(part2)
+    #message.attach(part2)
     message.attach(part3)
     # Send the mail
     print(message.as_string())
     server = smtplib.SMTP(SENDER_SERVER)
     server.sendmail(FROM, TO, message.as_string())
     server.quit()
+    
     

@@ -550,7 +550,7 @@ def userTripRetire(_dct, user, trip):
     '''
     
     if trip.st == 'PD':
-        sendInvoiceMail(user.email, user.name,getTripPrice(trip)['price'])
+        sendInvoiceMail(user.email, user.name,getTripPrice(trip)['price'], (trip.etime - trip.stime).seconds//60 )
     
     # reset the tid to -1
     retireEntity(user)
