@@ -1309,13 +1309,16 @@ set()
 >>> len(nainital)
 
 '''
-def sendInvoiceMail(userEmail, userName, tripPrice ):
+def sendInvoiceMail(userEmail, userName, tripPrice, tripTime):
     '''
     sends mail to the user with
+    Args:
         userEmail
         userName
         tripPrice
+        tripTime
     #TODO take the message as per what happens to the ride, say Ride was TOed then send apt email
+    
     '''
     import smtplib, ssl
     from email.mime.text import MIMEText
