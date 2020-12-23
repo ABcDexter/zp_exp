@@ -1309,3 +1309,61 @@ set()
 >>> len(nainital)
 
 '''
+def sendInvoiceMail(userEmail, userName, tripPrice ):
+    '''
+    sends mail to the user with
+        userEmail
+        userName
+        tripPrice
+    #TODO take the message as per what happens to the ride, say Ride was TOed then send apt email
+    '''
+    import smtplib, ssl
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    SENDER_SERVER = "localhost"
+    FROM = "zippe@villageapps.in"
+    TO = str(userEmail)
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Email html mutlipart testing"
+    message["From"] = FROM
+    message["To"] = TO
+
+    context = ssl.create_default_context()
+
+    # Prepare textual message
+    body = """\
+    Hi %s, \n Your Trip costed Rs """ % str(userName) + str(tripPrice)+"""\n Thanks for riding with Zippe!\n"""
+    print(body)
+
+    html = """\
+    <html>
+      <body>
+        <p>Zippe<br>
+          <a href = "https://www.zippe.in" target = "_self">
+          <img src = "https://i.imgur.com/g2cNLf1.png" alt = "Zippe India" border = "0"/>
+          </a>
+           - Zippe India
+        </p>
+      </body>
+    </html>
+    """
+    msg = body + html
+    print(html)
+
+    #set the correct MIMETexts
+    part1 = MIMEText(body, "plain")
+    part2 = MIMEText(html, "html")
+    part3 = MIMEText(msg, "html")
+
+    #attach the parts to actual message
+    message.attach(part1)
+    message.attach(part2)
+    message.attach(part3)
+    # Send the mail
+    print(message.as_string())
+    server = smtplib.SMTP(SENDER_SERVER)
+    server.sendmail(FROM, TO, message.as_string())
+    server.quit()
+    

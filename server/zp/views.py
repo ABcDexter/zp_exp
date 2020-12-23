@@ -28,6 +28,7 @@ from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renam
 from .utils import getRoutePrice, getTripPrice, getRentPrice, getRidePrice, getRiPrice
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from .utils import headers
+from .utils import sendInvoiceMail
 
 from url_magic import makeView
 from zp.view import rent, ride, deliver, pwa, shop, service
@@ -548,55 +549,8 @@ def userTripRetire(_dct, user, trip):
     TR/FN : Driver will retire via driverConfirmPayment() after user pays money
     '''
     
-    import smtplib, ssl
-    from email.mime.text import MIMEText
-    from email.mime.multipart import MIMEMultipart
-    
-    SENDER_SERVER = "localhost"
-    FROM = "zippe@villageapps.in"
-    TO = str(user.email)
-
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "Email html mutlipart testing"
-    message["From"] = FROM
-    message["To"] = TO
-    
-    context = ssl.create_default_context()
-    
-    # Prepare textual message
-    body = """\
-    Hello from Zippe :)
-    
-    Hi anubhav, \n Your Trip costed Rs """ + str(getTripPrice(trip)['price'])+"""\n Thanks for riding with Zippe!\n -VillageConnect"""
-    print(body)
-    
-    html = """\
-    <html>
-      <body>
-        <p>Howdy,<br>
-           How are you?<br>
-           <a href="https://www.zippe.in">Zippe India</a> 
-           is our website.
-        </p>
-      </body>
-    </html>
-    """
-    print(html)
-    
-    #set the correct MIMETexts
-    part1 = MIMEText(body, "plain")
-    part2 = MIMEText(html, "html")
-    
-    #attach the parts to actual message
-    message.attach(part1)
-    message.attach(part2)
-
-    # Send the mail
-    print(message.as_string())
-    server = smtplib.SMTP(SENDER_SERVER)
-    server.sendmail(FROM, TO, message.as_string())
-    server.quit()
-
+    if trip.st == 'PD':
+        sendInvoiceMail(user.email, user.name,getTripPrice(trip)['price'])
     
     # reset the tid to -1
     retireEntity(user)
