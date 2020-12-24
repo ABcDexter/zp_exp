@@ -60,7 +60,7 @@ WP_CONSUMER_SECRET_KEY ='cs_63badebe75887e2f94142f9484d06f257194e2c3'
 
 DEL_AGENT_EARN = 0.10 # 10% earning to agent 
 
-BANK_AUTH = 'icici_314159'
+BANK_AUTH = 'vpvpv_314159'
 
 # Application definition
 

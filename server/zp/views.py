@@ -1474,16 +1474,16 @@ def authTripData(dct, entity):
 @handleException(KeyError, 'Invalid parameters', 501)
 @handleException(IndexError, 'Invalid request', 501)
 @extractParams
-def bankValidateData(dct, entity):
+def bankValidateData(_, dct:Dict):
     '''
         Https:
-             "auth" : auth designed for bank
+             "auth" : auth designed for bank, as stated in settings file
             
         returns:
-            empty JSON for completed transaction
+            status : True
     '''
     if dct['auth'] == settings.BANK_AUTH:
-        return HttpJSONResponse({'status':'done'})
+        return HttpJSONResponse({'status': 200, 'done':True, 'error':None })
     else:
         raise ZPException(502,'Auth not valid!')
 
