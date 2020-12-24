@@ -1329,7 +1329,7 @@ def sendInvoiceMail(userEmail, userName, tripPrice, tripTime):
     TO = str(userEmail)
 
     message = MIMEMultipart("alternative")
-    message["Subject"] = "Email html mutlipart testing"
+    message["Subject"] = "Zipp-e Trip Invoice"
     message["From"] = FROM
     message["To"] = TO
 

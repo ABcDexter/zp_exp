@@ -1468,3 +1468,22 @@ def authTripData(dct, entity):
     
     return HttpJSONResponse(dctRet)
 
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IndexError, 'Invalid request', 501)
+@extractParams
+def bankValidateData(dct, entity):
+    '''
+        Https:
+             "auth" : auth designed for bank
+            
+        returns:
+            empty JSON for completed transaction
+    '''
+    if dct['auth'] == settings.BANK_AUTH:
+        return HttpJSONResponse({'status':'done'})
+    else:
+        raise ZPException(502,'Auth not valid!')
+
