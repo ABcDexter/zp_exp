@@ -1309,7 +1309,7 @@ set()
 >>> len(nainital)
 
 '''
-def sendInvoiceMail(userEmail, userName, tripPrice, tripTime):
+def sendInvoiceMail(userEmail, userName, tripId, tripDate, tripTime, tripPrice, tripCGST, tripSGST, tripTotal ):
     '''
     sends mail to the user with
     Args:
@@ -1337,25 +1337,214 @@ def sendInvoiceMail(userEmail, userName, tripPrice, tripTime):
 
     # Prepare textual message
     body = """\
-    Hi %s, Your Trip costed Rs %s. Your trip lasted for %s minutes. """ % (str(userName) , str(tripPrice), str(tripTime))+"""\
+    Hi %s, """ % (str(userName))+"""\
     \n
     Thanks for riding with Zippe!\n"""
     print(body)
 
     html = """\
+    <!doctype html>
     <html>
-      <body>
-        <p>
-          <a href = "https://www.zippe.in" target = "_self">
-          <img src = "https://i.imgur.com/g2cNLf1.png" alt = "Zippe India" border = "0"/>
-          </a>
-          <br>
-           - Zippe India
-           </br>
-        </p>
-      </body>
+    <head>
+        <meta charset="utf-8">
+        <title>Zipp-e Trip Invoice</title>
+        
+        <style>
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+        
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+        }
+        
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+        
+        .invoice-box table tr td:nth-child(2) {
+            text-align: right;
+        }
+        
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+        
+        .invoice-box table tr.top table td.title {
+            font-size: 45px;
+            line-height: 45px;
+            color: #333;
+        }
+        
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
+        }
+        
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+        
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+        
+        .invoice-box table tr.item td{
+            border-bottom: 1px solid #eee;
+        }
+        
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+        
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .invoice-box table tr.top table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+            
+            .invoice-box table tr.information table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+        }
+        
+        /** RTL **/
+        .rtl {
+            direction: rtl;
+            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        }
+        
+        .rtl table {
+            text-align: right;
+        }
+        
+        .rtl table tr td:nth-child(2) {
+            text-align: left;
+        }
+        </style>
+    </head>
+
+    <body>
+        <div class="invoice-box">
+            <table cellpadding="0" cellspacing="0">
+                <tr class="top">
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <td class="title">
+                                    <img src="https://i.imgur.com/1WEczdk.png" style="width:100.0%; max-width:100px;">
+                                </td>
+                                
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                
+                <tr class="information">
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <td>
+                                    Zippe &#169; <br>
+                                    Village Connect Pvt. Ltd. <br>
+                                    H No. 33, Naukuchiatal,<br>
+                                    Village Chanoti, Nainital,<br>
+                                    Uttarakhand, 263136
+                                </td>
+                                
+                                <td>
+                                    Invoice # <br> %s<br>
+                                    Dated <br> %s<br>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                
+                
+                <tr class="heading">
+                    <td>
+                        Item
+                    </td>
+                    
+                    <td>
+                        Details
+                    </td>
+                </tr>
+
+                <tr class="item">
+                    <td>
+                        Trip time
+                    </td>
+                    <td>
+                        %s minutes
+                    </td>
+                </tr>
+              
+                <tr class="item">
+                    <td>
+                        Bill amount
+                    </td>
+                    <td>
+                        ₹ %s
+                    </td>
+                </tr>
+               <tr class="item">
+                    <td>
+                        CGST (2.5%)
+                    </td>
+                    
+                    <td>
+                        ₹ %s 
+                    </td>
+                </tr>
+                
+                <tr class="item last">
+                    <td>
+                        SGST (2.5%)
+                    </td>
+                    
+                    <td>
+                        ₹ %s
+                    </td>
+                </tr>
+                
+                <tr class="total">
+                    <td></td>
+                    
+                    <td>
+                       Total: ₹ %s
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <br>
+       Note : Fares are inclusive of GST.
+
+    </body>
     </html>
-    """
+    """ % (str(tripId), str(tripDate), str(tripTime), str(tripPrice), str(tripCGST), str(tripSGST),str(tripTotal))
     msg = body + html
     print(html)
 

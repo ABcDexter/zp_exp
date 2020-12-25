@@ -548,10 +548,10 @@ def userTripRetire(_dct, user, trip):
     FL : admin retires this via adminHandleFailedTrip()
     TR/FN : Driver will retire via driverConfirmPayment() after user pays money
     '''
-    
     if trip.st == 'PD':
-        sendInvoiceMail(user.email, user.name,getTripPrice(trip)['price'], (trip.etime - trip.stime).seconds//60 )
-    
+        total = float(getTripPrice(trip)['price'])
+        sendInvoiceMail(user.email, user.name, tip.id, trip.stime, (trip.etime - trip.stime).seconds//60, float(total*0.95), float(total*0.05), float(total*0.05), total)
+
     # reset the tid to -1
     retireEntity(user)
     
