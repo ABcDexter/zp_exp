@@ -28,7 +28,7 @@ from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renam
 from .utils import getRoutePrice, getTripPrice, getRentPrice, getRidePrice, getRiPrice
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from .utils import headers
-from .utils import sendInvoiceMail
+from .utils import sendTripInvoiceMail, sendDeliveryInvoiceMail
 
 from url_magic import makeView
 from zp.view import rent, ride, deliver, pwa, shop, service

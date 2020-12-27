@@ -14,7 +14,7 @@ from ..models import Place, Delivery, Progress, Location
 from ..models import User, Vehicle, Agent, Rate
 from ..utils import ZPException, HttpJSONResponse, saveTmpImgFile, doOCR, log, aadhaarNumVerify, renameTmpImgFiles, \
     googleDistAndTime
-from ..utils import getOTP
+from ..utils import getOTP, sendDeliveryInvoiceMail
 from ..utils import getDeliveryPrice, getDelPrice
 from ..utils import handleException, extractParams, checkAuth, retireDelEntity, getClientAuth
 from ..utils import checkDeliveryStatus
@@ -1174,9 +1174,9 @@ def agentDeliveryRetire(dct, agent, deli):
 
     '''
     
-    user = User.objects.filter(an=trip.uan)[0]
+    user = User.objects.filter(an=deli.uan)[0]
     total = float(getDelPrice(deli, user.hs)['price'])
-    sendTripInvoiceMail('Delivery', user.email, user.name, deli.id, datetime.strptime(str(deli.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (deli.etime - deli.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
+    sendDeliveryInvoiceMail('Delivery', user.email, user.name, deli.id, datetime.strptime(str(deli.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (deli.etime - deli.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
 
     # made the agent AV and reset the tid to -1
     agent.mode = 'AV'
