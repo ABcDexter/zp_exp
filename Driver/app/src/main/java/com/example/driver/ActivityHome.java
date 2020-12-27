@@ -1,5 +1,6 @@
 package com.example.driver;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -66,7 +67,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public static final String MY_LAT = "MYSrcLAT";
     public static final String MY_LNG = "MYSrcLng";
     TextView newOrder, /*inProgress*/
-            completedOrder, totalEarnings;
+            completedRides;
 
     Vibrator vibrator;
 
@@ -119,14 +120,12 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         scrollView = findViewById(R.id.scrollLayout);
         newOrder = findViewById(R.id.new_ride);
         //inProgress = findViewById(R.id.ride_in_progress);
-        //completedOrder = findViewById(R.id.completed_rides);
-        //totalEarnings = findViewById(R.id.earnings);
+        completedRides = findViewById(R.id.completed_rides);
         notify = findViewById(R.id.notifNo);
 
         newOrder.setOnClickListener(this);
         //inProgress.setOnClickListener(this);
-        //completedOrder.setOnClickListener(this);
-        //totalEarnings.setOnClickListener(this);
+        completedRides.setOnClickListener(this);
 
         myDialog = new Dialog(this);
         auth = strAuth;
@@ -230,6 +229,16 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         if (hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             mFusedLocationClient.getLastLocation().addOnCompleteListener(
                     new OnCompleteListener<Location>() {
                         @Override
@@ -261,6 +270,16 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         mLocationRequest.setNumUpdates(1);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mFusedLocationClient.requestLocationUpdates(
                 mLocationRequest, mLocationCallback,
                 Looper.myLooper()
@@ -291,26 +310,19 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        int id = v.getId();
+        if (id == R.id.new_ride) {
+            if (notify.getText().toString().equals("1")) {
+                Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachUser.class);
+                startActivity(newOrderIntent);
+            } else {
+                Toast.makeText(this, R.string.no_new_rides, Toast.LENGTH_LONG).show();
+            }
 
-            case R.id.new_ride:
-                //Intent newOrderIntent = new Intent(ActivityHome.this, ActivityNewRide.class);
-                driverRideCheck();
-                /*Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachUser.class);
-                startActivity(newOrderIntent);*/
-                break;
-           /* case R.id.ride_in_progress:
-                Intent inProgressIntent = new Intent(ActivityHome.this, ActivityInProgress.class);
-                startActivity(inProgressIntent);
-                break;*/
-            /*case R.id.completed_orders:
-                Intent completedOrderIntent = new Intent(ActivityHome.this, ActivityCompletedOrders.class);
-                startActivity(completedOrderIntent);
-                break;*/
-            /*case R.id.earnings:
-                Intent earningsIntent = new Intent(ActivityHome.this, ActivityTotalEarnings.class);
-                startActivity(earningsIntent);
-                break;*/
+        } else if (id == R.id.completed_rides) {
+            Intent history = new Intent(ActivityHome.this, ActivityRideHistory.class);
+            startActivity(history);
+            finish();
         }
     }
 
@@ -478,9 +490,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         //response on hitting auth-location-update API
         if (id == 2) {
-           /* Intent i = new Intent(this, UtilityPollingService.class);
-            i.setAction("01");
-            startService(i);*/
+            Log.d(TAG, "RESPONSE:" + response);
         }
         //response on hitting driver-ride-get-status API
         if (id == 3) {
@@ -493,14 +503,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     sp_cookie.edit().putString(TID, tid).apply();
                     tripID = tid;
                     if (status.equals("AS")) {
-                        /*String srcLat = response.getString("srclat");
-                        String srcLng = response.getString("srclng");
-                        String dstLat = response.getString("dstlat");
-                        String dstLng = response.getString("dstlng");
-                        String phone = response.getString("uphone");
-                        String name = response.getString("uname");*/
-
-                        //getStatus();
                         Intent as = new Intent(ActivityHome.this, ActivityRideAccepted.class);
                         startActivity(as);
 
@@ -552,8 +554,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                 sp_cookie.edit().putString(SRCLAT, srclat).apply();
                 sp_cookie.edit().putString(SRCLNG, srclng).apply();
 
-                Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachUser.class);
-                startActivity(newOrderIntent);
+                /*Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachUser.class);
+                startActivity(newOrderIntent);*/
 
             } catch (Exception e) {
                 // Toast.makeText(this, "No New Rides", Toast.LENGTH_LONG).show();
@@ -608,6 +610,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(instance, "Something went wrong! Please try again later.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(instance, R.string.something_wrong, Toast.LENGTH_SHORT).show();
     }
 }

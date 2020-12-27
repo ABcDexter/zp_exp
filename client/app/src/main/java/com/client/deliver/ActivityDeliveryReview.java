@@ -215,62 +215,10 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
             } else {
                     Intent confirm = new Intent(ActivityDeliveryReview.this, ActivityDeliverConfirm.class);
                     startActivity(confirm);
-                //deliveryEstimate();
             }
         }
     }
 
-
-    /*public void onSuccess(JSONObject response, int id) throws JSONException {
-        //response on hitting user-delivery-estimate API
-        Log.d("DeliveryReview" + "jsObjRequest", "RESPONSE:" + response);
-        if (id == 1) {
-            String price = response.getString("price");
-            String time = response.getString("time");
-            String dist = response.getString("dist");
-            // String price = response.getString("price");
-            Intent confirm = new Intent(ActivityDeliveryReview.this, ActivityDeliverConfirm.class);
-            confirm.putExtra("PRICE", price);
-            confirm.putExtra("DISTANCE", dist);
-            startActivity(confirm);
-        }
-    }
-
-    public void onFailure(VolleyError error) {
-        Log.d("DeliveryReview", "onErrorResponse: " + error.toString());
-        Log.d("DeliveryReview", "Error:" + error.toString());
-    }*/
-
-    /* ActivityDeliveryReview a = ActivityDeliveryReview.this;
-     Map<String, String> params = new HashMap();
- */
-   /* private void deliveryEstimate() {
-        String auth = stringAuth;
-        params.put("auth", auth);
-        params.put("srclat", pickLat);
-        params.put("srclng", pickLng);
-        params.put("dstlat", dropLat);
-        params.put("dstlng", dropLng);
-        params.put("itype", conType);
-        params.put("idim", conSize);
-        params.put("express", EXPress);//0,1
-        params.put("pmode", "1");
-
-        JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth + " srclat= " + pickLat
-                + " srclng= " + pickLng + " dstlat=" + dropLat + " dstlng=" + dropLng
-                + " itype= " + conType + " idim= " + conSize + " express= " + EXPress + " pmode= " + "1");
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-delivery-estimate");
-
-        UtilityApiRequestPost.doPOST(a, "user-delivery-estimate", parameters, 2000, 0, response -> {
-            try {
-                a.onSuccess(response, 1);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }, a::onFailure);
-    }
-*/
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         int id = buttonView.getId();

@@ -18,6 +18,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -59,6 +60,7 @@ public class ActivityProfileReview extends AppCompatActivity implements View.OnC
 
     public void onFailure(VolleyError error) {
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -94,53 +96,45 @@ public class ActivityProfileReview extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.txt_name:
-                rl.setVisibility(View.VISIBLE);
-                txtName.setVisibility(View.INVISIBLE);
-                break;
-            case R.id.saveName:
-                rl.setVisibility(View.INVISIBLE);
-                txtName.setVisibility(View.VISIBLE);
-                txtName.setText(nameEdit.getText());
-                break;
-            case R.id.confirmDetails:
-                updateDetails();
-                break;
-            case R.id.btnGender:
-                LayoutInflater layoutInflater = (LayoutInflater) ActivityProfileReview.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                assert layoutInflater != null;
-                View customView = layoutInflater.inflate(R.layout.popup, null);
+        int id = v.getId();
+        if (id == R.id.txt_name) {
+            rl.setVisibility(View.VISIBLE);
+            txtName.setVisibility(View.INVISIBLE);
+        } else if (id == R.id.saveName) {
+            rl.setVisibility(View.INVISIBLE);
+            txtName.setVisibility(View.VISIBLE);
+            txtName.setText(nameEdit.getText());
+        } else if (id == R.id.confirmDetails) {
+            updateDetails();
+        } else if (id == R.id.btnGender) {
+            LayoutInflater layoutInflater = (LayoutInflater) ActivityProfileReview.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert layoutInflater != null;
+            View customView = layoutInflater.inflate(R.layout.popup, null);
 
-                TextView female = customView.findViewById(R.id.female);
-                TextView male = customView.findViewById(R.id.male);
-                TextView non_binary = customView.findViewById(R.id.non_binary);
+            TextView female = customView.findViewById(R.id.female);
+            TextView male = customView.findViewById(R.id.male);
+            TextView non_binary = customView.findViewById(R.id.non_binary);
 
-                //instantiate popup window
-                popupWindow = new PopupWindow(customView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            //instantiate popup window
+            popupWindow = new PopupWindow(customView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
-                //display the popup window
-                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-                popupWindow.showAtLocation(scrollView, Gravity.CENTER, 0, 0);
-                popupWindow.setOutsideTouchable(false);
-                //close the popup window on button click
-                female.setOnClickListener(this);
-                male.setOnClickListener(this);
-                non_binary.setOnClickListener(this);
-                break;
-
-            case R.id.female:
-                popupWindow.dismiss();
-                btn_gender.setText(R.string.female);
-                break;
-            case R.id.male:
-                popupWindow.dismiss();
-                btn_gender.setText(R.string.male);
-                break;
-            case R.id.non_binary:
-                popupWindow.dismiss();
-                btn_gender.setText(R.string.non_binary);
-                break;
+            //display the popup window
+            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+            popupWindow.showAtLocation(scrollView, Gravity.CENTER, 0, 0);
+            popupWindow.setOutsideTouchable(false);
+            //close the popup window on button click
+            female.setOnClickListener(this);
+            male.setOnClickListener(this);
+            non_binary.setOnClickListener(this);
+        } else if (id == R.id.female) {
+            popupWindow.dismiss();
+            btn_gender.setText(R.string.female);
+        } else if (id == R.id.male) {
+            popupWindow.dismiss();
+            btn_gender.setText(R.string.male);
+        } else if (id == R.id.non_binary) {
+            popupWindow.dismiss();
+            btn_gender.setText(R.string.non_binary);
         }
     }
 

@@ -47,7 +47,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         String stringName = prefPLoc.getString(NAME_KEY, "");
 
-        int firstSpace = (stringName.contains(" ")) ? stringName.indexOf(" ") : stringName.length() - 1;
+        int firstSpace = (stringName.contains(" ")) ? stringName.indexOf(" ") : stringName.length()-1;
         String name = stringName.substring(0, firstSpace);
 
         nameText = findViewById(R.id.nameFrmServer);
@@ -55,7 +55,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         if (name.isEmpty())
             nameText.setText("");
         else {
-            nameText.setText(getString(R.string.hi) + name);
+            nameText.setText(getString(R.string.hi , name));
             Log.d("USER_NAME", "name:" + name);
 
         }
@@ -152,7 +152,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
 
-            Intent intent = new Intent(ActivityDrawer.this, ActivityMain.class);
+            Intent intent = new Intent(ActivityDrawer.this, ActivityRegistration.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         } else if (id == R.id.nav_profile) {

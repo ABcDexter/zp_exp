@@ -119,7 +119,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     Animation animMoveL2R, animMoveR2L;
     String standtime;
     String pMode = "00";
-    String strAuth, DID, costOnly;
+    String  costOnly;
     Button dummy;
 
     @Override
@@ -315,28 +315,26 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case UPI_PAYMENT:
-                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
-                    if (data != null) {
-                        String trxt = data.getStringExtra("response");
-                        Log.d("UPI", "onActivityResult: " + trxt);
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add(trxt);
-                        upiPaymentDataOperation(dataList);
-                    } else {
-                        Log.d("UPI", "onActivityResult: " + "Return data is null");
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add("nothing");
-                        upiPaymentDataOperation(dataList);
-                    }
+        if (requestCode == UPI_PAYMENT) {
+            if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                if (data != null) {
+                    String trxt = data.getStringExtra("response");
+                    Log.d("UPI", "onActivityResult: " + trxt);
+                    ArrayList<String> dataList = new ArrayList<>();
+                    dataList.add(trxt);
+                    upiPaymentDataOperation(dataList);
                 } else {
-                    Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                    Log.d("UPI", "onActivityResult: " + "Return data is null");
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add("nothing");
                     upiPaymentDataOperation(dataList);
                 }
-                break;
+            } else {
+                Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                ArrayList<String> dataList = new ArrayList<>();
+                dataList.add("nothing");
+                upiPaymentDataOperation(dataList);
+            }
         }
     }
 
@@ -427,15 +425,11 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         params.put("itype", conType);
         params.put("idim", conSize);
         params.put("det", "none");//package details
-        //params.put("det", detailsPackage);//package details
-        /*params.put("srcdet", detailsPick);// src details
-        params.put("dstdet", detailsDrop);//dst details*/
         params.put("fr", fr);
         params.put("li", li);
         params.put("kc", kc);
         params.put("kw", "0");
         params.put("pe", pe);
-        //params.put("no", no);
         params.put("express", express);//0,1
         params.put("pYear", pYear);
         params.put("pMonth", pMonth);
@@ -446,12 +440,6 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
 
         params.put("pMinute", pMinute);
         params.put("pmode", pMode);
-        /*if (edTip.getText().toString().isEmpty()){
-            params.put("tip", "0");
-        }else{
-            params.put("tip", edTip.getText().toString());
-        }*/
-
 
         JSONObject parameters = new JSONObject(params);
 
@@ -516,7 +504,8 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
 
-        infoText.setText(getString(R.string.base_price) + " ₹ 15" + "\n" + getString(R.string.distance) + distance + " km");
+        //infoText.setText(getString(R.string.base_price) + " ₹ 15" + "\n" + getString(R.string.distance) + distance + " km");
+        infoText.setText(getString(R.string.base_price, distance));
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
@@ -534,7 +523,8 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         if (id == 1) {
             String price = response.getString("price");
             distance = response.getString("dist");
-            cost.setText("₹ " + price);
+            //cost.setText("₹ " + price);
+            cost.setText(getString(R.string.message_rs,price));
             costOnly = price;
         }
         //response on hitting user-delivery-schedule API
@@ -558,7 +548,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
                     String status = response.getString("st");
                     if (status.equals("SC")) {
                         String price = response.getString("price");
-                        cost.setText("₹ " + price);
+                        cost.setText(getString(R.string.message_rs,price));
                         costOnly = price;
                         /*Intent as = new Intent(ActivityDeliverConfirm.this, ActivityDeliverPayment.class);
                         startActivity(as);*/
@@ -639,6 +629,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override

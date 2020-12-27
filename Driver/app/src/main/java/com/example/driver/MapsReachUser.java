@@ -1,5 +1,6 @@
 package com.example.driver;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -88,7 +89,7 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
         String stringMySrcLat = pref.getString(MY_LAT, "");
         String stringMySrcLng = pref.getString(MY_LNG, "");
 
-        Log.d(TAG,"SRCLAT="+stringSrcLat+" SRCLNG="+stringSrcLng+" MYLAT="+stringMySrcLat+" MYLNG="+stringMySrcLng);
+        Log.d(TAG, "SRCLAT=" + stringSrcLat + " SRCLNG=" + stringSrcLng + " MYLAT=" + stringMySrcLat + " MYLNG=" + stringMySrcLng);
 
         SharedPreferences prefVan = getSharedPreferences(DAY_VAN, Context.MODE_PRIVATE);
         strVan = prefVan.getString(VAN, "");
@@ -97,23 +98,15 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
         srcLng = Double.parseDouble(stringSrcLng);
         dstLat = Double.parseDouble(stringMySrcLat);
         dstLng = Double.parseDouble(stringMySrcLng);
+        Log.d(TAG, "srcLat"+ srcLat+" srcLng"+srcLng+" dstLat"+dstLat+" dstLng"+dstLng);
 //TODO rename it properly as current location and user's location
-        /*getDirection = findViewById(R.id.btnGetDirection);
-        getDirection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new FetchURL(MapsReachUser.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
 
-            }
-        });*/
-        //27.658143,85.3199503
-        //27.667491,85.3208583
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, "");
 
         getStatus();
-        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(String.valueOf(R.string.pick_up));
-        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title(String.valueOf(R.string.your_location));
+        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(String.valueOf("PICK UP"));
+        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title("You are here");
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapNearBy);
         mapFragment.getMapAsync(this);
@@ -184,6 +177,16 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
         if (hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             mFusedLocationClient.getLastLocation().addOnCompleteListener(
                     new OnCompleteListener<Location>() {
                         @Override
@@ -214,6 +217,16 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
         mLocationRequest.setNumUpdates(1);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mFusedLocationClient.requestLocationUpdates(
                 mLocationRequest, mLocationCallback,
                 Looper.myLooper()
@@ -242,15 +255,13 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.accept_request:
-                rideAccept();
-                break;
-            case R.id.reject_request:
-                Intent home = new Intent(MapsReachUser.this, ActivityHome.class);
-                startActivity(home);
-                finish();
-                break;
+        int id = v.getId();
+        if (id == R.id.accept_request) {
+            rideAccept();
+        } else if (id == R.id.reject_request) {
+            Intent home = new Intent(MapsReachUser.this, ActivityHome.class);
+            startActivity(home);
+            finish();
         }
     }
 

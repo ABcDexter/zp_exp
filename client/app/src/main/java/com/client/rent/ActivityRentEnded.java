@@ -195,36 +195,32 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.dummy:
-                rentPay();
-                break;
-
-            case R.id.upi:
-                String amount = CostOnly;
-                String note = "Payment for rental service";
-                String name = "Zipp-E";
-                String upiId = "9084083967@ybl";
-                payUsingUpi(amount, upiId, name, note);
-                break;
+        int id = v.getId();
+        if (id == R.id.dummy) {
+            rentPay();
+        } else if (id == R.id.upi) {
+            String amount = CostOnly;
+            String note = "Payment for rental service";
+            String name = "Zipp-E";
+            String upiId = "9084083967@ybl";
+            payUsingUpi(amount, upiId, name, note);
 
             /*case R.id.confirm_btn:
                 paymentMade();*/
-            case R.id.pay_now:
-                Snackbar snackbar = Snackbar
-                        .make(scrollView, R.string.make_payment_to_continue, Snackbar.LENGTH_INDEFINITE);
-                View sbView = snackbar.getView();
-                TextView textView = sbView.findViewById(R.id.snackbar_text);
-                textView.setTextColor(Color.YELLOW);
-                snackbar.show();
-                break;
-            case R.id.infoCost:
-                ShowPopup();
-                break;
+        } else if (id == R.id.pay_now) {
+            Snackbar snackbar = Snackbar
+                    .make(scrollView, R.string.make_payment_to_continue, Snackbar.LENGTH_INDEFINITE);
+            View sbView = snackbar.getView();
+            TextView textView = sbView.findViewById(R.id.snackbar_text);
+            textView.setTextColor(Color.YELLOW);
+            snackbar.show();
+        } else if (id == R.id.infoCost) {
+            ShowPopup();
         }
     }
 

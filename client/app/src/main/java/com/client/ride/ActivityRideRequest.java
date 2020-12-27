@@ -168,7 +168,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(this, "Something went wrong! Please try again later.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
 
@@ -370,37 +370,22 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.reject_request:
-                Intent home = new Intent(ActivityRideRequest.this, ActivityRideHome.class);
-                startActivity(home);
-                finish();
-                break;
-            case R.id.accept_request:
-                //TODO
-                break;
-            case R.id.confirm_ride_book:
-                /*if (vTypeInfo.equals("1") || vTypeInfo.equals("2")) {
-                    moveScooty();
-                }
-                if (vTypeInfo.equals("3")) {
-                    moveit();
-                }*/
-                alertBox(); //alert dialog box to tell the user that if he wishes to end the ride before reaching the destination, he will be charged as per the destination chosen at the time of booking.
-
-                break;
-            case R.id.infoTime:
-                ShowPopup(2);
-                break;
-            case R.id.infoCost:
-                ShowPopup(1);
-                break;
-            case R.id.infoPick:
-                ShowPopup(3);
-                break;
-            case R.id.infoDrop:
-                ShowPopup(4);
-                break;
+        int id = v.getId();
+        if (id == R.id.reject_request) {
+            Intent home = new Intent(ActivityRideRequest.this, ActivityRideHome.class);
+            startActivity(home);
+            finish();
+        } else if (id == R.id.accept_request) {//TODO
+        } else if (id == R.id.confirm_ride_book) {
+            alertBox(); //alert dialog box to tell the user that if he wishes to end the ride before reaching the destination, he will be charged as per the destination chosen at the time of booking.
+        } else if (id == R.id.infoTime) {
+            ShowPopup(2);
+        } else if (id == R.id.infoCost) {
+            ShowPopup(1);
+        } else if (id == R.id.infoPick) {
+            ShowPopup(3);
+        } else if (id == R.id.infoDrop) {
+            ShowPopup(4);
         }
     }
 

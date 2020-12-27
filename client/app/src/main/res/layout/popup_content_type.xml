@@ -285,7 +285,7 @@
                 android:layout_height="60dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="90dp"
-                android:background="@drawable/rect_box_outline"
+                android:background="@drawable/et_rect_outline"
                 android:cursorVisible="true"
                 android:gravity="center|start"
                 android:hint="@string/please_specify"

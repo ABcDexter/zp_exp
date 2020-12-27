@@ -260,6 +260,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     public static ActivityRentHome getInstance() {
@@ -472,156 +473,133 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.vehicle_type:
-                ImagePopup();
-                break;
-            case R.id.no_hours:
-                ImagePopup2();
-                break;
-            case R.id.confirm_rent:
-                Log.d(TAG, "confirm_rent button clicked!");
-                if (/*RentRide == null ||*/ VehicleType.equals("") || NoHours.equals("") || pick.getText().equals("PICK UP POINT / Z-HUB")
-                        || drop.getText().equals("DROP POINT / Z-HUB")/*|| PaymentMode == null*/) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                    } else {
-                        vibrator.vibrate(1000);
-                    }
-                    Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
-                    snackbar.show();
-
-                    Log.d(TAG, "empty field: vehicle:" + VehicleType + " " + "rent ride: " +
-                            RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
-                            PaymentMode);
+        int id = v.getId();
+        if (id == R.id.vehicle_type) {
+            ImagePopup();
+        } else if (id == R.id.no_hours) {
+            ImagePopup2();
+        } else if (id == R.id.confirm_rent) {
+            Log.d(TAG, "confirm_rent button clicked!");
+            if (/*RentRide == null ||*/ VehicleType.equals("") || NoHours.equals("") || pick.getText().equals("PICK UP POINT / Z-HUB")
+                    || drop.getText().equals("DROP POINT / Z-HUB")/*|| PaymentMode == null*/) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                 } else {
-                    dlAlert();//method to alert user to provide valid driving licence at the hub before picking up the vehicle
+                    vibrator.vibrate(1000);
+                }
+                Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
+                snackbar.show();
+
+                Log.d(TAG, "empty field: vehicle:" + VehicleType + " " + "rent ride: " +
+                        RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
+                        PaymentMode);
+            } else {
+                dlAlert();//method to alert user to provide valid driving licence at the hub before picking up the vehicle
                     /*storeData();
                     getAvailableVehicle();*/
                     /*Intent rideIntent = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
                     startActivity(rideIntent);*/
-                    Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
-                            RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
-                            PaymentMode + "srcid:" + pickID + "dstid:" + dropID);
-                }
-                break;
-
-            case R.id.reject_request:
-                bussFlag = "BussMeNot";
-                prefBuss.edit().putString(BUSS, bussFlag).apply();
-                Log.d(TAG, "User not interested in a buss");
-                myDialog.dismiss();
-                break;
-            case R.id.accept_request:
-                bussFlag = "BussMe";
-                prefBuss.edit().putString(BUSS, bussFlag).apply();
-                getAvailableVehicle();
-                myDialog.dismiss();
-                break;
-            case R.id.schedule_rent:
-                ShowPopup(3);
-                break;
-            case R.id.txt_pick_hub:
-                Intent pick = new Intent(ActivityRentHome.this, HubList.class);
-                pick.putExtra("Request", "pick_rent");
-                Log.d(TAG, "control moved to HUBLIST activity with key pick_rent");
-                startActivity(pick);
-                break;
-            case R.id.txt_drop_point:
-                Intent drop = new Intent(ActivityRentHome.this, HubList.class);
-                drop.putExtra("Request", "destination_rental");
-                Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
-                startActivity(drop);
-                break;
-            /*case R.id.txt1:
+                Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
+                        RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
+                        PaymentMode + "srcid:" + pickID + "dstid:" + dropID);
+            }
+        } else if (id == R.id.reject_request) {
+            bussFlag = "BussMeNot";
+            prefBuss.edit().putString(BUSS, bussFlag).apply();
+            Log.d(TAG, "User not interested in a buss");
+            myDialog.dismiss();
+        } else if (id == R.id.accept_request) {
+            bussFlag = "BussMe";
+            prefBuss.edit().putString(BUSS, bussFlag).apply();
+            getAvailableVehicle();
+            myDialog.dismiss();
+        } else if (id == R.id.schedule_rent) {
+            ShowPopup(3);
+        } else if (id == R.id.txt_pick_hub) {
+            Intent pick = new Intent(ActivityRentHome.this, HubList.class);
+            pick.putExtra("Request", "pick_rent");
+            Log.d(TAG, "control moved to HUBLIST activity with key pick_rent");
+            startActivity(pick);
+        } else if (id == R.id.txt_drop_point) {
+            Intent drop = new Intent(ActivityRentHome.this, HubList.class);
+            drop.putExtra("Request", "destination_rental");
+            Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
+            startActivity(drop);
+                /*case R.id.txt1:
                 NoHours = "1";
                 imageDialog2.dismiss();
                 hours.setText("1 hr (60 mins) @ ₹ 1.00 / min");
                 break;*/
-            case R.id.txt2:
-                NoHours = "2";
-                imageDialog2.dismiss();
-                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                hours.setText(R.string._2_hr);
-                break;
-            case R.id.txt3:
-                NoHours = "3";
-                imageDialog2.dismiss();
-                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                hours.setText(R.string._3_hr);
-                break;
-            case R.id.txt4:
-                NoHours = "4";
-                imageDialog2.dismiss();
-                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                hours.setText(R.string._4_hr);
-                break;
-            case R.id.txt5:
-                NoHours = "5";
-                imageDialog2.dismiss();
-                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                hours.setText(R.string._5_hr);
-                break;
-            case R.id.txt6:
-                NoHours = "6";
-                imageDialog2.dismiss();
-                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                hours.setText(R.string._6_hr);
-                break;
-            case R.id.txt7:
-                NoHours = "7";
-                imageDialog2.dismiss();
-                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                hours.setText(R.string._7_hr);
-                break;
-            case R.id.txt8:
-                NoHours = "8";
-                imageDialog2.dismiss();
-                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                hours.setText(R.string._8_hr);
-                break;
-            case R.id.txt9:
-                NoHours = "9";
-                imageDialog2.dismiss();
-                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                hours.setText(R.string._9_hr);
-                break;
-            case R.id.txt10:
-                NoHours = "10";
-                imageDialog2.dismiss();
-                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                hours.setText(R.string._10_hr);
-                break;
-            case R.id.txt11:
-                NoHours = "11";
-                imageDialog2.dismiss();
-                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                hours.setText(R.string._11_hr);
-                break;
-            case R.id.txt12:
-                NoHours = "12";
-                imageDialog2.dismiss();
-                hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                hours.setText(R.string._12_hr);
-                break;
-            case R.id.rent_rl_1:
-                VehicleType = "0";
-                imageDialog.dismiss();
-                vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                vehicle.setText(R.string.e_cycle);
-                break;
-            case R.id.rent_rl_2:
-                VehicleType = "1";
-                imageDialog.dismiss();
-                vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                vehicle.setText(R.string.e_scooty);
-                break;
-            case R.id.rent_rl_3:
-                VehicleType = "2";
-                imageDialog.dismiss();
-                vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-                vehicle.setText(R.string.e_bike);
-                break;
+        } else if (id == R.id.txt2) {
+            NoHours = "2";
+            imageDialog2.dismiss();
+            hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            hours.setText(R.string._2_hr);
+        } else if (id == R.id.txt3) {
+            NoHours = "3";
+            imageDialog2.dismiss();
+            hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            hours.setText(R.string._3_hr);
+        } else if (id == R.id.txt4) {
+            NoHours = "4";
+            imageDialog2.dismiss();
+            hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            hours.setText(R.string._4_hr);
+        } else if (id == R.id.txt5) {
+            NoHours = "5";
+            imageDialog2.dismiss();
+            hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            hours.setText(R.string._5_hr);
+        } else if (id == R.id.txt6) {
+            NoHours = "6";
+            imageDialog2.dismiss();
+            hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            hours.setText(R.string._6_hr);
+        } else if (id == R.id.txt7) {
+            NoHours = "7";
+            imageDialog2.dismiss();
+            hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            hours.setText(R.string._7_hr);
+        } else if (id == R.id.txt8) {
+            NoHours = "8";
+            imageDialog2.dismiss();
+            hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            hours.setText(R.string._8_hr);
+        } else if (id == R.id.txt9) {
+            NoHours = "9";
+            imageDialog2.dismiss();
+            hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            hours.setText(R.string._9_hr);
+        } else if (id == R.id.txt10) {
+            NoHours = "10";
+            imageDialog2.dismiss();
+            hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            hours.setText(R.string._10_hr);
+        } else if (id == R.id.txt11) {
+            NoHours = "11";
+            imageDialog2.dismiss();
+            hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            hours.setText(R.string._11_hr);
+        } else if (id == R.id.txt12) {
+            NoHours = "12";
+            imageDialog2.dismiss();
+            hours.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            hours.setText(R.string._12_hr);
+        } else if (id == R.id.rent_rl_1) {
+            VehicleType = "0";
+            imageDialog.dismiss();
+            vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            vehicle.setText(R.string.e_cycle);
+        } else if (id == R.id.rent_rl_2) {
+            VehicleType = "1";
+            imageDialog.dismiss();
+            vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            vehicle.setText(R.string.e_scooty);
+        } else if (id == R.id.rent_rl_3) {
+            VehicleType = "2";
+            imageDialog.dismiss();
+            vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            vehicle.setText(R.string.e_bike);
         }
     }
 

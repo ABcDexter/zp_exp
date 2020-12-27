@@ -112,6 +112,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
 
@@ -273,28 +274,23 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
 */
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.share_ride_details:
-                String messageBody = "I am riding ZIPP-E with\n Driver Name: " + nameD.getText().toString() + "\n Driver Mobile Number" + phone.getText().toString();
-                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.setData(Uri.parse("sms:"));
-                sendIntent.putExtra("sms_body", messageBody);
-                startActivity(sendIntent);
-                //ImagePopup();
-                //selectAction(ActivityRideInProgress.this);
-                break;
-
-            case R.id.emergency:
-                btnSetOnEmergency();
-                break;
-            case R.id.end_ride:
-                alertDialog();
-                break;
-            case R.id.track_your_location:
-                trackLocation();
-                break;
+        int id = v.getId();
+        if (id == R.id.share_ride_details) {
+            String messageBody = "I am riding ZIPP-E with\n Driver Name: " + nameD.getText().toString() + "\n Driver Mobile Number" + phone.getText().toString();
+            Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+            sendIntent.setData(Uri.parse("sms:"));
+            sendIntent.putExtra("sms_body", messageBody);
+            startActivity(sendIntent);
+            //ImagePopup();
+            //selectAction(ActivityRideInProgress.this);
+        } else if (id == R.id.emergency) {
+            btnSetOnEmergency();
+        } else if (id == R.id.end_ride) {
+            alertDialog();
+        } else if (id == R.id.track_your_location) {
+            trackLocation();
             /*case R.id.rl_1:
-*//*
+             *//*
                 String messageBody = "I am riding ZIPP-E with\n Driver Name: "+nameD.getText().toString()+"\n Driver Mobile Number"+phone.getText().toString();
                 Intent sendIntent = new Intent(Intent.ACTION_VIEW);
                 sendIntent.setData(Uri.parse("sms:"));
@@ -310,9 +306,9 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
             /*case R.id.rl_3:
                 imageDialog.dismiss();
                 break;*/
-            case R.id.share_location:
-                Snackbar snackbar = Snackbar.make(scrollView, R.string.coming_soon, Snackbar.LENGTH_LONG);
-                snackbar.show();
+        } else if (id == R.id.share_location) {
+            Snackbar snackbar = Snackbar.make(scrollView, R.string.coming_soon, Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 }

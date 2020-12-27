@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
@@ -199,6 +200,7 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     TextView txt;
@@ -326,33 +328,26 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            /*case R.id.share_ride_details:
+        int id = v.getId();/*case R.id.share_ride_details:
                 selectAction(ActivityRentInProgress.this);
-                break;*/
-            /*case R.id.supervisor_phone:
+                break;*//*case R.id.supervisor_phone:
                 callSuper();
                 break;*/
-            case R.id.rl_p:
-                callSuper();
-                break;
-            case R.id.emergency:
-                btnSetOnEmergency();
-                break;
-            case R.id.share_location:
-                ShowPopup(1);
-                break;
-            case R.id.drop_hub:
-                Intent drop = new Intent(ActivityRentInProgress.this, ActivityUpdateInfo.class);
-                startActivity(drop);
-                break;
-            case R.id.hours:
-                Intent hour = new Intent(ActivityRentInProgress.this, ActivityUpdateHours.class);
-                startActivity(hour);
-                break;
-            case R.id.end_rent:
-                Intent nearest = new Intent(ActivityRentInProgress.this, ActivityNearestHub.class);
-                startActivity(nearest);
+        if (id == R.id.rl_p) {
+            callSuper();
+        } else if (id == R.id.emergency) {
+            btnSetOnEmergency();
+        } else if (id == R.id.share_location) {
+            ShowPopup(1);
+        } else if (id == R.id.drop_hub) {
+            Intent drop = new Intent(ActivityRentInProgress.this, ActivityUpdateInfo.class);
+            startActivity(drop);
+        } else if (id == R.id.hours) {
+            Intent hour = new Intent(ActivityRentInProgress.this, ActivityUpdateHours.class);
+            startActivity(hour);
+        } else if (id == R.id.end_rent) {
+            Intent nearest = new Intent(ActivityRentInProgress.this, ActivityNearestHub.class);
+            startActivity(nearest);
         }
     }
 

@@ -3,7 +3,7 @@
     <string name="app_name">Zipp-e</string>
     <string name="Open">OPEN</string>
     <string name="Close">CLOSE</string>
-    <string name="hi">HI!\u0020</string>
+    <string name="hi">HI!\u0020 %1$s</string>
     <string name="disclaimer">By confirming, I accept that this package does not contain any illegal / restricted items (as per The Indian Court of Law). ZIPP-E partner may ask to verify the contents of the package and has the liberty to refuse the delivery if the items are not verified.</string>
 
     <string-array name="gender_array">
@@ -85,7 +85,7 @@
     <string name="_12_hr">12 hr (960 min) @ ₹ 0.50/min = ₹ 360</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="something_wrong">Something went wrong. Please try again later.</string>
     <string name="are_you_ready_to_confirm_your_delivery">Are you ready to confirm \nyour delivery?</string>
     <string name="delivery_charge">delivery charge</string>
     <string name="rs">₹</string>
@@ -262,7 +262,7 @@
     <string name="ride_history">RIDE HISTORY</string>
     <string name="terms_and_conditions">TERMS AND CONDITIONS</string>
     <string name="the_amount_shall_be_directly_credited_to_our_agent_account">This is optional. The amount shall be directly credited to our  agent\'s account.</string>
-    <string name="base_price">Base price : </string>
+    <string name="base_price">Base price : ₹ 15 Distance : \u0020 %1$s km</string>
     <string name="distance">Distance : \u0020</string>
     <string name="your_agent_will_be_assigned_shortly">Your agent will be assigned shortly. Please keep your package ready.</string>
     <string name="the_package_is_en_route">The package is en route. Your delivery agent will call on reaching destination.</string>
@@ -411,4 +411,5 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="id">id</string>
     <string name="message_min">%1$s mins</string>
     <string name="message_rs">₹ %1$s </string>
+    <string name="add_email">Add Email</string>
 </resources>

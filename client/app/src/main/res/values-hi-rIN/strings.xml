@@ -3,7 +3,7 @@
     <string name="app_name">Zipp-e(ज़िप्पी)</string>
     <string name="Open">खोलें</string>
     <string name="Close">बंद करें</string>
-    <string name="hi">प्रणाम!\u0020 </string>
+    <string name="hi">प्रणाम!\u0020 %1$s</string>
     <string name="disclaimer">मैं कन्फर्म करता/करती हूँ कि इस पार्सल में भारतीय न्यायालय के नियम अनुसार कोई भी अवैध तथा प्रतिबंधित चीज नहीं है। डिलीवरी एजेंट पार्सल की सामग्री जाँच सकता है और चीज के नियमानुसार नहीं होने पर डिलीवरी से मना कर सकता है।</string>
     <string-array name="gender_array">
         <item>लिंग</item>
@@ -239,7 +239,7 @@
     <string name="ride_history">राइड की हिस्ट्री</string>
     <string name="terms_and_conditions">नियम और शर्तें</string>
     <string name="the_amount_shall_be_directly_credited_to_our_agent_account">राशि सीधे हमारे एजेंट के खाते में जमा की जाएगी।</string>
-    <string name="base_price">आधार मूल्य : </string>
+    <string name="base_price">आधार मूल्य : ₹ 15 दूरी : \u0020 %1$s km</string>
     <string name="distance">दूरी : \u0020</string>
     <string name="your_agent_will_be_assigned_shortly">आप को डिलीवरी एजेंट जल्द ही नियुक्त किया जाएगा। कृपया अपना पार्सल तैयार रखें।</string>
     <string name="the_package_is_en_route">पार्सल रस्ते में है। आपका डिलीवरी एजेंट गंतव्य तक पहुंचने पर फ़ोन करेगा।</string>
@@ -398,4 +398,6 @@
     <string name="rent_summary">Rent Summary</string>
     <string name="message_min">%1$s mins</string>
     <string name="message_rs">₹ %1$s </string>
+    <string name="add_email">Add Email</string>
+    <string name="something_wrong">Something went wrong. Please try again later.</string>
 </resources>

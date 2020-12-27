@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
     tools:context=".UserProfileActivity">
 
     <RelativeLayout
@@ -16,8 +17,6 @@
             android:id="@+id/aadharFrontImg"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:background="@color/colorAccent"
             android:src="@drawable/ic_account_circle" />
 
@@ -32,17 +31,6 @@
             android:textAllCaps="true"
             android:textSize="20sp" />
 
-        <!-- <TextView
-             android:id="@+id/upload_file_txt"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_below="@+id/aadharFrontImg"
-             android:layout_centerHorizontal="true"
-             android:layout_marginTop="20dp"
-             android:background="@drawable/rect_box_outline"
-             android:padding="5dp"
-             android:text="Upload file"
-             android:textSize="23sp" />-->
     </RelativeLayout>
 
     <TextView
@@ -50,7 +38,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/containerProfilePic"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:text="@string/_name"
         android:textAllCaps="true"
@@ -63,73 +50,59 @@
         android:layout_below="@+id/containerProfilePic"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="25dp"
-        android:layout_toEndOf="@id/txt_mobile"
         android:gravity="end"
-        android:text="qwertyuuio"
+        android:text=""
         android:textAllCaps="true"
         android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/txt_mobile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/ll_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
         android:layout_below="@+id/txt_name"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:text="@string/_mobile"
-        android:textAllCaps="true"
-        android:textSize="22sp" />
+        android:orientation="horizontal"
+        android:weightSum="2">
 
-    <TextView
-        android:id="@+id/mobile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/user_name"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="25dp"
-        android:layout_toEndOf="@id/txt_mobile"
-        android:gravity="end"
-        android:text="1234567890"
-        android:textAllCaps="true"
-        android:textSize="20sp" />
+        <TextView
+            android:id="@+id/txt_mobile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/_mobile"
+            android:textAllCaps="true"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/mobile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text=""
+            android:textAllCaps="true"
+            android:textSize="20sp" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textLC"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txt_mobile"
-        android:layout_marginStart="20dp"
+        android:layout_below="@id/ll_mobile"
         android:layout_marginTop="20dp"
         android:text="@string/change_language"
         android:textAllCaps="true"
         android:textSize="22sp" />
 
-    <!--<Spinner
-        android:id="@+id/spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/mobile"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="5dip"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="5dip"
-        android:layout_toEndOf="@id/textLC"
-        android:background="@drawable/rect_box_outline"
-        android:gravity="end"
-        android:popupBackground="@color/colorPrimaryDark"
-        android:textAllCaps="true" />-->
-
     <RelativeLayout
         android:id="@+id/layout_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/mobile"
+        android:layout_below="@id/ll_mobile"
         android:layout_alignParentEnd="true"
-        android:layout_marginLeft="45dp"
+        android:layout_marginStart="45dp"
         android:layout_marginTop="17dp"
-        android:layout_marginRight="25dp"
         android:layout_toEndOf="@id/textLC"
         android:background="@drawable/spinner_bg"
         android:orientation="horizontal">
@@ -140,16 +113,16 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:spinnerMode="dropdown"
-            android:popupBackground="@color/colorPrimaryDark"/>
+            android:popupBackground="@color/colorPrimaryDark"
+            android:spinnerMode="dropdown" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:src="@drawable/ic_arrow_drop_down" />
@@ -161,9 +134,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textLC"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:paddingRight="8dp"
+        android:paddingEnd="8dp"
         android:text="@string/night_mode"
         android:textAllCaps="true"
         android:textSize="22sp" />
@@ -175,23 +147,63 @@
         android:layout_below="@+id/layout_spinner"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="25dp"
-        android:layout_marginRight="25dp"
         android:layout_marginBottom="@android:dimen/app_icon_size"
         android:layout_toEndOf="@+id/txtNightMode"
         android:checked="false"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:theme="@style/SCBSwitch"/>
+        android:theme="@style/SCBSwitch" />
 
     <TextView
         android:id="@+id/upload_aadhar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txtNightMode"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:paddingRight="8dp"
+        android:onClick="uploadAadhar"
+        android:paddingEnd="8dp"
         android:text="@string/upload_aadhar_card"
         android:textAllCaps="true"
-        android:textSize="22sp"
-        android:onClick="uploadAadhar"/>
+        android:textSize="22sp" />
+
+
+    <TextView
+        android:id="@+id/btn_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/upload_aadhar"
+        android:layout_marginTop="20dp"
+        android:drawableEnd="@drawable/ic_edit"
+        android:text="@string/add_email"
+        android:textAllCaps="true"
+        android:textSize="22sp" />
+
+    <RelativeLayout
+        android:id="@+id/rl_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_email"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rect_box_outline"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/et_email"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="10dp"
+            android:hint="yourname@abc.com"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/submit"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/ic_check" />
+    </RelativeLayout>
+
 </RelativeLayout>

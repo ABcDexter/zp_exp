@@ -55,7 +55,7 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
     public void onSuccess(JSONObject response) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         //response on hitting auth-aadhaar-save API
-        Intent home = new Intent(AadharCardUpload.this, ActivityWelcome.class);
+        Intent home = new Intent(AadharCardUpload.this, UserProfileActivity.class);
         startActivity(home);
         finish();
     }
@@ -63,7 +63,7 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(this, "Something went wrong! Please try again later.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
         simpleProgressBar.setVisibility(View.GONE);
     }
 
@@ -89,13 +89,11 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.aadharFrontImg:
-                selectImage(AadharCardUpload.this, 1);
-                break;
-            case R.id.aadharBackImg:
-                selectImage(AadharCardUpload.this, 2);
-                break;
+        int id = v.getId();
+        if (id == R.id.aadharFrontImg) {
+            selectImage(AadharCardUpload.this, 1);
+        } else if (id == R.id.aadharBackImg) {
+            selectImage(AadharCardUpload.this, 2);
         }
     }
 

@@ -163,6 +163,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -359,54 +360,43 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.dummy:
-                rentPay();
-                break;
-            case R.id.cancel_rent_booking:
-                //showAlertDialog();
-                //ShowPopup(4);
-                userCancelTrip();
-                Intent intent = new Intent(ActivityRentOTP.this, ActivityRideHome.class);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.drop_hub:
-                ShowPopup(6);
-                break;
-            case R.id.pick_hub:
-                ShowPopup(5);
-                break;
-            case R.id.infoCost:
-                ShowPopup(1);
-                break;
-            case R.id.infoPick:
-                String lat1 = pickLat;
-                String lng1 = pickLng;
-                Intent map = new Intent(ActivityRentOTP.this, MapsHubLocation.class);
-                map.putExtra("lat", lat1);
-                map.putExtra("lng", lng1);
-                startActivity(map);
-                //ShowPopup(8);
-                break;
-            case R.id.infoDrop:
-                String lat2 = dropLat;
-                String lng2 = dropLng;
-                Intent map1 = new Intent(ActivityRentOTP.this, MapsHubLocation.class);
-                map1.putExtra("lat", lat2);
-                map1.putExtra("lng", lng2);
-                startActivity(map1);
-                //ShowPopup(8);
-                break;
-
-            case R.id.upiRental:
-
-                String amount = PriceOnly;
-                String note = "Payment for rental service";
-                String name = "Zipp-E";
-                String upiId = "rajnilakshmi@ybl";
-                payUsingUpi(amount, upiId, name, note);
-                break;
+        int id = v.getId();
+        if (id == R.id.dummy) {
+            rentPay();
+        } else if (id == R.id.cancel_rent_booking) {//showAlertDialog();
+            //ShowPopup(4);
+            userCancelTrip();
+            Intent intent = new Intent(ActivityRentOTP.this, ActivityRideHome.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.drop_hub) {
+            ShowPopup(6);
+        } else if (id == R.id.pick_hub) {
+            ShowPopup(5);
+        } else if (id == R.id.infoCost) {
+            ShowPopup(1);
+        } else if (id == R.id.infoPick) {
+            String lat1 = pickLat;
+            String lng1 = pickLng;
+            Intent map = new Intent(ActivityRentOTP.this, MapsHubLocation.class);
+            map.putExtra("lat", lat1);
+            map.putExtra("lng", lng1);
+            startActivity(map);
+            //ShowPopup(8);
+        } else if (id == R.id.infoDrop) {
+            String lat2 = dropLat;
+            String lng2 = dropLng;
+            Intent map1 = new Intent(ActivityRentOTP.this, MapsHubLocation.class);
+            map1.putExtra("lat", lat2);
+            map1.putExtra("lng", lng2);
+            startActivity(map1);
+            //ShowPopup(8);
+        } else if (id == R.id.upiRental) {
+            String amount = PriceOnly;
+            String note = "Payment for rental service";
+            String name = "Zipp-E";
+            String upiId = "rajnilakshmi@ybl";
+            payUsingUpi(amount, upiId, name, note);
 
             /*case R.id.reject_request:
                 userCancelTrip();
@@ -423,12 +413,10 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             /*case R.id.supervisor_phone:
                 callSuper();
                 break;*/
-            case R.id.otp_lock:
-                ShowPopup(7);
-                break;
-            case R.id.rl_p:
-                callSuper();
-                break;
+        } else if (id == R.id.otp_lock) {
+            ShowPopup(7);
+        } else if (id == R.id.rl_p) {
+            callSuper();
         }
     }
 

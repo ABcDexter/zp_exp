@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
@@ -165,6 +166,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
 
@@ -346,24 +348,18 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.confirm_rent_book:
-                moveit();
-                userRequestRide();
-                break;
-            case R.id.infoPayment:
-                ShowPopup(2);
-                break;
-            case R.id.infoSpeed:
-                ShowPopup(1);
-                break;
-            case R.id.infoPick:
-                ShowPopup(3);
-                break;
-            case R.id.infoDrop:
-                ShowPopup(5);
-                break;
+        int id = v.getId();
+        if (id == R.id.confirm_rent_book) {
+            moveit();
+            userRequestRide();
+        } else if (id == R.id.infoPayment) {
+            ShowPopup(2);
+        } else if (id == R.id.infoSpeed) {
+            ShowPopup(1);
+        } else if (id == R.id.infoPick) {
+            ShowPopup(3);
+        } else if (id == R.id.infoDrop) {
+            ShowPopup(5);
         }
     }
 

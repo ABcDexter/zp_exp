@@ -35,7 +35,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityLogin"/>
+        <activity android:name=".ActivityRideHistory"></activity>
+        <activity android:name=".ActivityLogin" />
         <activity android:name=".ActivityPasserby" />
         <activity android:name=".ActivityRideCompleted" />
         <activity android:name=".SOS" />
@@ -70,6 +71,8 @@
         <activity android:name=".MapsReachUser" />
         <activity android:name=".MapsActivity2" />
         <activity android:name=".MapUserLocation" />
+        <activity android:name=".ActivityRideSummery" />
+
         <service android:name=".UtilityPollingService" />
     </application>
 

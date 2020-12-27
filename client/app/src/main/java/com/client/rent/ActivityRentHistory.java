@@ -57,7 +57,6 @@ public class ActivityRentHistory extends AppCompatActivity {
 
     public void onFailure(VolleyError error) {
         Log.d(TAG, Objects.requireNonNull(error.getMessage()));
-
         Toast.makeText(this, R.string.check_internet, Toast.LENGTH_LONG).show();
 
     }
