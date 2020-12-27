@@ -11,7 +11,7 @@ from url_magic import makeView
 from ..models import Place, Trip, Progress, Supervisor
 from ..models import User, Vehicle
 from ..utils import ZPException, HttpJSONResponse
-from ..utils import getOTP
+from ..utils import getOTP, sendInvoiceMail
 from ..utils import getTripPrice, getRentPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from django.db.utils import IntegrityError
@@ -748,7 +748,7 @@ def supRentRetire(dct, _sup):
     #if trip.st == 'PD':
     total = float(getTripPrice(trip)['price'])
     user = User.objects.filter(an=trip.uan)[0]
-    sendInvoiceMail('ride', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
+    sendInvoiceMail('Rent', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
     
     return HttpJSONResponse({})
 
