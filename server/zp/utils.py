@@ -1309,15 +1309,22 @@ set()
 >>> len(nainital)
 
 '''
-def sendInvoiceMail(userEmail, userName, tripId, tripDate, tripTime, tripPrice, tripCGST, tripSGST, tripTotal ):
+def sendInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTime, tripPrice, tripCGST, tripSGST, tripTotal ):
     '''
     sends mail to the user with
     Args:
-        userEmail
-        userName
-        tripPrice
-        tripTime
-    #TODO take the message as per what happens to the ride, say Ride was TOed then send apt email
+        tripType : ride or rent
+        userEmail : username@xyz.com
+        userName : name of the user
+        tripId : id of the trip is the invoice number
+        tripDate : Date on which the trip was taken
+        tripTime : Time in minutes for the trip
+        tripPrice : bill without the tax 
+        tripCGST : Central GST, as of now it is 5%
+        tripSGST : Central GST, as of now it is 5%
+        tripTotal : total money which is the acutal money taken from the user 
+        
+    #TODO take the message as per what happens to the ride, say Ride/Rental was TOed then send apt email
     
     '''
     import smtplib, ssl
@@ -1329,7 +1336,7 @@ def sendInvoiceMail(userEmail, userName, tripId, tripDate, tripTime, tripPrice, 
     TO = str(userEmail)
 
     message = MIMEMultipart("alternative")
-    message["Subject"] = "Zipp-e Trip Invoice # %s" % (str(tripId))
+    message["Subject"] = "Zipp-e %s Invoice # %s" % (str(tripType), str(tripId))
     message["From"] = FROM
     message["To"] = TO
 

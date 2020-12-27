@@ -744,6 +744,12 @@ def supRentRetire(dct, _sup):
     vehicle = Vehicle.objects.filter(tid=trip.id)[0]
     vehicle.tid = Vehicle.AVAILABLE
     vehicle.save()
+    
+    #if trip.st == 'PD':
+    total = float(getTripPrice(trip)['price'])
+    user = User.objects.filter(an=trip.uan)[0]
+    sendInvoiceMail('ride', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
+    
     return HttpJSONResponse({})
 
 
