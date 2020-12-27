@@ -1174,7 +1174,10 @@ def agentDeliveryRetire(dct, agent, deli):
 
     '''
     
-    
+    user = User.objects.filter(an=trip.uan)[0]
+    total = float(getDelPrice(deli, user.hs)['price'])
+    sendTripInvoiceMail('Delivery', user.email, user.name, deli.id, datetime.strptime(str(deli.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (deli.etime - deli.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
+
     # made the agent AV and reset the tid to -1
     agent.mode = 'AV'
     retireDelEntity(agent)
