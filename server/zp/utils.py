@@ -1309,7 +1309,7 @@ set()
 >>> len(nainital)
 
 '''
-def sendInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTime, tripPrice, tripCGST, tripSGST, tripTotal ):
+def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTime, tripPrice, tripCGST, tripSGST, tripTotal ):
     '''
     sends mail to the user with
     Args:

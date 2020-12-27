@@ -1173,6 +1173,8 @@ def agentDeliveryRetire(dct, agent, deli):
     FL : admin already retired from adminHandleFailedDelivery()
 
     '''
+    
+    
     # made the agent AV and reset the tid to -1
     agent.mode = 'AV'
     retireDelEntity(agent)
