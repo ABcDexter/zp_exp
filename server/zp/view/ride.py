@@ -11,7 +11,7 @@ from url_magic import makeView
 from ..models import Place, Trip, Progress, Rate
 from ..models import User, Vehicle, Driver, Location
 from ..utils import ZPException, HttpJSONResponse, googleDistAndTime
-from ..utils import getOTP, log
+from ..utils import getOTP, log, sendTripInvoiceMail
 from ..utils import getRoutePrice, getTripPrice, getRidePrice, getRiPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 
@@ -385,7 +385,8 @@ def driverPaymentConfirm(_dct, driver, trip):
     # vehicle = Vehicle.objects.filter(an=trip.van)[0]
     # retireEntity(vehicle)
     # NOT required AS PER date 9/11/2020
-
+    
+    
     return HttpJSONResponse({})
 
 
@@ -412,6 +413,11 @@ def driverRideRetire(dct, driver, trip):
 
     TODO: move this common code to a function
     '''
+    #if trip.st == 'PD':
+    total = float(getTripPrice(trip)['price'])
+    user = User.objects.filter(an=trip.uan)[0]
+    sendTripInvoiceMail('Rent', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
+    
     # made the driver AV and reset the tid to -1
     driver.mode = 'AV'
     retireEntity(driver)

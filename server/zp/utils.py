@@ -1309,15 +1309,23 @@ set()
 >>> len(nainital)
 
 '''
-def sendInvoiceMail(userEmail, userName, tripId, tripDate, tripTime, tripPrice, tripCGST, tripSGST, tripTotal ):
+
+def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTime, tripPrice, tripCGST, tripSGST, tripTotal ):
     '''
     sends mail to the user with
     Args:
-        userEmail
-        userName
-        tripPrice
-        tripTime
-    #TODO take the message as per what happens to the ride, say Ride was TOed then send apt email
+        tripType : ride or rent
+        userEmail : username@xyz.com
+        userName : name of the user
+        tripId : id of the trip is the invoice number
+        tripDate : Date on which the trip was taken
+        tripTime : Time in minutes for the trip
+        tripPrice : bill without the tax 
+        tripCGST : Central GST, as of now it is 5%
+        tripSGST : Central GST, as of now it is 5%
+        tripTotal : total money which is the acutal money taken from the user 
+        
+    #TODO take the message as per what happens to the ride, say Ride/Rental was TOed then send apt email
     
     '''
     import smtplib, ssl
@@ -1329,7 +1337,7 @@ def sendInvoiceMail(userEmail, userName, tripId, tripDate, tripTime, tripPrice, 
     TO = str(userEmail)
 
     message = MIMEMultipart("alternative")
-    message["Subject"] = "Zipp-e Trip Invoice # %s" % (str(tripId))
+    message["Subject"] = "Zipp-e %s Invoice # %s" % (str(tripType), str(tripId))
     message["From"] = FROM
     message["To"] = TO
 
@@ -1350,6 +1358,73 @@ def sendInvoiceMail(userEmail, userName, tripId, tripDate, tripTime, tripPrice, 
     + str(';') + """  font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif""" + str(';') + """  }    .rtl table {  text-align: right""" + str(';') + """  }    .rtl table tr td:nth-child(2) {  text-align: left""" + str(';') + """  }  </style>  </head>  <body>  <div class="invoice-box">  <table cellpadding="0" cellspacing="0">  <tr class="top">  <td colspan="2">  <table>  <tr>  <td class="title">  <img src="https://i.imgur.com/1WEczdk.png" style="width:100.0%""" 
     + str(';') + """ max-width:100px""" + str(';') + """">  </td>    </tr>  </table>  </td>  </tr>    <tr class="information">  <td colspan="2">  <table>  <tr>  <td>  Zippe &#169""" + str(';') + """ <br>  Village Connect Pvt. Ltd. <br>  H No. 33, Naukuchiatal,<br>  Village Chanoti, Nainital,<br>  Uttarakhand, 263136  </td>   """)
     parsed = """ <td>  Invoice # : %s<br>  Dated : %s<br>  </td>  </tr>  </table>  </td>  </tr>      <tr class="heading">  <td>  Item  </td>    <td>  Details  </td>  </tr>  <tr class="item">  <td>  Trip time  </td>  <td>  %s minutes  </td>  </tr>    <tr class="item">  <td>  Bill amount  </td>  <td>  %s  </td>  </tr>  <tr class="item">  <td>  CGST ( 2.5 percent )  </td>    <td>  %s   </td>  </tr>    <tr class="item last">  <td>  SGST ( 2.5 percent)  </td>    <td>  %s  </td>  </tr>    <tr class="total">  <td></td>    <td>  Total: %s  </td>  </tr>  </table>  </div>    <br>  Note : Fares are inclusive of GST.  </body>  </html>""" % ( str(0)+str(tripId), str(tripDate), str(tripTime), str(u"\u20B9")+" "+ str(tripPrice), str(u"\u20B9")+" "+str(tripCGST), str(u"\u20B9") + " "+str(tripSGST),str(u"\u20B9")+" "+str(tripTotal))
+    
+    msg = body + html + parsed
+    print(html)
+
+    #set the correct MIMETexts
+    part1 = MIMEText(body, "plain")
+    #part2 = MIMEText(html, "html")
+    part3 = MIMEText(msg, "html")
+
+    #attach the parts to actual message
+    message.attach(part1)
+    #message.attach(part2)
+    message.attach(part3)
+    # Send the mail
+    print(message.as_string())
+    server = smtplib.SMTP(SENDER_SERVER)
+    server.sendmail(FROM, TO, message.as_string())
+    server.quit()
+    
+    
+
+def sendDeliveryInvoiceMail(deliveryType, userEmail, userName, deliveryId, deliveryDate, deliveryTime, deliveryPrice, deliveryCGST, deliverySGST, deliveryTotal ):
+    '''
+    sends mail to the user with
+    Args:
+        deliveryType : Express or Scheduled
+        userEmail : username@xyz.com
+        userName : name of the user
+        deliveryId : id of the delivery is the invoice number
+        deliveryDate : Date on which the delivery was taken
+        deliveryTime : Time in minutes for the delivery
+        deliveryPrice : bill without the tax 
+        deliveryCGST : Central GST, as of now it is 5%
+        deliverySGST : Central GST, as of now it is 5%
+        deliveryTotal : total money which is the acutal money taken from the user 
+        
+    '''
+    import smtplib, ssl
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    SENDER_SERVER = "localhost"
+    FROM = "zippe@villageapps.in"
+    TO = str(userEmail)
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Zipp-e %s Invoice # %s" % (str(deliveryType), str(deliveryId))
+    message["From"] = FROM
+    message["To"] = TO
+
+    context = ssl.create_default_context()
+
+    # Prepare textual message
+    body = """\
+    Hi %s, """ % (str(userName))#+"""\"""
+    #\n
+    #Thanks for riding with Zippe!\n"""
+    print(body)
+
+    html = ("""<!doctype html> <html>  <head>  <meta charset="utf-8">  <title>Zipp-e Delivery Invoice</title>  <style>  .invoice-box {  max-width: 800px""" + str(';') + """  margin: auto""" + str(';') + """  padding: 30px""" + str(';') + """  border: 1px solid #eee""" + str(';') + """  box-shadow: 0 0 10px rgba(0, 0, 0, .15)""" + str(';') + """  font-size: 16px""" + str(';') + """  line-height: 24px"""  
+    + str(';') + """  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif""" + str(';') + """  color: #555""" + str(';') + """  }    .invoice-box table {  width: 100%""" + str(';') + """  line-height: inherit""" + str(';') + """  text-align: left""" + str(';') + """  }    .invoice-box table td {  padding: 5px""" + str(';') + """  vertical-align: top""" + str(';') + """  }    .invoice-box table tr td:nth-child(2) {  text-align: right""" 
+    + str(';') + """  }    .invoice-box table tr.top table td {  padding-bottom: 20px""" + str(';') + """  }    .invoice-box table tr.top table td.title {  font-size: 45px""" + str(';') + """  line-height: 45px""" + str(';') + """  color: #333""" + str(';') + """  }    .invoice-box table tr.information table td {  padding-bottom: 40px""" + str(';') + """  }    .invoice-box table tr.heading td {  background: #eee""" + str(';') + """  border-bottom: 1px solid #ddd""" 
+    + str(';') + """  font-weight: bold""" + str(';') + """  }    .invoice-box table tr.details td {  padding-bottom: 20px""" + str(';') + """  }    .invoice-box table tr.item td{  border-bottom: 1px solid #eee""" + str(';') + """  }    .invoice-box table tr.item.last td {  border-bottom: none""" + str(';') + """  }    .invoice-box table tr.total td:nth-child(2) {  border-top: 2px solid #eee""" + str(';') + """  font-weight: bold""" 
+    + str(';') + """  }    @media only screen and (max-width: 600px) {  .invoice-box table tr.top table td {  width: 100%""" + str(';') + """  display: block""" + str(';') + """  text-align: center""" + str(';') + """  }    .invoice-box table tr.information table td {  width: 100%""" + str(';') + """  display: block""" + str(';') + """  text-align: center""" + str(';') + """  }  }    /** RTL **/  .rtl {  direction: rtl""" 
+    + str(';') + """  font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif""" + str(';') + """  }    .rtl table {  text-align: right""" + str(';') + """  }    .rtl table tr td:nth-child(2) {  text-align: left""" + str(';') + """  }  </style>  </head>  <body>  <div class="invoice-box">  <table cellpadding="0" cellspacing="0">  <tr class="top">  <td colspan="2">  <table>  <tr>  <td class="title">  <img src="https://i.imgur.com/1WEczdk.png" style="width:100.0%""" 
+    + str(';') + """ max-width:100px""" + str(';') + """">  </td>    </tr>  </table>  </td>  </tr>    <tr class="information">  <td colspan="2">  <table>  <tr>  <td>  Zippe &#169""" + str(';') + """ <br>  Village Connect Pvt. Ltd. <br>  H No. 33, Naukuchiatal,<br>  Village Chanoti, Nainital,<br>  Uttarakhand, 263136  </td>   """)
+    parsed = """ <td>  Invoice # : %s<br>  Dated : %s<br>  </td>  </tr>  </table>  </td>  </tr>      <tr class="heading">  <td>  Item  </td>    <td>  Details  </td>  </tr>  <tr class="item">  <td>  Delivery time  </td>  <td>  %s minutes  </td>  </tr>    <tr class="item">  <td>  Bill amount  </td>  <td>  %s  </td>  </tr>  <tr class="item">  <td>  CGST ( 2.5 percent )  </td>    <td>  %s   </td>  </tr>    <tr class="item last">  <td>  SGST ( 2.5 percent)  </td>    <td>  %s  </td>  </tr>    <tr class="total">  <td></td>    <td>  Total: %s  </td>  </tr>  </table>  </div>    <br>  Note : Fares are inclusive of GST.  </body>  </html>""" % ( str(0)+str(deliveryId), str(deliveryDate), str(deliveryTime), str(u"\u20B9")+" "+ str(deliveryPrice), str(u"\u20B9")+" "+str(deliveryCGST), str(u"\u20B9") + " "+str(deliverySGST),str(u"\u20B9")+" "+str(deliveryTotal))
     
     msg = body + html + parsed
     print(html)

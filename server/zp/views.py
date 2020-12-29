@@ -28,7 +28,7 @@ from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renam
 from .utils import getRoutePrice, getTripPrice, getRentPrice, getRidePrice, getRiPrice
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from .utils import headers
-from .utils import sendInvoiceMail
+from .utils import sendTripInvoiceMail, sendDeliveryInvoiceMail
 
 from url_magic import makeView
 from zp.view import rent, ride, deliver, pwa, shop, service
@@ -548,10 +548,6 @@ def userTripRetire(_dct, user, trip):
     FL : admin retires this via adminHandleFailedTrip()
     TR/FN : Driver will retire via driverConfirmPayment() after user pays money
     '''
-    if trip.st == 'PD':
-        total = float(getTripPrice(trip)['price'])
-        sendInvoiceMail(user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
-
     # reset the tid to -1
     retireEntity(user)
     
