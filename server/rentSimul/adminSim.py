@@ -37,10 +37,11 @@ class Admin(Entity):
             self.logIfErr(dctRet)
             if not self.logIfErr(dctRet) and prob(0.5):
             # Fix failed vehicles and super very lazily with 50% probability
-                self.log('Fixing trip failures')
 
                 failedList = self.callAPI('admin-handle-failed-trip')
+
                 if len(failedList):
+                    self.log('Fixing trip failures')
                     self.log('Recovering %d vehicles' % len(failedList))
                     self.log('Freeing %d users' % len(failedList))
 
@@ -55,7 +56,22 @@ class Admin(Entity):
                         if not self.logIfErr(dctRetUser):
                             self.log('Freed user with auth : %s' % failed['uauth'] )
                         time.sleep(fDelay)
+                else:
+                    self.log("No failed trips!")
 
+            assigned = self.callAPI('admin-vehicle-assign')
+            try:
+                if not self.logIfErr(assigned) :
+                    if 'tid' in assigned:
+                        self.log('Assigning rental vehicles')
+                        if 'vid' in assigned:
+                            self.log("assigned vehicle %d to trip %d" % (assigned['vid'], assigned['tid']))
+                        else:
+                            self.log("Vehicle not Found for trip %d " % (assigned['tid']))
+                    else:
+                        self.log("No incoming rental request!")
+            except KeyError:
+                self.log("assigning failed! please have a look")
             pass
 
             # Sleep for specified time

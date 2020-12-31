@@ -18,13 +18,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+import com.bumptech.glide.Glide;
 import com.client.ActivityDrawer;
 import com.client.ActivityWelcome;
 import com.client.R;
@@ -45,7 +48,7 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
     TextView origin, destination, dName, dPhone, vNum, OTP, costEst, timeEst, trackDriver;
     ImageButton cancel;
     ScrollView scrollView;
-
+    ImageView driverPhoto;
     public static final String COST_DROP = "";
     public static final String TIME_DROP = "e";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
@@ -55,15 +58,15 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
     public static final String AUTH_KEY = "AuthKey";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    public static final String OTP_PICK = "OTPPick";
+    //public static final String OTP_PICK = "OTPPick";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
-    public static final String DRIVER_MINS = "DriverMins";
+    //public static final String DRIVER_MINS = "DriverMins";
 
     private static ActivityRideOTP instance;
     Dialog myDialog;
     RelativeLayout rlPhone;
-    ImageButton costInfo, priceInfo, pickInfo, dropInfo,infoMins;
+    ImageButton costInfo, priceInfo, pickInfo, dropInfo, infoMins;
     String stringAuthCookie, stringPick, stringDrop;
     //Button giveOTP;
     ActivityRideOTP a = ActivityRideOTP.this;
@@ -102,13 +105,24 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
                 if (active.equals("true")) {
                     String status = response.getString("st");
                     String tid = response.getString("tid");
+
+                    String photo = response.getString("photourl");
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (status.equals("AS")) {
-
+                        String vno = response.getString("vno");
+                        String otp = response.getString("otp");
+                        String time = response.getString("time");
+                        vNum.setText(vno);
+                        OTP.setText(otp);
+                        trackDriver.setText(time + " MINS");
+                        Glide.with(this).load(photo).into(driverPhoto);
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("03");
                         startService(intent);
+
+                        SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                        sp_otp.edit().putString(VAN_PICK, vno).apply();
                     }
                     if (status.equals("ST")) {
                         Intent st = new Intent(ActivityRideOTP.this, ActivityRideInProgress.class);
@@ -126,13 +140,14 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
             }
 
         }
+
     }
 
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,10 +171,10 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         stringDrop = prefPLoc.getString(DST_NAME, "");
         String stringCost = prefPLoc.getString(COST_DROP, "");
         String stringTime = prefPLoc.getString(TIME_DROP, "");
-        String str_otp = prefPLoc.getString(OTP_PICK, "");
-        String str_van = prefPLoc.getString(VAN_PICK, "");
-        String str_min = prefPLoc.getString(DRIVER_MINS, "");
-
+        //String str_otp = prefPLoc.getString(OTP_PICK, "");
+        //String str_van = prefPLoc.getString(VAN_PICK, "");
+        //String str_min = prefPLoc.getString(DRIVER_MINS, "");
+        driverPhoto = findViewById(R.id.photo_driver);
         costEst = findViewById(R.id.cost_estimate_otp);
         costEst.setText("₹ " + stringCost);
         timeEst = findViewById(R.id.ride_estimate_otp);
@@ -190,13 +205,12 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         giveOTP.setOnClickListener(this);*/
         //dPhone.setOnClickListener(this);
         myDialog = new Dialog(this);
-        OTP.setText(str_otp);
-        vNum.setText(str_van);
+        //OTP.setText(str_otp);
+        //vNum.setText(str_van);
         driverDetails();
-        trackDriver.setText(str_min+" MINS");
-
+        //trackDriver.setText(str_min + " MINS");
         if (stringDrop.isEmpty()) {
-            destination.setText("DROP POINT");
+            destination.setText(R.string.drop_point);
         } else {
             try {
                 String upToNCharacters = stringDrop.substring(0, Math.min(stringDrop.length(), 25));
@@ -208,7 +222,7 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         }
 
         if (stringPick.isEmpty()) {
-            origin.setText("PICK UP POINT");
+            origin.setText(R.string.pick_point);
         } else {
             try {
                 String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 25));
@@ -221,6 +235,7 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
 
         checkStatus();
     }
+
 
     private void driverDetails() {
         String stringAuth = stringAuthCookie;
@@ -244,20 +259,20 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
         if (id == 1) {
-            String part1= "This is an approximate cost as per ";
-            String part2= "Google Maps (distance and time taken)";
-            String part3= ". May change depending on ride time.";
+            String part1 = getString(R.string.google_part1);
+            String part2 = getString(R.string.google_part2);
+            String part3 = getString(R.string.google_part3);
 
-            String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
+            String sourceString = part1 + "<b>" + part2 + "</b> " + part3;
             infoText.setText(Html.fromHtml(sourceString));
             //infoText.setText("This is an approximate cost. May change depending on ride time.");
         }
         if (id == 2) {
-            String part1= "Approximate time as per ";
-            String part2= "Google Maps";
-            String part3= ". May change depending on traffic.";
+            String part1 = getString(R.string.google_time_part1);
+            String part2 = getString(R.string.google_time_part2);
+            String part3 = getString(R.string.google_time_part3);
 
-            String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
+            String sourceString = part1 + "<b>" + part2 + "</b> " + part3;
             infoText.setText(Html.fromHtml(sourceString));
 
             //infoText.setText("Approximate time as per Google Maps. May change depending on traffic.");
@@ -280,13 +295,13 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
 
     private void showAlertDialog() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityRideOTP.this);
-        alertDialog.setTitle("CANCEL RIDE");
+        alertDialog.setTitle(R.string.cancel_ride);
         String[] items = {
-                "DRIVER DENIED PICKUP",
-                "DRIVER DENIED DESTINATION",
-                "EXPECTED A SHORTER WAIT TIME",
-                "UNABLE TO CONTACT DRIVER",
-                "MY REASON IS NOT LISTED"};
+                getString(R.string.driver_denied),
+                getString(R.string.driver_denied_destination),
+                getString(R.string.wait_time_too_long),
+                getString(R.string.driver_no_contact),
+                getString(R.string.reason_not_listed)};
         alertDialog.setCancelable(false);
 
         int checkedItem = 1;
@@ -301,7 +316,7 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
                     case 4:
                         //Toast.makeText(ActivityRideOTP.this, "Thank you for your feedback.", Toast.LENGTH_LONG).show();
                         Snackbar snackbar = Snackbar
-                                .make(scrollView, "Thank you for your feedback.", Snackbar.LENGTH_LONG);
+                                .make(scrollView, R.string.thanks_for_feedback, Snackbar.LENGTH_LONG);
                         snackbar.show();
 
                         break;
@@ -309,7 +324,7 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
             }
         });
 
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 userCancelTrip();
@@ -319,7 +334,7 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
             }
         });
 
-        alertDialog.setPositiveButton("Don't Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(R.string.dont_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -350,30 +365,22 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.cancel_ride_booking:
-                showAlertDialog();
-                break;
-            case R.id.infoTime:
-            case R.id.infomins:
-                ShowPopup(2);
-                break;
-            case R.id.infoCost:
-                ShowPopup(1);
-                break;
-            /*case R.id.give_otp: //TODO remove this later
+        int id = v.getId();
+        if (id == R.id.cancel_ride_booking) {
+            showAlertDialog();
+        } else if (id == R.id.infoTime || id == R.id.infomins) {
+            ShowPopup(2);
+        } else if (id == R.id.infoCost) {
+            ShowPopup(1);
+                /*case R.id.give_otp: //TODO remove this later
                 giveOtp();
                 break;*/
-            case R.id.rl_p:
-                callDriverPhn();
-                break;
-            case R.id.infoPick:
-                ShowPopup(3);
-                break;
-            case R.id.infoDrop:
-                ShowPopup(4);
-                break;
-
+        } else if (id == R.id.rl_p) {
+            callDriverPhn();
+        } else if (id == R.id.infoPick) {
+            ShowPopup(3);
+        } else if (id == R.id.infoDrop) {
+            ShowPopup(4);
         }
     }
 

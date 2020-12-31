@@ -6,14 +6,18 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,25 +25,34 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.android.volley.VolleyError;
 import com.client.ride.ActivityRideHome;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-public class UserProfileActivity extends ActivityDrawer {
+public class UserProfileActivity extends ActivityDrawer implements View.OnClickListener {
 
     private static final String TAG = "UserProfileActivity";
     private Spinner spLanguage;
     Locale myLocale;
     String currentLanguage = "en", currentLang;
 
-    TextView mobiletxt;
+    TextView mobiletxt, uploadAadhar, btnEmail;
+    EditText etEmail;
+    Button submitEmail;
+    String strEmail, stringName, stringPhone, stringAuth;
+    RelativeLayout rlEmail;
     public static final String AUTH_KEY = "AuthKey";
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
-    public static final String USER_DATA = "com.client.UserData";
-    public static final String USER_NAME = "UserName";
-    public static final String USER_PHONE = "UserPhone";
+    public static final String NAME_KEY = "NameKey";
+    public static final String PHN_KEY = "PhnKey";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +72,10 @@ public class UserProfileActivity extends ActivityDrawer {
         // add the custom layout of this activity to frame layout.
         frameLayout.addView(activityView);
 
+        SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
+        stringName = prefPLoc.getString(NAME_KEY, "");
+        stringPhone = prefPLoc.getString(PHN_KEY, "");
+        stringAuth = prefPLoc.getString(AUTH_KEY, "");
 
         SwitchCompat switchCompat = findViewById(R.id.switchCompat);
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
@@ -85,19 +102,21 @@ public class UserProfileActivity extends ActivityDrawer {
         });
         mobiletxt = findViewById(R.id.mobile);
         nameText = findViewById(R.id.user_name);
-
-        SharedPreferences prefPLoc = getSharedPreferences(USER_DATA, Context.MODE_PRIVATE);
-        String stringPhone = prefPLoc.getString(USER_PHONE, "");
+        uploadAadhar = findViewById(R.id.upload_aadhar);
+        btnEmail = findViewById(R.id.btn_email);
+        btnEmail.setOnClickListener(this);
+        etEmail = findViewById(R.id.et_email);
+        submitEmail = findViewById(R.id.submit);
+        rlEmail = findViewById(R.id.rl_email);
+        submitEmail.setOnClickListener(this);
 
         if (stringPhone.isEmpty())
-            mobiletxt.setText("XXXXXXXXXX");
+            mobiletxt.setText("");
         else {
             mobiletxt.setText(stringPhone);
             Log.d(TAG, "phone no:" + stringPhone);
 
         }
-
-        String stringName = prefPLoc.getString(USER_NAME, "");
 
         if (stringName.isEmpty())
             nameText.setText("");
@@ -155,5 +174,59 @@ public class UserProfileActivity extends ActivityDrawer {
         } else {
             Toast.makeText(UserProfileActivity.this, "Language already selected!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    //method to upload aadhar card pictures to the server
+    public void uploadAadhar(View view) {
+        Intent upload = new Intent(UserProfileActivity.this, AadharCardUpload.class);
+        startActivity(upload);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.btn_email) {
+            btnEmail.setVisibility(View.GONE);
+            rlEmail.setVisibility(View.VISIBLE);
+
+        } else if (id == R.id.submit) {
+
+            strEmail = etEmail.getText().toString();
+            if (TextUtils.isEmpty(strEmail)) {
+                etEmail.setError("This field cannot be left blank");
+            } else {
+                sendEmailAdd(strEmail);
+            }
+        }
+    }
+
+    private void sendEmailAdd(String email) {
+        String auth = stringAuth;
+        Map<String, String> params = new HashMap();
+        params.put("auth", auth);
+        params.put("email", email);
+
+        JSONObject parameters = new JSONObject(params);
+        UserProfileActivity a = UserProfileActivity.this;
+        Log.d(TAG, "Values: auth=" + auth + " email=" + email);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-update");
+        UtilityApiRequestPost.doPOST(a, "auth-profile-update", parameters, 30000, 0, response -> {
+            try {
+                a.onSuccess(response);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+    }
+
+    public void onSuccess(JSONObject response) throws JSONException {
+        Log.d(TAG, "RESPONSE:" + response);
+        rlEmail.setVisibility(View.GONE);
+    }
+
+    public void onFailure(VolleyError error) {
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 }

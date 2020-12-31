@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/sarpanch"
+            android:text="HEY! LET'S GET"
+            android:textAllCaps="true"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+            android:textColor="#FFFFFF" />
+
+        <ImageView
+            android:id="@+id/zippe_logo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/textView"
+            android:src="@drawable/zippe_logo" />
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/zippe_logo"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/rect_box_outline"
+            android:cursorVisible="true"
+            android:hint="@string/enter_name"
+            android:inputType="textPersonName"
+            android:maxLength="50"
+            android:padding="5dp"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="@color/txtColor"
+            android:textSize="23sp" />
+
+        <EditText
+            android:id="@+id/editTextMobile"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/editTextName"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rect_box_outline"
+            android:cursorVisible="true"
+            android:hint="@string/enter_mobile"
+            android:inputType="phone"
+            android:maxLength="10"
+            android:padding="5dp"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="@color/txtColor"
+            android:textSize="23sp" />
+
+        <TextView
+            android:id="@+id/buttonVerifyPhoneNo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/editTextMobile"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/btn_bkg"
+            android:padding="5dp"
+            android:text="@string/request_otp"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textSize="23sp" />
+
+        <EditText
+            android:id="@+id/editTextOTP"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/buttonVerifyPhoneNo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/rect_box_outline"
+            android:digits="0123456789"
+            android:maxLength="6"
+            android:hint="@string/enter_otp_to_verify"
+            android:inputType="number"
+            android:padding="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/txtColor"
+            android:textSize="23sp" />
+
+        <Button
+            android:id="@+id/btnHomeState"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/editTextOTP"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rect_box_outline"
+            android:drawableEnd="@drawable/ic_arrow_drop_down"
+            android:entries="@array/gender_array"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Home State"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textSize="23sp" />
+
+        <Button
+            android:id="@+id/btnGender"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/btnHomeState"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rect_box_outline"
+            android:drawableEnd="@drawable/ic_arrow_drop_down"
+            android:entries="@array/gender_array"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="GENDER"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textSize="23sp" />
+
+        <ImageButton
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btn_bkg"
+            android:padding="15dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/login"
+            android:text="@string/next"
+            android:textAllCaps="true" />
+
+        <ProgressBar
+            android:id="@+id/simpleProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/login"
+            android:layout_marginTop="20dp">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/i_agree_to_terms_amp_conditions"
+                android:textSize="12sp"
+                android:textAllCaps="true"
+                android:textColor="@color/txtColor"
+                android:buttonTint="@color/txtColor"
+                android:id="@+id/tnc"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/terms_amp_conditions"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:layout_toEndOf="@+id/tnc"
+                android:id="@+id/txt_tnc"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+</ScrollView>

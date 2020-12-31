@@ -22,6 +22,8 @@ from django.http import HttpResponse
 from .models import Place, Trip, Progress, Route
 from .models import Vehicle, User, Driver, Supervisor
 from .models import Delivery, Agent
+from .models import Purchaser
+from .models import Servitor
 
 from django.conf import settings
 import requests
@@ -509,6 +511,7 @@ def getOTP(an: int, dan: int, rtime: datetime) -> int:
     '''
     Generates a deterministic 4 digit OTP
     '''
+    print((str(an), str(dan), str(rtime)))
     sText = 'zippee-otp-%s-%s-%s' % (str(an), str(dan), str(rtime))
     shaText = sText.encode('utf-8')
     m = hashlib.new('ripemd160')
@@ -753,8 +756,8 @@ def getTripPrice(trip):
     if trip.rtype == '0':
         return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
     else :
-        #return getRentPrice(trip.srcid, trip.dstid, vehicle.vtype, trip.pmode, trip.hrs)
-        return getRentPrice(trip.hrs, (trip.etime - trip.stime).seconds//60) #convert seconds to minutes
+        hrs = datetime.now(timezone.utc) - trip.stime if trip.st == 'ST' else trip.etime- trip.stime
+        return getRentPrice(trip.hrs, hrs.seconds//60) #convert seconds to minutes
 
 
 def getDelPrice(deli, hs):
@@ -763,7 +766,9 @@ def getDelPrice(deli, hs):
     '''
     # vehicle = Vehicle.objects.filter(an=deli.van)[0]
     # home state of user
-    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, deli.express, hs, deli.tip)
+    # print(" TIP IS : ", deli.tip)
+    exp = '1' if deli.express is True else '0'
+    return getDeliveryPrice(deli.srclat, deli.srclng, deli.dstlat, deli.dstlng, deli.idim, 1, exp, hs, deli.tip)
 
 ###########################################
 
@@ -853,7 +858,9 @@ class checkAuth(object):
             isAuth = sFnName.startswith('auth')
             isSuper = sFnName.startswith('sup')
             isAgent = sFnName.startswith('agent')
-
+            isPurchaser = sFnName.startswith('purchase')
+            isServitor = sFnName.startswith('servi')
+            
             if isAdmin:
                 if dct.get('auth', '') != settings.ADMIN_AUTH:
                     return HttpJSONError('Forbidden', 403)
@@ -862,6 +869,7 @@ class checkAuth(object):
 
             # If auth key checks out, then return JSON, else Unauthorized
             auth = dct.get('auth', '')
+            print("auth is :", auth, "...")
             if isUser or isAuth:
                 qsUser = User.objects.filter(auth=auth)
                 if (qsUser is not None) and len(qsUser) > 0:
@@ -869,7 +877,7 @@ class checkAuth(object):
 
             if isDriver or isAuth:
                 qsDriver = Driver.objects.filter(auth=auth)
-
+                print("driver : ", qsDriver)
                 # Ensure we have a confirmed driver
                 if (qsDriver is not None) and (len(qsDriver) > 0) and qsDriver[0].mode != 'RG':
                     # Ensure the driver is in the desired state if any
@@ -878,7 +886,7 @@ class checkAuth(object):
 
             if isAgent or isAuth:
                 qsAgent = Agent.objects.filter(auth=auth)
-                print(qsAgent)
+                print("agents : ", qsAgent)
                 # Ensure we have a confirmed Agent
                 if (qsAgent is not None) and (len(qsAgent) > 0) and qsAgent[0].mode != 'RG':
                     # Ensure the agent is in the desired state if any
@@ -889,6 +897,17 @@ class checkAuth(object):
                 qsSuper = Supervisor.objects.filter(auth=auth)
                 if (qsSuper is not None) and (len(qsSuper) > 0):
                     return func(dct, qsSuper[0])
+
+            if isPurchaser or isAuth:
+                qsPur = Purchaser.objects.filter(auth=auth)
+                if (qsPur is not None) and (len(qsPur) > 0):
+                    return func(dct, qsPur[0])
+                    
+            if isServitor or isAuth:
+                qsSer = Servitor.objects.filter(auth=auth)
+                if (qsSer is not None) and (len(qsSer) > 0):
+                    return func(dct, qsSer[0])
+
 
             return HttpJSONError('Unauthorized', 403)
 
@@ -994,7 +1013,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
     srcCoOrds = ['%s,%s' % (srclat,srclng)]
     dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
 
-    print(srcCoOrds,dstCoOrds)
+    # print(srcCoOrds,dstCoOrds)
 
     gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
     nDist, nTime = gMapsRet['dist'], gMapsRet['time']
@@ -1015,13 +1034,13 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
     price = fBaseFare  # + (fDist / 1000) * vehiclePricePerKM * avgWt
     if fDist > 5000:
         price += ceil((fDist - 5000) / 1000) * 10.00
-        print(fDist, ceil((fDist - 5000) / 1000), price )
+        #print(fDist, ceil((fDist - 5000) / 1000), price )
     #if iPayMode == Trip.UPI:
     #    price *= 0.9
-
+    # print("EXPRESS : ", express)
     if express == '1':
         price += 20.00  # 20 Rs extra for express
-        print('Expresss okay############')
+        # print('Expresss okay############')
     '''
     # L = 10
     # XL = 20
@@ -1035,7 +1054,7 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
         price += 30.00
 
     price += tip
-
+    # print( "PRICE : ", price)
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
         'time': float('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
@@ -1069,7 +1088,7 @@ class checkDeliveryStatus(object):
                 # arrValid == ['INACTIVE'] means "No delivery    should be active for this entity"
                 if self.arrValid and len(self.arrValid) > 0 and self.arrValid[0] == 'INACTIVE':
                     return HttpJSONError('Delivery already active', 400)
-                print(qsDel)
+                # print(qsDel)
                 # Ensure the delivery has an allowed status
                 bAllowAll = self.arrValid is None
                 if bAllowAll or qsDel[len(qsDel)-1].st in self.arrValid:
@@ -1111,8 +1130,22 @@ def headers(h):
 
 def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     '''
-    Determines the price given the rent details and time taken
-    time is etime - stime
+    #Get this route distance using google's APIs
+    
+    Determines the price given 
+        srclat : latitude of the source 
+        srclng : longitude of the source 
+        dstlat : latitude of the destination
+        dstlng : longitude of the destination
+        iVType : type of the vehicle (0 for cycle, 1 for scooty, 2 for bike, 3 for ZBee)
+        iPayMode : payment type (0 for cash, 1 for UPI)
+        iTime : time taken for the ride in seconds, this is required to calculate actual price (for eg drierRideEnd )
+    
+    returns 
+        'price': Price for t,
+        'time': time taken in minutes  # converted seconds to minutes
+        'dist': Distance in Kilometers,
+        'speed': Average speed 
     '''
     # Get this route distance
 
@@ -1121,11 +1154,11 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     srcCoOrds = ['%s,%s' % (srclat,srclng)]
     dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
 
-    print(srcCoOrds, dstCoOrds)
+    #print(srcCoOrds, dstCoOrds)
 
     gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
     nDist, nTime = gMapsRet['dist'], gMapsRet['time']
-    print(nDist, nTime)
+    #print(nDist, nTime)
     fDist = nDist
     iVType, iPayMode = int(iVType), int(iPayMode)  # need explicit type conversion to int
     iTimeSec = nTime*60 if iTime == 0 else iTime
@@ -1147,9 +1180,16 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
 
     # Calculate price
     price = fBaseFare + (fDist / 1000) * vehiclePricePerKM * avgWt
-    if iPayMode == Trip.UPI:
+    if iPayMode == Trip.UPI:  # UPI has 10% off
         price *= 0.9
 
+    #if str(hs) == 'UK': # 10% off for natives
+    #   price *= 0.9
+
+    #if str(gdr) == 'F': # 25% off for females
+    #   price *= 0.75
+
+ 
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
         'time': int('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
@@ -1164,7 +1204,7 @@ def getRiPrice(trip):
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)
     vType = vehicle[0].vtype if len(vehicle)>0 else 1
-    print(vType)
+    #print(vType)
     return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)#, (trip.etime - trip.stime).seconds)
 
 ###############
@@ -1269,3 +1309,139 @@ set()
 >>> len(nainital)
 
 '''
+
+def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTime, tripPrice, tripCGST, tripSGST, tripTotal ):
+    '''
+    sends mail to the user with
+    Args:
+        tripType : ride or rent
+        userEmail : username@xyz.com
+        userName : name of the user
+        tripId : id of the trip is the invoice number
+        tripDate : Date on which the trip was taken
+        tripTime : Time in minutes for the trip
+        tripPrice : bill without the tax 
+        tripCGST : Central GST, as of now it is 5%
+        tripSGST : Central GST, as of now it is 5%
+        tripTotal : total money which is the acutal money taken from the user 
+        
+    #TODO take the message as per what happens to the ride, say Ride/Rental was TOed then send apt email
+    
+    '''
+    import smtplib, ssl
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    SENDER_SERVER = "localhost"
+    FROM = "zippe@villageapps.in"
+    TO = str(userEmail)
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Zipp-e %s Invoice # %s" % (str(tripType), str(tripId))
+    message["From"] = FROM
+    message["To"] = TO
+
+    context = ssl.create_default_context()
+
+    # Prepare textual message
+    body = """\
+    Hi %s, """ % (str(userName))#+"""\"""
+    #\n
+    #Thanks for riding with Zippe!\n"""
+    print(body)
+
+    html = ("""<!doctype html> <html>  <head>  <meta charset="utf-8">  <title>Zipp-e Trip Invoice</title>  <style>  .invoice-box {  max-width: 800px""" + str(';') + """  margin: auto""" + str(';') + """  padding: 30px""" + str(';') + """  border: 1px solid #eee""" + str(';') + """  box-shadow: 0 0 10px rgba(0, 0, 0, .15)""" + str(';') + """  font-size: 16px""" + str(';') + """  line-height: 24px"""  
+    + str(';') + """  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif""" + str(';') + """  color: #555""" + str(';') + """  }    .invoice-box table {  width: 100%""" + str(';') + """  line-height: inherit""" + str(';') + """  text-align: left""" + str(';') + """  }    .invoice-box table td {  padding: 5px""" + str(';') + """  vertical-align: top""" + str(';') + """  }    .invoice-box table tr td:nth-child(2) {  text-align: right""" 
+    + str(';') + """  }    .invoice-box table tr.top table td {  padding-bottom: 20px""" + str(';') + """  }    .invoice-box table tr.top table td.title {  font-size: 45px""" + str(';') + """  line-height: 45px""" + str(';') + """  color: #333""" + str(';') + """  }    .invoice-box table tr.information table td {  padding-bottom: 40px""" + str(';') + """  }    .invoice-box table tr.heading td {  background: #eee""" + str(';') + """  border-bottom: 1px solid #ddd""" 
+    + str(';') + """  font-weight: bold""" + str(';') + """  }    .invoice-box table tr.details td {  padding-bottom: 20px""" + str(';') + """  }    .invoice-box table tr.item td{  border-bottom: 1px solid #eee""" + str(';') + """  }    .invoice-box table tr.item.last td {  border-bottom: none""" + str(';') + """  }    .invoice-box table tr.total td:nth-child(2) {  border-top: 2px solid #eee""" + str(';') + """  font-weight: bold""" 
+    + str(';') + """  }    @media only screen and (max-width: 600px) {  .invoice-box table tr.top table td {  width: 100%""" + str(';') + """  display: block""" + str(';') + """  text-align: center""" + str(';') + """  }    .invoice-box table tr.information table td {  width: 100%""" + str(';') + """  display: block""" + str(';') + """  text-align: center""" + str(';') + """  }  }    /** RTL **/  .rtl {  direction: rtl""" 
+    + str(';') + """  font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif""" + str(';') + """  }    .rtl table {  text-align: right""" + str(';') + """  }    .rtl table tr td:nth-child(2) {  text-align: left""" + str(';') + """  }  </style>  </head>  <body>  <div class="invoice-box">  <table cellpadding="0" cellspacing="0">  <tr class="top">  <td colspan="2">  <table>  <tr>  <td class="title">  <img src="https://i.imgur.com/1WEczdk.png" style="width:100.0%""" 
+    + str(';') + """ max-width:100px""" + str(';') + """">  </td>    </tr>  </table>  </td>  </tr>    <tr class="information">  <td colspan="2">  <table>  <tr>  <td>  Zippe &#169""" + str(';') + """ <br>  Village Connect Pvt. Ltd. <br>  H No. 33, Naukuchiatal,<br>  Village Chanoti, Nainital,<br>  Uttarakhand, 263136  </td>   """)
+    parsed = """ <td>  Invoice # : %s<br>  Dated : %s<br>  </td>  </tr>  </table>  </td>  </tr>      <tr class="heading">  <td>  Item  </td>    <td>  Details  </td>  </tr>  <tr class="item">  <td>  Trip time  </td>  <td>  %s minutes  </td>  </tr>    <tr class="item">  <td>  Bill amount  </td>  <td>  %s  </td>  </tr>  <tr class="item">  <td>  CGST ( 2.5 percent )  </td>    <td>  %s   </td>  </tr>    <tr class="item last">  <td>  SGST ( 2.5 percent)  </td>    <td>  %s  </td>  </tr>    <tr class="total">  <td></td>    <td>  Total: %s  </td>  </tr>  </table>  </div>    <br>  Note : Fares are inclusive of GST.  </body>  </html>""" % ( str(0)+str(tripId), str(tripDate), str(tripTime), str(u"\u20B9")+" "+ str(tripPrice), str(u"\u20B9")+" "+str(tripCGST), str(u"\u20B9") + " "+str(tripSGST),str(u"\u20B9")+" "+str(tripTotal))
+    
+    msg = body + html + parsed
+    print(html)
+
+    #set the correct MIMETexts
+    part1 = MIMEText(body, "plain")
+    #part2 = MIMEText(html, "html")
+    part3 = MIMEText(msg, "html")
+
+    #attach the parts to actual message
+    message.attach(part1)
+    #message.attach(part2)
+    message.attach(part3)
+    # Send the mail
+    print(message.as_string())
+    server = smtplib.SMTP(SENDER_SERVER)
+    server.sendmail(FROM, TO, message.as_string())
+    server.quit()
+    
+    
+
+def sendDeliveryInvoiceMail(deliveryType, userEmail, userName, deliveryId, deliveryDate, deliveryTime, deliveryPrice, deliveryCGST, deliverySGST, deliveryTotal ):
+    '''
+    sends mail to the user with
+    Args:
+        deliveryType : Express or Scheduled
+        userEmail : username@xyz.com
+        userName : name of the user
+        deliveryId : id of the delivery is the invoice number
+        deliveryDate : Date on which the delivery was taken
+        deliveryTime : Time in minutes for the delivery
+        deliveryPrice : bill without the tax 
+        deliveryCGST : Central GST, as of now it is 5%
+        deliverySGST : Central GST, as of now it is 5%
+        deliveryTotal : total money which is the acutal money taken from the user 
+        
+    '''
+    import smtplib, ssl
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    SENDER_SERVER = "localhost"
+    FROM = "zippe@villageapps.in"
+    TO = str(userEmail)
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Zipp-e %s Invoice # %s" % (str(deliveryType), str(deliveryId))
+    message["From"] = FROM
+    message["To"] = TO
+
+    context = ssl.create_default_context()
+
+    # Prepare textual message
+    body = """\
+    Hi %s, """ % (str(userName))#+"""\"""
+    #\n
+    #Thanks for riding with Zippe!\n"""
+    print(body)
+
+    html = ("""<!doctype html> <html>  <head>  <meta charset="utf-8">  <title>Zipp-e Delivery Invoice</title>  <style>  .invoice-box {  max-width: 800px""" + str(';') + """  margin: auto""" + str(';') + """  padding: 30px""" + str(';') + """  border: 1px solid #eee""" + str(';') + """  box-shadow: 0 0 10px rgba(0, 0, 0, .15)""" + str(';') + """  font-size: 16px""" + str(';') + """  line-height: 24px"""  
+    + str(';') + """  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif""" + str(';') + """  color: #555""" + str(';') + """  }    .invoice-box table {  width: 100%""" + str(';') + """  line-height: inherit""" + str(';') + """  text-align: left""" + str(';') + """  }    .invoice-box table td {  padding: 5px""" + str(';') + """  vertical-align: top""" + str(';') + """  }    .invoice-box table tr td:nth-child(2) {  text-align: right""" 
+    + str(';') + """  }    .invoice-box table tr.top table td {  padding-bottom: 20px""" + str(';') + """  }    .invoice-box table tr.top table td.title {  font-size: 45px""" + str(';') + """  line-height: 45px""" + str(';') + """  color: #333""" + str(';') + """  }    .invoice-box table tr.information table td {  padding-bottom: 40px""" + str(';') + """  }    .invoice-box table tr.heading td {  background: #eee""" + str(';') + """  border-bottom: 1px solid #ddd""" 
+    + str(';') + """  font-weight: bold""" + str(';') + """  }    .invoice-box table tr.details td {  padding-bottom: 20px""" + str(';') + """  }    .invoice-box table tr.item td{  border-bottom: 1px solid #eee""" + str(';') + """  }    .invoice-box table tr.item.last td {  border-bottom: none""" + str(';') + """  }    .invoice-box table tr.total td:nth-child(2) {  border-top: 2px solid #eee""" + str(';') + """  font-weight: bold""" 
+    + str(';') + """  }    @media only screen and (max-width: 600px) {  .invoice-box table tr.top table td {  width: 100%""" + str(';') + """  display: block""" + str(';') + """  text-align: center""" + str(';') + """  }    .invoice-box table tr.information table td {  width: 100%""" + str(';') + """  display: block""" + str(';') + """  text-align: center""" + str(';') + """  }  }    /** RTL **/  .rtl {  direction: rtl""" 
+    + str(';') + """  font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif""" + str(';') + """  }    .rtl table {  text-align: right""" + str(';') + """  }    .rtl table tr td:nth-child(2) {  text-align: left""" + str(';') + """  }  </style>  </head>  <body>  <div class="invoice-box">  <table cellpadding="0" cellspacing="0">  <tr class="top">  <td colspan="2">  <table>  <tr>  <td class="title">  <img src="https://i.imgur.com/1WEczdk.png" style="width:100.0%""" 
+    + str(';') + """ max-width:100px""" + str(';') + """">  </td>    </tr>  </table>  </td>  </tr>    <tr class="information">  <td colspan="2">  <table>  <tr>  <td>  Zippe &#169""" + str(';') + """ <br>  Village Connect Pvt. Ltd. <br>  H No. 33, Naukuchiatal,<br>  Village Chanoti, Nainital,<br>  Uttarakhand, 263136  </td>   """)
+    parsed = """ <td>  Invoice # : %s<br>  Dated : %s<br>  </td>  </tr>  </table>  </td>  </tr>      <tr class="heading">  <td>  Item  </td>    <td>  Details  </td>  </tr>  <tr class="item">  <td>  Delivery time  </td>  <td>  %s minutes  </td>  </tr>    <tr class="item">  <td>  Bill amount  </td>  <td>  %s  </td>  </tr>  <tr class="item">  <td>  CGST ( 2.5 percent )  </td>    <td>  %s   </td>  </tr>    <tr class="item last">  <td>  SGST ( 2.5 percent)  </td>    <td>  %s  </td>  </tr>    <tr class="total">  <td></td>    <td>  Total: %s  </td>  </tr>  </table>  </div>    <br>  Note : Fares are inclusive of GST.  </body>  </html>""" % ( str(0)+str(deliveryId), str(deliveryDate), str(deliveryTime), str(u"\u20B9")+" "+ str(deliveryPrice), str(u"\u20B9")+" "+str(deliveryCGST), str(u"\u20B9") + " "+str(deliverySGST),str(u"\u20B9")+" "+str(deliveryTotal))
+    
+    msg = body + html + parsed
+    print(html)
+
+    #set the correct MIMETexts
+    part1 = MIMEText(body, "plain")
+    #part2 = MIMEText(html, "html")
+    part3 = MIMEText(msg, "html")
+
+    #attach the parts to actual message
+    message.attach(part1)
+    #message.attach(part2)
+    message.attach(part3)
+    # Send the mail
+    print(message.as_string())
+    server = smtplib.SMTP(SENDER_SERVER)
+    server.sendmail(FROM, TO, message.as_string())
+    server.quit()
+    
+    

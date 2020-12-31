@@ -22,7 +22,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 
 from ..models import Driver, User, Vehicle, Delivery
-from ..models  import Place, Trip, Progress, Location, Route
+from ..models  import Place, Trip, Progress, Location, Route, Rate
 
 from ..utils import HttpJSONError, ZPException, DummyException, HttpJSONResponse, HttpRecordsResponse, log
 from ..utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renameTmpImgFiles, getOTP, doOCRback
@@ -187,6 +187,7 @@ def userGRideRequest(dct, user):#, _trip):
     if dct['rtype'] == '0': # Ride
         trip.npas = dct['npas']
         trip.srcid, trip.dstid = 0,0
+
     else: # Rent
         trip.npas = 2
         iHrs = 2 #int(dct['hrs'])
@@ -210,6 +211,15 @@ def userGRideRequest(dct, user):#, _trip):
     #ret = getRoutePrice(trip.srcid, trip.dstid, Vehicle.ZBEE, Trip.CASH)
     ret = getRiPrice(trip) #getRoutePrice(trip.srcid, trip.dstid, dct['vtype'], dct['pmode'])
     ret['tid'] = trip.id
+
+    if trip.rtype=='0':
+        rate = Rate()
+        rate.id = 'ride' + str(trip.id)
+        rate.type = 'ride' if trip.rtype == '0' else 'rent'
+        rate.rev = ''
+        rate.money = float(getRidePrice(srclat, srclng, dstlat, dstlng, dct['vtype'], dct['pmode'], 0)['price'])
+        rate.save()        
+
 
     return HttpJSONResponse(ret)
 

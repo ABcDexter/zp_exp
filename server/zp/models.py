@@ -34,6 +34,8 @@ class User(models.Model):
     dl   = models.CharField(null=True, max_length=20)
     hs   = models.CharField(db_index=True,null=True, max_length=50)
     mark = models.FloatField(db_index=True, default=0.0)
+    adhar= models.BigIntegerField(db_index=True, null=True)
+    email= models.CharField(db_index=True, null=True, max_length=100)
     class Meta:
         db_table = 'user'
         managed = True
@@ -224,6 +226,7 @@ class Trip(models.Model):
     USER_ACTIVE = ['RQ', 'AS', 'ST', 'FN', 'TR']  # not TO, CN, DN, FL, PD
     DRIVER_ACTIVE = ['AS', 'ST', 'FN', 'TR']      # not TO, CN, DN, RQ, FL, PD
     SUPER_ACTIVE = ['AS', 'FN', 'TR', 'ST']             # not TO, CN, DN, RQ, ST, PD, FL
+    STATES = ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD']
     # States requiring payment to be done
     PAYABLE = ['FN', 'TR']
 
@@ -478,6 +481,191 @@ class Agent(models.Model):
         managed = True
 
 
+class Rate(models.Model):
+    '''
+    id (int): Autoincrement primary key
+
+    type = type of the rating, which is rent+rentid, or reide+rideid, deli+deliveryid
+    ""
+    ""
+    ""
+    "Any other"
+    rev = review
+    '''
+    TYPE = [
+        ('RIDE', 'ride'),
+        ('RENT', 'rental'),
+        ('DELI', 'delivery'),
+        ('NAN', 'null')
+    ]
+
+    RATINGS = [
+        ('attitude', 'attitude'),  # Attitude of contact person (driver/supervisor/delivery agent)
+        ('vehiclecon', 'vehiclecondition'),   # Vehicle condition
+        ('cleanliness',  'cleanliness'),  # cleanliness of the vehicle
+        ('other', ' other '),  # failed due to any reason other than cancellation
+    ]
+    id = models.CharField(primary_key=True, max_length=10)
+    type = models.CharField(max_length=4, choices=TYPE, default='NAN', db_index=True)
+    rating = models.CharField(max_length=20, choices=RATINGS, default='OT', db_index=True)
+    money = models.FloatField(db_index=True, default=0.0)
+    rev = models.CharField(max_length=280, default='')
+    time  = models.DateTimeField(db_index=True, auto_now=True)
+    dan   = models.BigIntegerField(db_index=True, default=-1)
+    class Meta:
+        db_table = 'rate'
+        managed = True
+
+
+########################
+#Shop module
+########################
+
+
+class Product(models.Model):
+    '''
+    name(str): name of the product
+    type(bool): simple 0 or grouped 1
+    regular_price (float): MRP of the product 
+    cost_price (float): price we are getting the product at
+    sale_price (float): selling price of the product 
+    
+    stock_quantity(int):   quantity of the item in the stock
+    categories(str): product categories( see Category table)
+    weight (float): weight (in grams) of one unit of the product 
+    SKU(str): PRIMARY key
+    
+    tax_class(float): how much tax on the product
+    low_stock_amount(int): low stock alert
+    '''
+    #id is given by default
+    #id = models.AutoField(primary_key=True)
+    #0 
+    name  = models.CharField(null=True, max_length=200, db_index=True)
+    
+    TYPE = [
+        ('simple', 'simple'),
+        ('grouped', 'grouped'),
+        ('external', 'external'),
+        ('variable', 'variable')
+    ]
+
+    type = models.CharField(max_length=10, choices=TYPE, default='simple')
+    catalog_visibility = models.CharField(max_length=10, default='visible')
+    published = models.CharField(max_length=10, default='publish')
+    # 4 
+    published = models.CharField(max_length=10, default='publish', )
+    description = models.CharField(max_length=2000, default='', null=True)
+    short_description = models.CharField(max_length=500, default='', null=True)
+    # 7 
+    regular_price = models.FloatField(db_index=True, default=0.0)
+    sale_price = models.FloatField(db_index=True, default=0.0)
+    stock_quantity = models.IntegerField(default=0, db_index=True)
+    # 10
+    backorders = models.CharField(max_length=10, default='yes')
+    categories = models.CharField(null=True, db_index=True, max_length=50)
+    weight = models.FloatField(db_index=True, default=0.0)
+    # 13
+    sold_individually = models.CharField(max_length=10, default='FALSE')
+    tags = models.CharField(null=True, max_length=50)
+    menu_order = models.IntegerField(default=1, db_index=True)
+    # 16
+    grouped = models.CharField(max_length=10, default='FALSE')
+    sku  = models.CharField(null=True, max_length=200, db_index=True)
+    tax_status = models.CharField(null=True,default='taxable', max_length=10)
+    # 19
+    tax_class = models.FloatField(db_index=True, default=0.0)
+    purchase_note = models.CharField(max_length=250, default='Thanks :) kindly check the package for expiry details.', null=True)
+    # 21
+    upsell_ids = models.CharField(null=True, max_length=200)
+    cross_sell_ids = models.CharField(null=True, max_length=200)
+    parent_id = models.CharField(null=True, max_length=200)
+    # 24
+    low_stock_amount  = models.SmallIntegerField(default=1, db_index=True)
+    images = models.CharField(max_length=250, default='https://cdn.business2community.com/wp-content/uploads/2014/01/product-coming-soon.jpg', null=True)
+    cost_price = models.FloatField(default=0.0, db_index=True)
+    #27
+    
+    def save(self, *args, **kwargs):
+        self.menu_order = self.menu_order + 1
+        super().save(*args, **kwargs)
+    
+    class Meta:
+        db_table = 'product'
+        managed = True
+        
+        
+class Purchaser(models.Model):
+    '''
+    an(int):    Aadhaar number
+    pn(str):    Phone number
+    auth(str):  Purchaser auth token
+    dl(str):    Driving licence no.
+    name(str):  Real name
+    gdr(str):   Gender
+    age(int):   Age
+    pid(int):   Index of current place - see Place table
+    hs(str):    Home state of the Purchaser
+    '''
+
+    an   = models.BigIntegerField(primary_key=True)
+    pn   = models.CharField(max_length=32, db_index=True)
+    auth = models.CharField(max_length=16, db_index=True)
+    pid  = models.IntegerField(null=True, db_index=True)
+
+    dl   = models.CharField(null=True, max_length=20)
+    name = models.CharField(null=True, max_length=64, db_index=True)
+    gdr  = models.CharField(null=True, max_length=16, db_index=True)
+    age  = models.IntegerField(null=True, db_index=True)
+    hs   = models.CharField(null=True, max_length=50)
+
+    class Meta:
+        db_table = 'purchaser'
+        managed = True
+
+
+
+########################
+#Service module
+########################
+
+class Servitor(models.Model):
+    '''
+    an(int):    Aadhaar number
+    pn(str):    Phone number
+    auth(str):  Servitor auth token
+    dl(str):    Driving licence no.
+    name(str):  Real name
+    gdr(str):   Gender
+    age(int):   Age
+    pid(int):   Index of current place - see Place table
+    hs(str):    Home state of the Servitor
+    job(str):   What does that person does
+    wage(float) : hourly charge
+    '''
+
+    an   = models.BigIntegerField(primary_key=True)
+    pn   = models.CharField(max_length=32, db_index=True)
+    auth = models.CharField(max_length=16, db_index=True)
+    pid  = models.IntegerField(null=True, db_index=True)
+
+    dl   = models.CharField(null=True, max_length=20)
+    name = models.CharField(null=True, max_length=64, db_index=True)
+    gdr  = models.CharField(null=True, max_length=16, db_index=True)
+    age  = models.IntegerField(null=True, db_index=True)
+    hs   = models.CharField(null=True, max_length=50)
+    job  = models.CharField(null=True, max_length=50)
+    wage = models.FloatField(db_index=True, default=0.0)
+    class Meta:
+        db_table = 'servitor'
+        managed = True
+
+
+
+
+########################
+# Location
+########################
 
 class Location(models.Model):
     '''
@@ -496,8 +684,8 @@ class Location(models.Model):
     time  = models.DateTimeField(auto_now=True)
     kind  = models.IntegerField(db_index=True, default=0)
 
-    KINDS = {User: 0, Driver: 1, Vehicle: 2, Supervisor: 3, Agent: 4}
-    ENTITIES = [User, Driver, Vehicle, Supervisor, Agent]
+    KINDS = {User: 0, Driver: 1, Vehicle: 2, Supervisor: 3, Agent: 4, Servitor:5}
+    ENTITIES = [User, Driver, Vehicle, Supervisor, Agent, Servitor]
 
     def save(self, *args, **kwargs):
         '''
@@ -534,39 +722,4 @@ class Location(models.Model):
     class Meta:
         db_table = 'location'
         ordering = ['lat', 'lng']
-        managed = True
-
-
-class Rate(models.Model):
-    '''
-    id (int): Autoincrement primary key
-
-    type = type of the rating, which is rent+rentid, or reide+rideid, deli+deliveryid
-    ""
-    ""
-    ""
-    "Any other"
-    rev = review
-    '''
-    TYPE = [
-        ('RIDE', 'ride'),
-        ('RENT', 'rental'),
-        ('DELI', 'delivery'),
-        ('NAN', 'null')
-    ]
-
-    RATINGS = [
-        ('attitude', 'attitude'),  # Attitude of contact person (driver/supervisor/delivery agent)
-        ('vehiclecon', 'vehiclecondition'),   # Vehicle condition
-        ('cleanliness',  'cleanliness'),  # cleanliness of the vehicle
-        ('other', ' other '),  # failed due to any reason other than cancellation
-    ]
-    id = models.CharField(primary_key=True, max_length=10)
-    type = models.CharField(max_length=4, choices=TYPE, default='NAN', db_index=True)
-    rating = models.CharField(max_length=20, choices=RATINGS, default='OT', db_index=True)
-    money = models.FloatField(db_index=True, default=0.0)
-    rev = models.CharField(max_length=280, default='')
-
-    class Meta:
-        db_table = 'rate'
         managed = True

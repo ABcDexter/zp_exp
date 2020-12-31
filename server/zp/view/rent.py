@@ -11,9 +11,10 @@ from url_magic import makeView
 from ..models import Place, Trip, Progress, Supervisor
 from ..models import User, Vehicle
 from ..utils import ZPException, HttpJSONResponse
-from ..utils import getOTP
+from ..utils import getOTP, sendTripInvoiceMail
 from ..utils import getTripPrice, getRentPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
+from django.db.utils import IntegrityError
 
 ###########################################
 # Types
@@ -98,10 +99,10 @@ def userRentGetSup(_dct, _user, trip):
     '''
     if trip.st == 'AS':
         sup = Supervisor.objects.filter(pid=trip.srcid)[0]
-        ret = {'pn': sup.pn, 'name': sup.name}
+        ret = {'pn': sup.pn, 'name': sup.name, "photourl": "https://api.villageapps.in:8090/media/dp_" + str(sup.auth) + "_.jpg" }
     else:
         sup = Supervisor.objects.filter(pid=trip.dstid)[0]
-        ret = {'pn': sup.pn, 'name': sup.name}
+        ret = {'pn': sup.pn, 'name': sup.name, "photourl": "https://api.villageapps.in:8090/media/dp_" + str(sup.auth) + "_.jpg"}
     return HttpJSONResponse(ret)
 
 
@@ -330,9 +331,104 @@ def userRentPay(dct, _user, trip):
     return HttpJSONResponse({'otp': getOTP(trip.uan, trip.dan, trip.atime)})
 
 
+
+@makeView()
+@csrf_exempt
+@handleException()
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkTripStatus( ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD'])
+def userRentHistory(dct, user):
+    '''
+    returns the history of all the rental Trips for an entity (a User)
+    '''
+    #find all trips of the User
+    qsTrip = Trip.objects.filter(uan=user.an, rtype='1').order_by('-id').values()  # if type(entity) is User else Trip.objects.filter(dan=entity.an).order_by('-rtime').values()
+    
+    ret = {}
+    print(len(qsTrip))
+    if len(qsTrip):
+        trips = []
+        for i in qsTrip:
+            if i['rtype'] == '1':
+                hs = user.hs
+
+                #print("Trip state : ", str(i['st']))
+                if i['st'] in ['ST', 'FN', 'TR', 'PD']:
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
+                    if i['stime'] is None : 
+                        sDate = 'notSTARTED'
+                    else:
+                        strSTime = str(i['stime'])[:19]
+                        sDate = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+                    
+                    price = float(getRentPrice(i['hrs'])['price'])
+
+                else:
+                    price = float(getRentPrice(i['hrs'])['price'])
+                    sDate = 'NOTSTARTED'
+                    
+                if i['st'] in ['FN', 'TR' 'PD']:
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip                
+                    price = float(getRentPrice(i['hrs'])['price'])
+                    
+                    if i['etime'] is None:
+                        eDate = 'notEnded'
+
+                    else:
+                        strETime = str(i['etime'])[:19]
+                        eDate = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+                else:
+                    eDate = 'NOTENDED'
+                    
+                tax = str(round(float('%.2f' % (price*0.05)),0))+'0'  # tax of 5%
+                price = str(round(float('%.2f' % price),0))+'0' #2 chars
+                
+                srchub = Place.objects.filter(id=i['srcid'])[0].pn
+                dsthub = Place.objects.filter(id=i['dstid'])[0].pn
+                
+                retJson = {   'tid': str(i['id']),
+                              'st': str(i['st']),
+                              #'price': str(price),
+                              #'tax': str(tax),
+                              'sdate': str(sDate),
+                              #'pickhub': str(srchub),
+                              #'drophub': str(dsthub),
+                              #'date': str(sDate),
+                              'vtype': str(i['rvtype'])
+                              #'hrs': str(i['hrs'])
+                              
+                              }
+                trips.append(retJson)
+        #print(states)
+        ret.update({'trips': trips})
+
+    return HttpJSONResponse(ret)
+
+
+
 # ============================================================================
 # Supervisor views
 # ============================================================================
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Sup Not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+def supRentLogin(_, dct):
+    '''
+    Makes the supervisor login 
+    HTTPS args:
+        pn : phone number,
+        sa : super auth
+    '''
+    sup = Supervisor.objects.filter(pn=dct['pn'], auth=dct['sa'])[0]
+    ret = {'auth': sup.auth, 'name':sup.name, 'redirect':True,"redirect_url": "dashboard.html"} #index.html"}
+    return HttpJSONResponse(ret)
 
 
 @makeView()
@@ -341,23 +437,72 @@ def userRentPay(dct, _user, trip):
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def supRentCheck(_dct, sup):
+def supVehicleCheck(_dct, sup):
     '''
-    Returns a list of requested trips
-    Only trips which start from this Supervisors PID are returned
-    No trips are returned if there are no vehicles there
+    Only vehicles which are parked at this Supervisors PID are returned
     '''
     # Get available vehicles at this hub, if none return empty
     qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
     if len(qsVehicles) == 0:
-        return HttpJSONResponse({'count':0}) # making it easy for Volley to handle JSONArray and JSONObject
-    #aasdf
+        return HttpJSONResponse({'count': 0}) # making it easy for Volley to handle JSONArray and JSONObject
+    # print("vehicle found...")
+    vehicles = []
+    for veh in qsVehicles :
+        vehicles.append({'id': veh.id, 'regn': veh.regn})
+
+    ret = {} if not len(qsVehicles) else {'vehicles': vehicles}
+    return HttpJSONResponse(ret)
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Trip/User/Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def supRentCheck(dct, sup):
+    '''
+    Returns a list of requested trips
+    Only trips which start from this Supervisors PID are returned
+    # No trips are returned if there are no vehicles there
+
+    HTTP args :
+        state : for rentals are required
+    '''
+    # Get available vehicles at this hub, if none return empty
+    # qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
+    # if len(qsVehicles) == 0:
+    #    return HttpJSONResponse({'count':0}) # making it easy for Volley to handle JSONArray and JSONObject
+    # print("vehicle found...")
     # Get the first requested trip from Supervisors place id
-    qsTrip = Trip.objects.filter(srcid=sup.pid, st__in=['RQ', 'AS', 'TR', 'FN']).order_by('-rtime')
+    qsTrip = Trip.objects.filter(rtype=1, srcid=sup.pid, st=dct['state'])#__in=['\''+dct['state']+'\'']).order_by('-rtime')
+    print("%d trips found" % (len(qsTrip)))
     rentals = []
     for trip in qsTrip :
         uName = User.objects.filter(an=trip.uan)[0].name
-        rentals.append({'tid': trip.id, 'st': trip.st, 'rvtype': trip.rvtype, 'uname': uName})
+        vals = {'tid': trip.id, 'st': trip.st, 'uname': uName}
+
+        if trip.rvtype == 0:
+            vals['rvtype'] = 'CYCLE'
+        elif trip.rvtype == 1:
+            vals['rvtype'] = 'SCOOTY'
+        elif trip.rvtype == 2:
+            vals['rvtype'] = 'BIKE'
+        elif trip.rvtype == 3:
+            vals['rvtype'] = 'ZBEE'
+
+        if trip.st == 'ST':
+            vals['price'] = getTripPrice(trip)['price']
+        elif trip.st == 'FN':
+            vals['price'] = getTripPrice(trip)['price']
+        else:
+            vals['price'] = getRentPrice(trip.hrs)['price']
+        uAuth = User.objects.filter(an=trip.uan)[0].auth
+        vals['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
+
+        vals['van'] = trip.van
+        rentals.append(vals)
+        
     ret = {} if not len(qsTrip) else {'rentals': rentals}
     return HttpJSONResponse(ret)
 
@@ -599,4 +744,137 @@ def supRentRetire(dct, _sup):
     vehicle = Vehicle.objects.filter(tid=trip.id)[0]
     vehicle.tid = Vehicle.AVAILABLE
     vehicle.save()
+    
+    #if trip.st == 'PD':
+    total = float(getTripPrice(trip)['price'])
+    user = User.objects.filter(an=trip.uan)[0]
+    sendTripInvoiceMail('Rent', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
+    
     return HttpJSONResponse({})
+
+
+# ============================================================================
+# Admin views
+# ============================================================================
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Transaction error', 500)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def adminVehicleAssign(dct):
+    '''
+    Checks for rentals in RQ state and assign the vehicle from that hub.
+
+    HTTP args:
+
+    Note:
+        assigns one of the free vehciles, ideally the vehicles should have enough charge for the trip.
+    '''
+    # Get the deliveries and look for RQ ones
+    qsTrip = Trip.objects.filter(st__in=['RQ'], rtype=1) # get the trip
+    if not len(qsTrip):
+        return HttpJSONResponse({})
+    else:
+        print("%d trips found" % (len(qsTrip)))
+    trip = qsTrip[0]
+    # get the vehicles with no drivers and which are not on trip
+    qsVeh = Vehicle.objects.filter(dan='-1', tid='-1', vtype=trip.rvtype)
+    if not len(qsVeh):
+        return HttpJSONResponse({'tid': trip.id})
+    else:
+        print("%d vehicles found" % (len(qsVeh)))
+
+    vehicle = qsVeh[0]
+    vid = 0
+
+    if trip.st == 'RQ':
+        trip.st = 'AS'
+        sup = Supervisor.objects.filter(pid=trip.srcid)[0]
+        trip.dan = sup.an  # dan is sup.an
+        trip.van = vehicle.an
+        trip.atime = datetime.now(timezone.utc)
+        trip.save()
+
+        # Make the progress
+        progress = Progress()
+        progress.tid = trip.id
+        progress.pct = 0
+        progress.save()
+
+        # set the vehicles tid
+        vehicle.tid = trip.id
+        vehicle.save()
+        vid = vehicle.an
+    else:
+        raise ZPException(400, 'Trip already assigned')
+
+    return HttpJSONResponse({'vid': vid, 'tid': trip.id})
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+def adminRentLogin(_, dct):
+    '''
+    Makes the admin login 
+    HTTPS args:
+        pn : phone number,
+        auth : admin auth
+    '''
+    
+    ret = {'auth': 'adminAuth007', 'name':'admin', 'redirect':True,"redirect_url": "dashboard.html"}
+    return HttpJSONResponse(ret)
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Trip/User/Vehicle not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+def admRentCheck(_, dct):
+    '''
+    Returns a list of requested trips
+    Only trips which start from this Supervisors PID are returned
+    # No trips are returned if there are no vehicles there
+
+    HTTP args :
+        state : for rentals are required
+    '''
+    if dct['auth'] != 'adminAuth007':
+        raise ZPException(403, 'Admin auth wrong!')
+
+
+    qsTrip = Trip.objects.filter(rtype=1, st=dct['state'])
+    print("%d trips found" % (len(qsTrip)))
+    rentals = []
+    for trip in qsTrip :
+        uName = User.objects.filter(an=trip.uan)[0].name
+        vals = {'tid': trip.id, 'st': trip.st, 'uname': uName}
+        if trip.rvtype == 0:
+            vals['rvtype'] = 'CYCLE'
+        elif trip.rvtype == 1:
+            vals['rvtype'] = 'SCOOTY'
+        elif trip.rvtype == 2:
+            vals['rvtype'] = 'BIKE'
+        elif trip.rvtype == 3:
+            vals['rvtype'] = 'ZBEE'
+
+        if trip.st == 'ST':
+            vals['price'] = getTripPrice(trip)['price']
+        elif trip.st == 'FN':
+            vals['price'] = getTripPrice(trip)['price']
+        else:
+            vals['price'] = getRentPrice(trip.hrs)['price']
+        uAuth = User.objects.filter(an=trip.uan)[0].auth
+        vals['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
+
+        vals['van'] = trip.van
+        rentals.append(vals)
+        
+    ret = {} if not len(qsTrip) else {'rentals': rentals}
+    return HttpJSONResponse(ret)

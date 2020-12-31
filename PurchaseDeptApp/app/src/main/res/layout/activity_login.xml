@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".ActivityLogin">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="HEY! PARTNER WITH"
+            android:textAllCaps="true"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+            android:textColor="#FFFFFF" />
+
+        <ImageView
+            android:id="@+id/zippe_logo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/textView"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/zippe_logo" />
+
+        <EditText
+            android:id="@+id/editTextMobile"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/zippe_logo"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/rect_box_outline"
+            android:cursorVisible="true"
+            android:hint="@string/enter_mobile"
+            android:inputType="phone"
+            android:padding="5dp"
+            android:maxLength="10"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="@color/txtColor"
+            android:textSize="23sp"/>
+
+        <TextView
+            android:id="@+id/buttonVerifyPhoneNo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/editTextMobile"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_bkg"
+            android:padding="5dp"
+            android:text="@string/request_otp"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textSize="23sp" />
+
+        <EditText
+            android:id="@+id/editTextOTP"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/buttonVerifyPhoneNo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/rect_box_outline"
+            android:digits="0123456789"
+            android:hint="@string/enter_otp_to_verify"
+            android:inputType="phone"
+            android:padding="5dp"
+            android:maxLength="6"
+            android:textAlignment="center"
+            android:textColor="@color/txtColor"
+            android:textSize="23sp" />
+        <EditText
+            android:id="@+id/editTextKey"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/editTextOTP"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/rect_box_outline"
+            android:cursorVisible="true"
+            android:hint="@string/login_key"
+            android:padding="5dp"
+            android:maxLength="8"
+            android:textAlignment="center"
+            android:textColor="@color/txtColor"
+            android:textSize="23sp"/>
+        <ProgressBar
+            android:id="@+id/simpleProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_centerInParent="true"/>
+
+        <ImageButton
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/btn_bkg"
+            android:padding="15dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/login"
+            android:text="NEXT"
+            android:textAllCaps="true" />
+
+    </RelativeLayout>
+
+</ScrollView>

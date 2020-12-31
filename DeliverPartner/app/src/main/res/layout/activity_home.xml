@@ -24,7 +24,7 @@
                 android:layout_marginStart="124dp"
                 android:layout_marginTop="12dp"
                 android:checked="false"
-                android:text="Off Duty"
+                android:text="@string/off_duty"
                 android:textColor="@color/txtColor"
                 android:textStyle="bold" />
 
@@ -34,7 +34,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="14dp"
                 android:layout_toEndOf="@id/dutyStatus"
-                android:text="On Duty"
+                android:text="@string/on_duty"
                 android:textColor="@color/txtColor"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -73,8 +73,8 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="25dp"
                     android:layout_marginEnd="25dp"
-                    android:background="@drawable/rect_box_solid"
-                    android:text="NEW ORDERS"
+                    android:background="@drawable/btn_bkg"
+                    android:text="@string/new_orders"
                     android:layout_alignParentBottom="true"/>
 
             </RelativeLayout>
@@ -87,8 +87,8 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
-                android:background="@drawable/rect_box_solid"
-                android:text="ORDER IN PROCESS" />
+                android:background="@drawable/btn_bkg"
+                android:text="@string/order_in_process" />
 
             <Button
                 android:id="@+id/completed_orders"
@@ -98,10 +98,10 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
-                android:background="@drawable/rect_box_solid"
-                android:text="COMPLETED ORDERS" />
+                android:background="@drawable/btn_bkg"
+                android:text="@string/completed_orders" />
 
-            <!--<Button
+            <Button
                 android:id="@+id/earnings"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -109,9 +109,8 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
-                android:background="@drawable/rect_box_solid"
-                android:text="total earnings" />-->
-
+                android:background="@drawable/btn_bkg"
+                android:text="@string/total_earnings" />
         </RelativeLayout>
     </ScrollView>
 </androidx.drawerlayout.widget.DrawerLayout>

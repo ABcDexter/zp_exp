@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -20,6 +19,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.client.deliver.ActivityDeliveryHistoryList;
+import com.client.rent.ActivityRentHistory;
+import com.client.ride.ActivityRideHistory;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -46,7 +47,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         String stringName = prefPLoc.getString(NAME_KEY, "");
 
-        int firstSpace = (stringName.contains(" ")) ? stringName.indexOf(" ") : stringName.length() - 1;
+        int firstSpace = (stringName.contains(" ")) ? stringName.indexOf(" ") : stringName.length()-1;
         String name = stringName.substring(0, firstSpace);
 
         nameText = findViewById(R.id.nameFrmServer);
@@ -54,7 +55,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         if (name.isEmpty())
             nameText.setText("");
         else {
-            nameText.setText(getString(R.string.hi) + name);
+            nameText.setText(getString(R.string.hi , name));
             Log.d("USER_NAME", "name:" + name);
 
         }
@@ -148,35 +149,34 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
-        switch (id) {
-            case R.id.nav_logout:
-                FirebaseAuth.getInstance().signOut();
+        if (id == R.id.nav_logout) {
+            FirebaseAuth.getInstance().signOut();
 
-                Intent intent = new Intent(ActivityDrawer.this, ActivityMain.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-
-            case R.id.nav_profile:
-                Intent lang = new Intent(ActivityDrawer.this, UserProfileActivity.class);
-                startActivity(lang);
-                break;
-            case R.id.nav_home:
-                Intent home = new Intent(ActivityDrawer.this, ActivityWelcome.class);
-                home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(home);
-                break;
-            case R.id.nav_ride_history:
-                Toast.makeText(this, "COMING SOON", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.nav_delivery_orders:
-                Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryHistoryList.class);
-                deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(deliveryOrders);
-                break;
-            default:
-                return true;
+            Intent intent = new Intent(ActivityDrawer.this, ActivityRegistration.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        } else if (id == R.id.nav_profile) {
+            Intent lang = new Intent(ActivityDrawer.this, UserProfileActivity.class);
+            startActivity(lang);
+        } else if (id == R.id.nav_home) {
+            Intent home = new Intent(ActivityDrawer.this, ActivityWelcome.class);
+            home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(home);
+        } else if (id == R.id.nav_ride_history) {
+            Intent rideHistory = new Intent(ActivityDrawer.this, ActivityRideHistory.class);
+            rideHistory.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(rideHistory);
+        } else if (id == R.id.nav_rent_history) {
+            Intent rentHistory = new Intent(ActivityDrawer.this, ActivityRentHistory.class);
+            rentHistory.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(rentHistory);
+        } else if (id == R.id.nav_delivery_orders) {
+            Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryHistoryList.class);
+            deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(deliveryOrders);
+        } else {
+            return true;
         }
         return true;
     }
-    //return false;
 }

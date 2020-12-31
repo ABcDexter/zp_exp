@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -48,22 +49,26 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     String strAuth, strTid, strSrcLat, strSrcLng;
     MapsActivity2 a = MapsActivity2.this;
     Map<String, String> params = new HashMap();
-    Button end,fail;
+    Button end, fail;
+
+    private static MapsActivity2 instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps2);
-
+        instance = this;
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, "");
 
         SharedPreferences pref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
         strTid = pref.getString(TID, "");
+
         String stringSrcLat = pref.getString(SRCLAT, "");
         String stringSrcLng = pref.getString(SRCLNG, "");
         String stringDstLat = pref.getString(DSTLAT, "");
         String stringDstLng = pref.getString(DSTLNG, "");
+        Log.d(TAG,"moved to getStatus()");
         getStatus();
 
         srcLat = Double.parseDouble(stringSrcLat);
@@ -77,8 +82,8 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
 
         end.setOnClickListener(this);
         fail.setOnClickListener(this);
-        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title("Pick Up");
-        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title("Destination");
+        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(String.valueOf(R.string.pick_up));
+        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title(String.valueOf(R.string.destination));
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapNearBy);
         mapFragment.getMapAsync(this);
@@ -90,13 +95,13 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Log.d("mylog", "Added Markers");
+        Log.d(TAG, "Added Markers");
         mMap.addMarker(src);
         mMap.addMarker(dst);
 
         CameraPosition googlePlex = CameraPosition.builder()
                 .target(new LatLng(srcLat, srcLng))
-                .zoom(7)
+                .zoom(14)
                 .bearing(0)
                 .tilt(45)
                 .build();
@@ -127,7 +132,12 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
     }
 
+    public static MapsActivity2 getInstance() {
+        return instance;
+    }
+
     public void getStatus() {
+        Log.d(TAG,"in getStatus()");
         String auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
@@ -142,6 +152,7 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
             }
         }, a::onFailure);
     }
+
     public void rideFail() {
         String auth = strAuth;
         params.put("auth", auth);
@@ -173,26 +184,56 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
             }
         }, a::onFailure);
     }
+
     public void onSuccess(JSONObject response, int id) throws NegativeArraySizeException {
+        Log.d(TAG, "RESPONSE:" + response);
         //response on hitting driver-ride-get-status API
         if (id == 1) {
             try {
                 String active = response.getString("active");
                 if (active.equals("true")) {
                     String status = response.getString("st");
-                    String did = response.getString("did");
+                    String tid = response.getString("tid");
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
-                    sp_cookie.edit().putString(TID, did).apply();
+                    sp_cookie.edit().putString(TID, tid).apply();
 
                     if (status.equals("ST")) {
+                        String srclat = response.getString("srclat");
+                        String srclng = response.getString("srclng");
                         String dstLat1 = response.getString("dstlat");
                         String dstLng1 = response.getString("dstlng");
                         dstLat = Double.parseDouble(dstLat1);
                         dstLng = Double.parseDouble(dstLng1);
-                        SharedPreferences delvyPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
-                        delvyPref.edit().putString(DSTLAT, dstLat1).apply();
-                        delvyPref.edit().putString(DSTLNG, dstLng1).apply();
+                        srcLat = Double.parseDouble(srclat);
+                        srcLng = Double.parseDouble(srclng);
 
+                       /* src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title("Pick Up");
+                        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title("Destination");*/
+
+                        /*SharedPreferences delvyPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+                        delvyPref.edit().putString(DSTLAT, dstLat1).apply();
+                        delvyPref.edit().putString(DSTLNG, dstLng1).apply();*/
+
+                        new CountDownTimer(45000, 1000) {
+
+                            public void onTick(long millisUntilFinished) {
+                                Log.d(TAG, "seconds remaining: " + millisUntilFinished / 1000);
+                            }
+
+                            public void onFinish() {
+                                getStatus();
+                            }
+                        }.start();
+                        /*Intent i = new Intent(this, UtilityPollingService.class);
+                        i.setAction("7");
+                        startService(i);*/
+
+                    }
+                    if (status.equals("FN") || status.equals("TR")) {
+                        //go on to the next activity
+                        Intent rideEnded = new Intent(MapsActivity2.this, ActivityRideCompleted.class);
+                        startActivity(rideEnded);
+                        finish();
                     }
                     /*Intent home = new Intent(MapsActivity2.this, ActivityHome.class);
                     startActivity(home);
@@ -205,14 +246,16 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
         }
-        if (id==2){
+        if (id == 2) {
             Intent home = new Intent(MapsActivity2.this, ActivityHome.class);
             startActivity(home);
         }
-        if (id==3){
-            Intent home = new Intent(MapsActivity2.this, ActivityHome.class);
+        if (id == 3) {
+            Intent home = new Intent(MapsActivity2.this, ActivityRideCompleted.class);
             startActivity(home);
+            finish();
         }
     }
 
@@ -229,11 +272,6 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
                 break;
             case R.id.failedRide:
                 rideFail();
-                break;
-            case R.id.map:
-                /*Intent map = new Intent(ActivityInProgress.this, ActivityMap.class);
-                startActivity(map);*/
-                Toast.makeText(this, "Map will open", Toast.LENGTH_LONG).show();
                 break;
         }
     }

@@ -5,12 +5,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 
@@ -41,8 +43,8 @@ public class ActivityDeliveryHistoryList extends AppCompatActivity {
             JSONArray array = jsonObject.getJSONArray("delis");
             for (int i = 0; i < array.length(); i++) {
                 JSONObject ob = array.getJSONObject(i);
-                DeliveryListData ld = new DeliveryListData(ob.getString("id"), ob.getString("st"),
-                        ob.getString("price"));
+                DeliveryListData ld = new DeliveryListData(ob.getString("scid"), ob.getString("st"),
+                        ob.getString("price"), ob.getString("itype"));
                 list_data.add(ld);
             }
             rv.setAdapter(adapter);
@@ -52,9 +54,9 @@ public class ActivityDeliveryHistoryList extends AppCompatActivity {
     }
 
     public void onFailure(VolleyError error) {
-        Log.d("ActivityDeliveryHistoryList class", Objects.requireNonNull(error.getMessage()));
+        Log.d(TAG, Objects.requireNonNull(error.getMessage()));
 
-        Toast.makeText(this, "CHECK YOUR INTERNET CONNECTION!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.check_internet, Toast.LENGTH_LONG).show();
 
     }
 
@@ -87,8 +89,15 @@ public class ActivityDeliveryHistoryList extends AppCompatActivity {
         JSONObject parameters = new JSONObject(params);
         ActivityDeliveryHistoryList a = ActivityDeliveryHistoryList.this;
         Log.d(TAG, "auth = " + auth);
-        Log.d("CONTROL", "Control moved to to UtilityApiRequestPost auth-delivery-history");
-        UtilityApiRequestPost.doPOST(a, "auth-delivery-history", parameters, 30000, 0, a::onSuccess, a::onFailure);
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost auth-delivery-history");
+        UtilityApiRequestPost.doPOST(a, "auth-delivery-history", parameters, 30000, 0,
+                a::onSuccess, a::onFailure);
 
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ActivityDeliveryHistoryList.this, ActivityWelcome.class));
+        finish();
     }
 }

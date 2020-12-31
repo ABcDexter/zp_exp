@@ -30,8 +30,8 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+import com.bumptech.glide.Glide;
 import com.client.ActivityDrawer;
-import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
@@ -76,13 +76,14 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     ImageView lock;
     final int UPI_PAYMENT = 0;
     RelativeLayout rlPhone;
+    ImageView supPhoto;
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG, "RESPONSE:" + response);
 
         //response on hitting user-trip-cancel API
         if (id == 1) {
-            Intent home = new Intent(ActivityRentOTP.this, ActivityWelcome.class);
+            Intent home = new Intent(ActivityRentOTP.this, ActivityRentHome.class);
             startActivity(home);
             finish();
         }
@@ -94,11 +95,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                 if (active.equals("true")) {
                     String status = response.getString("st");
                     String tid = response.getString("tid");
+                    String photo = response.getString("photourl");
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (status.equals("AS")) {
                         String timeRem = response.getString("time");
                         String price = response.getString("price");
+                        Glide.with(this).load(photo).into(supPhoto);
                         costEst.setText("₹ " + price);
                         PriceOnly = price;
                        /* if (timeRem.equals("")) {
@@ -113,7 +116,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                         startActivity(st);
                     }
                 } else {
-                    Intent homePage = new Intent(ActivityRentOTP.this, ActivityWelcome.class);
+                    Intent homePage = new Intent(ActivityRentOTP.this, ActivityRentHome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
@@ -160,6 +163,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -190,6 +194,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         String otpPick = prefPLoc.getString(OTP_PICK, "");
         String vType = prefPLoc.getString(VEHICLE_TYPE, "");
 
+        supPhoto = findViewById(R.id.photo_sup);
         costEst = findViewById(R.id.adv_payment_otp);
         vtype = findViewById(R.id.vtype);
         dName = findViewById(R.id.supervisor_name);
@@ -221,13 +226,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         origin.setOnClickListener(this);
         if (!vType.isEmpty()) {
             if (vType.equals("0")) {
-                vtype.setText("e-cycle");
+                vtype.setText(R.string.e_cycle);
             }
             if (vType.equals("1")) {
-                vtype.setText("e-scooty");
+                vtype.setText(R.string.e_scooty);
             }
             if (vType.equals("2")) {
-                vtype.setText("e-bike");
+                vtype.setText(R.string.e_bike);
             }
         }
 
@@ -247,14 +252,14 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         supDetails();
 
         if (stringDrop.isEmpty()) {
-            destination.setText("DROP POINT");
+            destination.setText(R.string.drop_point);
         } else {
             String upToNCharacters = stringDrop.substring(0, Math.min(stringDrop.length(), 10));
             destination.setText(upToNCharacters);
         }
 
         if (stringPick.isEmpty()) {
-            origin.setText("PICK UP");
+            origin.setText(R.string.pick_point);
         } else {
             String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 10));
             origin.setText(upToNCharacters);
@@ -290,13 +295,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         TextView accept = myDialog.findViewById(R.id.accept_request);
 
         if (id == 1) {
-            infoText.setText("Cost calculated as per your rental time. Please pay full amount to begin your trip and to unlock OTP.");
+            infoText.setText(R.string.cost_calc_as_per_time);
         }
         if (id == 2) {
-            infoText.setText("Make payment only after checking the condition of vehicle");
+            infoText.setText(R.string.check_condi_before_paying);
         }
         if (id == 3) {
-            infoText.setText("Make payment only after checking the condition of vehicle");
+            infoText.setText(R.string.check_condi_before_paying);
         }
         /*if (id == 4) {
             infoText.setText("HOLD VEHICLE FOR 1 HOUR?");
@@ -312,7 +317,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             infoText.setText(stringDrop);
         }
         if (id == 7) {
-            infoText.setText("Please pay full amount to unlock your OTP");
+            infoText.setText(getString(R.string.pay_to_unlock_otp) + costEst.getText().toString() + getString(R.string.unlock_otp));
         }
         if (id == 8) {
             infoText.setText("Open Map. Work in Progress");
@@ -355,54 +360,43 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.dummy:
-                rentPay();
-                break;
-            case R.id.cancel_rent_booking:
-                //showAlertDialog();
-                //ShowPopup(4);
-                userCancelTrip();
-                Intent intent = new Intent(ActivityRentOTP.this, ActivityRideHome.class);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.drop_hub:
-                ShowPopup(6);
-                break;
-            case R.id.pick_hub:
-                ShowPopup(5);
-                break;
-            case R.id.infoCost:
-                ShowPopup(1);
-                break;
-            case R.id.infoPick:
-                String lat1 = pickLat;
-                String lng1 = pickLng;
-                Intent map = new Intent(ActivityRentOTP.this, MapsHubLocation.class);
-                map.putExtra("lat", lat1);
-                map.putExtra("lng", lng1);
-                startActivity(map);
-                //ShowPopup(8);
-                break;
-            case R.id.infoDrop:
-                String lat2 = dropLat;
-                String lng2 = dropLng;
-                Intent map1 = new Intent(ActivityRentOTP.this, MapsHubLocation.class);
-                map1.putExtra("lat", lat2);
-                map1.putExtra("lng", lng2);
-                startActivity(map1);
-                //ShowPopup(8);
-                break;
-
-            case R.id.upiRental:
-
-                String amount = PriceOnly;
-                String note = "Payment for rental service";
-                String name = "Zipp-E";
-                String upiId = "9084083967@ybl";
-                payUsingUpi(amount, upiId, name, note);
-                break;
+        int id = v.getId();
+        if (id == R.id.dummy) {
+            rentPay();
+        } else if (id == R.id.cancel_rent_booking) {//showAlertDialog();
+            //ShowPopup(4);
+            userCancelTrip();
+            Intent intent = new Intent(ActivityRentOTP.this, ActivityRideHome.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.drop_hub) {
+            ShowPopup(6);
+        } else if (id == R.id.pick_hub) {
+            ShowPopup(5);
+        } else if (id == R.id.infoCost) {
+            ShowPopup(1);
+        } else if (id == R.id.infoPick) {
+            String lat1 = pickLat;
+            String lng1 = pickLng;
+            Intent map = new Intent(ActivityRentOTP.this, MapsHubLocation.class);
+            map.putExtra("lat", lat1);
+            map.putExtra("lng", lng1);
+            startActivity(map);
+            //ShowPopup(8);
+        } else if (id == R.id.infoDrop) {
+            String lat2 = dropLat;
+            String lng2 = dropLng;
+            Intent map1 = new Intent(ActivityRentOTP.this, MapsHubLocation.class);
+            map1.putExtra("lat", lat2);
+            map1.putExtra("lng", lng2);
+            startActivity(map1);
+            //ShowPopup(8);
+        } else if (id == R.id.upiRental) {
+            String amount = PriceOnly;
+            String note = "Payment for rental service";
+            String name = "Zipp-E";
+            String upiId = "rajnilakshmi@ybl";
+            payUsingUpi(amount, upiId, name, note);
 
             /*case R.id.reject_request:
                 userCancelTrip();
@@ -419,12 +413,10 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             /*case R.id.supervisor_phone:
                 callSuper();
                 break;*/
-            case R.id.otp_lock:
-                ShowPopup(7);
-                break;
-            case R.id.rl_p:
-                callSuper();
-                break;
+        } else if (id == R.id.otp_lock) {
+            ShowPopup(7);
+        } else if (id == R.id.rl_p) {
+            callSuper();
         }
     }
 
@@ -460,7 +452,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         if (null != chooser.resolveActivity(getPackageManager())) {
             startActivityForResult(chooser, UPI_PAYMENT);
         } else {
-            Toast.makeText(ActivityRentOTP.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityRentOTP.this, R.string.no_upi_found, Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -518,16 +510,16 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
-                Toast.makeText(ActivityRentOTP.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentOTP.this, R.string.transaction_successful, Toast.LENGTH_SHORT).show();
                 rentPay();
                 Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
-                Toast.makeText(ActivityRentOTP.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentOTP.this, R.string.payment_cancelled_by_user, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(ActivityRentOTP.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentOTP.this, R.string.transaction_failed, Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(ActivityRentOTP.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityRentOTP.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
     }
 

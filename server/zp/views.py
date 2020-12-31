@@ -28,12 +28,13 @@ from .utils import saveTmpImgFile, doOCR, aadhaarNumVerify, getClientAuth, renam
 from .utils import getRoutePrice, getTripPrice, getRentPrice, getRidePrice, getRiPrice
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from .utils import headers
+from .utils import sendTripInvoiceMail, sendDeliveryInvoiceMail
 
 from url_magic import makeView
-from zp.view import rent, ride, deliver, pwa
+from zp.view import rent, ride, deliver, pwa, shop, service
 from .utils import googleDistAndTime
 from zp.view import schedule
-from .models import Rate
+from .models import Rate, Supervisor
 
 ###########################################
 # Types
@@ -49,6 +50,67 @@ makeView.APP_NAME = 'zp'
 ##############################################################################
 # General Views
 ##############################################################################
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
+def registerUserNoAadhaar(_, dct: Dict):
+    '''
+    User registration
+    Creates a user record for the aadhar number OCR'd from the image via Google Vision
+    Aadhaar scans are archived in settings.AADHAAR_DIR as
+    <aadhaar>_front.jpg and <aadhaar>_back.jpg
+
+    HTTP Args:
+        name: name of the user
+        phone; phone number of the user without the ISD code
+        home: home state of the user
+        gender: gender of the user
+
+    Notes:
+        Registration is done atomically since we also need to save aadhar scans after DB write
+    '''
+
+    log('User Registration request. Dct : %s ' % (str(dct)))
+
+    sPhone = str(dct['phone'])
+    sAn = str(91) + sPhone
+    sAuth = getClientAuth(sAn, sPhone)
+
+    qsUser = User.objects.filter(an=int(sAn))
+    bUserExists = len(qsUser) != 0
+    if not bUserExists:
+        sAuth = getClientAuth(sAn, sPhone)
+        user = User()
+        user.name = dct['name']
+        # user.age = int(clientDetails['age'])
+        user.gdr = dct['gender']
+        user.auth = sAuth
+        user.an = int(sAn)
+        user.pn = sPhone
+        user.hs = dct['home'].lower()
+        user.save()
+        log('New user registered: %s' % user.name)
+    else:
+        # modile exists, check what has been changed
+        user = qsUser[0]
+        if user.pn != sPhone:
+            sAuth = getClientAuth(str(qsUser[0].sAn), str(qsUser[0].pn))
+            user.pn = sPhone
+            user.auth = sAuth
+            user.save()
+            log('Auth changed for: %s' % user.name)
+        else:
+            # Aadhaar exists, phone unchanged, just return existing auth
+            sAuth = user.auth
+            log('Auth exists for: %s' % user.name)
+
+    # return the whole user record
+    return HttpJSONResponse(model_to_dict(user))
+
 
 @makeView()
 @csrf_exempt
@@ -91,16 +153,17 @@ def registerUser(_, dct: Dict):
         raise ZPException(501, 'Aadhaar number front doesn\'t match Aadhaar number back!')
 
     # Check if aadhaar has been registered before
-    qsUser = User.objects.filter(an=int(sAadhaar))
+    qsUser = User.objects.filter(adhar=int(sAadhaar))
     bUserExists = len(qsUser) != 0
     if not bUserExists:
         sAuth = getClientAuth(sAadhaar, sPhone)
         user = User()
         user.name = clientDetails['name']
+        user.an = str(91) + sPhone
         user.age = int(clientDetails['age'])
         user.gdr = clientDetails['gender']
         user.auth = sAuth
-        user.an = int(sAadhaar)
+        user.adhar = int(sAadhaar)
         user.pn = sPhone
         user.hs = clientDetails2['hs']
         user.save()
@@ -325,7 +388,12 @@ def userTripGetStatus(_dct, user):
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
             if trip.rtype == '0':
-                price = getTripPrice(trip)
+                if trip.st == 'TR':
+                    rate = Rate.objects.filter(id='ride'+str(trip.id))[0]
+                    price = rate.money
+                else :
+                    price = getTripPrice(trip)['price']
+
             else : #rental
                 #vehicle = Vehicle.objects.filter(an=trip.van)[0]
                 #currTime = datetime.now(timezone.utc)
@@ -336,6 +404,11 @@ def userTripGetStatus(_dct, user):
                 price = str(remPrice) + '.00' if remPrice >=0 else '0.00'
 
             ret['price'] = price
+        
+        if trip.st not in ['RQ'] :
+            dAuth = Driver.objects.filter(an=trip.dan)[0].auth if trip.rtype == '0' else Supervisor.objects.filter(an=trip.dan)[0].auth
+            ret['photourl'] = "https://api.villageapps.in:8090/media/dp_" + dAuth + "_.jpg"
+    # else the trip is not active
     else:
         ret = {'active': False, 'st': 'NONE', 'tid': -1}
 
@@ -418,16 +491,17 @@ def userTripRequest(dct, user, _trip):
 
 @makeView()
 @csrf_exempt
+@handleException(IndexError, 'Driver NOT found', 501)
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
 @checkTripStatus('AS')
 def userRideGetDriver(_dct, entity, trip):
     '''
-    Returns aadhaar, name and phone of current assigned driver, TODO: Photo
+    Returns aadhaar, name and phone of current assigned driver
     '''
     driver = Driver.objects.filter(an=trip.dan)[0]
-    ret = {'pn': driver.pn, 'an': driver.an, 'name': driver.name}
+    ret = {'pn': driver.pn, 'an': driver.an, 'name': driver.name, 'photourl' : "https://api.villageapps.in:8090/media/dp_" + driver.auth + "_.jpg"}
     return HttpJSONResponse(ret)
 
 
@@ -462,7 +536,7 @@ def userTripCancel(_dct, user, trip):
 @transaction.atomic
 @checkAuth()
 @checkTripStatus(['TO', 'DN', 'PD'])
-def userTripRetire(_dct, user, _trip):
+def userTripRetire(_dct, user, trip):
     '''
     Resets users active trip
     This is called when the user has seen the message pertaining to trip end for these states:
@@ -476,6 +550,7 @@ def userTripRetire(_dct, user, _trip):
     '''
     # reset the tid to -1
     retireEntity(user)
+    
     return HttpJSONResponse({})
 
 
@@ -518,6 +593,11 @@ def authTripGetInfo(dct, entity):
         remPrice = int(float(getTripPrice(trip)['price']) - float(getRentPrice(trip.hrs)['price']))
         price = str(remPrice) + '.00' if remPrice >= 0 else '0.00'
         ret.update({'price': price})
+
+    if trip.st == 'TR' and trip.rtype=='0':
+        rate = Rate.objects.filter(id='ride'+str(trip.id))[0]
+        ret['price'] = rate.money
+
     return HttpJSONResponse(ret)
 
 
@@ -590,7 +670,18 @@ def authTripRetire(dct, entity, trip):
         vehicle = Vehicle.objects.filter(tid=trip.id)[0]
         vehicle.tid = Vehicle.AVAILABLE
         vehicle.save()
+    else:
+        import yagmail
+        from codecs import encode
+        eP_S_W_D = encode(str(settings.GM_PSWD), 'rot13')
 
+        receiver = str(entity.email)
+        body = "Hi, \n Your Trip costed Rs " + str(getTripPrice(trip)['price'])+"\n Thanks for riding with Zippe!\n -VillageConnect"
+        #attachment = "some.pdf"
+        yag = yagmail.SMTP("villaget3ch@gmail.com", eP_S_W_D)
+        yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
+
+    
     retireEntity(entity)
 
     return HttpJSONResponse({})
@@ -626,7 +717,7 @@ def authLocationUpdate(dct, entity):
     # Create or edit
     if len(qsLoc) == 0:
         recLoc = Location()
-        recLoc.an = dct['an']
+        recLoc.an = dct['an'] if 'an' in dct else '0'
     else:
         recLoc = qsLoc[0]
 
@@ -812,7 +903,7 @@ def adminRefresh(dct):
         # For requested deliveries if settings.DEL_RQ_TIMEOUT seconds passed since del.rtime set to TO (timeout)
         if deli.st == 'RQ':
             tmDelta = datetime.now(timezone.utc) - deli.rtime
-            if tmDelta.total_seconds() > settings.DEL_SC_TIMEOUT:
+            if tmDelta.total_seconds() > settings.DEL_RQ_TIMEOUT:
                 deli.st = 'TO'
 
         # For assigned deliveries if settings.DEL_AS_TIMEOUT seconds passed since deli.atime set to TO (user times out)
@@ -1061,8 +1152,13 @@ def authProfileUpdate(dct, entity):
         gdr:  gender of the entity
     Note:
     '''
-    entity.gdr = dct['gdr']
-    entity.name = dct['name']
+    if 'gdr' in dct:
+        entity.gdr = dct['gdr']
+    if 'name' in dct:
+        entity.name = dct['name']
+    if 'email' in dct:
+        # only for user
+        entity.email = dct['email']
     entity.save()
 
     return HttpJSONResponse({})
@@ -1189,3 +1285,201 @@ def authTripRate(dct, entity, trip):
     # NOPE as per 30/7/2020
 
     return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def authProfilePhotoSave(dct, entity):
+    '''
+    entity sends and saves his/her profile photo
+
+    HTTP Args:
+        auth
+        Display photo base 64 encoded
+    Notes:
+        needs production settings
+    '''
+    #from codecs import encode
+    #entityAdhar = encode(str(entity.auth), 'rot13')
+    #entityAdhar = encode(entityAdhar, 'rot13') #could be removed
+    entityAdhar = str(entity.auth)
+    sProfilePhoto = saveTmpImgFile(settings.PROFILE_PHOTO_DIR, dct['profilePhoto'], 'dp')
+    log('Profile photo saved for - %s saved as %s' % (entityAdhar, sProfilePhoto))
+    dpFileName = 'dp_' + entityAdhar + '_.jpg'
+    os.rename(sProfilePhoto, os.path.join(settings.PROFILE_PHOTO_DIR, dpFileName))
+    log('New photo saved: %s' % dpFileName)
+    return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def authAadhaarSave(dct, entity):
+    '''
+    entity sends and saves his/her profile photo
+
+    HTTP Args:
+        auth
+        Aadhaar photo base 64 encoded
+            aadhaarFront, aadhaarBack
+    Notes:
+        needs production settings
+    '''
+    
+    sAadharFrontTemp = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarFront'], 'front-tmp')
+    sAadharBackTemp = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarBack'], 'back-tmp')
+    entityAdhar = str(entity.an)
+    log('Aadhaar photo saved for - %s saved as %s' % (entityAdhar, sAadharFrontTemp))
+    
+    # Get aadhaar as 3 groups of 4 digits at a time via google vision api
+    clientDetails = doOCR(sAadharFrontTemp)
+    sAadhaar = clientDetails['an']
+    log('Aadhaar number read from %s - %s' % (sAadharFrontTemp, sAadhaar))
+    clientDetails2 = doOCRback(sAadharBackTemp)
+    sAadhaar2 = clientDetails2['an']
+    log('Aadhaar number read from %s - %s' % (sAadharBackTemp, sAadhaar2))
+
+    # verify aadhaar number via Verhoeff algorithm
+    if not aadhaarNumVerify(sAadhaar):
+        raise ZPException(501,'Aadhaar number not valid!')
+    log('Aadhaar is valid')
+
+    if sAadhaar != sAadhaar2:
+        raise ZPException(501, 'Aadhaar number front doesn\'t match Aadhaar number back!')
+
+    entity.hs = clientDetails2['hs']
+    entity.save()   
+
+    sAdharFrontFileName = 'ad_' + entityAdhar + '_front.jpg'
+    sAdharBackFileName = 'ad_' + entityAdhar + '_back.jpg'
+    log('HS updated for : %s | %s' % (entity.an, entity.hs))
+
+    os.rename(sAadharFrontTemp, os.path.join(settings.AADHAAR_DIR, sAdharFrontFileName))
+    os.rename(sAadharBackTemp, os.path.join(settings.AADHAAR_DIR, sAdharBackFileName))
+    log('New photo saved: front %s | back %s' % (sAdharFrontFileName, sAdharBackFileName))
+    return HttpJSONResponse({})
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+#@handleException(IndexError, 'Invalid trip', 501) #should NOT tell the API user whether a trip exists or not
+@extractParams
+@checkAuth()
+def authTripData(dct, entity):
+    '''
+    Returns all the data of a Trip
+        Https:
+            auth, tid
+            
+        returns:
+      # for user
+      
+      #  for driver
+          # date 
+          # pickup point #can be dine
+          # pickup time (stime) #sdate and rdate are same 
+      
+
+    '''
+    trip = Trip.objects.filter(id=dct['tid']).values('id','st','uan','dan','van','rtime','stime','etime','srcid','dstid','srclat','srclng','dstlat','dstlng','hrs','rtype','rvtype')
+    lstTrip = list(trip)
+    dctTrip = lstTrip[0]
+    
+    #for key, val in dctTrip.items():
+    #    dctRet.update({str(key): str(val)})
+    
+    strRTime = str(dctTrip['rtime'])[:19]
+    rDate = datetime.strptime(strRTime, '%Y-%m-%d %H:%M:%S').date()
+    sTime = 'None'
+    
+    srchub = Place.objects.filter(id=dctTrip['srcid'])[0].pn
+    dsthub = Place.objects.filter(id=dctTrip['dstid'])[0].pn
+
+    if dctTrip['rtype'] == '1':
+            # rental
+            time = float(dctTrip['hrs']*60) 
+    else:
+            #ride
+            if dctTrip['stime'] is None:
+                #ride has not yet started
+                sTime = 'notStarted'
+                time = 0.00
+            else :
+                #ride has started, save start time
+                strSTime = str(dctTrip['stime'])[:19]
+                sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S')
+            
+                if dctTrip['etime'] is None:
+                    #ride has not yet ended
+                    eTime = 'notEnded'
+                    time = 1.00
+            
+                else:
+                    #ride has ended
+                    strETime = str(dctTrip['etime'])[:19]
+                    eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
+                    time = int(((dctTrip['etime'] - dctTrip['stime']).seconds)/60)
+                    
+    
+    time = float(time)
+    rate = 1.00 #need to update the price algo in utils.py
+    print(time, rate, rate*time)
+    price = rate*time #2 chars
+    tax = price*0.05  # tax of 5%
+    total = price + tax
+    print(tax, total)
+    dctRet = {
+            'id': str(dctTrip['id']),
+            'st':str(dctTrip['st']),
+            #'uan': str(dctTrip['uan']),
+            #'dan': str(dctTrip['dan']),
+            'van': str(dctTrip['van']),
+            'sdate': str(rDate),
+            'srchub': str(srchub),
+            'dsthub': str(dsthub),
+            'srclat': str(dctTrip['srclat']),
+            'srclng':str(dctTrip['srclng']),
+            'dstlat':str(dctTrip['dstlat']),
+            'dstlng':str(dctTrip['dstlng']),
+            'rtype':str(dctTrip['rtype']),
+            'rvtype': str(dctTrip['rvtype']),
+            'stime': str(sTime),
+            
+            'time': str(time),
+            'rate': str(rate),
+            'price': str(round(float('%.2f' % price),0))+'0',
+            'tax':  str(round(float('%.2f' % tax),0))+'0',
+            'total': str(round(float('%.2f' % total),0))+'0',
+            
+             }
+    
+    return HttpJSONResponse(dctRet)
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IndexError, 'Invalid request', 501)
+@extractParams
+def bankValidateData(_, dct:Dict):
+    '''
+        Https:
+             "auth" : auth designed for bank, as stated in settings file
+            
+        returns:
+            status : True
+    '''
+    if dct['auth'] == settings.BANK_AUTH:
+        return HttpJSONResponse({'status': 200, 'done':True, 'error':None })
+    else:
+        raise ZPException(502,'Auth not valid!')
+

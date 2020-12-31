@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
@@ -80,7 +81,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     String srcLat, srcLng, dstLat, dstLng;
     String dstName = "";
     String srcName = "";
-
+    RelativeLayout rl_pick, rl_drop, rl_v, rl_r;
+    String auth;
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
 
@@ -106,6 +108,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                     ShowPopup(1);
             } else {
                 //next.setEnabled(true);
+
                 Intent rideIntent = new Intent(ActivityRideHome.this, ActivityRideRequest.class);
                 rideIntent.putExtra("npas", RiderNo);
                 rideIntent.putExtra("vtype", VehicleType);
@@ -122,6 +125,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     public static ActivityRideHome getInstance() {
@@ -141,8 +145,11 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         vehicle = findViewById(R.id.vehicle_type);
         riders = findViewById(R.id.no_riders);
         next = findViewById(R.id.letsGo_ride);
+        rl_pick = findViewById(R.id.rl_pick);
+        rl_drop = findViewById(R.id.rl_drop);
+        rl_v = findViewById(R.id.rl_v);
+        rl_r = findViewById(R.id.rl_r);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
 
         next.setOnClickListener(this);
         vehicle.setOnClickListener(this);
@@ -151,7 +158,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         stringAuth = prefAuth.getString(AUTH_KEY, "");
         stringAN = prefAuth.getString(AN_KEY, "");
         prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
-
+        auth = stringAuth;
         myDialog = new Dialog(this);
         imageDialog = new Dialog(this);
         imageDialog2 = new Dialog(this);
@@ -164,7 +171,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment_pick);
 
         etPlace = (EditText) srcAutocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
-        etPlace.setHint("PICK UP POINT");
+        //etPlace.setHint("PICK UP POINT");
+        etPlace.setHint(getString(R.string.pick_point));
         etPlace.setHintTextColor(Color.parseColor("#DFDDDD"));
         etPlace.setTextColor(Color.parseColor("#DFDDDD"));
         etPlace.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -172,8 +180,10 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
 
         dstAutocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment_drop);
+
         etDst = (EditText) dstAutocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
-        etDst.setHint("DROP POINT");
+        //etDst.setHint("DROP POINT");
+        etDst.setHint(getString(R.string.drop_point));
         etDst.setHintTextColor(Color.parseColor("#DFDDDD"));
         etDst.setTextColor(Color.parseColor("#DFDDDD"));
         etDst.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -182,11 +192,14 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         // Specify the types of place data to return.
         srcAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
         dstAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
-
+        srcAutocompleteFragment.setCountry("IN");
+        dstAutocompleteFragment.setCountry("IN");
         // Set up a PlaceSelectionListener to handle the response.
         srcAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place srcPlace) {
+                rl_pick.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+
                 srcName = srcPlace.getName();
 
                 Log.i(TAG, "SRC Place: " + srcPlace.getName() + ", " + srcPlace.getLatLng());
@@ -218,6 +231,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
             @Override
             public void onPlaceSelected(Place dstPlace) {
                 dstName = dstPlace.getName();
+                rl_drop.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+
                 Log.i(TAG, "DST Place: " + dstPlace.getName() + ", " + dstPlace.getLatLng());
 
                 String dstLatLng = Objects.requireNonNull(dstPlace.getLatLng()).toString();
@@ -258,7 +273,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 vibrator.vibrate(1000);
             }
             ln.setVisibility(View.VISIBLE);
-            dialog_txt.setText("No drivers currently online.\nNotify me when available.");
+            dialog_txt.setText(R.string.no_driver_av);
             reject_rq.setOnClickListener(this);
             accept_rq.setOnClickListener(this);
             myDialog.setCanceledOnTouchOutside(false);
@@ -267,7 +282,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
             ln.setVisibility(View.GONE);
             next.setEnabled(true);
             //TODO send push notification
-            dialog_txt.setText("Drivers are available.");
+            dialog_txt.setText(R.string.drivers_available);
             myDialog.setCanceledOnTouchOutside(true);
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -284,9 +299,9 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.ride_rl_2);
         RelativeLayout rl3 = (RelativeLayout) imageDialog.findViewById(R.id.ride_rl_3);
 
-        txt1.setText("E-SCOOTY");
-        txt2.setText("E-BIKE");
-        txt3.setText("ZBEE");
+        txt1.setText(R.string.e_scooty);
+        txt2.setText(R.string.e_bike);
+        txt3.setText(R.string.zbee);
 
         rl1.setOnClickListener(this);
         rl2.setOnClickListener(this);
@@ -297,7 +312,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
 
         //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
         //wmlp.x = 100;   //x position
-        wmlp.y = 80 ;   //y position
+        wmlp.y = 80;   //y position
         imageDialog.show();
         Window window = imageDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
@@ -361,73 +376,67 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.letsGo_ride:
-                if (dstName.equals("") || etDst.getText().toString().equals("") || etDst.getText().toString().equals("DROP POINT") ||
-                        srcName.equals("") || etPlace.getText().toString().equals("") || etPlace.getText().toString().equals("PICK UP POINT") ||
-                        vehicle.getText().toString().equals("VEHICLE TYPE") ||
-                        riders.getText().toString().equals("NO OF RIDERS")) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                    } else {
-                        vibrator.vibrate(1000);
-                    }
-                    Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
-                    snackbar.show();
+        int id = v.getId();
+        if (id == R.id.letsGo_ride) {
+            if (dstName.equals("") || etDst.getText().toString().equals("") || etDst.getText().toString().equals("DROP POINT") ||
+                    srcName.equals("") || etPlace.getText().toString().equals("") || etPlace.getText().toString().equals("PICK UP POINT") ||
+                    vehicle.getText().toString().equals("VEHICLE TYPE") ||
+                    riders.getText().toString().equals("NO OF RIDERS")) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                 } else {
-                    storeData();
-                    isDriverAv();
+                    vibrator.vibrate(1000);
                 }
-                break;
-
-            case R.id.reject_request:
-                bussFlag = "BussMeNot";
-                prefBuss.edit().putString(BUSS, bussFlag).apply();
-                Log.d(TAG, "User not interested in a buss");
-                myDialog.dismiss();
-                break;
-            case R.id.accept_request:
-                bussFlag = "BussMe";
-                prefBuss.edit().putString(BUSS, bussFlag).apply();
+                Snackbar snackbar = Snackbar.make(scrollView, R.string.mandatory_fields, Snackbar.LENGTH_LONG);
+                snackbar.show();
+            } else {
+                storeData();
                 isDriverAv();
-                myDialog.dismiss();
-                break;
-            case R.id.vehicle_type:
-                ImagePopup();
-                break;
-            case R.id.no_riders:
-                ImagePopup2();
-                break;
-            case R.id.ride_rl_1:
-                vehicle.setText("E-SCOOTY");
-                imageDialog.dismiss();
-                VehicleType = "1";
-                break;
-            case R.id.ride_rl_2:
-                vehicle.setText("E-BIKE");
-                VehicleType = "2";
-                imageDialog.dismiss();
-                break;
-            case R.id.ride_rl_3:
-                vehicle.setText("ZBEE");
-                VehicleType = "3";
-                imageDialog.dismiss();
-                break;
-            case R.id.per_1:
-                riders.setText("1");
-                RiderNo = "1";
-                imageDialog2.dismiss();
-                break;
-            case R.id.per_2:
-                riders.setText("2");
-                RiderNo = "2";
-                imageDialog2.dismiss();
-                break;
-            case R.id.per_3:
-                riders.setText("2 + 1");
-                RiderNo = "3";
-                imageDialog2.dismiss();
-                break;
+            }
+        } else if (id == R.id.reject_request) {
+            bussFlag = "BussMeNot";
+            prefBuss.edit().putString(BUSS, bussFlag).apply();
+            Log.d(TAG, "User not interested in a buss");
+            myDialog.dismiss();
+        } else if (id == R.id.accept_request) {
+            bussFlag = "BussMe";
+            prefBuss.edit().putString(BUSS, bussFlag).apply();
+            isDriverAv();
+            myDialog.dismiss();
+        } else if (id == R.id.vehicle_type) {
+            ImagePopup();
+        } else if (id == R.id.no_riders) {
+            ImagePopup2();
+        } else if (id == R.id.ride_rl_1) {
+            vehicle.setText(R.string.e_scooty);
+            vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            imageDialog.dismiss();
+            VehicleType = "1";
+        } else if (id == R.id.ride_rl_2) {
+            vehicle.setText(R.string.e_bike);
+            vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            VehicleType = "2";
+            imageDialog.dismiss();
+        } else if (id == R.id.ride_rl_3) {
+            vehicle.setText(R.string.zbee);
+            vehicle.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            VehicleType = "3";
+            imageDialog.dismiss();
+        } else if (id == R.id.per_1) {
+            riders.setText("1");
+            RiderNo = "1";
+            riders.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            imageDialog2.dismiss();
+        } else if (id == R.id.per_2) {
+            riders.setText("2");
+            RiderNo = "2";
+            riders.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            imageDialog2.dismiss();
+        } else if (id == R.id.per_3) {
+            riders.setText("2 + 1");
+            RiderNo = "3";
+            riders.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            imageDialog2.dismiss();
         }
     }
 

@@ -16,7 +16,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/rect_orange_white"
         android:gravity="center"
-        android:text="NO OF RIDERS"
+        android:text="@string/no_of_riders"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="#fff"
@@ -125,7 +125,7 @@
             android:layout_height="65dp"
             android:layout_toRightOf="@id/txt3"
             android:gravity="center"
-            android:text=" ( child upto 5 years )"
+            android:text="@string/child_up_to_5_years"
             android:textAllCaps="true"
             android:textColor="#fff"
             android:textSize="15sp" />

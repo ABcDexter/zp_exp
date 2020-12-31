@@ -65,7 +65,7 @@ class Supervisor(Entity):
 
             self.log('Waiting for user to give advance payment with OTP')
 
-            if prob(0.0001): # only 0.01 % chance of cancelling a trip
+            if prob(0.0000): # only 0.01 % chance of cancelling a trip
                 self.log('Canceling trip!')
                 params = {'tid': sTID}
                 ret = self.callAPI('sup-rent-cancel', params)

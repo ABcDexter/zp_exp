@@ -1,12 +1,62 @@
 <resources>
     <string name="app_name">DeliverPartner</string>
-    <string-array name="gender_array">
-        <item>Your Gender</item>
-        <item>Female</item>
-        <item>Male</item>
-        <item>Rather Not Say</item>
-    </string-array>
     <string name="title_activity_maps">Map</string>
     <string name="Open" />
     <string name="Close" />
+    <string name="title_activity_maps_reach_client">Map</string>
+    <string name="title_activity_maps_new_delivery">Map</string>
+    <string name="title_activity_maps_client_location">Map</string>
+    <string name="incorrect_otp">Incorrect OTP.</string>
+    <string name="first_reach_loc">You have not yet reached the pickup location.</string>
+    <string name="something_wrong">Something went wrong. Please try again later.</string>
+    <string name="offline">YOU ARE OFFLINE !</string>
+    <string name="locked">YOU ARE CURRENTLY LOCKED ! \nCONTACT ADMIN</string>
+    <string name="delivery_successful">Delivery done successfully ! You have earned ₹ %1$s</string>
+    <string name="delivery_timeout">Delivery time out</string>
+    <string name="delivery_failed">Delivery failed</string>
+    <string name="login_unsuccessful">LOGIN UNSUCCESSFUL! CHECK YOUR INTERNET CONNECTION</string>
+    <string name="verification_failed">Verification Failed</string>
+    <string name="no_new_delivery">NO new delivery</string>
+    <string name="del_pick_up">Delivery Pick Up</string>
+    <string name="del_drop">Delivery Drop</string>
+    <string name="your_loc">You Are Here</string>
+    <string name="rs">₹</string>
+    <string name="delivery_pickup_information">Delivery Pickup \nInformation</string>
+    <string name="view_in_map">View in map</string>
+    <string name="name">Name</string>
+    <string name="colon">:</string>
+    <string name="address">Address</string>
+    <string name="landmark">Landmark</string>
+    <string name="phone">Phone</string>
+    <string name="collect_cash">Collect Cash</string>
+    <string name="enter_otp_provided_by_user">Enter OTP Provided by User</string>
+    <string name="start">Start</string>
+    <string name="delivery_drop_information">Delivery Drop\nInformation</string>
+    <string name="receiver_phone">Receiver Phone</string>
+    <string name="sender_phone">Sender Phone</string>
+    <string name="collect_amount">Collect Amount</string>
+    <string name="cash">Cash</string>
+    <string name="upi">UPI</string>
+    <string name="done">Done</string>
+    <string name="fail">Fail</string>
+    <string name="off_duty">Off Duty</string>
+    <string name="on_duty">On Duty</string>
+    <string name="new_orders">NEW ORDERS</string>
+    <string name="order_in_process">ORDER IN PROCESS</string>
+    <string name="completed_orders">COMPLETED ORDERS</string>
+    <string name="hey_partner_with">HEY! PARTNER WITH</string>
+    <string name="enter_mobile">ENTER MOBILE</string>
+    <string name="request_otp">request otp</string>
+    <string name="enter_otp_to_verify">ENTER OTP TO VERIFY</string>
+    <string name="login_key">LOGIN KEY</string>
+    <string name="reject">Reject</string>
+    <string name="accept">Accept</string>
+    <string name="click_choose_picture">Click/Choose Picture</string>
+    <string name="upload">UPLOAD</string>
+    <string name="change_language">Change Language</string>
+    <string name="dark_mode">DARK MODE</string>
+    <string name="history">History</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="total_earnings">Your earnings</string>
 </resources>

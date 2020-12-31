@@ -14,15 +14,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
-import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
@@ -61,10 +63,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     String stringAuth, stringPick, stringDrop;
     ImageView scootyUp, scootyDown;
     SharedPreferences prefAuth;
-    ActivityRentRequest a;
+    ActivityRentRequest a = ActivityRentRequest.this;
     Dialog myDialog;
     String rideInfo, vTypeInfo, pModeInfo, dropInfo, pickInfo, speedDrop, costDrop, hrs;
     Map<String, String> params = new HashMap();
+    Animation animMoveL2R, animMoveR2L;
 
     private static ActivityRentRequest instance;
 
@@ -80,7 +83,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                 String speed = response.getString("speed");
 
                 vSpeed.setText(speed + " km/hr");
-                advPay.setText("₹ "+price);
+                advPay.setText("₹ " + price);
                 /*SharedPreferences sp_cookie = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
                 sp_cookie.edit().putString(SPEED_DROP, speed).apply();
                 sp_cookie.edit().putString(COST_DROP, price).apply();*/
@@ -106,18 +109,14 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                     String status = response.getString("st");
                     String tid = response.getString("tid");
                     String rtype = response.getString("rtype");
-                    /*if (rtype.equals("0")) {
-                        Intent ride = new Intent(ActivityRentRequest.this, ActivityWelcome.class);
-                        startActivity(ride);
-                        finish();
-                    } else*/
+
                     if (rtype.equals("1")) {
                         SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                         sp_cookie.edit().putString(TRIP_ID, tid).apply();
                         if (status.equals("RQ")) {
                             Snackbar snackbar = Snackbar
-                                    .make(scrollView, "CHECKING VEHICLE AVAILABILITY...", Snackbar.LENGTH_INDEFINITE)
-                                    .setAction("CANCEL", new View.OnClickListener() {
+                                    .make(scrollView, R.string.checking_veh_av, Snackbar.LENGTH_INDEFINITE)
+                                    .setAction(R.string.cancel, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             cancelRequest();
@@ -145,7 +144,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                         }
                     }
                 } else {
-                    Intent homePage = new Intent(ActivityRentRequest.this, ActivityWelcome.class);
+                    Intent homePage = new Intent(ActivityRentRequest.this, ActivityRentHome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
@@ -158,7 +157,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         }
         //response on hitting user-trip-cancel API
         if (id == 4) {
-            Intent home = new Intent(ActivityRentRequest.this, ActivityWelcome.class);
+            Intent home = new Intent(ActivityRentRequest.this, ActivityRentHome.class);
             startActivity(home);
             finish();
         }
@@ -167,6 +166,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
 
@@ -208,7 +208,8 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         PickInfo = findViewById(R.id.infoPick);
         DropInfo = findViewById(R.id.infoDrop);
 
-        a = ActivityRentRequest.this;
+        animMoveL2R = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r);
+        animMoveR2L = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_r2l);
 
         try {
 
@@ -280,7 +281,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         TextView infoText = myDialog.findViewById(R.id.info_text);
 
         if (id == 1) {
-            infoText.setText("Max speed of this vehicle has been set to 25 km/hr (as per government norms) for your own safety.");
+            infoText.setText(R.string.max_speed_25);
             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
@@ -290,7 +291,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
         }
         if (id == 2) {
-            infoText.setText("Cost calculated as per your rental time. Please pay full amount to begin your trip.");
+            infoText.setText(R.string.cost_calc_as_per_time);
             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
@@ -330,8 +331,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     }
 
     private void moveit() {
+
         scootyDown.setVisibility(View.VISIBLE);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scootyDown, "translationX", 1500, 0f);
+        scootyUp.startAnimation(animMoveL2R);
+        scootyDown.startAnimation(animMoveR2L);
+        /*ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scootyDown, "translationX", 1500, 0f);
         objectAnimator.setDuration(1500);
         objectAnimator.start();
         objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
@@ -339,29 +343,23 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(scootyUp, "translationX", 0f, 1500);
         objectAnimator1.setDuration(1500);
         objectAnimator1.start();
-        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
+        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.confirm_rent_book:
-                moveit();
-                userRequestRide();
-                break;
-            case R.id.infoPayment:
-                ShowPopup(2);
-                break;
-            case R.id.infoSpeed:
-                ShowPopup(1);
-                break;
-            case R.id.infoPick:
-                ShowPopup(3);
-                break;
-            case R.id.infoDrop:
-                ShowPopup(5);
-                break;
+        int id = v.getId();
+        if (id == R.id.confirm_rent_book) {
+            moveit();
+            userRequestRide();
+        } else if (id == R.id.infoPayment) {
+            ShowPopup(2);
+        } else if (id == R.id.infoSpeed) {
+            ShowPopup(1);
+        } else if (id == R.id.infoPick) {
+            ShowPopup(3);
+        } else if (id == R.id.infoDrop) {
+            ShowPopup(5);
         }
     }
 

@@ -8,16 +8,19 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from url_magic import makeView
-from ..models import Place, Trip, Progress
+from ..models import Place, Trip, Progress, Rate
 from ..models import User, Vehicle, Driver, Location
 from ..utils import ZPException, HttpJSONResponse, googleDistAndTime
-from ..utils import getOTP
+from ..utils import getOTP, log, sendTripInvoiceMail
 from ..utils import getRoutePrice, getTripPrice, getRidePrice, getRiPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 
 import googlemaps
 from django.conf import settings
 from django.db.utils import OperationalError, IntegrityError
+
+import urllib.request
+import json
 
 ###########################################
 # Types
@@ -33,6 +36,44 @@ makeView.APP_NAME = 'zp'
 # ============================================================================
 # Driver views
 # ============================================================================
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
+def loginDriver(_, dct):
+    '''
+    Driver login
+    makes the driver logun with phone number
+    
+    HTTP Args:
+        pno: phone number of the driver without the ISD code
+        key: auth rot 13 of driver
+        
+
+    Notes:
+        Rot 13 is important
+    '''
+
+    log('Driver login request. Dct : %s ' % (str(dct)))
+
+    sPhone = str(dct['pn'])
+    from codecs import encode
+    sAuth = encode(str(dct['key']), 'rot13')
+    log('Driver login key request. Dct : %s ' % (str(sAuth)))
+    qsDriver = Driver.objects.filter(auth=sAuth, pn=sPhone)
+    bDriverExists = len(qsDriver) != 0
+    if not bDriverExists:
+        log('Driver not registered with phone : %s' % (dct['pn']))
+        return HttpJSONResponse({'status':'false'})
+    else:
+        log('Auth exists for: %s' % (dct['pn']))
+        ret = {'status': True, 'auth':qsDriver[0].auth, 'an':qsDriver[0].an, 'pn':qsDriver[0].pn, 'name':qsDriver[0].name }    
+        return HttpJSONResponse(ret)
+
 
 
 @makeView()
@@ -116,16 +157,23 @@ def driverRideGetStatus(_dct, driver):
             #pct = Progress.objects.filter(tid=trip.id)[0].pct
             #ret = {'pct': pct}
             #showing progress in Google maps
-            ret = {'dstlat': trip.dstlat, 'dstlng': trip.dstlng}
+            ret = {'srclat': trip.srclat, 'srclng':trip.srclng, 'dstlat': trip.dstlat, 'dstlng': trip.dstlng}
             # maybe in future, we allow the User to update destination whilst being in Trip
 
         # For ended trips that need payment send the price data
         if trip.st in Trip.PAYABLE:
             ret = getTripPrice(trip)
+            # get the acutal price for TRminated trips
+            if trip.st in ['TR'] : 
+                rate = Rate.objects.filter(id='ride'+str(trip.id))[0]
+                ret['price'] = rate.money
 
         ret['active'] = trip.st in Trip.DRIVER_ACTIVE
         ret['st'] = trip.st
         ret['tid'] = trip.id
+        uAuth = User.objects.filter(an=trip.uan)[0].auth
+        ret['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
+
 
     return HttpJSONResponse(ret)
 
@@ -154,7 +202,7 @@ def driverRideCheck(_dct, driver):
     return HttpJSONResponse(ret)
 
 
-# Do we allow drivers this choice or jsut assign them automatically as I am doing with deliveries.
+# Do we allow drivers this choice or jsut assign them automatically as I am doing with tripveries.
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
@@ -212,6 +260,19 @@ def driverRideAccept(dct, driver):
         #dst = Place.objects.filter(id=trip.dstid)[0]
         #ret.update({'srcname': src.pn, 'dstname': dst.pn})
         print("Accepting trip : ", ret)
+        params = {"to": "/topics/all", "notification":{
+                                    "title":"Let's ZIPPE !",
+                                    "body":"Your RIDE has been accepted.",
+                                    "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+                                    "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+        }
+        }
+        dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+        jsonData = json.dumps(params).encode()
+        sUrl = 'https://fcm.googleapis.com/fcm/send'
+        req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+        jsonResp = urllib.request.urlopen(req, timeout=30).read()
+        ret = json.loads(jsonResp)
     else:
         raise ZPException(400, 'Trip already assigned')
 
@@ -311,18 +372,21 @@ def driverPaymentConfirm(_dct, driver, trip):
     trip.st = 'PD'
     trip.save()
 
-    driver.mode = 'AV'
-    retireEntity(driver)
-
+    # driver.mode = 'AV'
+    # retiring is NOT done here but in the driver
+    #retireEntity(driver)
+    
     # user = User.objects.filter(an=trip.uan)[0]
     # user.tid = -1
     # user.save()
     # User retires via userRideRetire
 
     # Get the vehicle
-    vehicle = Vehicle.objects.filter(an=trip.van)[0]
-    retireEntity(vehicle)
-
+    # vehicle = Vehicle.objects.filter(an=trip.van)[0]
+    # retireEntity(vehicle)
+    # NOT required AS PER date 9/11/2020
+    
+    
     return HttpJSONResponse({})
 
 
@@ -333,7 +397,7 @@ def driverPaymentConfirm(_dct, driver, trip):
 @extractParams
 @transaction.atomic
 @checkAuth(['BK'])
-@checkTripStatus(['CN', 'TO'])
+@checkTripStatus(['CN', 'TO', 'PD'])
 def driverRideRetire(dct, driver, trip):
     '''
     Resets driver's and vehicles active trip
@@ -344,11 +408,16 @@ def driverRideRetire(dct, driver, trip):
 
     Following states when reached, have already retired the driver and vehicle
     DN : driver already retired from driverRideCancel()
-    PD : driver already retired from driverPaymentConfirm
+    # PD : driver already retired from driverPaymentConfirm #NOT anymore 9/11/2020
     FL : admin already retired from adminHandleFailedTrip()
 
     TODO: move this common code to a function
     '''
+    #if trip.st == 'PD':
+    total = float(getTripPrice(trip)['price'])
+    user = User.objects.filter(an=trip.uan)[0]
+    sendTripInvoiceMail('Rent', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
+    
     # made the driver AV and reset the tid to -1
     driver.mode = 'AV'
     retireEntity(driver)
@@ -357,6 +426,7 @@ def driverRideRetire(dct, driver, trip):
     vehicle = Vehicle.objects.filter(tid=trip.id)[0]
     vehicle.tid = Vehicle.AVAILABLE
     vehicle.save()
+    
     return HttpJSONResponse({})
 
 
@@ -450,9 +520,8 @@ def userIsDriverAv(dct, user):
     ret = {}
     drivers = []
     print('drivers are here ' ,len(qsDrivers))
-    # TODO make this view API optimal
+    # TODO make this view API optimal and Integrate with PUSH notification of FCM
     for driver in qsDrivers:
-        #print("$$$$$$$$$$$$$$$$: " ,qsDrivers, qsDrivers[0]['an'])
         #print(driver)
         vehicles = list(Vehicle.objects.filter(vtype=dct['vtype']).values('an','vtype'))
         #print(vehicles)
@@ -471,11 +540,11 @@ def userIsDriverAv(dct, user):
             gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
             nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
-            if nTime or nDist:
-                if nDist < 10_000 : # 10 kms
-                    print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
-                    drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
-
+            #if nTime or nDist:
+            if nDist < 50_000:  # 10 kms
+                print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
+                drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
+    print("drivers found in 10km radius : ", len(drivers))
     ret.update({'count': len(drivers)}) # {'drivers': drivers})
     return HttpJSONResponse(ret)
 
@@ -565,5 +634,138 @@ def userRideRequest(dct, user):#, _trip):
     ret = getRiPrice(trip)
     ret['tid'] = trip.id
 
+    # to get the exact price even if the user TRminated the ride en route.
+    if trip.rtype=='0':
+        rate = Rate()
+        rate.id = 'ride' + str(trip.id)
+        rate.type = 'ride' if trip.rtype == '0' else 'rent'
+        rate.rev = ''
+        rate.money = float(getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)['price'])
+        rate.save()        
+
+
     return HttpJSONResponse(ret)
 
+
+# ============================================================================
+# Admin views
+# ============================================================================
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Agent not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Transaction error', 500)
+@transaction.atomic
+@extractParams
+@checkAuth()
+def adminDriverReached(dct):
+    '''
+    Checks for trips in AS state and check whether the agent has reached or not.
+        if yes, then notify user
+
+    HTTP args:
+        *: Any other fields that need to be updated/corrected (except state)
+
+    Note:
+        this uses Google distance, so might not be accurate
+    '''
+    # Get the trips and look for RQ ones
+    qsTrip = Trip.objects.filter(st__in=['AS']) #[0]
+    tId = 0
+    auth = ''
+    
+    for trip in qsTrip: 
+        srcCoOrds = ['%s, %s' % (trip.srclat, trip.srclng)]
+        iterAn = 0
+        minDist, minTime = 1_000, 5 # 1000 metres and 5 minutes
+        locDriver = Location.objects.filter(an=trip.dan)[0]
+
+        dstCoOrds = ['%s,%s' % (locDriver.lat, locDriver.lng)]
+        print(srcCoOrds, dstCoOrds)
+
+        gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+        nDist, nTime = gMapsRet['dist'], gMapsRet['time']
+        print(" dist : ", nDist, " time : ", nTime)
+        if  (nTime < minTime) or (nDist < minDist):
+            minTime = nTime
+            minDist = nDist
+            iterAn = trip.dan
+            print("The driver is : ", minDist, " metres away and ", minTime, " minutes away")
+            params = {"to": "/topics/all", "notification":{
+                                    "title":"Let's ZIPPE !",
+                                    "body":"Your RIDE driver is reaching soon. Please be ready.",
+                                    "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+                                    "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+            }
+            }
+            dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+            jsonData = json.dumps(params).encode()
+            sUrl = 'https://fcm.googleapis.com/fcm/send'
+            req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+            jsonResp = urllib.request.urlopen(req, timeout=30).read()
+            ret = json.loads(jsonResp)
+
+            tId = trip.id
+            choosenDriver = Driver.objects.filter(an=iterAn)[0]
+            auth = choosenDriver.auth
+            
+    return HttpJSONResponse({'babua': auth, 'tid': tId})
+    
+    
+
+# ============================================================================
+# Auth views
+# ============================================================================
+
+
+@makeView()
+@csrf_exempt
+@handleException()
+@extractParams
+@transaction.atomic
+@checkAuth()
+def authRideHistory(dct, entity):
+    '''
+    returns the history of all ride Trips for an entity (a User or a Driver or Admin)
+    HTTP args :
+        auth
+    return :
+        JSONArray of trips
+    '''
+    if type(entity) is User:
+        # find all trips of the User
+        qsTrip = Trip.objects.filter(uan=entity.an, rtype='0').order_by('-id').values()   
+    
+    elif type(entity) is Driver:
+        # find all trips of the Driver
+        qsTrip = Trip.objects.filter(dan=entity.an, rtype='0').order_by('-rtime').values()
+        
+    else: #admin access of all the trips
+        qsTrip = Trip.objects.filter(st__in=Trip.STATES, rtype='0').order_by('-rtime').values()
+    
+    ret = {}
+    # print(len(qsTrip))
+    if len(qsTrip):
+        trips = []
+        for i in qsTrip:
+            #print("Trip state : ", str(i['st']))
+            if i['stime'] is None : 
+                sTime = 'notSTARTED'
+            else:
+                # strip the stime and find the date
+                strSTime = str(i['stime'])[:19]
+                sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+                    
+                    
+            retJson = {  'tid': str(i['id']),
+                          'st': str(i['st']),
+                          'sdate': str(sTime),
+                          'vtype': str(i['rvtype'])
+                      }
+            trips.append(retJson)
+        
+        ret.update({'trips': trips})
+
+    return HttpJSONResponse(ret)
+    

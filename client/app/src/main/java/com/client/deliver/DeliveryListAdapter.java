@@ -1,8 +1,8 @@
 package com.client.deliver;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,16 +37,21 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
     public void onBindViewHolder(DeliveryListAdapter.ViewHolder holder, int position) {
 
         DeliveryListData listData = delivery_list_data.get(position);
-        holder.txtID.setText(listData.getDeliveryID());
+        holder.txtID.setText(listData.getDeliveryIType());
         holder.txtStatus.setText(listData.getDeliveryStatus());
         holder.txtPrice.setText(listData.getDeliveryPrice());
+        holder.txtIType.setText(listData.getDeliveryID());
+        holder.delText2.setText(R.string.price);
 
         holder.txtID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent details = new Intent(context, ActivityDeliveryOrders.class);
+                String valueScid = listData.getDeliveryID();
+                Log.d("DeliveryListAdapter", "itype" + valueScid);
+                Intent details = new Intent(context, ActivityDeliverySummery.class);
+                details.putExtra("SCID", valueScid);
                 context.startActivity(details);
-                ((Activity) context).finish();
+                //((Activity) context).finish();
             }
         });
     }
@@ -58,13 +63,15 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView txtID, txtStatus, txtPrice;
+        private TextView txtID, txtStatus, txtPrice, txtIType, delText2;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            delText2 = itemView.findViewById(R.id.delText2);
             txtID = itemView.findViewById(R.id.delivery_id);
             txtStatus = itemView.findViewById(R.id.delivery_status);
             txtPrice = itemView.findViewById(R.id.delivery_price);
+            txtIType = itemView.findViewById(R.id.delivery_itype);
 
         }
     }

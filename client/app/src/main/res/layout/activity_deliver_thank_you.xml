@@ -20,20 +20,27 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:padding="10dp"
+                android:text="@string/your_agent_will_be_assigned_shortly_please_keep_you_your_package_ready_nthank_you_for_choosing"
                 android:textAlignment="center"
-                android:padding="20dp"
-                android:text="Your agent will be assigned shortly. Please keep you your package ready.\nthank you for choosing"
                 android:textAllCaps="true"
                 android:textSize="23sp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="20dp"
+                android:text="@string/thank_you_for_choosing"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="23sp" />
 
             <include
                 layout="@layout/zippe_logo"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginTop="50dp"
                 android:layout_marginBottom="50dp" />
 
 
@@ -41,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="to view your order "
+                android:text="@string/to_view_your_order"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="23sp" />
@@ -51,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="click here"
+                android:text="@string/click_here"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="23sp"

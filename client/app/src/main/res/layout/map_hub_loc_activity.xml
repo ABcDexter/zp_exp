@@ -19,7 +19,7 @@
         android:layout_marginBottom="30dp"
         android:background="@color/colorTransparentBlack"
         android:padding="10dp"
-        android:text="Pinch to zoom"
+        android:text="@string/pinch_to_zoom"
         android:textAlignment="center"
         android:textSize="20sp" />
 </RelativeLayout>

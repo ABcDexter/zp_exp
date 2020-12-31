@@ -29,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="30dp"
-                    android:text="you have reached your \ndestination with"
+                    android:text="@string/you_have_reached_your_ndestination_with"
                     android:textAlignment="center"
                     android:textAllCaps="true"
                     android:textSize="23sp" />
@@ -57,7 +57,7 @@
                         android:layout_height="50dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="please pay"
+                        android:text="@string/please_pay"
                         android:textAllCaps="true"
                         android:textSize="20sp" />
 
@@ -65,7 +65,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|start"
-                        android:text=":"
+                        android:text="@string/colon"
                         android:textAlignment="center"
                         android:textAllCaps="true"
                         android:textSize="20sp" />
@@ -77,7 +77,7 @@
                         android:layout_toEndOf="@+id/txtc"
                         android:layout_weight="1"
                         android:gravity="center|start"
-                        android:text="250 "
+                        android:text=""
                         android:textAlignment="center"
                         android:textAllCaps="true"
                         android:textSize="23sp" />
@@ -103,7 +103,7 @@
                         android:gravity="center"
                         android:paddingStart="5dp"
                         android:paddingEnd="15dp"
-                        android:text="cash"
+                        android:text="@string/cash"
                         android:textAllCaps="true"
                         android:textSize="23sp" />
 
@@ -118,7 +118,7 @@
                         android:gravity="center"
                         android:paddingStart="20dp"
                         android:paddingEnd="20dp"
-                        android:text="upi"
+                        android:text="@string/upi"
                         android:textAllCaps="true"
                         android:textSize="23sp" />
 
@@ -147,6 +147,13 @@
                 android:padding="15dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/paynow" />
+            <Button
+                android:id="@+id/dummy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="dummy"
+                android:layout_alignParentBottom="true"/>
         </RelativeLayout>
     </ScrollView>
 

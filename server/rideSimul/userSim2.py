@@ -70,8 +70,7 @@ class User(Entity):
 
         if st in ['FN', 'TR']:
             self.log('Made payment for trip: '
-                     'Cost: %.2f, '
-                     'Dist %.2f km' % (dct['price'], dct['dist']))
+                     'Cost: %.2f, ' % ( float(dct['price'])))  # 'Dist %.2f km' % (dct['price'], dct['dist']))
             self.writeJSON('money.%d' % self.sTID, {'payment': dct['price']})
         elif st in ['TO', 'CN', 'DN', 'PD', 'FL']:
             self.handleFinishedTrip()

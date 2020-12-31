@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.deliverpartner">
-
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -24,20 +28,42 @@
         android:required="false" />
 
     <application
+        android:name=".UtilityInitApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityEnroute"/>
+        <activity android:name=".ActivityUPICode"></activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".MapsClientLocation"
+            android:label="@string/title_activity_maps_client_location" />
+        <activity
+            android:name=".MapsReceiverLocation"
+            android:label="@string/title_activity_maps_client_location" />
+        <activity
+            android:name=".MapsReachClient"
+            android:label="@string/title_activity_maps_reach_client" />
+        <activity android:name=".ActivityLogin" />
+        <activity android:name=".ActivityUserProfile" />
+        <activity android:name=".ActivityEnroute" />
         <activity android:name=".ActivityTotalEarnings" />
         <activity
-            android:name=".ActivityInProgress"
+            android:name=".ActivityAccepted"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".ActivityNewOrders"/>
-        <activity android:name=".ActivityMain"/>
-        <activity android:name=".ActivityVerifyDLDetails" />
         <activity android:name=".ActivityWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,6 +72,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ActivityHome" />
+        <activity android:name=".ActivityDrawer" />
 
         <service android:name=".UtilityPollingService" />
     </application>

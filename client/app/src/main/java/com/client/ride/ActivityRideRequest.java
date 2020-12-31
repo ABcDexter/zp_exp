@@ -2,8 +2,10 @@ package com.client.ride;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -14,12 +16,18 @@ import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
@@ -27,6 +35,7 @@ import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
+import com.client.rent.ActivityRentHome;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
@@ -49,12 +58,12 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
     public static final String DST_NAME = "DROP POINT";
     public static final String RENT_RIDE = "RentRide";
     public static final String PAYMENT_MODE = "PaymentMode";
-    public static final String VAN_PICK = "com.client.Locations";
+    //public static final String VAN_PICK = "com.client.Locations";
     public static final String AUTH_KEY = "AuthKey";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    public static final String OTP_PICK = "OTPPick";
-    public static final String DRIVER_MINS = "DriverMins";
+    //public static final String OTP_PICK = "OTPPick";
+    //public static final String DRIVER_MINS = "DriverMins";
 
     ImageButton next, costInfo, timeInfo, pickInfo, dropInfo;
     TextView costEst, timeEst, pickPlaceInfo, dropPlaceInfo;
@@ -68,7 +77,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
     ActivityRideRequest a = ActivityRideRequest.this;
 
     private static ActivityRideRequest instance;
-
+    Animation animMoveL2R, animMoveR2L;
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG, "RESPONSE:" + response);
 
@@ -81,7 +90,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
                 String time = response.getString("time");
 
                 costEst.setText("₹ " + price);
-                timeEst.setText(time + " MINS");
+                timeEst.setText(time + getString(R.string.min));
                 SharedPreferences sp_cookie = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
                 sp_cookie.edit().putString(TIME_DROP, time).apply();
                 sp_cookie.edit().putString(COST_DROP, price).apply();
@@ -110,8 +119,8 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
 
                     if (status.equals("RQ")) {
                         Snackbar snackbar = Snackbar
-                                .make(scrollView, "SEARCHING FOR YOUR RIDE...", Snackbar.LENGTH_INDEFINITE)
-                                .setAction("CANCEL", new View.OnClickListener() {
+                                .make(scrollView, R.string.searching_for_ride, Snackbar.LENGTH_INDEFINITE)
+                                .setAction(R.string.cancel, new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         cancelRequest();
@@ -127,15 +136,15 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
                         startService(intent);
                     }
                     if (status.equals("AS")) {
-                        String otp = response.getString("otp");
-                        String van = response.getString("vno");
-                        String mins = response.getString("time");
+                        //String otp = response.getString("otp");
+                        //String van = response.getString("vno");
+                        //String mins = response.getString("time");
                         Intent as = new Intent(ActivityRideRequest.this, ActivityRideOTP.class);
                         startActivity(as);
-                        SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                        sp_otp.edit().putString(OTP_PICK, otp).apply();
-                        sp_otp.edit().putString(VAN_PICK, van).apply();
-                        sp_otp.edit().putString(DRIVER_MINS,mins).apply();
+                        //SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                        //sp_otp.edit().putString(OTP_PICK, otp).apply();
+                        //sp_otp.edit().putString(VAN_PICK, van).apply();
+                        //sp_otp.edit().putString(DRIVER_MINS,mins).apply();
                     }
                 } else {
                     Intent homePage = new Intent(ActivityRideRequest.this, ActivityWelcome.class);
@@ -159,6 +168,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
 
@@ -216,6 +226,10 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         scooty_up = findViewById(R.id.scooty_up);
         scooty_down = findViewById(R.id.scooty_down);
 
+        animMoveL2R = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r);
+
+        animMoveR2L = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_r2l);
+
         dropInfo.setOnClickListener(this);
         pickInfo.setOnClickListener(this);
         try {
@@ -248,7 +262,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         rideEstimate();
 
         if (!time.equals("")) {
-            timeEst.setText(time + " MINS");
+            timeEst.setText(time + getString(R.string.min));
         }
         if (!cost.equals("")) {
             // costEst.setText(cost);
@@ -301,9 +315,9 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         TextView accept = myDialog.findViewById(R.id.accept_request);
         if (id == 1) {
             ll.setVisibility(View.GONE);
-            String part1= "This is an approximate cost as per ";
-            String part2= "Google Maps (distance and time taken)";
-            String part3= ". May change depending on ride time.";
+            String part1= getString(R.string.google_part1);
+            String part2= getString(R.string.google_part2);
+            String part3= getString(R.string.google_part3);
 
             String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
             infoText.setText(Html.fromHtml(sourceString));
@@ -311,9 +325,9 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         }
         if (id == 2) {
             ll.setVisibility(View.GONE);
-            String part1= "Approximate time as per ";
-            String part2= "Google Maps";
-            String part3= ". May change depending on traffic.";
+            String part1= getString(R.string.google_time_part1);
+            String part2= getString(R.string.google_time_part2);
+            String part3= getString(R.string.google_time_part3);
 
             String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
             infoText.setText(Html.fromHtml(sourceString));
@@ -338,7 +352,11 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
     }
 
     private void moveit() {
-        zbeeL.setVisibility(View.VISIBLE);
+        scooty_down.setVisibility(View.VISIBLE);
+        zbeeR.startAnimation(animMoveL2R);
+        scooty_down.startAnimation(animMoveR2L);
+
+        /*zbeeL.setVisibility(View.VISIBLE);
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zbeeL, "translationX", 1500, 0f);
         objectAnimator.setDuration(1500);
         objectAnimator.start();
@@ -347,43 +365,81 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zbeeR, "translationX", 0f, 1500);
         objectAnimator1.setDuration(1500);
         objectAnimator1.start();
-        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
+        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.reject_request:
-                Intent home = new Intent(ActivityRideRequest.this, ActivityRideHome.class);
-                startActivity(home);
-                finish();
-                break;
-            case R.id.accept_request:
-                //TODO
-                break;
-            case R.id.confirm_ride_book:
-                /*if (vTypeInfo.equals("1") || vTypeInfo.equals("2")) {
-                    moveScooty();
-                }
-                if (vTypeInfo.equals("3")) {
-                    moveit();
-                }*/
+        int id = v.getId();
+        if (id == R.id.reject_request) {
+            Intent home = new Intent(ActivityRideRequest.this, ActivityRideHome.class);
+            startActivity(home);
+            finish();
+        } else if (id == R.id.accept_request) {//TODO
+        } else if (id == R.id.confirm_ride_book) {
+            alertBox(); //alert dialog box to tell the user that if he wishes to end the ride before reaching the destination, he will be charged as per the destination chosen at the time of booking.
+        } else if (id == R.id.infoTime) {
+            ShowPopup(2);
+        } else if (id == R.id.infoCost) {
+            ShowPopup(1);
+        } else if (id == R.id.infoPick) {
+            ShowPopup(3);
+        } else if (id == R.id.infoDrop) {
+            ShowPopup(4);
+        }
+    }
+
+    private void alertBox() {
+        // Create the object of
+        // AlertDialog Builder class
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityRideRequest.this);
+        // Set the message show for the Alert time
+        builder.setMessage(R.string.end_ride_before_destination);
+        // Set Alert Title
+        builder.setTitle(R.string.please_note);
+        // Set Cancelable false
+        // for when the user clicks on the outside
+        // the Dialog Box then it will remain show
+        builder.setCancelable(false);
+        // Set the positive button with ok name
+        // OnClickListener method is use of
+        // DialogInterface interface.
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                // When the user click ok button
+                // then app will close
                 moveit();
                 userRequestRide();
-                break;
-            case R.id.infoTime:
-                ShowPopup(2);
-                break;
-            case R.id.infoCost:
-                ShowPopup(1);
-                break;
-            case R.id.infoPick:
-                ShowPopup(3);
-                break;
-            case R.id.infoDrop:
-                ShowPopup(4);
-                break;
-        }
+            }});
+
+        // Set the Negative button with No name
+        // OnClickListener method is use
+        // of DialogInterface interface.
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                // If user click cancel
+                // then user goes to the previous window
+                Intent back = new Intent(ActivityRideRequest.this, ActivityRideHome.class);
+                startActivity(back);
+                finish();
+            }
+        });
+
+        // Create the Alert dialog
+        AlertDialog alertDialog = builder.create();
+
+        // Show the Alert Dialog box
+        alertDialog.show();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
+        Button buttonPositive = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        buttonPositive.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        Button buttonNegative = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        buttonNegative.setTextColor(ContextCompat.getColor(this, R.color.Black));
     }
 
    /* private void moveScooty() {

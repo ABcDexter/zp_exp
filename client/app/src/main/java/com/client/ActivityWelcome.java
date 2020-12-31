@@ -1,6 +1,6 @@
 package com.client;
 
-import android.animation.ObjectAnimator;
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,27 +9,30 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
-import com.client.deliver.ActivityDeliverHome;
+import com.client.deliver.ActivityPackageDetails;
+import com.client.rent.ActivityRateRent;
 import com.client.rent.ActivityRentEnded;
 import com.client.rent.ActivityRentHome;
-import com.client.rent.ActivityRentInProgress;
-import com.client.rent.ActivityRentOTP;
-import com.client.rent.ActivityRentRequest;
 import com.client.ride.ActivityRideEnded;
 import com.client.ride.ActivityRideHome;
 import com.client.ride.ActivityRideInProgress;
@@ -53,14 +56,12 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
     private static final String TAG = "ActivityWelcome";
     ImageView zippe_iv, zippe_iv_below, scooty_up, scooty_down;
-    public static final String BUSS = "Buss";
     public static final String BUSS_FLAG = "com.client.ride.BussFlag";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String LOCATION_PICK = "PickLocation";
     public static final String LOCATION_DROP = "DropLocation";
     public static final String OTP_PICK = "OTPPick";
     public static final String VAN_PICK = "VanPick";
-    public static final String PRICE_RENT = "PriceRent";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
 
@@ -75,7 +76,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     SharedPreferences prefAuth;
     String stringAuth;
-    ImageButton btnRent, btnRide, btnDeliver;
+    ImageButton btnRent, btnRide, btnDeliver, btnShop, btnConnect;
     ActivityWelcome a = ActivityWelcome.this;
     Map<String, String> params = new HashMap();
     String auth;
@@ -87,6 +88,14 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.CALL_PHONE};
     String lat, lng, stringAN;
+
+    Animation animMoveL2R, animMoveR2L;
+
+    private TextView textHelp;
+    private RelativeLayout rlOverlay, rlTopLayout;
+    private LinearLayout llRide, llRent, llDelivery, llShop, llServices, llInfo;
+    SharedPreferences sharedPreferences1;
+    SharedPreferences.Editor sharedEditor1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,73 +112,73 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         btnRide = findViewById(R.id.btn_ride);
         btnRide.setOnClickListener(this);
         btnDeliver = findViewById(R.id.btn_deliver);
+        btnShop = findViewById(R.id.btn_shop);
+        btnConnect = findViewById(R.id.btn_connect);
         btnDeliver.setOnClickListener(this);
+        btnShop.setOnClickListener(this);
+        btnConnect.setOnClickListener(this);
+        textHelp = findViewById(R.id.textHelp);
+        textHelp.setOnClickListener(this);
+        rlOverlay = findViewById(R.id.rlOverlay);
+        rlTopLayout = findViewById(R.id.rlTopLayout);
+        llRide = findViewById(R.id.llRide);
+        llRent = findViewById(R.id.llRent);
+        llDelivery = findViewById(R.id.llDelivery);
+        llShop = findViewById(R.id.llShop);
+        llServices = findViewById(R.id.llServices);
+        llInfo = findViewById(R.id.llInfo);
         auth = stringAuth;
         if (auth.equals("")) {
-            Intent registerUser = new Intent(ActivityWelcome.this, ActivityMain.class);
+            Intent registerUser = new Intent(ActivityWelcome.this, ActivityRegistration.class);
             startActivity(registerUser);
             finish();
         }
+        sharedPreferences1 = getPreferences(Context.MODE_PRIVATE);
+        sharedEditor1 = sharedPreferences1.edit();
+        /*if (isFirstTime()) {
+            rlOverlay.setVisibility(View.VISIBLE);
+        }*/
+        if (isItFirstTime()) {
+            Log.d(TAG, "First Time");
+            rlOverlay.setVisibility(View.VISIBLE);
+
+        } else {
+            rlOverlay.setVisibility(View.GONE);
+            Log.d(TAG, "Not a First Time");
+        }
+
         zippe_iv = findViewById(R.id.iv_zippee);
         zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
         scooty_up = findViewById(R.id.scooty_up);
         scooty_down = findViewById(R.id.scooty_down);
-        moveZbee();
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityWelcome.this);
         getLastLocation();
         checkStatus();
         myDialog = new Dialog(this);
 
+        animMoveL2R = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r);
+        animMoveR2L = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_r2l);
+
+        zippe_iv.startAnimation(animMoveL2R);
+        scooty_down.startAnimation(animMoveR2L);
+
+
+    }
+
+    public boolean isItFirstTime() {
+        if (sharedPreferences1.getBoolean("firstTime", true)) {
+            sharedEditor1.putBoolean("firstTime", false);
+            sharedEditor1.commit();
+            sharedEditor1.apply();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static ActivityWelcome getInstance() {
         return instance;
-    }
-
-    private void moveZbee() {
-        scooty_up.setVisibility(View.GONE);
-        scooty_down.setVisibility(View.VISIBLE);
-        zippe_iv_below.setVisibility(View.GONE);
-        zippe_iv.setVisibility(View.VISIBLE);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scooty_down, "translationX", 1800, 0f);
-        objectAnimator.setDuration(1700);
-        objectAnimator.start();
-
-        /*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*/
-
-        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zippe_iv, "translationX", 0f, 1500);
-        objectAnimator1.setDuration(1700);
-        objectAnimator1.start();
-        /*objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                moveScooty();
-            }
-        }, 1600);
-    }
-
-    private void moveScooty() {
-        scooty_up.setVisibility(View.VISIBLE);
-        scooty_down.setVisibility(View.GONE);
-        zippe_iv_below.setVisibility(View.VISIBLE);
-        zippe_iv.setVisibility(View.GONE);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zippe_iv_below, "translationX", 1800, 0f);
-        objectAnimator.setDuration(1700);
-        objectAnimator.start();
-        /*objectAnimator.setRepeatCount(ValueAnimator.INFINITE);*/
-
-        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(scooty_up, "translationX", 0f, 1500);
-        objectAnimator1.setDuration(1700);
-        objectAnimator1.start();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                moveZbee();
-            }
-        }, 1600);
-        /* objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
     }
 
     public void sendLocation() {
@@ -220,22 +229,22 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             dialog_txt.setText("No ride available currently.\nNotify me when available.");
         }
         if (id == 2) {
-            dialog_txt.setText("Drivers are available.");
+            dialog_txt.setText(R.string.drivers_available);
         }
         if (id == 3) {
-            dialog_txt.setText("We are sorry ! Your Ride was cancelled due to unavoidable circumstances. Please try again.");
+            dialog_txt.setText(R.string.ride_cancelled_by_you);
         }
         if (id == 4) {
-            dialog_txt.setText("Your RIDE request has timed out. Please try again.");
+            dialog_txt.setText(R.string.ride_timed_out);
         }
         if (id == 5) {
-            dialog_txt.setText("We were unable to complete your ride. Any inconvenience deeply regretted.");
+            dialog_txt.setText(R.string.unable_to_complete_your_ride);
         }
         if (id == 6) {
-            dialog_txt.setText("Ride canceled by you.");
+            dialog_txt.setText(R.string.ride_canceled_by_you);
         }
         if (id == 7) {
-            dialog_txt.setText("Sorry ! All our vehicles are currently rented out. Please try again later.");
+            dialog_txt.setText(R.string.vehicles_rented_out);
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
@@ -248,7 +257,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         dialog_txt = myDialog.findViewById(R.id.info_text);
 
         if (id == 2) {
-            dialog_txt.setText("Drivers are available.");
+            dialog_txt.setText(R.string.drivers_available);
         }
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -262,22 +271,32 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
             Log.d(TAG, "inside else of getLastLocation()");
-            mFusedLocationClient.getLastLocation().addOnCompleteListener(
-                    new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            Location location = task.getResult();
-                            if (location == null) {
-                                requestNewLocationData();
-                            } else {
-                                Log.d(TAG, "inside else of addOnCompleteListener()");
-                                lat = location.getLatitude() + "";
-                                lng = location.getLongitude() + "";
-                                Log.d(TAG, "lat = " + lat + " lng = " + lng);
-                                sendLocation();
-                            }
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+        mFusedLocationClient.getLastLocation().addOnCompleteListener(
+                new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        Location location = task.getResult();
+                        if (location == null) {
+                            requestNewLocationData();
+                        } else {
+                            Log.d(TAG, "inside else of addOnCompleteListener()");
+                            lat = location.getLatitude() + "";
+                            lng = location.getLongitude() + "";
+                            Log.d(TAG, "lat = " + lat + " lng = " + lng);
+                            sendLocation();
                         }
-                    });
+                    }
+                });
         }
     }
 
@@ -302,6 +321,16 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         mLocationRequest.setNumUpdates(1);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mFusedLocationClient.requestLocationUpdates(
                 mLocationRequest, mLocationCallback,
                 Looper.myLooper());
@@ -318,8 +347,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     };
 
 
-    public void
-    onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
+    public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG, "RESPONSE:" + response);
         //response on hitting user-trip-get-status API
         if (id == 1) {
@@ -353,6 +381,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                             startActivity(as);
                         }
                         if (status.equals("FN") || status.equals("TR")) {
+
                             Intent fntr = new Intent(ActivityWelcome.this, ActivityRideEnded.class);
                             startActivity(fntr);
                         }
@@ -364,38 +393,25 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                             Log.d(TAG, "error");
                         }
                     }
+
                     if (rtype.equals("1")) {
-                        if (status.equals("RQ")) {
-                            Intent rq = new Intent(ActivityWelcome.this, ActivityRentRequest.class);
-                            startActivity(rq);
-                        }
-                        if (status.equals("AS")) {
-                            /*String otp = response.getString("otp");
-                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                            sp_otp.edit().putString(OTP_PICK, otp).apply();*/
-                            Intent as = new Intent(ActivityWelcome.this, ActivityRentOTP.class);
-                            startActivity(as);
-                        }
-                        if (status.equals("ST")) {
-                            String van = response.getString("vno");
-                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                            sp_otp.edit().putString(VAN_PICK, van).apply();
-                            Intent as = new Intent(ActivityWelcome.this, ActivityRentInProgress.class);
-                            startActivity(as);
-                        }
                         if (status.equals("FN") || status.equals("TR")) {
-                            //retireTrip();
-                            Intent fntr = new Intent(ActivityWelcome.this, ActivityRentEnded.class);
-                            startActivity(fntr);
+                            String price = response.getString("price");
+                            if (price.equals("0.00")) {
+                                Intent rate = new Intent(ActivityWelcome.this, ActivityRateRent.class);
+                                startActivity(rate);
+                                finish();
+                            } else {
+                                Intent payment = new Intent(ActivityWelcome.this, ActivityRentEnded.class);
+                                startActivity(payment);
+                                finish();
+                            }
                         }
-
-                        if (status.equals("TO")) {
-                            ShowPopup(7);
-                        }
-
                     }
-                } else {
-                    Log.d(TAG, "active=" + active);
+
+                } else if (active.equals("false")) {
+                    String tid = response.getString("tid");
+                    Log.d(TAG, "active=" + active + " tid=" + tid);
 
                     SharedPreferences prefTripDetails = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     String tripIDExists = prefTripDetails.getString(TRIP_ID, "");
@@ -404,6 +420,9 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                         homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(homePage);
                         finish();*/
+                        //tripInfo(tripIDExists);
+                    }
+                    if (!tid.equals("-1")) {
                         tripInfo(tripIDExists);
                     }
                 }
@@ -429,8 +448,6 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                     SharedPreferences.Editor editor1 = prefBuzz.edit();
                     editor1.remove(BUSS_FLAG);
                     editor1.apply();
-
-
                 }
 
                 if (st.equals("DN")) {
@@ -500,9 +517,10 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
 
         //response on hitting auth-location-update API
         if (id == 4) {
-            Intent i = new Intent(this, UtilityPollingService.class);
+            /*Intent i = new Intent(this, UtilityPollingService.class);
             i.setAction("00");
-            startService(i);
+            startService(i);*/
+
         }
     }
 
@@ -542,22 +560,127 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
+
     }
+
+    int counter = 1;
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_rent:
-                Intent rentIntent = new Intent(ActivityWelcome.this, ActivityRentHome.class);
-                startActivity(rentIntent);
-                break;
-            case R.id.btn_ride:
-                Intent rideIntent = new Intent(ActivityWelcome.this, ActivityRideHome.class);
-                startActivity(rideIntent);
-                break;
-            case R.id.btn_deliver:
-                Intent deliverIntent = new Intent(ActivityWelcome.this, ActivityDeliverHome.class);
-                startActivity(deliverIntent);
+        int id = v.getId();
+        if (id == R.id.btn_rent) {
+            Intent rentIntent = new Intent(ActivityWelcome.this, ActivityRentHome.class);
+            startActivity(rentIntent);
+        } else if (id == R.id.btn_ride) {
+            Intent rideIntent = new Intent(ActivityWelcome.this, ActivityRideHome.class);
+            startActivity(rideIntent);
+        } else if (id == R.id.btn_deliver) {
+            Intent deliverIntent = new Intent(ActivityWelcome.this, ActivityPackageDetails.class);
+            startActivity(deliverIntent);
+        } else if (id == R.id.btn_shop) {
+            String shopUrl = "https://zippe.in/en/shop-by-category/";
+            Intent shopIntent = new Intent(Intent.ACTION_VIEW);
+            shopIntent.setData(Uri.parse(shopUrl));
+            startActivity(shopIntent);
+        } else if (id == R.id.btn_connect) {
+            String connectUrl = "https://zippe.in/en/zippe-connect/";
+            Intent connectIntent = new Intent(Intent.ACTION_VIEW);
+            connectIntent.setData(Uri.parse(connectUrl));
+            startActivity(connectIntent);
+        } else if (id == R.id.textHelp) {
+            Log.d(TAG, "counter = " + counter);
+            //counter++;
+            if (counter == 1) {
+                /*if (textHelp.getText().toString().equals("Next")) {*/
+                llRide.setVisibility(View.INVISIBLE);
+                llRent.setVisibility(View.VISIBLE);
+                llDelivery.setVisibility(View.INVISIBLE);
+                llShop.setVisibility(View.INVISIBLE);
+                llServices.setVisibility(View.INVISIBLE);
+                llInfo.setVisibility(View.INVISIBLE);
+                rlOverlay.setVisibility(View.VISIBLE);
+
+                textHelp.setText("Next");
+                counter = counter + 1;
+                Log.d(TAG, "counter = " + counter);
+                //textHelp.setText("Got It");
+                /*}*/ /*else {
+                        rlOverlay.setVisibility(View.GONE);
+                    }*/
+            } else if (counter == 2) {
+                llRide.setVisibility(View.INVISIBLE);
+                llRent.setVisibility(View.INVISIBLE);
+                llDelivery.setVisibility(View.VISIBLE);
+                llShop.setVisibility(View.INVISIBLE);
+                llServices.setVisibility(View.INVISIBLE);
+                llInfo.setVisibility(View.INVISIBLE);
+                rlOverlay.setVisibility(View.VISIBLE);
+
+                textHelp.setText("Next");
+                counter = counter + 1;
+            } else if (counter == 3) {
+                llRide.setVisibility(View.INVISIBLE);
+                llRent.setVisibility(View.INVISIBLE);
+                llDelivery.setVisibility(View.INVISIBLE);
+                llShop.setVisibility(View.VISIBLE);
+                llServices.setVisibility(View.INVISIBLE);
+                llInfo.setVisibility(View.INVISIBLE);
+                rlOverlay.setVisibility(View.VISIBLE);
+
+                textHelp.setText("Next");
+                counter = counter + 1;
+            } else if (counter == 4) {
+                llRide.setVisibility(View.INVISIBLE);
+                llRent.setVisibility(View.INVISIBLE);
+                llDelivery.setVisibility(View.INVISIBLE);
+                llShop.setVisibility(View.INVISIBLE);
+                llServices.setVisibility(View.VISIBLE);
+                llInfo.setVisibility(View.INVISIBLE);
+                rlOverlay.setVisibility(View.VISIBLE);
+
+                textHelp.setText("Next");
+                counter = counter + 1;
+            } else if (counter == 5) {
+                llRide.setVisibility(View.INVISIBLE);
+                llRent.setVisibility(View.INVISIBLE);
+                llDelivery.setVisibility(View.INVISIBLE);
+                llShop.setVisibility(View.INVISIBLE);
+                llServices.setVisibility(View.INVISIBLE);
+                llInfo.setVisibility(View.VISIBLE);
+                rlOverlay.setVisibility(View.VISIBLE);
+
+                textHelp.setText("Got It");
+                counter = counter + 1;
+            } else if (counter == 6) {
+                rlOverlay.setVisibility(View.GONE);
+                //rlTopLayout.setVisibility(View.VISIBLE);
+            }
         }
     }
+
+    /*private boolean isFirstTime() {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        boolean ranBefore = preferences.getBoolean("RanBefore", false);
+        if (!ranBefore) {
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("RanBefore", true);
+            editor.apply();
+            rlOverlay.setVisibility(View.VISIBLE);
+
+            rlOverlay.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    rlOverlay.setVisibility(View.GONE);
+                    return false;
+                }
+
+            });
+
+
+        }
+        return ranBefore;
+    }*/
 }

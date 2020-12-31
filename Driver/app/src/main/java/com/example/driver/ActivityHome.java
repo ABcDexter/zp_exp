@@ -1,8 +1,8 @@
 package com.example.driver;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
@@ -67,7 +66,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public static final String DSTLNG = "TripDstLng";
     public static final String MY_LAT = "MYSrcLAT";
     public static final String MY_LNG = "MYSrcLng";
-    TextView newOrder, inProgress, completedOrder, totalEarnings;
+    TextView newOrder, /*inProgress*/
+            completedRides;
 
     Vibrator vibrator;
 
@@ -104,6 +104,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
+
+
         SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
         aadhar = sharedPreferences.getString(AADHAR, "");// retrieve aadhaar value stored locally and assign it to String aadhar
 
@@ -111,24 +113,22 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         String stringStatus = pref.getString(STATUS, "");
 
         SharedPreferences delPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
-        String strDid = delPref.getString(TID, "");
 
-        tripID = strDid;
+        tripID = delPref.getString(TID, "");
         //initializing variables
         status_duty = findViewById(R.id.dutyStatus);
         scrollView = findViewById(R.id.scrollLayout);
         newOrder = findViewById(R.id.new_ride);
-        inProgress = findViewById(R.id.ride_in_progress);
-        //completedOrder = findViewById(R.id.completed_rides);
-        //totalEarnings = findViewById(R.id.earnings);
+        //inProgress = findViewById(R.id.ride_in_progress);
+        completedRides = findViewById(R.id.completed_rides);
         notify = findViewById(R.id.notifNo);
 
         newOrder.setOnClickListener(this);
-        inProgress.setOnClickListener(this);
-        //completedOrder.setOnClickListener(this);
-        //totalEarnings.setOnClickListener(this);
+        //inProgress.setOnClickListener(this);
+        completedRides.setOnClickListener(this);
 
         myDialog = new Dialog(this);
+        auth = strAuth;
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityHome.this);// needed for gsp tracking
 
@@ -136,6 +136,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             status_duty.setChecked(true);
             getLastLocation();// method for getting the last know latitude and longitude of driver
             getStatus();
+            Log.d(TAG, "call 1");
         }
         if (!stringStatus.equals("AV")) {
             status_duty.setChecked(false);
@@ -151,6 +152,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     Log.d(TAG, "driverStatus = " + driverStatus);
                     driverSetMode(driverStatus);
                     getLastLocation();// method for getting the last know latitude and longitude of driver
+                    Log.d(TAG, "call 2");
                     getStatus();
 
                 } else {
@@ -169,32 +171,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             }
         });
     }
-    /*private void alertDialog() {
-        Log.d(TAG, " alert Dialog opened");
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setMessage("ARE YOU DONE FOR THE DAY?");
-        dialog.setTitle("END RIDE");
-        dialog.setPositiveButton("YES",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int which) {
-
-                        userCancelTrip();
-                        Log.d(TAG, "checkStatus invoked");
-                    }
-                });
-        dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "RIDE NOT ENDED", Toast.LENGTH_LONG).show();
-            }
-        });
-        AlertDialog alertDialog = dialog.create();
-        alertDialog.show();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
-
-    }
-*/
 
     //method to initiate and populate dialog box
     private void ShowPopup(int id) {
@@ -202,7 +178,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
         if (id == 2) {
-            infoText.setText("ARE YOU OFFLINE");
+            infoText.setText(R.string.offline);
         }
         if (id == 3) {
             //vibrate the device for 1000 milliseconds
@@ -215,15 +191,15 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             myDialog.setCanceledOnTouchOutside(false);
         }
         if (id == 4) {
-            infoText.setText("Ride completed successfully !");
+            infoText.setText(R.string.ride_completed);
             retireRide();
         }
         if (id == 5) {
-            infoText.setText("Ride time out");
+            infoText.setText(R.string.time_out);
             retireRide();
         }
         if (id == 6) {
-            infoText.setText("Ride failed");
+            infoText.setText(R.string.ride_fail);
             retireRide();
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -253,6 +229,16 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         if (hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             mFusedLocationClient.getLastLocation().addOnCompleteListener(
                     new OnCompleteListener<Location>() {
                         @Override
@@ -284,6 +270,16 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         mLocationRequest.setNumUpdates(1);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mFusedLocationClient.requestLocationUpdates(
                 mLocationRequest, mLocationCallback,
                 Looper.myLooper()
@@ -306,36 +302,31 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         super.onResume();
         if (hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        } else
+        } else {
             getLastLocation();
+            Log.d(TAG, "call 3");
+        }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.new_ride:
-                //Intent newOrderIntent = new Intent(ActivityHome.this, ActivityNewRide.class);
+        int id = v.getId();
+        if (id == R.id.new_ride) {
+            if (notify.getText().toString().equals("1")) {
                 Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachUser.class);
                 startActivity(newOrderIntent);
-                break;
-            case R.id.ride_in_progress:
-                Intent inProgressIntent = new Intent(ActivityHome.this, ActivityInProgress.class);
-                startActivity(inProgressIntent);
-                break;
-            /*case R.id.completed_orders:
-                Intent completedOrderIntent = new Intent(ActivityHome.this, ActivityCompletedOrders.class);
-                startActivity(completedOrderIntent);
-                break;*/
-            /*case R.id.earnings:
-                Intent earningsIntent = new Intent(ActivityHome.this, ActivityTotalEarnings.class);
-                startActivity(earningsIntent);
-                break;*/
+            } else {
+                Toast.makeText(this, R.string.no_new_rides, Toast.LENGTH_LONG).show();
+            }
+
+        } else if (id == R.id.completed_rides) {
+            Intent history = new Intent(ActivityHome.this, ActivityRideHistory.class);
+            startActivity(history);
+            finish();
         }
     }
 
     private void driverSetMode(String mode) {
-        auth = strAuth;
         params.put("auth", auth);
         params.put("st", mode);
         JSONObject parameters = new JSONObject(params);
@@ -351,8 +342,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         }, a::onFailure);
 
     }
+
     private void vehicleRetire() {
-        auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
 
@@ -369,7 +360,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void sendLocation() {
-        auth = strAuth;
         params.put("an", aadhar);
         params.put("auth", auth);
         params.put("lat", lat);
@@ -389,7 +379,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void getStatus() {
-        auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -405,10 +394,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void driverRideCheck() {
-        auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-
         Log.d(TAG, "auth = " + auth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST driver-ride-check");
         UtilityApiRequestPost.doPOST(a, "driver-ride-check", parameters, 30000, 0, response -> {
@@ -422,11 +409,9 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void rideGetInfo() {
-        auth = strAuth;
         params.put("auth", auth);
         params.put("tid", tripID);
         JSONObject parameters = new JSONObject(params);
-
         Log.d(TAG, "auth = " + auth + " tid=" + tripID);
         Log.d(TAG, "UtilityApiRequestPost.doPOST auth-trip-get-info");
         UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 30000, 0, response -> {
@@ -440,7 +425,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void retireRide() {
-        String auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -456,7 +440,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     }
 
     public void isVehicleSet() {
-        String auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth);
@@ -492,11 +475,12 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     break;
             }
         }
-        //response on hitting auth-location-update API
+        //response on hitting driver-is-vehicle-set API
         if (id == 7) {
             String set = response.getString("set");
             if (set.equals("true")) {
                 getLastLocation();
+                Log.d(TAG, "call 4");
             }
             if (set.equals("false")) {
                 Intent getVehicle = new Intent(ActivityHome.this, VehicleList.class);
@@ -506,9 +490,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         //response on hitting auth-location-update API
         if (id == 2) {
-            Intent i = new Intent(this, UtilityPollingService.class);
-            i.setAction("01");
-            startService(i);
+            Log.d(TAG, "RESPONSE:" + response);
         }
         //response on hitting driver-ride-get-status API
         if (id == 3) {
@@ -521,14 +503,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     sp_cookie.edit().putString(TID, tid).apply();
                     tripID = tid;
                     if (status.equals("AS")) {
-                        /*String srcLat = response.getString("srclat");
-                        String srcLng = response.getString("srclng");
-                        String dstLat = response.getString("dstlat");
-                        String dstLng = response.getString("dstlng");
-                        String phone = response.getString("uphone");
-                        String name = response.getString("uname");*/
-
-                        //getStatus();
                         Intent as = new Intent(ActivityHome.this, ActivityRideAccepted.class);
                         startActivity(as);
 
@@ -543,10 +517,9 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                         startActivity(st);
 
                     }
-                    if (status.equals("FN")||status.equals("TR")) {
+                    if (status.equals("FN") || status.equals("TR")) {
                         Intent pd = new Intent(ActivityHome.this, ActivityRideCompleted.class);
                         startActivity(pd);
-
                     }
 
                 } else if (active.equals("false")) {
@@ -568,21 +541,26 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         }
         //response on hitting driver-ride-check API
         if (id == 4) {
-            try {
 
+            try {
                 String tid = response.getString("tid");
                 String srclat = response.getString("srclat");
                 String srclng = response.getString("srclng");
                 notify.setVisibility(View.VISIBLE);
+                newOrder.setClickable(true);
                 notify.setText("1");
                 SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                 sp_cookie.edit().putString(TID, tid).apply();
                 sp_cookie.edit().putString(SRCLAT, srclat).apply();
                 sp_cookie.edit().putString(SRCLNG, srclng).apply();
 
+                /*Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachUser.class);
+                startActivity(newOrderIntent);*/
 
             } catch (Exception e) {
-                notify.setVisibility(View.GONE);
+                // Toast.makeText(this, "No New Rides", Toast.LENGTH_LONG).show();
+                notify.setVisibility(View.VISIBLE);
+                newOrder.setClickable(false);
                 notify.setText("0");
                 Intent i = new Intent(this, UtilityPollingService.class);
                 i.setAction("02");
@@ -590,7 +568,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                 e.printStackTrace();
             }
         }
-        //response on hitting driver-delivery-get-info API
+
+        //response on hitting auth-trip-get-info API
         if (id == 5) {
             String status = response.getString("st");
             //String tid = response.getString("tid");
@@ -617,16 +596,20 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
+
+            sendLocation();
         }
         //response on hitting driver-delivery-retire API
-        if (id==8){
+        if (id == 8) {
             status_duty.setChecked(false);
             Log.d(TAG, "vehicle retired successfully");
+
         }
     }
 
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(instance, R.string.something_wrong, Toast.LENGTH_SHORT).show();
     }
 }

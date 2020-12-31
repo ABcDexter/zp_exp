@@ -40,8 +40,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".deliver.ZExp"></activity>
-        <activity android:name=".deliver.ActivityDeliveryHistory" />
+        <activity android:name=".IntroActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".AadharCardUpload" />
+        <activity android:name=".deliver.ActivityDeliverySummery" />
+        <activity android:name=".rent.ActivityUpdateHours" />
+        <activity android:name=".deliver.ActivitySlidingFullPage" />
+        <activity
+            android:name=".deliver.ActivityDeliveryReview"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".deliver.ActivityDeliveryTimeSlot" />
+        <activity
+            android:name=".deliver.ActivityPackageDetails"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".deliver.ActivityDeliveryHistoryList" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -61,18 +77,14 @@
         <activity android:name=".rent.ActivityUpdateInfo" />
         <activity android:name=".deliver.ActivityDeliverThankYou" />
         <activity
-            android:name=".deliver.ActivityDeliverItemDetails"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".deliver.ActivityDeliverConfirm"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".deliver.ActivityDeliveryOrders" />
         <activity
             android:name=".ride.MapsActivity2"
             android:label="@string/title_activity_maps2" />
-        <activity android:name=".deliver.ActivityDeliverPayment" />
-        <activity android:name=".deliver.ActivityDeliverFillAddress" />
-        <activity android:name=".deliver.ActivityDeliverHome" />
+        <activity
+            android:name=".deliver.ActivityFillDropAddress"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".rent.ActivityRentEnded" />
         <activity android:name=".rent.ActivityRentInProgress" />
         <activity android:name=".rent.ActivityRentOTP" />
@@ -80,7 +92,6 @@
         <activity android:name=".rent.ActivityRentHome" />
         <activity android:name=".UtilityBaseClass" />
         <activity android:name=".ActivityTrackYourProgress" />
-        <activity android:name=".ActivityTripSummary" />
         <activity android:name=".ride.ActivityRideRequest" />
         <activity android:name=".ActivityProfileReview" />
         <activity android:name=".ActivityRateZippe" />
@@ -92,19 +103,18 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="fcm_default_channel" />
 
         <activity android:name=".UserProfileActivity" />
         <activity
             android:name=".ActivityWelcome"
             android:theme="@style/AppThemeNoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
-            android:name=".ActivityMain"
+            android:name=".ActivityRegistration"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".ActivityDrawer" />
         <activity
@@ -112,12 +122,28 @@
             android:launchMode="singleTop" />
         <activity android:name=".rent.ActivityRateRent" />
         <activity android:name=".rent.MapsHubLocation" />
+        <activity
+            android:name=".deliver.ActivityFillPickDetails"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".rent.ActivityRentHistory" />
+        <activity android:name=".rent.ActivityRentSummery" />
+        <activity android:name=".ride.ActivityRideSummery" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
         <service android:name=".UtilityPollingService" />
+        <service android:name=".Services.MyFirebaseInstanceService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".Services.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

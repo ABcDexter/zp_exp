@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginStart="21dp"
+    android:layout_marginEnd="21dp">
 
     <TextView
         android:id="@+id/txt_head"
@@ -14,7 +16,7 @@
         android:layout_centerHorizontal="true"
         android:background="#605D5D"
         android:gravity="center"
-        android:text="I am not satisfied because"
+        android:text="@string/i_am_not_satisfied_because"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="#fff"
@@ -76,7 +78,7 @@
         android:layout_marginStart="35dp"
         android:layout_marginEnd="35dp"
         android:layout_marginTop="16dp"
-        android:hint="Please Specify"
+        android:hint="@string/please_specify"
         android:textSize="18sp"
         android:maxLines="2"
         android:paddingStart="15dp"
@@ -99,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="Submit"
+            android:text="@string/submit"
             android:textAllCaps="true"
             android:textColor="#000"
             android:textSize="20sp" />
@@ -108,7 +110,7 @@
             android:id="@+id/cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textAllCaps="true"
             android:textColor="#000"
             android:textSize="20sp" />

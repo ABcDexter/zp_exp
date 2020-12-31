@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,6 @@ import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
-import com.client.UtilityPollingService;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
@@ -38,22 +38,37 @@ import java.util.Map;
 
 public class ActivityRentEnded extends ActivityDrawer implements View.OnClickListener {
 
-    private static final String TAG = "ActivityRentEnded";
-
-    TextView upiPayment, cost;
-    final int UPI_PAYMENT = 0;
-    String stringAuthCookie;
-    private static ActivityRentEnded instance;
     public static final String AUTH_KEY = "AuthKey";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
+    private static final String TAG = "ActivityRentEnded";
+    private static ActivityRentEnded instance;
+    final int UPI_PAYMENT = 0;
+    TextView upiPayment, cost;
+    String stringAuthCookie;
     //Button done;
     ImageButton payNow, info;
     ActivityRentEnded a = ActivityRentEnded.this;
     ScrollView scrollView;
     String CostOnly;
     Dialog myDialog;
-Button dummy;
+    Button dummy;
+
+    public static ActivityRentEnded getInstance() {
+        return instance;
+    }
+
+    public static boolean isConnectionAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+            return netInfo != null && netInfo.isConnected()
+                    && netInfo.isConnectedOrConnecting()
+                    && netInfo.isAvailable();
+        }
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,10 +99,6 @@ Button dummy;
         myDialog = new Dialog(this);
 
         checkStatus();
-    }
-
-    public static ActivityRentEnded getInstance() {
-        return instance;
     }
 
     private void getInfo() {
@@ -124,7 +135,14 @@ Button dummy;
             try {
                 String active = response.getString("active");
                 if (active.equals("false")) {
-                    getInfo();
+                    String tid = response.getString("tid");
+
+                    Log.d(TAG, "active=" + active + " tid="+tid);
+
+                    if (!tid.equals("-1")){
+                        getInfo();
+                    }
+                    //getInfo();
                     /*Intent home = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
                     startActivity(home);
                     finish();*/
@@ -133,25 +151,32 @@ Button dummy;
                     String status = response.getString("st");
                     if (status.equals("TR") || status.equals("FN")) {
                         String price = response.getString("price");
-                        cost.setText("₹ "+price);
+                        cost.setText("₹ " + price);
                         CostOnly = price;
-                        if (price.equals("0.00")) {
-                            Intent rate = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
+                        /*if (price.equals("0.00")) {
+                            *//*Intent rate = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
                             startActivity(rate);
-                            finish();
-                        }
+                            finish();*//*
+                            getInfo();
+                        }*/
 
-                        Intent intent = new Intent(this, UtilityPollingService.class);
+                        /*Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("15");
-                        startService(intent);
+                        startService(intent);*/
                     }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            checkStatus();
+                        }
+                    }, 30000);
 
-                } else {
+                }/* else {
                     Intent homePage = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
-                }
+                }*/
             } catch (JSONException e) {
                 e.printStackTrace();
                 // Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -170,36 +195,32 @@ Button dummy;
     public void onFailure(VolleyError error) {
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.dummy:
-                rentPay();
-                break;
-
-            case R.id.upi:
-                String amount = CostOnly;
-                String note = "Payment for rental service";
-                String name = "Zipp-E";
-                String upiId = "9084083967@ybl";
-                payUsingUpi(amount, upiId, name, note);
-                break;
+        int id = v.getId();
+        if (id == R.id.dummy) {
+            rentPay();
+        } else if (id == R.id.upi) {
+            String amount = CostOnly;
+            String note = "Payment for rental service";
+            String name = "Zipp-E";
+            String upiId = "9084083967@ybl";
+            payUsingUpi(amount, upiId, name, note);
 
             /*case R.id.confirm_btn:
                 paymentMade();*/
-            case R.id.pay_now:
-                Snackbar snackbar = Snackbar
-                        .make(scrollView, "Please make your payment, before booking your next ride.", Snackbar.LENGTH_INDEFINITE);
-                View sbView = snackbar.getView();
-                TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
-                textView.setTextColor(Color.YELLOW);
-                snackbar.show();
-                break;
-            case R.id.infoCost:
-                ShowPopup();
-                break;
+        } else if (id == R.id.pay_now) {
+            Snackbar snackbar = Snackbar
+                    .make(scrollView, R.string.make_payment_to_continue, Snackbar.LENGTH_INDEFINITE);
+            View sbView = snackbar.getView();
+            TextView textView = sbView.findViewById(R.id.snackbar_text);
+            textView.setTextColor(Color.YELLOW);
+            snackbar.show();
+        } else if (id == R.id.infoCost) {
+            ShowPopup();
         }
     }
 
@@ -208,7 +229,7 @@ Button dummy;
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
 
-        infoText.setText("Balance amount as per extended rental time. Please pay to end your trip.");
+        infoText.setText(R.string.balance_amount_as_per_selection);
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
@@ -222,7 +243,6 @@ Button dummy;
 
         myDialog.setCanceledOnTouchOutside(true);
     }
-
 
     private void paymentMade() {
         String auth = stringAuthCookie;
@@ -241,6 +261,7 @@ Button dummy;
             }
         }, a::onFailure);
     }
+
     private void rentPay() {
         String auth = stringAuthCookie;
         Map<String, String> params = new HashMap();
@@ -295,7 +316,7 @@ Button dummy;
         if (null != chooser.resolveActivity(getPackageManager())) {
             startActivityForResult(chooser, UPI_PAYMENT);
         } else {
-            Toast.makeText(ActivityRentEnded.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityRentEnded.this, R.string.no_upi_found, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -336,9 +357,9 @@ Button dummy;
             if (str == null) str = "discard";
             String status = "";
             String approvalRefNo = "";
-            String response[] = str.split("&");
+            String[] response = str.split("&");
             for (int i = 0; i < response.length; i++) {
-                String equalStr[] = response[i].split("=");
+                String[] equalStr = response[i].split("=");
                 if (equalStr.length >= 2) {
                     if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
                         status = equalStr[1].toLowerCase();
@@ -352,30 +373,17 @@ Button dummy;
 
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
-                Toast.makeText(ActivityRentEnded.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentEnded.this, R.string.transaction_successful, Toast.LENGTH_SHORT).show();
                 rentPay();
                 Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
-                Toast.makeText(ActivityRentEnded.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentEnded.this, R.string.payment_cancelled_by_user, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(ActivityRentEnded.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityRentEnded.this, R.string.transaction_failed, Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(ActivityRentEnded.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityRentEnded.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public static boolean isConnectionAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnected()
-                    && netInfo.isConnectedOrConnecting()
-                    && netInfo.isAvailable()) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

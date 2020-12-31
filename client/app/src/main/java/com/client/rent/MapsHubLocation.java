@@ -41,6 +41,8 @@ import com.google.android.gms.location.LocationServices;
 import android.location.Location;
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -140,7 +142,7 @@ public class MapsHubLocation extends AppCompatActivity implements OnMapReadyCall
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
 
-        //move map camera
+        //move_l2r map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
@@ -154,6 +156,7 @@ public class MapsHubLocation extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
 }

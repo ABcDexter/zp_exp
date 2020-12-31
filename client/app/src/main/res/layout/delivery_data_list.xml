@@ -18,39 +18,62 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="2">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/delText"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="start"
-                android:text="Delivery Order No"
+                android:text="@string/delivery_order_no"
                 android:textAllCaps="true"
                 android:textColor="@android:color/background_dark"
-                android:textSize="20sp"
-                android:layout_weight="1"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="#"
-                android:textAllCaps="true"
-                android:textColor="@android:color/background_dark"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/delivery_id"
-                android:layout_width="wrap_content"
+                android:id="@+id/delivery_itype"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="start"
-                android:text="id"
                 android:paddingStart="10dp"
+                android:text="@string/itype"
                 android:textAllCaps="true"
                 android:textColor="@android:color/background_dark"
-                android:textSize="20sp"
-                android:layout_weight="1"/>
+                android:textSize="20sp" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:id="@+id/delText2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:text="@string/price"
+                android:textAllCaps="true"
+                android:textColor="@android:color/background_dark"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/delivery_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:paddingStart="10dp"
+                android:text="@string/price"
+                android:textAllCaps="true"
+                android:textColor="@android:color/background_dark"
+                android:textSize="20sp" />
         </LinearLayout>
 
         <TextView
@@ -58,18 +81,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="status"
+            android:text="@string/status"
             android:textAllCaps="true"
             android:textColor="@android:color/background_dark"
             android:textSize="23sp"
             android:visibility="gone" />
 
+
         <TextView
-            android:id="@+id/delivery_price"
+            android:id="@+id/delivery_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="price"
+            android:text="@string/id"
             android:textAllCaps="true"
             android:textColor="@android:color/background_dark"
             android:textSize="23sp"
