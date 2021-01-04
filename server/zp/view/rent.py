@@ -290,14 +290,17 @@ def userRentRequest(dct, user): #, _trip):
     trip.pmode = dct['pmode']
     trip.rvtype = dct['vtype']
     trip.rtime = datetime.now(timezone.utc)
+    
+    #add source details
     trip.srclat = placeSrc.lat
     trip.srclng = placeSrc.lng
     trip.srcname = placeSrc.pn
-
+    
+    #add destination details
     trip.dstlat = placeDst.lat
     trip.dstlng = placeDst.lng
     trip.dstname = placeDst.pn
-
+    
     trip.save()
 
     progress = Progress()
