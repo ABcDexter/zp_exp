@@ -1401,8 +1401,8 @@ def authTripData(dct, entity):
     rDate = datetime.strptime(strRTime, '%Y-%m-%d %H:%M:%S').date()
     sTime = 'None'
 
-    srchub = dctTrip.srcname #Place.objects.filter(id=dctTrip['srcid'])[0].pn
-    dsthub = dctTrip.dstname #Place.objects.filter(id=dctTrip['dstid'])[0].pn
+    srchub = dctTrip['srcname'] #Place.objects.filter(id=dctTrip['srcid'])[0].pn
+    dsthub = dctTrip['dstname'] #Place.objects.filter(id=dctTrip['dstid'])[0].pn
 
 
     if dctTrip['rtype'] == '1':
