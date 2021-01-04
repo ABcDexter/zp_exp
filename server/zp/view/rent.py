@@ -292,8 +292,11 @@ def userRentRequest(dct, user): #, _trip):
     trip.rtime = datetime.now(timezone.utc)
     trip.srclat = placeSrc.lat
     trip.srclng = placeSrc.lng
+    trip.srcname = placeSrc.pn
+
     trip.dstlat = placeDst.lat
     trip.dstlng = placeDst.lng
+    trip.dstname = placeDst.pn
 
     trip.save()
 

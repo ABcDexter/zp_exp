@@ -599,7 +599,8 @@ def userRideRequest(dct, user):#, _trip):
         rtype - rent or ride
         vtype - vehicle type
         pmode - payment mode (cash / upi)
-
+        srcname - name of the source from google maps
+        dstname - name of the destination from google maps
 
     '''
     print("Ride Request param : ", dct)
@@ -608,8 +609,12 @@ def userRideRequest(dct, user):#, _trip):
     trip.uan = user.an
     trip.srclat, trip.srclng = dct['srclat'], dct['srclng']
     trip.dstlat, trip.dstlng = dct['dstlat'], dct['dstlng']
-    trip.srcid = user.pid  #TODO automate these two things
-    trip.dstid = user.pid+1
+    
+    trip.srcname = dct['srcname']
+    trip.dstname = dct['dstname']
+    
+    trip.srcid = 0
+    trip.dstid = 0
     if dct['rtype'] == '0': # Ride
         trip.npas = dct['npas']
         # trip.srcid, trip.dstid = 0,0
