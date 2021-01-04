@@ -1390,7 +1390,7 @@ def authTripData(dct, entity):
       
 
     '''
-    trip = Trip.objects.filter(id=dct['tid']).values('id','st','uan','dan','van','rtime','stime','etime','srcid','dstid','srclat','srclng','dstlat','dstlng','hrs','rtype','rvtype')
+    trip = Trip.objects.filter(id=dct['tid']).values('id','st','uan','dan','van','rtime','stime','etime','srcid','dstid','srclat','srclng','dstlat','dstlng','hrs','rtype','rvtype','srcname','dstname')
     lstTrip = list(trip)
     dctTrip = lstTrip[0]
     
@@ -1448,8 +1448,12 @@ def authTripData(dct, entity):
             'dsthub': str(dsthub),
             'srclat': str(dctTrip['srclat']),
             'srclng':str(dctTrip['srclng']),
+            'srcname': str(dctTrip['srcname']), 
+            
+            'dstname': str(dctTrip['dstname']), 
             'dstlat':str(dctTrip['dstlat']),
             'dstlng':str(dctTrip['dstlng']),
+            
             'rtype':str(dctTrip['rtype']),
             'rvtype': str(dctTrip['rvtype']),
             'stime': str(sTime),

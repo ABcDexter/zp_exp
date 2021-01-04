@@ -766,7 +766,9 @@ def authRideHistory(dct, entity):
             retJson = {  'tid': str(i['id']),
                           'st': str(i['st']),
                           'sdate': str(sTime),
-                          'vtype': str(i['rvtype'])
+                          'vtype': str(i['rvtype']),
+                          'srcname': str(i['srcname']),
+                          'dstname': str(i['dstname'])
                       }
             trips.append(retJson)
         
