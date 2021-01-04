@@ -399,13 +399,12 @@ def userRentHistory(dct, user):
                               #'price': str(price),
                               #'tax': str(tax),
                               'sdate': str(sDate),
-                              #'pickhub': str(srchub),
-                              #'drophub': str(dsthub),
+                              'srcname': str(srchub),
+                              'dstname': str(dsthub),
                               #'date': str(sDate),
                               'vtype': str(i['rvtype'])
                               #'hrs': str(i['hrs'])
-                              
-                              }
+                          }
                 trips.append(retJson)
         #print(states)
         ret.update({'trips': trips})
