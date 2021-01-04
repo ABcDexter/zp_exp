@@ -1400,13 +1400,15 @@ def authTripData(dct, entity):
     strRTime = str(dctTrip['rtime'])[:19]
     rDate = datetime.strptime(strRTime, '%Y-%m-%d %H:%M:%S').date()
     sTime = 'None'
-    
-    srchub = Place.objects.filter(id=dctTrip['srcid'])[0].pn
-    dsthub = Place.objects.filter(id=dctTrip['dstid'])[0].pn
+
+    srchub = dctTrip.srcname #Place.objects.filter(id=dctTrip['srcid'])[0].pn
+    dsthub = dctTrip.dstname #Place.objects.filter(id=dctTrip['dstid'])[0].pn
+
 
     if dctTrip['rtype'] == '1':
             # rental
             time = float(dctTrip['hrs']*60) 
+            
     else:
             #ride
             if dctTrip['stime'] is None:
@@ -1445,12 +1447,10 @@ def authTripData(dct, entity):
             'van': str(dctTrip['van']),
             'sdate': str(rDate),
             'srchub': str(srchub),
-            'dsthub': str(dsthub),
             'srclat': str(dctTrip['srclat']),
             'srclng':str(dctTrip['srclng']),
-            'srcname': str(dctTrip['srcname']), 
-            
-            'dstname': str(dctTrip['dstname']), 
+
+            'dsthub': str(dsthub),
             'dstlat':str(dctTrip['dstlat']),
             'dstlng':str(dctTrip['dstlng']),
             
