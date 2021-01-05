@@ -226,7 +226,7 @@ def driverRideAccept(dct, driver):
     trip = Trip.objects.filter(id=dct['tid'])[0]
     if trip.st == 'RQ':
         # Ensure that the chosen vehicle is here and not assigned to a trip
-        vehicle = Vehicle.objects.filter(an=dct['van'])[0] #, pid=trip.srcid)[0] #think think
+        vehicle = Vehicle.objects.filter(an=driver.van)[0] #, pid=trip.srcid)[0] #think think
         if vehicle.tid != -1:
             raise ZPException(400, 'Vehicle already in trip')
 
