@@ -290,14 +290,17 @@ def userRentRequest(dct, user): #, _trip):
     trip.pmode = dct['pmode']
     trip.rvtype = dct['vtype']
     trip.rtime = datetime.now(timezone.utc)
+    
+    #add source details
     trip.srclat = placeSrc.lat
     trip.srclng = placeSrc.lng
     trip.srcname = placeSrc.pn
-
+    
+    #add destination details
     trip.dstlat = placeDst.lat
     trip.dstlng = placeDst.lng
     trip.dstname = placeDst.pn
-
+    
     trip.save()
 
     progress = Progress()
@@ -396,13 +399,12 @@ def userRentHistory(dct, user):
                               #'price': str(price),
                               #'tax': str(tax),
                               'sdate': str(sDate),
-                              #'pickhub': str(srchub),
-                              #'drophub': str(dsthub),
+                              'srcname': str(srchub),
+                              'dstname': str(dsthub),
                               #'date': str(sDate),
                               'vtype': str(i['rvtype'])
                               #'hrs': str(i['hrs'])
-                              
-                              }
+                          }
                 trips.append(retJson)
         #print(states)
         ret.update({'trips': trips})

@@ -253,8 +253,8 @@ class Trip(models.Model):
     srclng = models.FloatField(db_index=True, default=-1)
     dstlat = models.FloatField(db_index=True, default=-1)
     dstlng = models.FloatField(db_index=True, default=-1)
-    srcname = models.CharField(max_length=314, null=False, db_index=True)
-    dstname = models.CharField(max_length=314, null=False, db_index=True)
+    srcname = models.CharField(max_length=314, null=False, default='', db_index=True)
+    dstname = models.CharField(max_length=314, null=False, default='', db_index=True)
 
     rvtype = models.IntegerField(null=True, default=3) #default is ZBEE
     npas  = models.IntegerField(db_index=True, default=0)
