@@ -143,6 +143,8 @@ def userGRideEstimate(dct, _user, _trip):
     dstlat, dstlng = extract_lat_lng(dct['dstname'])
     print(srclat, srclng, " | ", dstlat, dstlng)
     ret = getRidePrice(srclat, srclng, dstlat, dstlng, dct['vtype'], dct['pmode'], 0)
+    if _user.hs == 'UK':
+        ret['price'] *= 0.9
     return HttpJSONResponse(ret)
 
 
@@ -218,6 +220,7 @@ def userGRideRequest(dct, user):#, _trip):
         rate.type = 'ride' if trip.rtype == '0' else 'rent'
         rate.rev = ''
         rate.money = float(getRidePrice(srclat, srclng, dstlat, dstlng, dct['vtype'], dct['pmode'], 0)['price'])
+        rate.money = rate.money*0.9 if user.hs=='UK' else rate.money
         rate.save()        
 
 

@@ -1147,39 +1147,50 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
         'dist': Distance in Kilometers,
         'speed': Average speed 
     '''
-    # Get this route distance
-
-    #qsPlaces = Place.objects.all().values()
-    #arrLocs = [recPlace for recPlace in qsPlaces]
+    
     srcCoOrds = ['%s,%s' % (srclat,srclng)]
     dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
-
-    #print(srcCoOrds, dstCoOrds)
+    # print(srcCoOrds, dstCoOrds)
 
     gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
-    nDist, nTime = gMapsRet['dist'], gMapsRet['time']
-    #print(nDist, nTime)
-    fDist = nDist
-    iVType, iPayMode = int(iVType), int(iPayMode)  # need explicit type conversion to int
+    nDist, nTime = gMapsRet['dist'], gMapsRet['time']    
+    #print(nDist, nTime) 
+    #this is the Distance in metres and Time in minutes
+
+    fDist = nDist + 1  # fail safe for divide by zero error
+    iVType, iPayMode = int(iVType), int(iPayMode)
     iTimeSec = nTime*60 if iTime == 0 else iTime
+    
     # Calculate the speed if time is known or else use average speed for estimates
     fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
 
     # Get base fare for vehicle
-    fBaseFare = Vehicle.BASE_FARE[iVType]
+    fBaseFare = Vehicle.BASE_FARE[iVType] # 10, 15, 20, 30
 
     # Get average economic weight
     # TODO how do I decide which area is hot ?
-    idSrcWt = 100 # Place.objects.filter(id=idSrc)[0].wt
-    idDstWt = 100 # Place.objects.filter(id=idDst)[0].wt
+    idSrcWt = 100 
+    idDstWt = 100 
     avgWt = (idSrcWt + idDstWt) / 200
 
+    
+    # MAIN ALGO PER KM
     # get per km price for vehicle
     maxPricePerKM = 15
     vehiclePricePerKM = (iVType / 4) * maxPricePerKM
 
-    # Calculate price
+    # Calculate price 
     price = fBaseFare + (fDist / 1000) * vehiclePricePerKM * avgWt
+    if iPayMode == Trip.UPI:  # UPI has 10% off
+        price *= 0.9
+    
+    # MAIN ALGO PER MIN
+    # get per minute price for vehicle
+    maxPricePerMIN = 10
+    vehiclePricePerMIN = Vehicle.TIME_FARE[iVType] * maxPricePerMIN
+
+    # Calculate price 
+    price = fBaseFare + (iTimeSec / 60 ) * vehiclePricePerMIN * avgWt 
     if iPayMode == Trip.UPI:  # UPI has 10% off
         price *= 0.9
 
