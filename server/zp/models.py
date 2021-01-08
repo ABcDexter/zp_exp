@@ -159,9 +159,11 @@ class Vehicle(models.Model):
         'ZBEE',
     ]
 
+    # TODO update these as per actuals
+
     # meters per second
     AVG_SPEED_M_PER_S = [3, 3.5, 4, 5.5]
-    #TODO update these as per actuals
+
     # default fare applied per trip
     BASE_FARE = [10, 15, 20, 30]
 
