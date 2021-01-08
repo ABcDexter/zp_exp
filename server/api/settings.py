@@ -113,19 +113,19 @@ CORS_ORIGIN_ALLOW_ALL = True
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-#    'sqlite': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(DB_FILE_PATH, 'zp.sqlite3'),
-#    },
-    # Setup mysql doin
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('ZP_DB_NAME'),
-        'USER': os.environ.get('ZP_DB_USER'),
-        'PASSWORD': os.environ.get('ZP_DB_PASSWD'),
-        'HOST': 'localhost', #os.environ.get('ZP_DB_HOST'),
-        'PORT': '3306' #os.environ.get('ZP_DB_PORT')
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(DB_FILE_PATH, 'zp.sqlite3'),
     }
+# Setup mysql doin
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': os.environ.get('ZP_DB_NAME'),
+#        'USER': os.environ.get('ZP_DB_USER'),
+#        'PASSWORD': os.environ.get('ZP_DB_PASSWD'),
+#        'HOST': 'localhost', #os.environ.get('ZP_DB_HOST'),
+#        'PORT': '3306' #os.environ.get('ZP_DB_PORT')
+#    }
 }
 
 # Needed for SQLite concurrency

@@ -1,0 +1,17 @@
+pip3.6 install django
+pip3.6 install requests
++  152  07/01/21 13:48:28 pip3 install pymysql
++  313  07/01/21 22:11:26 pip3 install corsheaders
++  314  07/01/21 22:14:00 pip install django-cors-headers
++  316  07/01/21 22:14:25 pip install mysqlclient
++  323  07/01/21 22:19:29 pip3 install libssl-dev
++  324  07/01/21 22:19:33 pip3 install libssl
++  325  07/01/21 22:20:03 pip3 uninstall mysqlclient
++  326  07/01/21 22:20:18 pip3 uninstall pymysql
++  327  07/01/21 22:20:27 pip3 install mysqlclient
++  352  07/01/21 22:22:02 pip3 install googlemaps
++  354  07/01/21 22:22:19 pip3 install fuzzywuzzy
++  355  07/01/21 22:22:30 history grep install
++  356  07/01/21 22:22:36 history | grep install
++  358  07/01/21 22:22:51 pip3 install woocommerce
++  360  07/01/21 22:23:08 pip3 install apscheduler
