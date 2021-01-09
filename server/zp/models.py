@@ -168,7 +168,7 @@ class Vehicle(models.Model):
     BASE_FARE = [10, 15, 20, 30]
 
     # Charge per minute
-    TIME_FARE = [0.1, 0.2, 0.3, 0.5]
+    TIME_FARE = [0.25, 0.5, 0.75, 1.0]
 
     FAILED = -2
     AVAILABLE = -1

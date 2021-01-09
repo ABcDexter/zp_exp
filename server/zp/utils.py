@@ -830,7 +830,6 @@ def extractParams(func):
         if request.method == 'GET':
             dct = dict(request.GET.items())
         else:
-            #print("REEEEEEEEEEEEEEEEEE : ", request.body)
             #log(request.body.decode('utf-8'))
             dct = dict(json.loads(request.body.decode('utf-8')))
         return func(request, dct)
@@ -1186,10 +1185,11 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     # MAIN ALGO PER MIN
     # get per minute price for vehicle
     maxPricePerMIN = 5
-    vehiclePricePerMIN = Vehicle.TIME_FARE[iVType] * maxPricePerMIN
+    vehiclePricePerMIN = Vehicle.TIME_FARE[iVType] * maxPricePerMIN  # [0.25, 0.5, 0.75, 1.0]
 
     # Calculate price 
-    price = fBaseFare + (iTimeSec / 60) * vehiclePricePerMIN * avgWt
+    price = (iTimeSec / 60) * vehiclePricePerMIN * avgWt
+
     # if iPayMode == Trip.UPI:  # UPI has 10% off
     #    price *= 0.9
 
@@ -1232,6 +1232,7 @@ def extract_lat_lng(address_or_postalcode, data_type = 'json'):
     """
     endpoint = f"https://maps.googleapis.com/maps/api/geocode/{data_type}"
     params = {"address": address_or_postalcode, "key": settings.GOOGLE_PLACES_KEY}
+
     url_params = urlencode(params)
     url = f"{endpoint}?{url_params}"
     r = requests.get(url)

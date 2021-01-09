@@ -1262,12 +1262,12 @@ def authDeliveryHistory(dct, entity, deli):
         dan=entity.an).order_by('-id').values()
     ret = {}
     # print(qsDeli)
-    # print("REEEEEEEEEEEE ",len(qsDeli))
+
     if len(qsDeli):
         states = []
         for i in qsDeli:
             # print(str(i['stime'])[:19])
-            #print("Delivery state : ", str(i['st']))
+            # print("Delivery state : ", str(i['st']))
             if i['st'] in ['ST', 'FL', 'FN']:
                 strSTime = str(i['stime'])[:19]
                 sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
