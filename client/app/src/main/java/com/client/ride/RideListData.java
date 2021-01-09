@@ -1,7 +1,7 @@
 package com.client.ride;
 
 public class RideListData {
-    private String rideID, rideStatus, rideDate, rideVtype;
+    private String rideID, rideStatus, rideDate, rideVtype, rideSrc, rideDst;
 
     public String getRideVtype() {
         return rideVtype;
@@ -21,10 +21,21 @@ public class RideListData {
         return rideDate;
     }
 
-    public RideListData(String rideID, String rideStatus, String rideDate, String rideVtype) {
+    public String getRideSrc() {
+        return rideSrc;
+    }
+
+    public String getRideDst() {
+        return rideDst;
+    }
+
+    public RideListData(String rideID, String rideStatus, String rideDate, String rideVtype, String rideSrc, String rideDst) {
         this.rideID = rideID;
         this.rideStatus = rideStatus;
         this.rideDate = rideDate;
         this.rideVtype = rideVtype;
+        this.rideSrc = rideSrc;
+        this.rideDst = rideDst;
     }
+
 }

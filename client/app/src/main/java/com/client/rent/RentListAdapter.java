@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,8 @@ public class RentListAdapter extends RecyclerView.Adapter<RentListAdapter.ViewHo
         holder.rentTxt2.setText(R.string.vehicle);
         holder.rentStatus.setText(listData.getRideStatus());
         holder.rentDate.setText(listData.getRideDate());
+        holder.srcTxt.setText(listData.getRideSrc());
+        holder.dstTxt.setText(listData.getRideDst());
         //holder.rentVType.setText(listData.getRideVtype());
         String vtype = listData.getRideVtype();
 
@@ -79,17 +82,23 @@ public class RentListAdapter extends RecyclerView.Adapter<RentListAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView rentID, rentStatus,  rentVType, rentDate, rentTxt,rentTxt2;
+        private TextView rentID, rentStatus,  rentVType, rentDate, rentTxt,rentTxt2, srcTxt, dstTxt;
+        private LinearLayout llSrc, llDst;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            llSrc = itemView.findViewById(R.id.ll_src);
+            llDst = itemView.findViewById(R.id.ll_dst);
+            llSrc.setVisibility(View.VISIBLE);
+            llDst.setVisibility(View.VISIBLE);
             rentTxt2 = itemView.findViewById(R.id.delText2);
             rentTxt = itemView.findViewById(R.id.delText);
             rentID = itemView.findViewById(R.id.delivery_id);
             rentStatus = itemView.findViewById(R.id.delivery_status);
             rentDate = itemView.findViewById(R.id.delivery_itype);
             rentVType = itemView.findViewById(R.id.delivery_price);
-
+            srcTxt = itemView.findViewById(R.id.src_point);
+            dstTxt = itemView.findViewById(R.id.dst_point);
         }
     }
 }

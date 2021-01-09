@@ -104,14 +104,10 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
-
-
         SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
         aadhar = sharedPreferences.getString(AADHAR, "");// retrieve aadhaar value stored locally and assign it to String aadhar
-
         SharedPreferences pref = getSharedPreferences(DRIVER_STATUS, Context.MODE_PRIVATE);
         String stringStatus = pref.getString(STATUS, "");
-
         SharedPreferences delPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
 
         tripID = delPref.getString(TID, "");
@@ -131,7 +127,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         auth = strAuth;
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityHome.this);// needed for gsp tracking
-
+        Log.d(TAG, "stringStatus: " + stringStatus);
         if (stringStatus.equals("AV")) {
             status_duty.setChecked(true);
             getLastLocation();// method for getting the last know latitude and longitude of driver
@@ -140,6 +136,9 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         }
         if (!stringStatus.equals("AV")) {
             status_duty.setChecked(false);
+        }
+        if (stringStatus.equals("LK")) {
+            ShowPopup(1);
         }
         status_duty.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -162,9 +161,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     sp_cookie.edit().putString(STATUS, driverStatus).apply();
                     //alertDialog();
                     ShowPopup(2);
-                    //TODO work on alert
-
-                    vehicleRetire();
+                    //vehicleRetire();
                     Log.d(TAG, "driverStatus = " + driverStatus);
                     driverSetMode(driverStatus);
                 }
@@ -177,6 +174,9 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         myDialog.setContentView(R.layout.popup_text);
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
+        if (id == 1) {
+            infoText.setText(R.string.locked);
+        }
         if (id == 2) {
             infoText.setText(R.string.offline);
         }
@@ -316,6 +316,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                 Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachUser.class);
                 startActivity(newOrderIntent);
             } else {
+                driverRideCheck();
                 Toast.makeText(this, R.string.no_new_rides, Toast.LENGTH_LONG).show();
             }
 
@@ -461,7 +462,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             String st = response.getString("st");
             switch (st) {
                 case "AV":
-                    isVehicleSet();
+                    //isVehicleSet();
                     status_duty.setChecked(true);
                     break;
                 case "LK":
@@ -490,7 +491,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         //response on hitting auth-location-update API
         if (id == 2) {
-            Log.d(TAG, "RESPONSE:" + response);
+            //driverRideCheck();
+            //Log.d(TAG, "driverRideCheck()");
         }
         //response on hitting driver-ride-get-status API
         if (id == 3) {
@@ -590,7 +592,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             }
 
         }
-        //response on hitting driver-delivery-retire API
+        //response on hitting driver-ride-retire API
         if (id == 6) {
             SharedPreferences preferences = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
@@ -598,8 +600,10 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             editor.apply();
 
             sendLocation();
+            notify.setVisibility(View.VISIBLE);
+            notify.setText("0");
         }
-        //response on hitting driver-delivery-retire API
+        //response on hitting driver-vehicle-retire API
         if (id == 8) {
             status_duty.setChecked(false);
             Log.d(TAG, "vehicle retired successfully");

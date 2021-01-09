@@ -143,6 +143,8 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
         etPlace.setPadding(0, 0, 150, 0);
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
+        autocompleteFragment.setCountry("IN"); // restrict search to country "INDIA"
+
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {

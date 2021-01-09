@@ -13,10 +13,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,7 +53,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivityWelcome extends AppCompatActivity implements View.OnClickListener {
+public class ActivityWelcome extends ActivityDrawer implements View.OnClickListener {
 
     private static final String TAG = "ActivityWelcome";
     ImageView zippe_iv, zippe_iv_below, scooty_up, scooty_down;
@@ -64,7 +65,6 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public static final String VAN_PICK = "VanPick";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
-
     public static final String SRC_NAME = "PICK UP POINT";
     public static final String DST_NAME = "DROP POINT";
     public static final String LOCATION_PICK_ID = "PickLocationID";
@@ -76,7 +76,7 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     SharedPreferences prefAuth;
     String stringAuth;
-    ImageButton btnRent, btnRide, btnDeliver, btnShop, btnConnect;
+    ImageButton btnRent, btnRide, btnDeliver, btnShop, btnConnect, infoRide, infoRent, infoDelivery, infoShop, infoService;
     ActivityWelcome a = ActivityWelcome.this;
     Map<String, String> params = new HashMap();
     String auth;
@@ -100,7 +100,12 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+       // setContentView(R.layout.activity_welcome);
+        FrameLayout frameLayout = findViewById(R.id.activity_frame);
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        assert layoutInflater != null;
+        View activityView = layoutInflater.inflate(R.layout.activity_welcome, null, false);
+        frameLayout.addView(activityView);
         instance = this;
 
         prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
@@ -127,6 +132,17 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         llShop = findViewById(R.id.llShop);
         llServices = findViewById(R.id.llServices);
         llInfo = findViewById(R.id.llInfo);
+        infoRide = findViewById(R.id.infoRideBtn);
+        infoRent = findViewById(R.id.infoRentBtn);
+        infoDelivery = findViewById(R.id.infoDeliveyBtn);
+        infoShop = findViewById(R.id.infoShopBtn);
+        infoService = findViewById(R.id.infoServiceBtn);
+        infoRide.setOnClickListener(this);
+        infoRent.setOnClickListener(this);
+        infoDelivery.setOnClickListener(this);
+        infoShop.setOnClickListener(this);
+        infoService.setOnClickListener(this);
+
         auth = stringAuth;
         if (auth.equals("")) {
             Intent registerUser = new Intent(ActivityWelcome.this, ActivityRegistration.class);
@@ -251,6 +267,33 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
         myDialog.setCanceledOnTouchOutside(true);
     }
 
+    private void ShowInfo(int id) {
+
+        myDialog.setContentView(R.layout.popup_new_request);
+        TextView infoText = myDialog.findViewById(R.id.info_text);
+        LinearLayout ll = myDialog.findViewById(R.id.layout_btn);
+        ll.setVisibility(View.GONE);
+        if (id == 1) {
+            infoText.setText("TO BOOK A RIDE PLEASE CLICK HERE.");
+        }
+        if (id == 2) {
+            infoText.setText("TO BOOK A VEHICLE ON PER HOUR BASES, PLEASE CLICK HERE.");
+        }
+        if (id == 3) {
+            infoText.setText("TO BOOK A DELIVERY SERVICE, PLEASE CLICK HERE.");
+        }
+        if (id == 4) {
+            infoText.setText("TO DO ONLINE SHOPPING, PLEASE CLICK HERE.");
+        }
+        if (id == 5) {
+            infoText.setText("TO BOOK A SERVICE, PLEASE CLICK HERE.");
+        }
+
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+        myDialog.setCanceledOnTouchOutside(true);
+    }
+
     private void ShowPopup1(int id) {
 
         myDialog.setContentView(R.layout.popup_new_request);
@@ -281,22 +324,22 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                 // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-        mFusedLocationClient.getLastLocation().addOnCompleteListener(
-                new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        Location location = task.getResult();
-                        if (location == null) {
-                            requestNewLocationData();
-                        } else {
-                            Log.d(TAG, "inside else of addOnCompleteListener()");
-                            lat = location.getLatitude() + "";
-                            lng = location.getLongitude() + "";
-                            Log.d(TAG, "lat = " + lat + " lng = " + lng);
-                            sendLocation();
+            mFusedLocationClient.getLastLocation().addOnCompleteListener(
+                    new OnCompleteListener<Location>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Location> task) {
+                            Location location = task.getResult();
+                            if (location == null) {
+                                requestNewLocationData();
+                            } else {
+                                Log.d(TAG, "inside else of addOnCompleteListener()");
+                                lat = location.getLatitude() + "";
+                                lng = location.getLongitude() + "";
+                                Log.d(TAG, "lat = " + lat + " lng = " + lng);
+                                sendLocation();
+                            }
                         }
-                    }
-                });
+                    });
         }
     }
 
@@ -656,6 +699,16 @@ public class ActivityWelcome extends AppCompatActivity implements View.OnClickLi
                 rlOverlay.setVisibility(View.GONE);
                 //rlTopLayout.setVisibility(View.VISIBLE);
             }
+        } else if (id == R.id.infoRideBtn) {
+            ShowInfo(1);
+        } else if (id == R.id.infoRentBtn) {
+            ShowInfo(2);
+        } else if (id == R.id.infoDeliveyBtn) {
+            ShowInfo(3);
+        } else if (id == R.id.infoShopBtn) {
+            ShowInfo(4);
+        } else if (id == R.id.infoServiceBtn) {
+            ShowInfo(5);
         }
     }
 

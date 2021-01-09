@@ -43,7 +43,7 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
         holder.txtIType.setText(listData.getDeliveryID());
         holder.delText2.setText(R.string.price);
 
-        holder.txtID.setOnClickListener(new View.OnClickListener() {
+        holder.delText2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String valueScid = listData.getDeliveryID();

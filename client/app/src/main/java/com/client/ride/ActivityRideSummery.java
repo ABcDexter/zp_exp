@@ -77,11 +77,7 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
         rideDate = findViewById(R.id.ride_date);
 
         userDeliverySummery();
-
-
-
         swipeRefresh = findViewById(R.id.swipeRefresh);
-
         //getInfo();
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -111,7 +107,7 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
         }, a::onFailure);
     }
 
-    String rate, price, tax, total, vtype, time, date, sLat, sLng, dLat, dLng;
+    String rate, price, tax, total, vtype, time, date, sLat, sLng, dLat, dLng, srcname, dstname;
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG, "RESPONSE:" + response);
@@ -130,6 +126,8 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
             sLng = response.getString("srclng");
             dLat = response.getString("dstlat");
             dLng = response.getString("dstlng");
+            srcname = response.getString("srchub");
+            dstname = response.getString("dsthub");
 
             rideRate.setText(getString(R.string.message_rs, rate));
             ridePrice.setText(getString(R.string.message_rs, price));
@@ -165,8 +163,8 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
             dstLat = Double.parseDouble(dLat);
             dstLng = Double.parseDouble(dLng);
 
-            src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title("Pick Up");
-            dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title("Destination");
+            src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(srcname);
+            dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title(dstname);
 
             new FetchURL(ActivityRideSummery.this).execute(getUrl(src.getPosition(), dst.getPosition(), "driving"), "driving");
 

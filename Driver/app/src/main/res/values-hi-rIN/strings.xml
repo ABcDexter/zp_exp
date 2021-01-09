@@ -69,5 +69,6 @@
     <string name="ride_summary">Ride Summary</string>
     <string name="trip">Trip</string>
     <string name="ride_time">ride time</string>
+    <string name="locked">You have been locked. Please contact admin.</string>
 
 </resources>

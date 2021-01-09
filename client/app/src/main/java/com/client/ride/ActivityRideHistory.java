@@ -44,7 +44,7 @@ public class ActivityRideHistory extends AppCompatActivity {
             for (int i = 0; i < array.length(); i++) {
                 JSONObject ob = array.getJSONObject(i);
                 RideListData ld = new RideListData(ob.getString("tid"), ob.getString("st"),
-                        ob.getString("sdate"),ob.getString("vtype"));
+                        ob.getString("sdate"),ob.getString("vtype"), ob.getString("srcname"), ob.getString("dstname"));
                 list_data.add(ld);
             }
             rv.setAdapter(adapter);

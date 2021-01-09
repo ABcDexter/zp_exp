@@ -45,7 +45,8 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     public static final String SRCLNG = "TripSrcLng";
     public static final String DSTLAT = "TripDstLat";
     public static final String DSTLNG = "TripDstLng";
-
+    public static final String DRIVER_STATUS = "DriverStatus";
+    public static final String STATUS = "Status";
     String strAuth, strTid, strSrcLat, strSrcLng;
     MapsActivity2 a = MapsActivity2.this;
     Map<String, String> params = new HashMap();
@@ -245,6 +246,11 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                SharedPreferences sp_cookie = getSharedPreferences(DRIVER_STATUS, Context.MODE_PRIVATE);
+                sp_cookie.edit().putString(STATUS, "LK").apply(); // storing driver status locally for later use
+                Intent home = new Intent(MapsActivity2.this, ActivityHome.class);
+                startActivity(home);
+                finish();
             }
 
         }

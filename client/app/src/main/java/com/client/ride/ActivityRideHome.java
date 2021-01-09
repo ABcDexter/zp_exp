@@ -192,8 +192,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         // Specify the types of place data to return.
         srcAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
         dstAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
-        srcAutocompleteFragment.setCountry("IN");
-        dstAutocompleteFragment.setCountry("IN");
+        srcAutocompleteFragment.setCountry("IN"); // restrict search to country "INDIA"
+        dstAutocompleteFragment.setCountry("IN");// restrict search to country "INDIA"
         // Set up a PlaceSelectionListener to handle the response.
         srcAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override

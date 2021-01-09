@@ -16,7 +16,8 @@
         android:textAllCaps="false"
         android:textColor="#000"
         android:textSize="22sp"
-        android:padding="15dp" />
+        android:padding="15dp"
+        android:lineHeight="35dp"/>
 
     <LinearLayout
         android:id="@+id/layout_btn"
