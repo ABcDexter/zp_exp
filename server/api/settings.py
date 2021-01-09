@@ -62,6 +62,8 @@ DEL_AGENT_EARN = 0.10 # 10% earning to agent
 
 BANK_AUTH = 'vpvpv_314159'
 
+RIDE_PER_MIN_COST = 5
+
 # Application definition
 
 INSTALLED_APPS = [
