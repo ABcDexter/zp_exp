@@ -342,10 +342,10 @@ class Manager(models.Model):
         db_table = 'manager'
         managed = True   
 
+
 ########################
 # Delivery module
 ########################
-
 
 class Delivery(models.Model):
     '''
@@ -462,7 +462,6 @@ class Delivery(models.Model):
         managed = True
 
 
-
 class Agent(models.Model):
     '''
     Delivery agent
@@ -517,11 +516,10 @@ class Rate(models.Model):
     id (int): Autoincrement primary key
 
     type = type of the rating, which is rent+rentid, or reide+rideid, deli+deliveryid
-    ""
-    ""
-    ""
-    "Any other"
-    rev = review
+    rating = basic rating
+    rev = review in detail
+    time = timestamp when rating was done
+    dan = driver/supervisor aadhaar number
     '''
     TYPE = [
         ('RIDE', 'ride'),
@@ -549,7 +547,7 @@ class Rate(models.Model):
 
 
 ########################
-#Shop module
+# Shop module
 ########################
 
 
@@ -657,7 +655,7 @@ class Purchaser(models.Model):
 
 
 ########################
-#Service module
+# Service module
 ########################
 
 class Servitor(models.Model):
@@ -690,8 +688,6 @@ class Servitor(models.Model):
     class Meta:
         db_table = 'servitor'
         managed = True
-
-
 
 
 ########################

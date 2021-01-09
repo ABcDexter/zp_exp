@@ -1236,7 +1236,7 @@ def authTripRate(dct, entity, trip):
 
     '''
     print(dct, entity, trip)
-    rate = Rate()
+
     bIsUser = True if type(entity) is User else False  # user or driver
     print(bIsUser)
     if bIsUser :
@@ -1245,11 +1245,17 @@ def authTripRate(dct, entity, trip):
             numTrips = Trip.objects.filter(dan=driver.an).count()
             driver.mark = (driver.mark+int(dct['rate']))/(numTrips+1)
             driver.save()
-        # else :
-        # rate the super visor
-        # give the ratings
-        rate.id = 'trip' + str(trip.id)
-        rate.type = 'ride' if trip.rtype == '0' else 'rent'
+
+            rate = Rate.objects.filter(id='ride' + str(trip.id))[0]
+
+        else:
+            # rate the super visor
+            # give the ratings
+            rate = Rate()
+            rate.id = 'rent' + str(trip.id)
+            rate.type = 'rent'
+            rate.money = getTripPrice(trip)
+
         rate.rev = dct['rev']
         rate.dan = trip.dan
 
@@ -1261,7 +1267,7 @@ def authTripRate(dct, entity, trip):
             rate.rating = 'cleanliness'
         else:
             rate.rating = dct['rev']
-        rate.money = getTripPrice(trip)['price']
+
         rate.save()
 
     else :
@@ -1269,6 +1275,7 @@ def authTripRate(dct, entity, trip):
         numTrips = Trip.objects.filter(uan=user.an).count()
         user.mark = (user.mark+int(dct['rate']))/(numTrips+1)
         user.save()
+
     #think maybe mark the trip as RATED, do we need an extra state ...?
     # NOPE as per 30/7/2020
 
