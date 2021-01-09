@@ -1421,7 +1421,7 @@ def authTripData(dct, entity):
                     
     
     time = float(time)
-    rate = Vehicle.TIME_FARE[dctTrip.rvtype]
+    rate = Vehicle.TIME_FARE[int(dctTrip['rvtype'])]
     print(time, rate, rate*time)
     price = rate*time  # 2 chars
     tax = price*0.05   # tax of 5%
