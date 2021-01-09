@@ -1171,6 +1171,7 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     idDstWt = 100 
     avgWt = (idSrcWt + idDstWt) / 200
 
+    '''
     # MAIN ALGO PER KM
     # get per km price for vehicle
     maxPricePerKM = 15
@@ -1180,7 +1181,8 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     price = fBaseFare + (fDist / 1000) * vehiclePricePerKM * avgWt
     if iPayMode == Trip.UPI:  # UPI has 10% off
         price *= 0.9
-    
+    '''
+
     # MAIN ALGO PER MIN
     # get per minute price for vehicle
     maxPricePerMIN = 10
@@ -1199,8 +1201,8 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
 
  
     return {
-        'price': str(round(float('%.2f' % price), 0))+'0', # rounded off to 2 decimals
-        'time': int('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
+        'price': str(round(float('%.2f' % price), 0))+'0',  # rounded off to 2 decimals
+        'time': int('%.0f' % ((fDist / fAvgSpeed) / 60)),   # converted seconds to minutes
         'dist': float('%.2f' % (fDist / 1000)),
         'speed': float('%.2f' % (fAvgSpeed * 3.6))
     }
@@ -1213,7 +1215,7 @@ def getRiPrice(trip):
     vehicle = Vehicle.objects.filter(an=trip.van)
     vType = vehicle[0].vtype if len(vehicle)>0 else 1
     #print(vType)
-    return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)#, (trip.etime - trip.stime).seconds)
+    return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)  # , (trip.etime - trip.stime).seconds)
 
 ###############
 # GOOGLE

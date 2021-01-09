@@ -573,8 +573,9 @@ def userRideEstimate(dct, _user, _trip):
     '''
     print("Ride Estimate param : ", dct)
     ret = getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)
-    ret['price'] = float(ret['price'])*0.9 if _user.hs == 'UK' else ret['price']
-    
+    # ret['price'] = float(ret['price'])*0.9 if _user.hs == 'UK' else ret['price']  # 10 % off for natives
+    # ret['price'] = float(ret['price'])*0.75 if _user.gdr == 'F' else ret['price']  # 25 % off for Females
+
     return HttpJSONResponse(ret)
 
 
