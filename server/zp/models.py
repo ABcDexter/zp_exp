@@ -2,31 +2,36 @@ from django.db import models
 from django.conf import settings
 
 ########################
-#Ride/Rent module
+# Ride/Rent module
 ########################
 
 
 class User(models.Model):
-    '''
-    an(int):    Aadhaar number
-    pn(str):    Phone number
-    auth(str):  Client auth token
-    pid(int):   Index of current place - see Place table
-    tid(int):   Index of current trip - see Trip table
-    name(str):
-    gdr(str):   Gender
-    age(int):
-    dl(str):    Driver license in case of rent a ride
-    hs (str):   Home state of the User
-    mark(float): Float field of the rating sytem, BINARY, 1 mark given for good, 0 given for bad
-    '''
+    """
+    User is the client using our app and APIs
+    -----------------------------------------
+    an(int)    :   primary key 91+phone number
+    pn(str)    :   Phone number
+    auth(str)  :   Client auth token
+    pid(int)   :   Index of current place - see Place table
+    tid(int)   :   Index of current trip - see Trip table
+    did(int)   :   Index of current Delivery - see Delivery table
+    name(str)  :   Name
+    gdr(str)   :   Gender
+    age(int)   :   Age
+    dl(str)    :   Driver license in case of rent a ride
+    hs (str)   :   Home state of the User
+    mark(float):   rating system, BINARY, 1 mark given for good, 0 given for bad
+    adhar(int) :   Aadhaar number of the user
+    email(str) :   Email of the user
+    """
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
     auth = models.CharField(max_length=16, db_index=True)
 
     pid  = models.IntegerField(null=True, db_index=True)
     tid  = models.IntegerField(default=-1, db_index=True)
-    did = models.CharField(db_index=True, null=False, default='', max_length=11)
+    did  = models.CharField(db_index=True, null=False, default='', max_length=11)
 
     name = models.CharField(null=True, max_length=64, db_index=True)
     gdr  = models.CharField(null=True, max_length=16, db_index=True)
@@ -42,20 +47,23 @@ class User(models.Model):
 
 
 class Driver(models.Model):
-    '''
-    an(int):    Aadhaar number
-    pn(str):    Phone number
-    auth(str):  Client auth token
-    dl(str):    Driving licence no.
-    name(str):  Real name
-    gdr(str):   Gender
-    age(int)
-    mode(str):   Driver mode registering(RG), available(AV), booked(BK), offline(OF), locked(LK)
-    pid(int):   Index of current place - see Place table
-    tid(int):   Index of current trip - see Trip table
-    hs(str):    Home state of the Driver
-    mark(float): Float field for the rating of the driver.
-    '''
+    """
+    Driver is the partner who is driving our vehicles in RIDE
+    ---------------------------------------------------------
+    an(int)    :   Aadhaar number
+    pn(str)    :   Phone number
+    auth(str)  :   Client auth token
+    dl(str)    :   Driving licence no.
+    name(str)  :   Real name
+    gdr(str)   :   Gender
+    age(int)   :   Age
+    mode(str)  :   Driver mode registering(RG), available(AV), booked(BK), offline(OF), locked(LK)
+    pid(int)   :   Index of current place - see Place table
+    tid(int)   :   Index of current trip - see Trip table
+    van(int)   :   Vehicle number assigned
+    hs(str)    :   Home state of the Driver
+    mark(float):   Float field for the rating of the driver.
+    """
     MODES = [
         ('RG', 'registering'),  # driver is under registration process
         ('AV', 'available'),  # driver is online, waiting for bookings
@@ -77,24 +85,25 @@ class Driver(models.Model):
     gdr  = models.CharField(null=True, max_length=16, db_index=True)
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
-    van =  models.BigIntegerField(db_index=True, default=-1)
+    van  = models.BigIntegerField(db_index=True, default=-1)
     mark = models.FloatField(db_index=True, default=0.0)
+
     class Meta:
         db_table = 'driver'
         managed = True
 
 
 class Place(models.Model):
-    '''
+    """
     Places are predefined pickup points or vehicle stands
     -----------------------------------------------------
-    id(int):    Autoincrement primary key
-    pn(str):    Place name - human readable name of the place
-    lat(float): Latitude
-    lng(float): Longitude
-    alt(int):   Altitude in meters
-    wt(int):    Weightage - economic weightage (0 is remote village, 100 is a commercial place)
-    '''
+    id(int)    :   Autoincrement primary key
+    pn(str)    :   Place name - human readable name of the place
+    lat(float) :   Latitude
+    lng(float) :   Longitude
+    alt(int)   :   Altitude in meters
+    wt(int)    :   Weightage - economic weightage (0 is remote village, 100 is a commercial place)
+    """
     pn = models.CharField(max_length=64, db_index=True, unique=True, null=False)
     lat = models.FloatField()
     lng = models.FloatField()
@@ -107,20 +116,20 @@ class Place(models.Model):
 
 
 class Route(models.Model):
-    '''
+    """
     Route is a convenience table storing road distance between any pair of places
     -----------------------------------------------------------------------------
     idx(int): first place id from places table
     idy(int): second place id from places table
     dist(int): distance in meters
-    '''
+    """
     idx = models.IntegerField()
     idy = models.IntegerField()
     dist = models.IntegerField()
 
     @staticmethod
     def getRoute(idx, idy):
-        if int(idx) > int(idy): #TypeError in comparing int and str
+        if int(idx) > int(idy):  # removed TypeError in comparing int and str
             idx, idy = idy, idx
         return Route.objects.filter(idx=idx, idy=idy)[0]
 
@@ -131,22 +140,23 @@ class Route(models.Model):
 
 
 class Vehicle(models.Model):
-    '''
-    an (int) : Entity identifier (similar to aadhaar for User) - primary key
-    tid(int) : Trip ID if this vehicle is assigned
-
-    regn (string) : Vehicle registration details
-
-    dist(int):   Total distance travelled in meters
-    hrs(float): Total active hours
-    pid(id):    Place where this vehicle is parked
-    vtype : vehicle type (e-cycle/ escooty/ ebike/ zbee)
-    mark(float): float field has the rating, binary system same as that of the user/driver
+    """
+    Vehicle stored all data about the vehicle
+    -----------------------------------------
+    an (int)      :  Entity identifier (similar to aadhaar for User) - primary key
+    tid(int)      :  Trip ID if this vehicle is assigned
+    regn (str)    :  Vehicle registration details
+    dist(int)     :  Total distance travelled in meters
+    hrs(float)    :  Total active hours
+    pid(id)       :  Place where this vehicle is parked
+    vtype(int)    :  vehicle type (e-cycle/ escooty/ ebike/ zbee)
+    mark(float)   :  float field has the rating, binary system same as that of the user/driver
 
     Note:
-        hrs represents total time when the vehicle was mobile, not total trip time - this data has to come from the vehicle IoT data
+        hrs represents total time when the vehicle was mobile, not total trip time
+        - this data has to come from the vehicle IoT data
         Total trip time is aggregated from the Trip table
-    '''
+    """
     CYCLE = 0
     SCOOTY = 1
     BIKE = 2
@@ -160,7 +170,6 @@ class Vehicle(models.Model):
     ]
 
     # TODO update these as per actuals
-
     # meters per second
     AVG_SPEED_M_PER_S = [3, 3.5, 4, 5.5]
 
@@ -175,7 +184,7 @@ class Vehicle(models.Model):
 
     an = models.BigIntegerField(primary_key=True)
     tid = models.BigIntegerField(db_index=True, default=-1)
-    dan   = models.BigIntegerField(db_index=True, default=-1)
+    dan = models.BigIntegerField(db_index=True, default=-1)
 
     regn = models.CharField(db_index=True, max_length=16)
     dist = models.IntegerField(null=True)
@@ -190,7 +199,7 @@ class Vehicle(models.Model):
 
 
 class Trip(models.Model):
-    '''
+    """
     id (int): Autoincrement primary key
     st(str):  Current trip status see Trip.STATUSES
     uan(int): User aadhaar
@@ -208,7 +217,7 @@ class Trip(models.Model):
     hrs : for RENTAL, number of hours
     rvtype(int): requested vehicle type
     rev = review about this trip
-    '''
+    """
     STATUSES = [
         ('RQ', 'requested'),  # requested from the user via app
         ('AS', 'assigned'),   # accepted by the driver, waiting for the user to either come to driver or CN
@@ -229,6 +238,7 @@ class Trip(models.Model):
     DRIVER_ACTIVE = ['AS', 'ST', 'FN', 'TR']      # not TO, CN, DN, RQ, FL, PD
     SUPER_ACTIVE = ['AS', 'FN', 'TR', 'ST']             # not TO, CN, DN, RQ, ST, PD, FL
     STATES = ['RQ', 'AS', 'ST', 'FN', 'TR', 'TO', 'CN', 'DN', 'FL', 'PD']
+
     # States requiring payment to be done
     PAYABLE = ['FN', 'TR']
 
@@ -270,13 +280,13 @@ class Trip(models.Model):
 
 
 class Progress(models.Model):
-    '''
+    """
     Progress table contains the live percentage progress of every trip
     ------------------------------------------------------------------
     tid(int): trip id
     pct(int):  progress percent
 
-    '''
+    """
     tid = models.IntegerField(primary_key=True)
     pct = models.IntegerField(db_index=True)
 
@@ -286,17 +296,19 @@ class Progress(models.Model):
 
 
 class Supervisor(models.Model):
-    '''
+    """
+    Supervisor is for the rental module, supervises the vehicles
+    ------------------------------------------------------------
     an(int):    Aadhaar number
     pn(str):    Phone number
     auth(str):  Supervisor auth token
     dl(str):    Driving licence no.
     name(str):  Real name
     gdr(str):   Gender
-    age(int)
+    age(int):   Age
     pid(int):   Index of current place - see Place table
     hs(str):    Home state of the Supervisor
-    '''
+    """
 
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
@@ -316,7 +328,9 @@ class Supervisor(models.Model):
 
 
 class Manager(models.Model):
-    '''
+    """
+    Manager is for the ride module, assgins the vehicles to Driver
+    --------------------------------------------------------------
     an(int): Aadhaar number
     pn(str): Phone number
     auth(str): Hub manager auth token
@@ -327,7 +341,7 @@ class Manager(models.Model):
     pid(int): Index of the current hub - todo Hub table
     #todo how to add list of vehicle to this Manager
     hs(str): Home state
-    '''
+    """
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
     auth = models.CharField(max_length=16, db_index=True)
@@ -348,9 +362,9 @@ class Manager(models.Model):
 ########################
 
 class Delivery(models.Model):
-    '''
+    """
     tabula rasa
-    '''
+    """
     STATUSES = [
         ('SC', 'scheduled'),  # scheduler by the user via app
         ('PD', 'paid'),     #paid
@@ -463,7 +477,7 @@ class Delivery(models.Model):
 
 
 class Agent(models.Model):
-    '''
+    """
     Delivery agent
     an(int):    Aadhaar number
     pn(str):    Phone number
@@ -478,7 +492,7 @@ class Agent(models.Model):
     hs(str):    Home state of the Agent
     veh(int): Has a vehicle or not
     mark(float): float field has the rating, binary system same as that of the user/driver
-    '''
+    """
     MODES = [
         ('RG', 'registering'),  # Agent is under registration process
         ('AV', 'available'),  # Agent is online, waiting for deliveries
@@ -512,15 +526,17 @@ class Agent(models.Model):
 
 
 class Rate(models.Model):
-    '''
+    """
+    Rate stores the rating and the money paid for the trip
+    ------------------------------------------------------
     id (int): Autoincrement primary key
 
-    type = type of the rating, which is rent+rentid, or reide+rideid, deli+deliveryid
+    type = type of the rating, which is rent+rentid, or ride+rideid, deli+deliveryid
     rating = basic rating
     rev = review in detail
     time = timestamp when rating was done
     dan = driver/supervisor aadhaar number
-    '''
+    """
     TYPE = [
         ('RIDE', 'ride'),
         ('RENT', 'rental'),
@@ -552,7 +568,10 @@ class Rate(models.Model):
 
 
 class Product(models.Model):
-    '''
+    """
+    Product in the SHOP module
+    --------------------------
+
     name(str): name of the product
     type(bool): simple 0 or grouped 1
     regular_price (float): MRP of the product 
@@ -566,10 +585,9 @@ class Product(models.Model):
     
     tax_class(float): how much tax on the product
     low_stock_amount(int): low stock alert
-    '''
+    """
     #id is given by default
     #id = models.AutoField(primary_key=True)
-    #0 
     name  = models.CharField(null=True, max_length=200, db_index=True)
     
     TYPE = [
@@ -625,7 +643,9 @@ class Product(models.Model):
         
         
 class Purchaser(models.Model):
-    '''
+    """
+    Purchaser goes to have a purchase for SHOP module
+    -------------------------------------------------
     an(int):    Aadhaar number
     pn(str):    Phone number
     auth(str):  Purchaser auth token
@@ -635,7 +655,7 @@ class Purchaser(models.Model):
     age(int):   Age
     pid(int):   Index of current place - see Place table
     hs(str):    Home state of the Purchaser
-    '''
+    """
 
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
@@ -653,13 +673,14 @@ class Purchaser(models.Model):
         managed = True
 
 
-
 ########################
 # Service module
 ########################
 
 class Servitor(models.Model):
-    '''
+    """
+    Servitor is the the Service providing person
+    --------------------------------------------
     an(int):    Aadhaar number
     pn(str):    Phone number
     auth(str):  Servitor auth token
@@ -671,7 +692,7 @@ class Servitor(models.Model):
     hs(str):    Home state of the Servitor
     job(str):   What does that person does
     wage(float) : hourly charge
-    '''
+    """
 
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
