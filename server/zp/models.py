@@ -200,23 +200,30 @@ class Vehicle(models.Model):
 
 class Trip(models.Model):
     """
-    id (int): Autoincrement primary key
-    st(str):  Current trip status see Trip.STATUSES
-    uan(int): User aadhaar
-    dan(int): Driver aadhaar
-    van(int): Vehicle assigned number
-    rtime:    Trip request timestamp
-    atime:    Trip assign timestamp
-    stime:    Trip start timestamp
-    etime:    Trip end time (regardless of completion or failure)
-    srcid:    Source place id
-    dstid     Destination place id
-    npas      Number of passengers
-    rtype ; rent or ride
-    pmode : payment mode (cash / upi)
-    hrs : for RENTAL, number of hours
-    rvtype(int): requested vehicle type
-    rev = review about this trip
+    Trip table stores the details about trips
+    -----------------------------------------
+    id (int)  : Autoincrement primary key
+    st(str)   : Current trip status see Trip.STATUSES
+    uan(int)  : User aadhaar
+    dan(int)  : Driver aadhaar
+    van(int)  : Vehicle assigned number
+    rtime     :    Trip request timestamp
+    atime     :    Trip assign timestamp
+    stime     :    Trip start timestamp
+    etime     :    Trip end time (regardless of completion or failure)
+    srcid     : Source place id
+    dstid     : Destination place id
+    srcname   : Name of Source
+    srclat    : Latitude of source
+    srclng    : Longitude of source
+    dstname   : Name of Destination
+    dstlat    : Latitude of destination
+    dstlng    : Longitude of destination
+    npas      : Number of passengers
+    rtype     : rent or ride
+    pmode     : payment mode (cash / upi)
+    hrs       : for RENTAL, number of hours
+    rvtype    : requested vehicle type
     """
     STATUSES = [
         ('RQ', 'requested'),  # requested from the user via app
