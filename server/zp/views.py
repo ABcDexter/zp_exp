@@ -1421,10 +1421,10 @@ def authTripData(dct, entity):
                     
     
     time = float(time)
-    rate = 1.00 #need to update the price algo in utils.py
+    rate = Vehicle.TIME_FARE[trip.rvtype]
     print(time, rate, rate*time)
-    price = rate*time #2 chars
-    tax = price*0.05  # tax of 5%
+    price = rate*time  # 2 chars
+    tax = price*0.05   # tax of 5%
     total = price + tax
     print(tax, total)
     dctRet = {
