@@ -492,11 +492,13 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         params.put("vtype", vTypeInfo);
         params.put("pmode", pModeInfo);
         params.put("npas", noRiderInfo);
+        params.put("srcname", stringPick);
+        params.put("dstname", stringDrop);
 
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth + " srclat=" + srcLat + " srclng=" + srcLng
                 + " dstlat=" + dstLat + " dstlng=" + dstLng + " vtype=" + vTypeInfo + " pmode="
-                + pModeInfo + " rtype=" + rideInfo + " npas=" + noRiderInfo);
+                + pModeInfo + " rtype=" + rideInfo + " npas=" + noRiderInfo + " srcname="+stringPick+ " dstname="+stringDrop);
         Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-ride-request");
 
         UtilityApiRequestPost.doPOST(a, "user-ride-request", parameters, 2000, 0, response -> {

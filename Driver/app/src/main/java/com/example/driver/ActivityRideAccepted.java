@@ -256,42 +256,33 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_startRide:
-                String checkOtp = OTP.getText().toString();
-                if (!checkOtp.isEmpty()) {
-                    driverStartRide(checkOtp);//method to check if the OTP entered is correct or not
-                } else
-                    OTP.requestFocus();// if OTP field is empty, then driverStartTrip method will not be called
-                break;
-            case R.id.btn_cancelRide:
-                ShowPopup(2);// dialog box with message to confirm if the driver wants to end ride
-                break;
-            case R.id.accept_request:
-                driverRideCancel();// method to cancel ride by hit driver-cancel-ride API
-                break;
-            case R.id.reject_request:
-                myDialog.dismiss();
-                break;
-            case R.id.userPhone:
-                //method to call the user
-                if (hasPermissions(this, PERMISSIONS)) {
-                    ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-                } else {
-                    Intent callIntent = new Intent(Intent.ACTION_CALL);
-                    callIntent.setData(Uri.parse("tel:" + phone.getText().toString()));
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                        return;
-                    }
-                    startActivity(callIntent);
+        int id = v.getId();
+        if (id == R.id.btn_startRide) {
+            String checkOtp = OTP.getText().toString();
+            if (!checkOtp.isEmpty()) {
+                driverStartRide(checkOtp);//method to check if the OTP entered is correct or not
+            } else
+                OTP.requestFocus();// if OTP field is empty, then driverStartTrip method will not be called
+        } else if (id == R.id.btn_cancelRide) {
+            ShowPopup(2);// dialog box with message to confirm if the driver wants to end ride
+        } else if (id == R.id.accept_request) {
+            driverRideCancel();// method to cancel ride by hit driver-cancel-ride API
+        } else if (id == R.id.reject_request) {
+            myDialog.dismiss();
+        } else if (id == R.id.userPhone) {//method to call the user
+            if (hasPermissions(this, PERMISSIONS)) {
+                ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+            } else {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + phone.getText().toString()));
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
                 }
-                break;
-            case R.id.viewMap:
-                //Toast.makeText(this, "Map Opens Here", Toast.LENGTH_SHORT).show();
-                Intent map = new Intent(ActivityRideAccepted.this, MapUserLocation.class);
-                startActivity(map);
-
-                break;
+                startActivity(callIntent);
+            }
+        } else if (id == R.id.viewMap) {//Toast.makeText(this, "Map Opens Here", Toast.LENGTH_SHORT).show();
+            Intent map = new Intent(ActivityRideAccepted.this, MapUserLocation.class);
+            startActivity(map);
         }
     }
 

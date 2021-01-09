@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -46,7 +47,7 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
 
     TextView mobiletxt, uploadAadhar, btnEmail;
     EditText etEmail;
-    Button submitEmail;
+    ImageButton submitEmail;
     String strEmail, stringName, stringPhone, stringAuth;
     RelativeLayout rlEmail;
     public static final String AUTH_KEY = "AuthKey";

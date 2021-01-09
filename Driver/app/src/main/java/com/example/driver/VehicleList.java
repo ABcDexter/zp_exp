@@ -79,7 +79,7 @@ public class VehicleList extends AppCompatActivity {
             SharedPreferences prefVan = getSharedPreferences(DAY_VAN, Context.MODE_PRIVATE);
             prefVan.edit().putString(VAN, van).apply();
 
-            assert van != null;
+            //assert van != null;
             if (!van.isEmpty()) {
                 Log.d(TAG, "VAN=" + van);
                 vehicleSet(van);

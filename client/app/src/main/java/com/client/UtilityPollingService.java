@@ -181,7 +181,7 @@ public class UtilityPollingService extends Service {
         }
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("04")) {
-            final int fixedTimeUpdateLoc = 45;
+            final int fixedTimeUpdateLoc = 30;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -215,7 +215,7 @@ public class UtilityPollingService extends Service {
         }
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("05")) {
-            final int fixedTimeUpdateLoc = 30;
+            final int fixedTimeUpdateLoc = 15;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -252,7 +252,7 @@ public class UtilityPollingService extends Service {
 
 //polling for auth-vehicle-get-avail in rent section
         if (intent != null && intent.getAction() != null && intent.getAction().equals("11")) {
-            final int fixedTimeUpdateLoc = 45;
+            final int fixedTimeUpdateLoc = 30;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
             //stopTimer2 = stopTimerFlag2;
@@ -422,41 +422,6 @@ public class UtilityPollingService extends Service {
             });
         }
 
-        //polling for user-is-agent-av in DELIVERY section
-        /*if (intent != null && intent.getAction() != null && intent.getAction().equals("31")) {
-            final int fixedTimeUpdateLoc = 45;
-            //final boolean stopTimerFlag2 = false;
-            secondsActLocSel = fixedTimeUpdateLoc;
-            //stopTimer2 = stopTimerFlag2;
-*//*
-            if (stop) {
-*//*
-            final Handler handler = new Handler();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    secondsActLocSel--;
-                    if (secondsActLocSel < 0) {
-                        Log.d("ActivityFillDropAddress.getInstance().getAgent() in seconds < 0", "Value of seconds: " + secondsActLocSel);
-
-                        stopTimerActLocSel = true;
-                        ActivityFillDropAddress.getInstance().getAgent();
-
-                    } else {
-                        stopTimerActLocSel = false;
-                    }
-
-                    if (stopTimerActLocSel == false) {
-                        Log.d("ActivityFillDropAddress.getInstance().getAgent() in seconds == false ", "Value of seconds: " + secondsActLocSel);
-
-                        handler.postDelayed(this, 1000);
-                    } else {
-                        stopSelf();
-                    }
-                }
-            });
-        }
-*/
         //polling for user-delivery-get-status API in DELIVERY section
         if (intent != null && intent.getAction() != null && intent.getAction().equals("32")) {
             final int fixedTimeUpdateLoc = 45;
@@ -492,15 +457,6 @@ public class UtilityPollingService extends Service {
             });
         }
 
-//polling for user-delivery-get-status API in DELIVERY section
-       /* if (intent != null && intent.getAction() != null && intent.getAction().equals("33")) {
-            final int fixedTimeUpdateLoc = 45;
-            //final boolean stopTimerFlag2 = false;
-            secondsActLocSel = fixedTimeUpdateLoc;
-            //stopTimer2 = stopTimerFlag2;
-*//*
-            if (stop) {
-*/
         return START_STICKY;
     }
 

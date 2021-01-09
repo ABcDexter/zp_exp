@@ -23,7 +23,6 @@ public class IntroActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
     private LinearLayout dotsLayout;
-    private TextView[] dots;
     private int[] layouts;
     private Button btnSkip, btnNext;
     private PrefManager prefManager;
@@ -47,8 +46,6 @@ public class IntroActivity extends AppCompatActivity {
         dotsLayout =  findViewById(R.id.layoutDots);
         btnSkip =  findViewById(R.id.btn_skip);
         btnNext =  findViewById(R.id.btn_next);
-
-
         // layouts of all welcome sliders
         // add few more layouts if you want
         layouts = new int[]{
@@ -92,7 +89,7 @@ public class IntroActivity extends AppCompatActivity {
     }
 
     private void addBottomDots(int currentPage) {
-        dots = new TextView[layouts.length];
+        TextView[] dots = new TextView[layouts.length];
 
         int[] colorsActive = getResources().getIntArray(R.array.array_dot_active);
         int[] colorsInactive = getResources().getIntArray(R.array.array_dot_inactive);

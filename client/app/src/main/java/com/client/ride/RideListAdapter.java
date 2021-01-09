@@ -2,17 +2,16 @@ package com.client.ride;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.client.R;
-import com.client.deliver.ActivityDeliverySummery;
 
 import java.util.List;
 
@@ -42,6 +41,8 @@ public class RideListAdapter extends RecyclerView.Adapter<RideListAdapter.ViewHo
         holder.rideTxt2.setText(R.string.vehicle);
         holder.rideStatus.setText(listData.getRideStatus());
         holder.rideDate.setText(listData.getRideDate());
+        holder.srcTxt.setText(listData.getRideSrc());
+        holder.dstTxt.setText(listData.getRideDst());
         //holder.rideVType.setText(listData.getRideVtype());
         String vtype = listData.getRideVtype();
 
@@ -67,7 +68,7 @@ public class RideListAdapter extends RecyclerView.Adapter<RideListAdapter.ViewHo
             public void onClick(View v) {
                 String valueTid = listData.getRideID();
                 Intent details = new Intent(context, ActivityRideSummery.class);
-                details.putExtra("TID",valueTid);
+                details.putExtra("TID", valueTid);
                 context.startActivity(details);
             }
         });
@@ -80,16 +81,23 @@ public class RideListAdapter extends RecyclerView.Adapter<RideListAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView rideID, rideStatus, rideDate, rideVType, rideTxt, rideTxt2;
+        private TextView rideID, rideStatus, rideDate, rideVType, rideTxt, rideTxt2, srcTxt, dstTxt;
+        private LinearLayout llSrc, llDst;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            llSrc = itemView.findViewById(R.id.ll_src);
+            llDst = itemView.findViewById(R.id.ll_dst);
+            llSrc.setVisibility(View.VISIBLE);
+            llDst.setVisibility(View.VISIBLE);
             rideTxt2 = itemView.findViewById(R.id.delText2);
             rideTxt = itemView.findViewById(R.id.delText);
             rideID = itemView.findViewById(R.id.delivery_id);
             rideStatus = itemView.findViewById(R.id.delivery_status);
             rideDate = itemView.findViewById(R.id.delivery_itype);
             rideVType = itemView.findViewById(R.id.delivery_price);
+            srcTxt = itemView.findViewById(R.id.src_point);
+            dstTxt = itemView.findViewById(R.id.dst_point);
 
         }
     }

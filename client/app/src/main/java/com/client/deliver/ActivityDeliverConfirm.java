@@ -39,7 +39,6 @@ import java.util.Map;
 public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnClickListener {
     TextView upiPayment, cost, payOnPickup, payOnDelivery;
     final int UPI_PAYMENT = 0;
-    //EditText edTip;
     ScrollView scrollView;
     ImageButton infoPayment; //infoTip;
     private static final String TAG = "ActivityDeliverConfirm";
@@ -194,12 +193,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
 
         myDialog = new Dialog(this);
         //deliveryEstimate();
-        /*zbeeR = findViewById(R.id.image_zbee);
-        zbeeL = findViewById(R.id.image_zbee_below);*/
 
-       /* Intent intent = getIntent();
-        String price = intent.getStringExtra("PRICE");
-        distance = intent.getStringExtra("DISTANCE");*/
         deliveryEstimate();
 
         animMoveL2R = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r);
@@ -252,16 +246,12 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.confirm_btn) {
-            //moveit();
+
             userDeliverySchedule();
-                /*case R.id.infoTip:
-                ShowPopup(1);
-                break;*/
+
         } else if (id == R.id.infoPayment) {
             ShowPopup();
-                /* case R.id.cancelRequest:
-                cancelRequest();
-                break;*/
+
         } else if (id == R.id.upi) {
             upiPayment.setBackgroundResource(R.drawable.rect_box_outline_color_change);
             payOnDelivery.setBackgroundResource(R.drawable.rect_box_outline);
@@ -403,7 +393,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         objectAnimator1.start();
         objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*//*
     }*/
-
+// api to 
     protected void userDeliverySchedule() {
         String auth = stringAuth;
 

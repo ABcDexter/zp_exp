@@ -100,7 +100,7 @@ public class ActivityRentSummery extends ActivityDrawer {
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG, "RESPONSE:" + response);
 
-        //response on hitting auth-delivery-data API
+        //response on hitting auth-trip-data API
         if (id == 2) {
 
             vtype = response.getString("rvtype");
