@@ -1185,7 +1185,7 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
 
     # MAIN ALGO PER MIN
     # get per minute price for vehicle
-    maxPricePerMIN = 10
+    maxPricePerMIN = 5
     vehiclePricePerMIN = Vehicle.TIME_FARE[iVType] * maxPricePerMIN
 
     # Calculate price 
