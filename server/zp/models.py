@@ -479,6 +479,7 @@ class Delivery(models.Model):
 class Agent(models.Model):
     """
     Delivery agent
+    --------------
     an(int):    Aadhaar number
     pn(str):    Phone number
     auth(str):  Client auth token
