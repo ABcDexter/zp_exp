@@ -718,6 +718,7 @@ def registerAgent(_, dct):
         agent.gdr = clientDetails.get('gender', '')
         agent.age = clientDetails.get('age', '')
         agent.mode = 'RG'
+        agent.fcm = dct['fcm']
 
         # Dummy values set by admin team manually
         agent.dl = 'UK01-AB1234'
@@ -732,6 +733,7 @@ def registerAgent(_, dct):
 
         # Set a random auth so that this Agent wont get authed
         agent.auth = str(random.randint(0, 0xFFFFFFFF))
+
         agent.save()
 
         # licenses are also stored with the aadhar in the file name but under settings.DL_DIR

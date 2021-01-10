@@ -24,6 +24,7 @@ class User(models.Model):
     mark(float):   rating system, BINARY, 1 mark given for good, 0 given for bad
     adhar(int) :   Aadhaar number of the user
     email(str) :   Email of the user
+    fcm(str)   :   Firebase Cloud Messaging token of the User android app
     """
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
@@ -41,6 +42,7 @@ class User(models.Model):
     mark = models.FloatField(db_index=True, default=0.0)
     adhar= models.BigIntegerField(db_index=True, null=True)
     email= models.CharField(db_index=True, null=True, max_length=100)
+    fcm  = models.CharField(db_index=True, null=True, max_length=512)
     class Meta:
         db_table = 'user'
         managed = True
@@ -63,6 +65,7 @@ class Driver(models.Model):
     van(int)   :   Vehicle number assigned
     hs(str)    :   Home state of the Driver
     mark(float):   Float field for the rating of the driver.
+    fcm(str)   :   Firebase Cloud Messaging token of the Driver android app
     """
     MODES = [
         ('RG', 'registering'),  # driver is under registration process
@@ -87,6 +90,7 @@ class Driver(models.Model):
     hs   = models.CharField(null=True, max_length=50)
     van  = models.BigIntegerField(db_index=True, default=-1)
     mark = models.FloatField(db_index=True, default=0.0)
+    fcm  = models.CharField(db_index=True, null=True, max_length=512)
 
     class Meta:
         db_table = 'driver'
@@ -500,6 +504,7 @@ class Agent(models.Model):
     hs(str):    Home state of the Agent
     veh(int): Has a vehicle or not
     mark(float): float field has the rating, binary system same as that of the user/driver
+    fcm(str)   :   Firebase Cloud Messaging token of the Agent android app
     """
     MODES = [
         ('RG', 'registering'),  # Agent is under registration process
@@ -527,6 +532,7 @@ class Agent(models.Model):
     hs   = models.CharField(null=True, max_length=50)
     veh  = models.CharField(max_length=1, choices=VEH, default='0', db_index=True)
     mark = models.FloatField(db_index=True, default=0.0)
+    fcm  = models.CharField(db_index=True, null=True, max_length=512)
 
     class Meta:
         db_table = 'agent'
@@ -663,6 +669,7 @@ class Purchaser(models.Model):
     age(int):   Age
     pid(int):   Index of current place - see Place table
     hs(str):    Home state of the Purchaser
+    fcm(str):   Firebase cloud messaging token of the Purchaser android app
     """
 
     an   = models.BigIntegerField(primary_key=True)
@@ -675,6 +682,7 @@ class Purchaser(models.Model):
     gdr  = models.CharField(null=True, max_length=16, db_index=True)
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
+    fcm  = models.CharField(db_index=True, null=True, max_length=512)
 
     class Meta:
         db_table = 'purchaser'

@@ -92,6 +92,7 @@ def registerUserNoAadhaar(_, dct: Dict):
         user.an = int(sAn)
         user.pn = sPhone
         user.hs = dct['home'].lower()
+        user.fcm = dct['fcm']
         user.save()
         log('New user registered: %s' % user.name)
     else:
@@ -250,6 +251,7 @@ def registerDriver(_, dct: Dict):
 
         # Set a random auth so that this driver wont get authed
         driver.auth = str(random.randint(0, 0xFFFFFFFF))
+        driver.fcm = dct['fcm']
         driver.save()
 
         # licenses are also stored with the aadhar in the file name but under settings.DL_DIR
