@@ -994,7 +994,7 @@ def agentDeliveryAccept(dct, agent):
         #dst = Place.objects.filter(id=deli.dstpin)[0]
         ret.update({'srcadd': deli.srcadd, 'dstadd': deli.dstadd})
         print("Accepting deli : ", ret)
-        params = {"to": user.fcm, "notification":{
+        params = {"to": str(user.fcm) , "notification":{
                                     "title":"Let's ZIPPE !",
                                     "body":"Your DELIVERY has been accepted.",
                                     "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
@@ -1107,7 +1107,7 @@ def agentDeliveryDone(_dct, agent, deli):
     deli.save()
     print("Completing delivery : ", deli.id)
     user = User.objects.filter(an=deli.uan)[0]
-    params = {"to": user.fcm, "notification":{
+    params = {"to": str(user.fcm) , "notification":{
                                     "title":"Let's ZIPPE !",
                                     "body":"Your DELIVERY has been successfully completed.",
                                     "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",

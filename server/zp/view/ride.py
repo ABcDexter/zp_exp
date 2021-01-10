@@ -258,7 +258,7 @@ def driverRideAccept(dct, driver):
         ret.update({'name': user.name, 'phone': user.pn})
 
         print("Accepting trip : ", ret)
-        params = {"to": user.fcm, "notification":{
+        params = {"to": str(user.fcm) , "notification":{
                                     "title":"ZIPPE kar lo...",
                                     "body":"Your RIDE has been accepted.",
                                     "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
@@ -704,7 +704,7 @@ def adminDriverReached(dct):
             iterAn = trip.dan
             print("The driver is : ", minDist, " metres away and ", minTime, " minutes away")
             user = User.objects.filter(an=trip.uan)
-            params = {"to": user.fcm, "notification":{
+            params = {"to":str(user.fcm) , "notification":{
                                     "title":"ZIPPE kar lo...",
                                     "body":"Your RIDE driver is reaching soon. Please be ready.",
                                     "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
