@@ -1189,7 +1189,7 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
 
     # Calculate price 
     price = (iTimeSec / 60) * vehiclePricePerMIN * avgWt
-
+    print(iTimeSec, iTimeSec/60, vehiclePricePerMIN, avgWt, " PRICE : ", price)
     # if iPayMode == Trip.UPI:  # UPI has 10% off
     #    price *= 0.9
 
