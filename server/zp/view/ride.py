@@ -256,12 +256,10 @@ def driverRideAccept(dct, driver):
 
         user = User.objects.filter(an=trip.uan)[0]
         ret.update({'name': user.name, 'phone': user.pn})
-        #src = Place.objects.filter(id=trip.srcid)[0]
-        #dst = Place.objects.filter(id=trip.dstid)[0]
-        #ret.update({'srcname': src.pn, 'dstname': dst.pn})
+
         print("Accepting trip : ", ret)
-        params = {"to": "/topics/all", "notification":{
-                                    "title":"Let's ZIPPE !",
+        params = {"to": user.fcm, "notification":{
+                                    "title":"ZIPPE kar lo...",
                                     "body":"Your RIDE has been accepted.",
                                     "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
                                     "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
@@ -705,8 +703,9 @@ def adminDriverReached(dct):
             minDist = nDist
             iterAn = trip.dan
             print("The driver is : ", minDist, " metres away and ", minTime, " minutes away")
-            params = {"to": "/topics/all", "notification":{
-                                    "title":"Let's ZIPPE !",
+            user = User.objects.filter(an=trip.uan)
+            params = {"to": user.fcm, "notification":{
+                                    "title":"ZIPPE kar lo...",
                                     "body":"Your RIDE driver is reaching soon. Please be ready.",
                                     "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
                                     "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"

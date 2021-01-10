@@ -96,16 +96,19 @@ def registerUserNoAadhaar(_, dct: Dict):
         user.save()
         log('New user registered: %s' % user.name)
     else:
-        # modile exists, check what has been changed
+        # mobile exists, check what has been changed
         user = qsUser[0]
         if user.pn != sPhone:
             sAuth = getClientAuth(str(qsUser[0].sAn), str(qsUser[0].pn))
             user.pn = sPhone
             user.auth = sAuth
+            user.fcm = dct['fcm']
             user.save()
             log('Auth changed for: %s' % user.name)
         else:
             # Aadhaar exists, phone unchanged, just return existing auth
+            user.fcm = dct['fcm']
+            user.save()
             sAuth = user.auth
             log('Auth exists for: %s' % user.name)
 
@@ -265,10 +268,14 @@ def registerDriver(_, dct: Dict):
             # Aadhaar exists, if mobile has changed, get new auth
             if driver.pn != sPhone:
                 driver.pn = sPhone
+                driver.fcm = dct['fcm']
+                driver.save()
                 sAuth =  getClientAuth(driver.an, driver.pn)
                 log('Auth changed for driver: %s' % sAadhaar)
             else:
                 # Aadhaar exists, phone unchanged, just return existing auth
+                driver.fcm = dct['fcm']
+                driver.save()
                 sAuth = driver.auth
                 log('Auth exists for driver: %s' % sAadhaar)
             return HttpJSONResponse({'auth': sAuth})
