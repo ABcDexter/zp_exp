@@ -113,9 +113,18 @@ CORS_ORIGIN_ALLOW_ALL = True
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(DB_FILE_PATH, 'zp.sqlite3'),
+    },
+    # Setup mysql doin
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'zp', #os.environ.get('ZP_DB_NAME'),
+        'USER': 'zpadmin', #os.environ.get('ZP_DB_USER'),
+        'PASSWORD': 'appleelppa', #os.environ.get('ZP_DB_PASSWD'),
+        'HOST': 'localhost', #os.environ.get('ZP_DB_HOST'),
+        'PORT': '3306' #os.environ.get('ZP_DB_PORT')
     }
 # Setup mysql doin
 #    'default': {

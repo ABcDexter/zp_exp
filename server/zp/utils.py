@@ -1443,5 +1443,3 @@ def sendDeliveryInvoiceMail(deliveryType, userEmail, userName, deliveryId, deliv
     server = smtplib.SMTP(SENDER_SERVER)
     server.sendmail(FROM, TO, message.as_string())
     server.quit()
-    
-    
