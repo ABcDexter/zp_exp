@@ -18,9 +18,6 @@ time_step=${args[4]}         # for sleep
 
 #############################
 
-ZP_DB_USER='zpadmin'
-ZP_DB_NAME='zp'
-ZP_DB_PASSWD='appleelppa'
 
 ##############################
 
@@ -30,7 +27,7 @@ echo "Enter the Matrix!" | tee "${log_file}"
 # pkill -f python3 # Noob
 
 export ZP_DB_PASSWD=$ZP_DB_PASSWD
-python3 /home/dex/work/zp/server/manage.py runserver 9999 &
+#python3 /home/dex/work/zp/server/manage.py runserver 9999 &
 sleep 10
 
 ####################################
