@@ -1,0 +1,30 @@
+Enter the Matrix!
+#################### DOING ####################
+#################### DONE #####################
+{}
+[01/11/21 14:25:04] [PID: 1] [TID: -1] [TS: ] User located at pid 1: THE LAKE VILLAGE
+[01/11/21 14:25:05] [PID: 1] [TID: -1] [TS: ] Vehicles found at hub: 56
+srcLAT :  29.018217367009925  LNG :  79.25681654855758
+[01/11/21 14:25:11] [PID: 1] [TID: -1] [TS: ] Requesting trip to 7: MEHRA GAON
+dstLAT :  29.220449  dstLNG :  79.47853
+[01/11/21 13:57:41] [PID: -1] [TID: -1] [TS: None] [ST: AV]  Driver an: 1000
+[01/11/21 13:57:41] [PID: -1] [TID: -1] [TS: None] [ST: AV]  Driver located at pid 1: THE LAKE VILLAGE
+[01/11/21 13:57:41] [PID: 1] [TID: -1] [TS: None] [ST: AV]  Vehicles found at hub: 59
+OOOO gadddi :  {'an': 2030, 'tid': -1, 'dan': -1, 'regn': 'reg30', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 2, 'mark': 0.0}
+[01/11/21 14:03:12] [PID: 1] [TID: -1] [TS: None] [ST: AV]  Switching to state AV - succeeded
+[01/11/21 14:10:35] [PID: 1] [TID: -1] [TS: None] [ST: OF]  Switching to state OF - succeeded
+[01/11/21 14:29:42] [PID: 1] [TID: -1] [TS: None] [ST: AV]  Switching to state AV - succeeded
+[01/11/21 14:24:49] [PID: -1] [TID: -1] [TS: None] [ST: AV]  Driver an: 1000
+[01/11/21 14:24:49] [PID: -1] [TID: -1] [TS: None] [ST: AV]  Driver located at pid 1: THE LAKE VILLAGE
+[01/11/21 14:24:50] [PID: 1] [TID: -1] [TS: None] [ST: AV]  Vehicles found at hub: 57
+OOOO gadddi :  {'an': 2016, 'tid': -1, 'dan': -1, 'regn': 'reg16', 'dist': 0, 'hrs': 0.0, 'pid': 3, 'vtype': 0, 'mark': 0.0}
+[01/11/21 14:25:16] [PID: 1] [TID: -1] [TS: None] [ST: OF]  Switching to state OF - succeeded
+[01/11/21 14:26:46] [PID: 1] [TID: -1] [TS: None] [ST: AV]  Switching to state AV - succeeded
+[01/11/21 14:29:41] [PID: 1] [TID: -1] [TS: None] [ST: AV]  Error: Unauthorized
+[01/11/21 13:59:00] [PID: -1] [TID: -1] [TS: None] [ST: AV]  Driver an: 1000
+[01/11/21 13:59:00] [PID: -1] [TID: -1] [TS: None] [ST: AV]  Driver located at pid 1: THE LAKE VILLAGE
+[01/11/21 13:59:00] [PID: 1] [TID: -1] [TS: None] [ST: AV]  Vehicles found at hub: 58
+OOOO gadddi :  {'an': 2079, 'tid': -1, 'dan': -1, 'regn': 'reg79', 'dist': 0, 'hrs': 0.0, 'pid': 4, 'vtype': 3, 'mark': 0.0}
+[01/11/21 14:03:10] [PID: 1] [TID: -1] [TS: None] [ST: OF]  Switching to state OF - succeeded
+[01/11/21 14:10:35] [PID: 1] [TID: -1] [TS: None] [ST: AV]  Switching to state AV - succeeded
+[01/11/21 14:29:40] [PID: 1] [TID: -1] [TS: None] [ST: OF]  Switching to state OF - succeeded

@@ -55,7 +55,7 @@ class User(Entity):
             print("dstLAT : ", dstLAT, " dstLNG : ", dstLNG)
 
             ret = self.callAPI('user-ride-request', {"srclat": srcLAT, "srclng": srcLNG, "dstlat": dstLAT ,"dstlng":dstLNG,
-                                                     'rtype': 0, 'vtype': 3, 'npas': 1, 'pmode': 0 })
+                                                     'rtype': 0, 'vtype': 3, 'npas': 1, 'pmode': 0, 'srcname':"A", 'dstname':"B" })
             if not self.logIfErr(ret):
                 self.log('Trip estimate: %s, ' % json.dumps(ret))
                 self.iDstPID = iDstPID

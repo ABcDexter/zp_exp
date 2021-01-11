@@ -216,3 +216,6 @@ select * from route;
 # DELETE duplicate skus from product table
 # SELECT sku, COUNT(sku) FROM product GROUP BY sku HAVING COUNT(sku) > 1;
 # DELETE t1 FROM product t1 INNER JOIN product t2 WHERE t1.id < t2.id AND t1.sku = t2.sku;
+
+# to test the capability of the MySql server
+# sudo mysqlslap --user=$ZP_DB_USER --password --host=localhost  --concurrency=100 --iterations=1000 --number-int-cols=5 --number-char-cols=20 --auto-generate-sql --verbose

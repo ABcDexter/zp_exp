@@ -1261,6 +1261,8 @@ def authDeliveryHistory(dct, entity, deli):
     '''
     CATEGORIES = { 'DOC':'DOCUMENT' , 'CLO':'CLOTHES', 'FOO':'FOOD', 'HOU':'HOUSEHOLD', 'ELE':'ELETRONICS', 'OTH':'OTHER', 'MED':'MEDICINES'}
 
+    getcontext().prec = 10
+
     qsDeli = Delivery.objects.filter(uan=entity.an).order_by('-id').values() if type(entity) is User else Delivery.objects.filter(
         dan=entity.an).order_by('-id').values()
     ret = {}
