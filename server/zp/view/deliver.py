@@ -718,6 +718,7 @@ def registerAgent(_, dct):
         agent.gdr = clientDetails.get('gender', '')
         agent.age = clientDetails.get('age', '')
         agent.mode = 'RG'
+        agent.fcm = dct['fcm']
 
         # Dummy values set by admin team manually
         agent.dl = 'UK01-AB1234'
@@ -732,6 +733,7 @@ def registerAgent(_, dct):
 
         # Set a random auth so that this Agent wont get authed
         agent.auth = str(random.randint(0, 0xFFFFFFFF))
+
         agent.save()
 
         # licenses are also stored with the aadhar in the file name but under settings.DL_DIR
@@ -1262,12 +1264,12 @@ def authDeliveryHistory(dct, entity, deli):
         dan=entity.an).order_by('-id').values()
     ret = {}
     # print(qsDeli)
-    # print("REEEEEEEEEEEE ",len(qsDeli))
+
     if len(qsDeli):
         states = []
         for i in qsDeli:
             # print(str(i['stime'])[:19])
-            #print("Delivery state : ", str(i['st']))
+            # print("Delivery state : ", str(i['st']))
             if i['st'] in ['ST', 'FL', 'FN']:
                 strSTime = str(i['stime'])[:19]
                 sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()

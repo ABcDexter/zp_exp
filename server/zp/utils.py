@@ -830,7 +830,6 @@ def extractParams(func):
         if request.method == 'GET':
             dct = dict(request.GET.items())
         else:
-            #print("REEEEEEEEEEEEEEEEEE : ", request.body)
             #log(request.body.decode('utf-8'))
             dct = dict(json.loads(request.body.decode('utf-8')))
         return func(request, dct)
@@ -1130,8 +1129,7 @@ def headers(h):
 
 def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     '''
-    #Get this route distance using google's APIs
-    
+
     Determines the price given 
         srclat : latitude of the source 
         srclng : longitude of the source 
@@ -1147,52 +1145,64 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
         'dist': Distance in Kilometers,
         'speed': Average speed 
     '''
-    # Get this route distance
-
-    #qsPlaces = Place.objects.all().values()
-    #arrLocs = [recPlace for recPlace in qsPlaces]
+    
     srcCoOrds = ['%s,%s' % (srclat,srclng)]
     dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
-
-    #print(srcCoOrds, dstCoOrds)
+    # print(srcCoOrds, dstCoOrds)
 
     gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
-    nDist, nTime = gMapsRet['dist'], gMapsRet['time']
-    #print(nDist, nTime)
-    fDist = nDist
-    iVType, iPayMode = int(iVType), int(iPayMode)  # need explicit type conversion to int
+    nDist, nTime = gMapsRet['dist'], gMapsRet['time']    
+    # print(nDist, nTime)  # this is the Distance in metres and Time in minutes
+
+    fDist = nDist + 1.0  # fail safe for divide by zero error
+    iVType, iPayMode = int(iVType), int(iPayMode)
     iTimeSec = nTime*60 if iTime == 0 else iTime
+    
     # Calculate the speed if time is known or else use average speed for estimates
-    fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
+    fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec  #[3, 3.5, 4, 5.5]
 
     # Get base fare for vehicle
-    fBaseFare = Vehicle.BASE_FARE[iVType]
+    fBaseFare = Vehicle.BASE_FARE[iVType]  # [10, 15, 20, 30]
 
     # Get average economic weight
     # TODO how do I decide which area is hot ?
-    idSrcWt = 100 # Place.objects.filter(id=idSrc)[0].wt
-    idDstWt = 100 # Place.objects.filter(id=idDst)[0].wt
+    idSrcWt = 100 
+    idDstWt = 100 
     avgWt = (idSrcWt + idDstWt) / 200
 
+    '''
+    # MAIN ALGO PER KM
     # get per km price for vehicle
     maxPricePerKM = 15
     vehiclePricePerKM = (iVType / 4) * maxPricePerKM
 
-    # Calculate price
+    # Calculate price 
     price = fBaseFare + (fDist / 1000) * vehiclePricePerKM * avgWt
     if iPayMode == Trip.UPI:  # UPI has 10% off
         price *= 0.9
+    '''
 
-    #if str(hs) == 'UK': # 10% off for natives
+    # MAIN ALGO PER MIN
+    # get per minute price for vehicle
+    maxPricePerMIN = settings.RIDE_PER_MIN_COST
+    vehiclePricePerMIN = Vehicle.TIME_FARE[iVType] * maxPricePerMIN  # [0.25, 0.5, 0.75, 1.0]
+
+    # Calculate price 
+    price = (iTimeSec / 60) * vehiclePricePerMIN * avgWt
+
+    # if iPayMode == Trip.UPI:  # UPI has 10% off
+    #    price *= 0.9
+
+    # if str(hs) == 'UK': # 10% off for natives
     #   price *= 0.9
 
-    #if str(gdr) == 'F': # 25% off for females
+    # if str(gdr) == 'F': # 25% off for females
     #   price *= 0.75
 
  
     return {
-        'price': str(round(float('%.2f' % price),0))+'0',
-        'time': int('%.0f' % ((fDist / fAvgSpeed) / 60)),  # converted seconds to minutes
+        'price': str(round(float('%.2f' % price), 0))+'0',  # rounded off to 2 decimals
+        'time': int('%.0f' % ((fDist / fAvgSpeed) / 60)),   # converted seconds to minutes
         'dist': float('%.2f' % (fDist / 1000)),
         'speed': float('%.2f' % (fAvgSpeed * 3.6))
     }
@@ -1205,7 +1215,7 @@ def getRiPrice(trip):
     vehicle = Vehicle.objects.filter(an=trip.van)
     vType = vehicle[0].vtype if len(vehicle)>0 else 1
     #print(vType)
-    return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)#, (trip.etime - trip.stime).seconds)
+    return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)  # , (trip.etime - trip.stime).seconds)
 
 ###############
 # GOOGLE
@@ -1222,6 +1232,7 @@ def extract_lat_lng(address_or_postalcode, data_type = 'json'):
     """
     endpoint = f"https://maps.googleapis.com/maps/api/geocode/{data_type}"
     params = {"address": address_or_postalcode, "key": settings.GOOGLE_PLACES_KEY}
+
     url_params = urlencode(params)
     url = f"{endpoint}?{url_params}"
     r = requests.get(url)

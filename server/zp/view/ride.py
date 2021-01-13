@@ -353,6 +353,11 @@ def driverRideEnd(_dct, driver, trip):
 
     # Calculate price
     dctPrice = getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, recVehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
+
+    rate = Rate.objects.filter(id='ride' + str(trip.id))[0]
+    rate.money = float(dctPrice['price'])
+    rate.save()
+
     return HttpJSONResponse(dctPrice)
 
 
@@ -573,6 +578,9 @@ def userRideEstimate(dct, _user, _trip):
     '''
     print("Ride Estimate param : ", dct)
     ret = getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)
+    # ret['price'] = float(ret['price'])*0.9 if _user.hs == 'UK' else ret['price']  # 10 % off for natives
+    # ret['price'] = float(ret['price'])*0.75 if _user.gdr == 'F' else ret['price']  # 25 % off for Females
+
     return HttpJSONResponse(ret)
 
 
@@ -640,10 +648,10 @@ def userRideRequest(dct, user):#, _trip):
     ret['tid'] = trip.id
 
     # to get the exact price even if the user TRminated the ride en route.
-    if trip.rtype=='0':
+    if trip.rtype == '0':
         rate = Rate()
         rate.id = 'ride' + str(trip.id)
-        rate.type = 'ride' if trip.rtype == '0' else 'rent'
+        rate.type = 'ride'
         rate.rev = ''
         rate.money = float(getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)['price'])
         rate.save()        

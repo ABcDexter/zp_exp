@@ -25,7 +25,7 @@ SECRET_KEY = '+8^8@0w0p1)6yr-g)!3l04&qp-ggjwz@9f_-fvpm_qta0g&36r'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "media.villageapps.in", "8ee0edfb6206.ngrok.io", "159.65.144.72","86d9a981a121.ngrok.io" ] # ngrok http http://127.0.0.1:9999
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "media.villageapps.in", "159.65.144.72", "86d9a981a121.ngrok.io" ] # ngrok http http://127.0.0.1:9999
 
 PROFILE_PHOTO_DIR = '/srv/data/static/dp'
 AADHAAR_DIR = '/srv/data/aadhaar/'
@@ -61,6 +61,8 @@ WP_CONSUMER_SECRET_KEY ='cs_63badebe75887e2f94142f9484d06f257194e2c3'
 DEL_AGENT_EARN = 0.10 # 10% earning to agent 
 
 BANK_AUTH = 'vpvpv_314159'
+
+RIDE_PER_MIN_COST = 5
 
 # Application definition
 

@@ -474,13 +474,9 @@ def supRentCheck(dct, sup):
     HTTP args :
         state : for rentals are required
     '''
-    # Get available vehicles at this hub, if none return empty
-    # qsVehicles = Vehicle.objects.filter(pid=sup.pid, tid=-1)
-    # if len(qsVehicles) == 0:
-    #    return HttpJSONResponse({'count':0}) # making it easy for Volley to handle JSONArray and JSONObject
-    # print("vehicle found...")
+
     # Get the first requested trip from Supervisors place id
-    qsTrip = Trip.objects.filter(rtype=1, srcid=sup.pid, st=dct['state'])#__in=['\''+dct['state']+'\'']).order_by('-rtime')
+    qsTrip = Trip.objects.filter(rtype=1, srcid=sup.pid, st=dct['state']) | Trip.objects.filter(rtype=1, dstid=sup.pid, st=dct['state'])
     print("%d trips found" % (len(qsTrip)))
     rentals = []
     for trip in qsTrip :
