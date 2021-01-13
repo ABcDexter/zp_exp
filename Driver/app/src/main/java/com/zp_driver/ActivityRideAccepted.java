@@ -1,4 +1,4 @@
-package com.example.driver;
+package com.zp_driver;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -64,7 +64,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
         if (id == 1) {
             try {
                 String status = response.getString("status");
-                if (status.equals("403")){
+                if (status.equals("403")) {
                     Toast.makeText(this, "Incorrect OTP.", Toast.LENGTH_LONG).show();
                     OTP.requestFocus();
                 }

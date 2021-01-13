@@ -1,7 +1,5 @@
 package com.client.ride;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -35,7 +33,6 @@ import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
-import com.client.rent.ActivityRentHome;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
@@ -78,6 +75,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
 
     private static ActivityRideRequest instance;
     Animation animMoveL2R, animMoveR2L;
+
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG, "RESPONSE:" + response);
 
@@ -88,9 +86,10 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
                 // response will be a json object
                 String price = response.getString("price");
                 String time = response.getString("time");
-
-                costEst.setText("₹ " + price);
-                timeEst.setText(time + getString(R.string.min));
+                costEst.setText(getString(R.string.message_rs, price));
+                timeEst.setText(getString(R.string.message_min, time));
+                //costEst.setText("₹ " + price);
+                //timeEst.setText(time + getString(R.string.min));
                 SharedPreferences sp_cookie = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
                 sp_cookie.edit().putString(TIME_DROP, time).apply();
                 sp_cookie.edit().putString(COST_DROP, price).apply();
@@ -147,10 +146,28 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
                         //sp_otp.edit().putString(DRIVER_MINS,mins).apply();
                     }
                 } else {
-                    Intent homePage = new Intent(ActivityRideRequest.this, ActivityWelcome.class);
+                    myDialog.setContentView(R.layout.popup_new_request);
+                    TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
+
+                    infoText.setText(R.string.no_driver_av);
+
+                    myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    myDialog.show();
+                    myDialog.setCanceledOnTouchOutside(false);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            myDialog.dismiss();
+                            Intent homePage = new Intent(ActivityRideRequest.this, ActivityWelcome.class);
+                            homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(homePage);
+                            finish();
+                        }
+                    }, 5000);
+                    /*Intent homePage = new Intent(ActivityRideRequest.this, ActivityWelcome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
-                    finish();
+                    finish();*/
                 }
 
             } catch (JSONException e) {
@@ -262,16 +279,18 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         rideEstimate();
 
         if (!time.equals("")) {
-            timeEst.setText(time + getString(R.string.min));
+            //timeEst.setText(time + getString(R.string.min));
+            timeEst.setText(getString(R.string.message_min, time));
         }
         if (!cost.equals("")) {
             // costEst.setText(cost);
             /*if(this.currency.equals("\u20B9")) {
                 r="₹ "+r;
             }*/
-            costEst.setText("₹ " + cost);
+            costEst.setText(getString(R.string.message_rs, cost));
+            //costEst.setText("₹ " + cost);
         }
-        //checkStatus();
+       // checkStatus();
     }
 
     private void cancelRequest() {
@@ -311,25 +330,23 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
         LinearLayout ll = myDialog.findViewById(R.id.layout_btn);
-        TextView reject = myDialog.findViewById(R.id.reject_request);
-        TextView accept = myDialog.findViewById(R.id.accept_request);
         if (id == 1) {
             ll.setVisibility(View.GONE);
-            String part1= getString(R.string.google_part1);
-            String part2= getString(R.string.google_part2);
-            String part3= getString(R.string.google_part3);
+            String part1 = getString(R.string.google_part1);
+            String part2 = getString(R.string.google_part2);
+            String part3 = getString(R.string.google_part3);
 
-            String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
+            String sourceString = part1 + "<b>" + part2 + "</b> " + part3;
             infoText.setText(Html.fromHtml(sourceString));
             //infoText.setText("This is an approximate cost as per <b> Google Maps (distance and time taken)</b>. May change depending on ride time.");
         }
         if (id == 2) {
             ll.setVisibility(View.GONE);
-            String part1= getString(R.string.google_time_part1);
-            String part2= getString(R.string.google_time_part2);
-            String part3= getString(R.string.google_time_part3);
+            String part1 = getString(R.string.google_time_part1);
+            String part2 = getString(R.string.google_time_part2);
+            String part3 = getString(R.string.google_time_part3);
 
-            String sourceString = part1 + "<b>" + part2+ "</b> " + part3;
+            String sourceString = part1 + "<b>" + part2 + "</b> " + part3;
             infoText.setText(Html.fromHtml(sourceString));
 
 
@@ -406,13 +423,13 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         // DialogInterface interface.
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
+            public void onClick(DialogInterface dialog, int which) {
                 // When the user click ok button
                 // then app will close
                 moveit();
                 userRequestRide();
-            }});
+            }
+        });
 
         // Set the Negative button with No name
         // OnClickListener method is use
@@ -420,8 +437,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 
             @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
+            public void onClick(DialogInterface dialog, int which) {
                 // If user click cancel
                 // then user goes to the previous window
                 Intent back = new Intent(ActivityRideRequest.this, ActivityRideHome.class);
@@ -498,7 +514,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         JSONObject parameters = new JSONObject(params);
         Log.d(TAG, "Values: auth=" + auth + " srclat=" + srcLat + " srclng=" + srcLng
                 + " dstlat=" + dstLat + " dstlng=" + dstLng + " vtype=" + vTypeInfo + " pmode="
-                + pModeInfo + " rtype=" + rideInfo + " npas=" + noRiderInfo + " srcname="+stringPick+ " dstname="+stringDrop);
+                + pModeInfo + " rtype=" + rideInfo + " npas=" + noRiderInfo + " srcname=" + stringPick + " dstname=" + stringDrop);
         Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-ride-request");
 
         UtilityApiRequestPost.doPOST(a, "user-ride-request", parameters, 2000, 0, response -> {

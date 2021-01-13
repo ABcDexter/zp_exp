@@ -1,4 +1,4 @@
-package com.example.driver;
+package com.zp_driver;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -28,9 +28,9 @@ import java.util.Map;
 
 public class ActivityRateClient extends ActivityDrawer implements View.OnClickListener {
 
-    ImageButton happy,sad;
+    ImageButton happy, sad;
     ScrollView scrollView;
-    Dialog myDialog,checkDialog;
+    Dialog myDialog, checkDialog;
 
     public static final String AUTH_KEY = "Auth";
     public static final String AUTH_COOKIE = "com.agent.cookie";
@@ -66,7 +66,7 @@ public class ActivityRateClient extends ActivityDrawer implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.satisfied:
                 ShowPopup();
                 break;
@@ -76,6 +76,7 @@ public class ActivityRateClient extends ActivityDrawer implements View.OnClickLi
 
         }
     }
+
     private void ShowPopup() {
         rateTrip("", "1");
         myDialog.setContentView(R.layout.popup_new_request);
@@ -130,29 +131,29 @@ public class ActivityRateClient extends ActivityDrawer implements View.OnClickLi
             @Override
             public void onClick(View v) {
                 ShowPopup1();
-                String str1="",str2="",str3="",str4="";
+                String str1 = "", str2 = "", str3 = "", str4 = "";
                 checkDialog.dismiss();
                 if (chk1.isChecked()) {
                     str1 = "Attitude of client";
-                }else if (!chk1.isChecked()){
-                    str1="";
+                } else if (!chk1.isChecked()) {
+                    str1 = "";
                 }
-                if (chk2.isChecked()){
+                if (chk2.isChecked()) {
                     str2 = "Client Punctuality";
-                }else if (!chk2.isChecked()){
-                    str2="";
+                } else if (!chk2.isChecked()) {
+                    str2 = "";
                 }
-                if (chk3.isChecked()){
+                if (chk3.isChecked()) {
                     str3 = "Client Cleanliness";
-                }else if (!chk3.isChecked()){
-                    str3="";
+                } else if (!chk3.isChecked()) {
+                    str3 = "";
                 }
-                if (chk4.isChecked()){
+                if (chk4.isChecked()) {
                     str4 = specify.getText().toString();
-                }else if (!chk4.isChecked()){
-                    str4="";
+                } else if (!chk4.isChecked()) {
+                    str4 = "";
                 }
-                rateTrip(str1+str2+str3+str4, "0");
+                rateTrip(str1 + str2 + str3 + str4, "0");
             }
         });
 
@@ -183,7 +184,7 @@ public class ActivityRateClient extends ActivityDrawer implements View.OnClickLi
         params.put("rev", rev);
         JSONObject parameters = new JSONObject(params);
         ActivityRateClient a = ActivityRateClient.this;
-        Log.d(TAG, "Values: auth=" + auth+ " rate="+i+" rev="+rev);
+        Log.d(TAG, "Values: auth=" + auth + " rate=" + i + " rev=" + rev);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-rate");
         UtilityApiRequestPost.doPOST(a, "auth-trip-rate", parameters, 20000, 0, response -> {
             try {

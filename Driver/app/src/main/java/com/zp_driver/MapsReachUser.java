@@ -1,4 +1,4 @@
-package com.example.driver;
+package com.zp_driver;
 
 import android.Manifest;
 import android.content.Context;
@@ -98,7 +98,7 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
         srcLng = Double.parseDouble(stringSrcLng);
         dstLat = Double.parseDouble(stringMySrcLat);
         dstLng = Double.parseDouble(stringMySrcLng);
-        Log.d(TAG, "srcLat"+ srcLat+" srcLng"+srcLng+" dstLat"+dstLat+" dstLng"+dstLng);
+        Log.d(TAG, "srcLat" + srcLat + " srcLng" + srcLng + " dstLat" + dstLat + " dstLng" + dstLng);
 //TODO rename it properly as current location and user's location
 
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
@@ -272,7 +272,7 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
         params.put("van", strVan);
         JSONObject parameters = new JSONObject(params);
 
-        Log.d(TAG, "auth= " + auth + " did= " + strTid+" van="+strVan);
+        Log.d(TAG, "auth= " + auth + " did= " + strTid + " van=" + strVan);
         Log.d(TAG, "UtilityApiRequestPost.doPOST a driver-ride-accept");
         UtilityApiRequestPost.doPOST(a, "driver-ride-accept", parameters, 30000, 0, response -> {
             try {
@@ -333,7 +333,7 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
                     Intent home = new Intent(MapsReachUser.this, ActivityHome.class);
                     startActivity(home);
 
-                } else if (active.equals("false")){
+                } else if (active.equals("false")) {
                     Log.d(TAG, "stay here, active = false");
                     /*Intent home = new Intent(MapsReachUser.this, ActivityHome.class);
                     startActivity(home);*/

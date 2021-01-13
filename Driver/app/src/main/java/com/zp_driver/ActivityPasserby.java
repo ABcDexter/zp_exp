@@ -1,14 +1,15 @@
-package com.example.driver;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.zp_driver;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class ActivityPasserby extends AppCompatActivity {
-Button startRide;
+    Button startRide;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,4 +1,4 @@
-package com.example.driver;
+package com.zp_driver;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -69,7 +68,7 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
         String stringSrcLng = pref.getString(SRCLNG, "");
         String stringDstLat = pref.getString(DSTLAT, "");
         String stringDstLng = pref.getString(DSTLNG, "");
-        Log.d(TAG,"moved to getStatus()");
+        Log.d(TAG, "moved to getStatus()");
         getStatus();
 
         srcLat = Double.parseDouble(stringSrcLat);
@@ -138,7 +137,7 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     }
 
     public void getStatus() {
-        Log.d(TAG,"in getStatus()");
+        Log.d(TAG, "in getStatus()");
         String auth = strAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);

@@ -1,12 +1,10 @@
-package com.example.driver;
+package com.zp_driver;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -157,7 +155,7 @@ public class MapUserLocation extends AppCompatActivity implements OnMapReadyCall
                         delvyPref.edit().putString(DSTLNG, dstLng1).apply();
 
                     }
-                    if (status.equals("FN") || status.equals("TR")){
+                    if (status.equals("FN") || status.equals("TR")) {
                         //go on to the next activity
                         Intent rideEnded = new Intent(MapUserLocation.this, ActivityRideCompleted.class);
                         startActivity(rideEnded);

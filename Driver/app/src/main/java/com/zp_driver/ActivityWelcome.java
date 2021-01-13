@@ -1,4 +1,4 @@
-package com.example.driver;
+package com.zp_driver;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -7,20 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.android.volley.VolleyError;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ActivityWelcome extends AppCompatActivity {
 
@@ -30,9 +19,9 @@ public class ActivityWelcome extends AppCompatActivity {
     public static final String AUTH_KEY = "Auth";
     public static final String AUTH_COOKIE = "com.agent.cookie";
     public static final String PICTURE_UPLOAD_STATUS = "com.driver.pictureUploadStatus";
-   // public static final String VERIFICATION_TOKEN = "Token";
+    // public static final String VERIFICATION_TOKEN = "Token";
 
-//When an Activity first call or launched then onCreate(Bundle savedInstanceState) method is responsible to create the activity.
+    //When an Activity first call or launched then onCreate(Bundle savedInstanceState) method is responsible to create the activity.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +33,7 @@ public class ActivityWelcome extends AppCompatActivity {
         cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, "");
         SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
-       // strToken = sharedPreferences.getString(VERIFICATION_TOKEN, "");
+        // strToken = sharedPreferences.getString(VERIFICATION_TOKEN, "");
         String auth = strAuth;
         //String token = strToken;
         //checking if the user is registered or not.
@@ -54,10 +43,10 @@ public class ActivityWelcome extends AppCompatActivity {
                 startActivity(registerUser);
                 finish();
             }else {*/
-                Intent registerUser = new Intent(ActivityWelcome.this, ActivityLogin.class);
-                startActivity(registerUser);
-                finish();
-           /* }*/
+            Intent registerUser = new Intent(ActivityWelcome.this, ActivityLogin.class);
+            startActivity(registerUser);
+            finish();
+            /* }*/
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override

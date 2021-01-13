@@ -1,14 +1,14 @@
-package com.example.driver;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.zp_driver;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 
@@ -53,6 +53,7 @@ public class ActivityRideHistory extends AppCompatActivity {
         getData();
 
     }
+
     private void getData() {
         Map<String, String> params = new HashMap();
 
@@ -67,6 +68,7 @@ public class ActivityRideHistory extends AppCompatActivity {
                 a::onSuccess, a::onFailure);
 
     }
+
     public void onSuccess(JSONObject response) {
         String responseS = response.toString();
         try {
@@ -75,7 +77,7 @@ public class ActivityRideHistory extends AppCompatActivity {
             for (int i = 0; i < array.length(); i++) {
                 JSONObject ob = array.getJSONObject(i);
                 RideListData ld = new RideListData(ob.getString("tid"), ob.getString("st"),
-                        ob.getString("sdate"),ob.getString("vtype"));
+                        ob.getString("sdate"), ob.getString("vtype"));
                 list_data.add(ld);
             }
             rv.setAdapter(adapter);

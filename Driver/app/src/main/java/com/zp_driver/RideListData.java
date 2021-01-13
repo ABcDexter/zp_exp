@@ -1,4 +1,4 @@
-package com.example.driver;
+package com.zp_driver;
 
 public class RideListData {
     private String rideID, rideStatus, rideDate, rideVtype;

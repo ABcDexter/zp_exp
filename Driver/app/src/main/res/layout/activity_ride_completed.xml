@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ActivityRideCompleted">
+        tools:context="com.zp_driver.ActivityRideCompleted">
 
         <LinearLayout
             android:layout_width="match_parent"

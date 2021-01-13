@@ -29,7 +29,6 @@ import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
-import com.client.UtilityPollingService;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -50,14 +49,11 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
 
     private static final String TAG = "ActivityRideHome";
     Button vehicle, riders;
-    String VehicleType, RiderNo;
     ImageButton next;
     ScrollView scrollView;
-    TextView reject_rq, accept_rq, dialog_txt;
+    TextView dialog_txt;
     AutocompleteSupportFragment srcAutocompleteFragment, dstAutocompleteFragment;
     EditText etPlace, etDst;
-    public static final String BUSS = "Buss";
-    public static final String BUSS_FLAG = "com.client.ride.BussFlag";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String SRC_LNG = "SrcLng";
     public static final String SRC_LAT = "SrcLat";
@@ -67,57 +63,36 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     public static final String DST_NAME = "DROP POINT";
     public static final String RENT_RIDE = "RentRide";
     public static final String PAYMENT_MODE = "PaymentMode";
-    public static final String OTP_PICK = "OTPPick";
     public static final String AUTH_KEY = "AuthKey";
     public static final String AN_KEY = "AadharKey";
-    SharedPreferences prefAuth, prefBuss;
-    String stringAuth, stringBuss, bussFlag, stringAN;
+    SharedPreferences prefAuth;
     Dialog myDialog, imageDialog, imageDialog2;
     private static ActivityRideHome instance;
     Vibrator vibrator;
     ActivityRideHome a = ActivityRideHome.this;
     Map<String, String> params = new HashMap();
 
-    String srcLat, srcLng, dstLat, dstLng;
+    String srcLat, srcLng, dstLat, dstLng, auth, VehicleType, RiderNo, stringAuth, stringAN, stringPick, stringDrop;
     String dstName = "";
     String srcName = "";
     RelativeLayout rl_pick, rl_drop, rl_v, rl_r;
-    String auth;
+
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
 
         //response on hitting user-is-driver-av API
         if (id == 2) {
-            prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
-            stringBuss = prefBuss.getString(BUSS, "");
             String count = response.getString("count");
-
             if (count.equals("0")) {
-                //next.setEnabled(false);//the user cannot go to the next activity if vehicle not available at the hub
-                if (stringBuss.equals("BussMeNot")) {
-                    Log.d(TAG, "user not interested in notifications");
-                    SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
-                    SharedPreferences.Editor editor1 = prefBuzz.edit();
-                    editor1.remove(BUSS_FLAG);
-                    editor1.apply();
-                } else if (stringBuss.equals("BussMe")) {
-                    Intent intent = new Intent(this, UtilityPollingService.class);
-                    intent.setAction("01");
-                    startService(intent);
-                } else
-                    ShowPopup(1);
+                ShowPopup();
+                next.setEnabled(false);
             } else {
-                //next.setEnabled(true);
-
+                next.setEnabled(true);
                 Intent rideIntent = new Intent(ActivityRideHome.this, ActivityRideRequest.class);
                 rideIntent.putExtra("npas", RiderNo);
                 rideIntent.putExtra("vtype", VehicleType);
                 startActivity(rideIntent);
-                //ShowPopup(2);
-                SharedPreferences pref = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.remove(BUSS);
-                editor.apply();
+
             }
         }
     }
@@ -151,13 +126,16 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         rl_r = findViewById(R.id.rl_r);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
+        SharedPreferences prefPLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+        stringPick = prefPLoc.getString(SRC_NAME, "");
+        stringDrop = prefPLoc.getString(DST_NAME, "");
+
         next.setOnClickListener(this);
         vehicle.setOnClickListener(this);
         riders.setOnClickListener(this);
         prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuth = prefAuth.getString(AUTH_KEY, "");
         stringAN = prefAuth.getString(AN_KEY, "");
-        prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
         auth = stringAuth;
         myDialog = new Dialog(this);
         imageDialog = new Dialog(this);
@@ -165,16 +143,23 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
 
         // Initialize Places.
         Places.initialize(getApplicationContext(), "AIzaSyD61UBJv3DR1fcTzHg3U7FgSYFz9vBX3fk");
-
         // Initialize the AutocompleteSupportFragment.
         srcAutocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment_pick);
 
         etPlace = (EditText) srcAutocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
         //etPlace.setHint("PICK UP POINT");
-        etPlace.setHint(getString(R.string.pick_point));
-        etPlace.setHintTextColor(Color.parseColor("#DFDDDD"));
-        etPlace.setTextColor(Color.parseColor("#DFDDDD"));
+        if (!stringPick.equals("")) {
+            Log.d(TAG, "stringPick="+stringPick);
+            etPlace.setText(stringPick);
+            srcName = stringPick;
+            etPlace.setTextColor(Color.parseColor("#FFFFFF"));
+            rl_pick.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+        } else {
+            etPlace.setHint(getString(R.string.pick_point));
+            etPlace.setHintTextColor(Color.parseColor("#DFDDDD"));
+            etPlace.setTextColor(Color.parseColor("#DFDDDD"));
+        }
         etPlace.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         etPlace.setPadding(0, 0, 150, 0);
 
@@ -183,17 +168,26 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
 
         etDst = (EditText) dstAutocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
         //etDst.setHint("DROP POINT");
-        etDst.setHint(getString(R.string.drop_point));
-        etDst.setHintTextColor(Color.parseColor("#DFDDDD"));
-        etDst.setTextColor(Color.parseColor("#DFDDDD"));
+        if (!stringDrop.equals("")) {
+            Log.d(TAG, "stringDrop="+stringDrop);
+            etDst.setText(stringDrop);
+            dstName = stringDrop;
+            etDst.setTextColor(Color.parseColor("#FFFFFF"));
+            rl_drop.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+        } else {
+            etDst.setHint(getString(R.string.drop_point));
+            etDst.setHintTextColor(Color.parseColor("#DFDDDD"));
+            etDst.setTextColor(Color.parseColor("#DFDDDD"));
+        }
         etDst.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         etDst.setPadding(0, 0, 150, 0);
+
 
         // Specify the types of place data to return.
         srcAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
         dstAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
-        srcAutocompleteFragment.setCountry("IN"); // restrict search to country "INDIA"
-        dstAutocompleteFragment.setCountry("IN");// restrict search to country "INDIA"
+        srcAutocompleteFragment.setCountry("IN"); // restrict place search to country "INDIA"
+        dstAutocompleteFragment.setCountry("IN");// restrict place search to country "INDIA"
         // Set up a PlaceSelectionListener to handle the response.
         srcAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -259,32 +253,19 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         });
     }
 
-    private void ShowPopup(int id) {
+    private void ShowPopup() {
 
         myDialog.setContentView(R.layout.popup_new_request);
-        reject_rq = myDialog.findViewById(R.id.reject_request);
-        accept_rq = myDialog.findViewById(R.id.accept_request);
         dialog_txt = myDialog.findViewById(R.id.info_text);
         LinearLayout ln = myDialog.findViewById(R.id.layout_btn);
-        if (id == 1) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-            } else {
-                vibrator.vibrate(1000);
-            }
-            ln.setVisibility(View.VISIBLE);
-            dialog_txt.setText(R.string.no_driver_av);
-            reject_rq.setOnClickListener(this);
-            accept_rq.setOnClickListener(this);
-            myDialog.setCanceledOnTouchOutside(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            vibrator.vibrate(1000);
         }
-        if (id == 2) {
-            ln.setVisibility(View.GONE);
-            next.setEnabled(true);
-            //TODO send push notification
-            dialog_txt.setText(R.string.drivers_available);
-            myDialog.setCanceledOnTouchOutside(true);
-        }
+        ln.setVisibility(View.GONE);
+        dialog_txt.setText(R.string.no_driver_av);
+        myDialog.setCanceledOnTouchOutside(true);
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
     }
@@ -393,16 +374,6 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 storeData();
                 isDriverAv();
             }
-        } else if (id == R.id.reject_request) {
-            bussFlag = "BussMeNot";
-            prefBuss.edit().putString(BUSS, bussFlag).apply();
-            Log.d(TAG, "User not interested in a buss");
-            myDialog.dismiss();
-        } else if (id == R.id.accept_request) {
-            bussFlag = "BussMe";
-            prefBuss.edit().putString(BUSS, bussFlag).apply();
-            isDriverAv();
-            myDialog.dismiss();
         } else if (id == R.id.vehicle_type) {
             ImagePopup();
         } else if (id == R.id.no_riders) {
@@ -447,6 +418,4 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         editor.putString(PAYMENT_MODE, "1");
         editor.apply();
     }
-
-
 }
