@@ -103,6 +103,5 @@ while [ $user_iter -le $user_count ]
     ((user_iter++))
   done
 echo "RAN $user_count users."
-
 echo "#################### DONE #####################" | tee -a "$log_file"
 echo " To kill all run \"pkill -f python3\"... Sayonara"

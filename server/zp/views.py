@@ -96,7 +96,7 @@ def registerUserNoAadhaar(_, dct: Dict):
         user.save()
         log('New user registered: %s' % user.name)
     else:
-        # mobile exists, check what has been changed
+        # "91+mobile" exists, check what has been changed
         user = qsUser[0]
         if user.pn != sPhone:
             sAuth = getClientAuth(str(qsUser[0].sAn), str(qsUser[0].pn))
@@ -315,12 +315,8 @@ def isDriverVerified(_, dct):
 # User views
 ##############################################################################
 
-# TODO: We need a way for drivers and users to select a vehicle type
-# Currently we are not saving a requested vtype in Trip DB, only ZBEE
-
 @makeView()
 @csrf_exempt
-#@handleException()
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @transaction.atomic
@@ -352,12 +348,12 @@ def userTripGetStatus(_dct, user):
         # For assigned trip send OTP, and 'an' of vehicle and driver
         if trip.st == 'AS':
 
-            #print(ret['vno'])
+            # print(ret['vno'])
             locDriver = Location.objects.filter(an=trip.dan)[0]
             locUser = Location.objects.filter(an=trip.uan)[0]
-            #print(locDriver,locDriver.lat,locDriver.lng, locUser, locUser.lat, locUser.lng)
+            # print(locDriver,locDriver.lat,locDriver.lng, locUser, locUser.lat, locUser.lng)
 
-            srcCoOrds = ['%s,%s' % (locDriver.lat, locDriver.lng)] #Driver ka location
+            srcCoOrds = ['%s,%s' % (locDriver.lat, locDriver.lng)]  # Driver's location
             dstCoOrds = ['%s,%s' % (locUser.lat, locUser.lng)]
             # print('################',dstCoOrds)
 
@@ -365,15 +361,15 @@ def userTripGetStatus(_dct, user):
             gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
             nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
-            if trip.rtype == '1': #RENTAL
+            if trip.rtype == '1':  # RENTAL
                 ret['price'] = getRentPrice(trip.hrs)['price']
                 currTime = datetime.now(timezone.utc)
-                #print(currTime, trip.atime)
+                # print(currTime, trip.atime)
                 diffTime = (currTime - trip.atime).total_seconds() // 60  # minutes
-                #print(currTime - trip.atime, (currTime - trip.atime).total_seconds())
+                #  print(currTime - trip.atime, (currTime - trip.atime).total_seconds())
                 ret['time'] = 30-diffTime
 
-            else:
+            else:  # RIDE
                 ret['time'] = nTime
                 ret['otp'] = getOTP(trip.uan, trip.dan, trip.atime)
                 # print(trip.van)
@@ -383,8 +379,8 @@ def userTripGetStatus(_dct, user):
         # For started trips send trip progress percent
         # this is redundant, this functionality is provided by authProgressPercent()
         if trip.st == 'ST':
-            #progress = Progress.objects.filter(tid=trip.id)[0]
-            #ret['pct'] = progress.pct
+            # progress = Progress.objects.filter(tid=trip.id)[0]
+            # ret['pct'] = progress.pct
             if trip.rtype == '1':
                 vehicle = Vehicle.objects.filter(an=trip.van)[0]
                 currTime = datetime.now(timezone.utc)
@@ -393,9 +389,8 @@ def userTripGetStatus(_dct, user):
                 ret['time'] = int(remTimeMins)
                 ret['vno'] = vehicle.regn  # moves to ST state
 
-
         # For ended trips that need payment send the price data
-        if trip.st in Trip.PAYABLE:
+        if trip.st in Trip.PAYABLE:  # FN, TR states
             if trip.rtype == '0':
                 if trip.st == 'TR':
                     rate = Rate.objects.filter(id='ride'+str(trip.id))[0]
@@ -403,15 +398,17 @@ def userTripGetStatus(_dct, user):
                 else :
                     price = getTripPrice(trip)['price']
 
-            else : #rental
+            else:  # rental
                 remPrice = int(float(getTripPrice(trip)['price'])-float(getRentPrice(trip.hrs)['price']))
-                price = str(remPrice) + '.00' if remPrice >=0 else '0.00'
+                price = str(remPrice) + '.00' if remPrice >= 0 else '0.00'
 
             ret['price'] = price
         
         if trip.st not in ['RQ', 'TO']:
+            # send photo of the current driver or supervisor
             dAuth = Driver.objects.filter(an=trip.dan)[0].auth if trip.rtype == '0' else Supervisor.objects.filter(an=trip.dan)[0].auth
             ret['photourl'] = "https://api.villageapps.in:8090/media/dp_" + dAuth + "_.jpg"
+
     # else the trip is not active
     else:
         ret = {'active': False, 'st': 'NONE', 'tid': -1}
@@ -460,7 +457,7 @@ def userTripRequest(dct, user, _trip):
     trip.dstid = placeDst.id
     if dct['rtype'] == '0': # Ride
         trip.npas = dct['npas']
-    else: # Rent
+    else:  # Rent
         trip.npas = 2
         iHrs = int(dct['hrs'])
         trip.hrs = iHrs
@@ -678,7 +675,7 @@ def authTripRetire(dct, entity, trip):
 
         receiver = str(entity.email)
         body = "Hi, \n Your Trip costed Rs " + str(getTripPrice(trip)['price'])+"\n Thanks for riding with Zippe!\n -VillageConnect"
-        #attachment = "some.pdf"
+        # attachment = "some.pdf"
         yag = yagmail.SMTP("villaget3ch@gmail.com", eP_S_W_D)
         yag.send( to = receiver, subject = "Zippe bill email ", contents = body)
 
@@ -882,7 +879,8 @@ def adminRefresh(dct):
                 trip.st = 'TO'
 
         # For assigned trips if settings.TRIP_AS_TIMEOUT seconds passed since trip.atime set to TO (user times out)
-        # this can be differentiated from above by simply looking at atime field, if not NULL, then Trip Timed Out after going into AS
+        # this can be differentiated from above by simply looking at atime field,
+        # if not NULL, then Trip Timed Out after going into AS
         else:
             tmDelta = datetime.now(timezone.utc) - trip.atime
             if trip.rtype == '0' and tmDelta.total_seconds() > settings.RIDE_AS_TIMEOUT:

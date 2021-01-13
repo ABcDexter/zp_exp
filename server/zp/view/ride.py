@@ -197,12 +197,11 @@ def driverRideCheck(_dct, driver):
 
     # Get the first requested trip from drivers place id
     qsTrip = Trip.objects.filter(st='RQ').order_by('-rtime') #10 km radius
-    #TODO give closest ride first, but how?
+    #TODO give closest ride first
     ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'srclat': qsTrip[0].srclat, 'srclng': qsTrip[0].srclng }
     return HttpJSONResponse(ret)
 
 
-# Do we allow drivers this choice or jsut assign them automatically as I am doing with tripveries.
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
@@ -217,6 +216,7 @@ def driverRideAccept(dct, driver):
         van : an of the Vehicle chosen by driver
     '''
     # Ensure that this driver is not in another active trip (for safety)
+    # TODO optimize this later on for better acceptance rate.
     qsActiveTrip = Trip.objects.filter(dan=driver.an, st__in=Trip.DRIVER_ACTIVE)
     if len(qsActiveTrip):
         raise ZPException(400, 'Driver already in trip')
@@ -226,7 +226,7 @@ def driverRideAccept(dct, driver):
     trip = Trip.objects.filter(id=dct['tid'])[0]
     if trip.st == 'RQ':
         # Ensure that the chosen vehicle is here and not assigned to a trip
-        vehicle = Vehicle.objects.filter(an=driver.van)[0] #, pid=trip.srcid)[0] #think think
+        vehicle = Vehicle.objects.filter(an=driver.van)[0]
         if vehicle.tid != -1:
             raise ZPException(400, 'Vehicle already in trip')
 

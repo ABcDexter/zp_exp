@@ -31,7 +31,8 @@ PROFILE_PHOTO_DIR = '/srv/data/static/dp'
 AADHAAR_DIR = '/srv/data/aadhaar/'
 DL_DIR = '/srv/data/dl/'
 GOOGLE_APPLICATION_CREDENTIALS="/srv/zp/server/google-cloud/MyFirstProject.json"
-GOOGLE_MAPS_KEY = "AIzaSyBMFQPIDHSPfdiQqjX2ieF4l-qQB2tB61c"
+GOOGLE_MAPS_KEY  = "AIzaSyAqYVbSSDF6hC2e8iK390tGxZ8pkJ8aFsQ"  # zippe india i
+# GOOGLE_MAPS_KEY = "AIzaSyBMFQPIDHSPfdiQqjX2ieF4l-qQB2tB61c"  # anubhav.balodhi@gmail.com
 GOOGLE_PLACES_KEY = "AIzaSyATYNx4G8xXuwss9a_W4owqGgFTeRLiZX8"
 DB_FILE_PATH  = '/srv/data/db'
 ADMIN_AUTH    = '437468756c68752066687461676e'
@@ -39,10 +40,10 @@ GM_PSWD = 'ivyyntr+pbaarpg@2103'
 
 M_PER_DEG_LNG = 97220.765  # These values are specific to fleet location
 M_PER_DEG_LAT = 110839.613
-DSQUARE_THRESH = 2500 # 50*50
+DSQUARE_THRESH = 2500  # 50*50
 
-RIDE_RQ_TIMEOUT = 180 # 3 mins
-RIDE_AS_TIMEOUT = 600 # 10 minutes
+RIDE_RQ_TIMEOUT = 180  # 3 mins
+RIDE_AS_TIMEOUT = 600  # 10 minutes
 LOG_DIR = '/srv/data/logs/'
 #DRIVER_OF_TIMEOUT = 240
 

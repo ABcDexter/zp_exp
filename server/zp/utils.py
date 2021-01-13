@@ -174,7 +174,8 @@ def doOCR(path):
     if fMatch > 0.85:
         print('Confidence %d%%' % (fMatch * 100))
         # arrWords.pop(0)
-        # this is bugg-E, pops the last element, what if 12 digit aadhaar is the last string OCRed, GovtOfIndia should be popped
+        # this is bugg-E, pops the last element, what if 12 digit aadhaar is the last string OCRed,
+        # GovtOfIndia should be popped
         # print("WORDS : ", arrWords)
         getREMatch(ret, 'an', r'\d{12}', arrWords)
         getREMatch(ret, 'name', r'[A-Z][a-z]*\s+[A-Z][a-z]+', arrWords, False, False)
@@ -662,8 +663,8 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
         price *= 0.9
 
     return {
-        'price': str(round(float('%.2f' % price),0))+'0', #make this round off to nearest decimal
-        'time' : float('%.0f' % ((fDist/fAvgSpeed)/60)), #converted seconds to minutes
+        'price': str(round(float('%.2f' % price),0))+'0',  # make this round off to nearest decimal
+        'time' : float('%.0f' % ((fDist/fAvgSpeed)/60)),  # converted seconds to minutes
         'dist': float('%.0f' % (fDist / 1000)),
         'speed': float('%.0f' % (fAvgSpeed * 3.6 ))
     }
@@ -1215,7 +1216,7 @@ def getRiPrice(trip):
     vehicle = Vehicle.objects.filter(an=trip.van)
     vType = vehicle[0].vtype if len(vehicle)>0 else 1
     #print(vType)
-    return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)  # , (trip.etime - trip.stime).seconds)
+    return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)
 
 ###############
 # GOOGLE
@@ -1440,19 +1441,17 @@ def sendDeliveryInvoiceMail(deliveryType, userEmail, userName, deliveryId, deliv
     msg = body + html + parsed
     print(html)
 
-    #set the correct MIMETexts
+    # set the correct MIMETexts
     part1 = MIMEText(body, "plain")
-    #part2 = MIMEText(html, "html")
+    # part2 = MIMEText(html, "html")
     part3 = MIMEText(msg, "html")
 
-    #attach the parts to actual message
+    # attach the parts to actual message
     message.attach(part1)
-    #message.attach(part2)
+    # message.attach(part2)
     message.attach(part3)
     # Send the mail
     print(message.as_string())
     server = smtplib.SMTP(SENDER_SERVER)
     server.sendmail(FROM, TO, message.as_string())
     server.quit()
-    
-    

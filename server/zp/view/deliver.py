@@ -64,6 +64,7 @@ def authDeliveryGetInfo(dct, entity):
     # get the deli and append pricing info if complete
     ret = {'st': deli.st}
     hs = User.objects.filter(an=deli.uan)[0].hs
+
     if deli.st in ['SC']:
         ret.update(getDelPrice(deli, hs))
     elif deli.st in ['PD', 'FN']:
@@ -222,8 +223,7 @@ def userDeliveryEstimate(dct, user):
 @extractParams
 @transaction.atomic
 @checkAuth()
-#@checkDeliveryStatus(['INACTIVE'])
-def userDeliveryRequest(dct, user): #, _delivery):
+def userDeliveryRequest(dct, user):
     '''
     Returns the did for the requested
 
@@ -330,7 +330,6 @@ def authDeliveryPay(dct, entity, delivery):
     if type(entity) is Agent:
         
         print(delivery.scid, delivery.id)
-        #delivery = Delivery.objects.filter(scid=dct['scid'])[0]
         rate = Rate()
         rate.id = 'deli' + str(delivery.id)
         rate.type = 'deli' 
@@ -346,7 +345,6 @@ def authDeliveryPay(dct, entity, delivery):
         pass
         #user.did = ''  # retire the user, #DONE move this logic to userDeliveryRetire() and comment this out
         #user.save()
-    
 
     return HttpJSONResponse({})
 
@@ -581,10 +579,9 @@ def adminAgentReached(dct):
         this uses Google distance, so might not be accurate
     '''
     # Get the deliveries and look for RQ ones
-    qsDeli = Delivery.objects.filter(st__in=['AS']) #[0]
+    qsDeli = Delivery.objects.filter(st__in=['AS'])
     delId = 0
     auth = ''
-    #qsAgent = Agent.objects.filter(mode='AV', did='-1')
 
     for deli in qsDeli: # do one delivery at a time
         
@@ -622,7 +619,7 @@ def adminAgentReached(dct):
             delId = deli.id
             choosenAgent = Agent.objects.filter(an=iterAn)[0]
             auth = choosenAgent.auth
-            #deli.save()  
+            #deli.save()
             
     return HttpJSONResponse({'babua': auth, 'did': delId})
 
@@ -858,9 +855,6 @@ def agentDeliveryGetStatus(_dct, agent):
         # For assigned deli return srcadd, dstadd
         if deli.st in ['AS', 'RC']:
             #print('here....', deli.srcadd)
-            #ret.update({'srcadd': deli.srcadd, 'dstadd': deli.dstadd})
-        #ielif deli.st == 'PD':
-            #ret = {'uan': deli.uan, 'van': deli.van}
             ret.update({'srcper': deli.srcper,
                     'srcadd': deli.srcadd,
                     'srcland': deli.srcland,

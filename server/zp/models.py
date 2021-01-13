@@ -279,10 +279,10 @@ class Trip(models.Model):
     srcname = models.CharField(max_length=314, null=False, default='', db_index=True)
     dstname = models.CharField(max_length=314, null=False, default='', db_index=True)
 
-    rvtype = models.IntegerField(null=True, default=3) #default is ZBEE
+    rvtype = models.IntegerField(null=True, default=3)  # default is ZBEE
     npas  = models.IntegerField(db_index=True, default=0)
-    rtype = models.CharField(db_index=True, choices=TYPES,  max_length=10, default=2) #default 2, dummy value
-    pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1) #default UPI
+    rtype = models.CharField(db_index=True, choices=TYPES,  max_length=10, default=2)  # default 2, dummy value
+    pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)  # default UPI
     hrs = models.IntegerField(db_index=True, default=0)
 
     class Meta:

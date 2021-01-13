@@ -1,0 +1,89 @@
+Enter the Matrix!
+#################### DOING ####################
+#################### DONE #####################
+[01/13/21 11:16:24] [PID: -1] [TID: -1] [TS: None] [ST: AV]  Driver an: 1000
+[01/13/21 11:16:24] [PID: -1] [TID: -1] [TS: None] [ST: AV]  Driver located at pid 3: DAATH BHIMTAL
+[01/13/21 11:16:25] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Vehicles found at hub: 55
+OOOO gadddi :  {'an': 2064, 'tid': -1, 'dan': -1, 'regn': 'reg64', 'dist': 0, 'hrs': 0.0, 'pid': 2, 'vtype': 0, 'mark': 0.0}
+[01/13/21 11:16:46] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:16:46] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:16:52] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:16:52] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:16:58] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:16:58] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:17:03] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:17:04] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:17:09] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:17:09] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:17:15] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:17:15] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:17:21] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:17:21] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:17:27] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:17:27] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:17:33] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:17:33] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:17:39] [PID: 3] [TID: -1] [TS: None] [ST: OF]  Switching to state OF - succeeded
+[01/13/21 11:17:44] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Switching to state AV - succeeded
+[01/13/21 11:17:44] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:17:45] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:17:50] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:17:50] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:17:56] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:17:56] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:18:02] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:18:02] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:18:08] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:18:08] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:18:13] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:18:13] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:18:19] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:18:19] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:18:25] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:18:25] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+[01/13/21 11:18:31] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Trip available - accepting...
+Ae hi gaddi chaahidi :  2064
+[01/13/21 11:18:32] [PID: 3] [TID: -1] [TS: None] [ST: AV]  Error: Driver already in trip
+{}
+[01/13/21 11:16:39] [PID: 1] [TID: -1] [TS: ] User located at pid 1: THE LAKE VILLAGE
+[01/13/21 11:16:40] [PID: 1] [TID: -1] [TS: ] Vehicles found at hub: 54
+srcLAT :  29.562603593289072  LNG :  79.42251909161142
+[01/13/21 11:16:44] [PID: 1] [TID: -1] [TS: ] Requesting trip to 6: BYPASS ROAD
+dstLAT :  29.359265  dstLNG :  79.55001
+[01/13/21 11:16:44] [PID: 1] [TID: -1] [TS: ] Trip estimate: {"price": "295.00", "time": 118, "dist": 62.24, "speed": 31.65, "tid": 281}, 
+[01/13/21 11:16:48] [PID: 1] [TID: 281] [TS: RQ] Waiting for driver
+[01/13/21 11:19:48] [PID: 1] [TID: 281] [TS: RQ] Trip timed out
+[01/13/21 11:19:48] [PID: 1] [TID: 281] [TS: RQ] retiring TO trip for user
+[01/13/21 11:19:48] [PID: 1] [TID: 281] [TS: RQ] Retired trip
+[01/13/21 11:19:52] [PID: 1] [TID: -1] [TS: RQ] Vehicles found at hub: 54
+srcLAT :  29.013260520789267  LNG :  79.74828999732934
+[01/13/21 11:19:56] [PID: 1] [TID: -1] [TS: RQ] Requesting trip to 7: MEHRA GAON
+dstLAT :  29.220449  dstLNG :  79.47853
+[01/13/21 11:19:58] [PID: 1] [TID: -1] [TS: RQ] Trip estimate: {"price": "228.00", "time": 91, "dist": 49.12, "speed": 32.38, "tid": 282}, 
+[01/13/21 11:20:02] [PID: 1] [TID: 282] [TS: RQ] Waiting for driver
+[01/13/21 11:23:06] [PID: 1] [TID: 282] [TS: RQ] Trip timed out
+[01/13/21 11:23:06] [PID: 1] [TID: 282] [TS: RQ] retiring TO trip for user
+[01/13/21 11:23:06] [PID: 1] [TID: 282] [TS: RQ] Retired trip
+[01/13/21 11:23:11] [PID: 1] [TID: -1] [TS: RQ] Vehicles found at hub: 54
+srcLAT :  29.40751172228673  LNG :  79.27779890630195
+[01/13/21 11:23:15] [PID: 1] [TID: -1] [TS: RQ] Requesting trip to 2: HANUMAN TEMPLE
+dstLAT :  29.239276  dstLNG :  79.58613
+[01/13/21 11:23:15] [PID: 1] [TID: -1] [TS: RQ] Trip estimate: {"price": "235.00", "time": 94, "dist": 50.66, "speed": 32.33, "tid": 283}, 
+[01/13/21 11:23:19] [PID: 1] [TID: 283] [TS: RQ] Waiting for driver
