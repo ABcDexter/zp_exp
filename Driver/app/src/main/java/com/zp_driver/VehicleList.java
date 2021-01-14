@@ -1,4 +1,4 @@
-package com.example.driver;
+package com.zp_driver;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -93,6 +93,7 @@ public class VehicleList extends AppCompatActivity {
     public static VehicleList getInstance() {
         return instance;
     }
+
     //method to initiate and populate dialog box
     private void ShowPopup() {
         myDialog.setContentView(R.layout.popup_text);
@@ -119,12 +120,13 @@ public class VehicleList extends AppCompatActivity {
         }, a::onFailure);// call this method if api was hit unsuccessfully
 
     }
+
     protected void vehicleSet(String van) {
 
         params.put("auth", auth);
         params.put("van", van);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth+" van="+van);
+        Log.d(TAG, "Values: auth=" + auth + " van=" + van);
         Log.d("CONTROL", "Control moved to to UtilityApiRequestPost driver-vehicle-set");
         UtilityApiRequestPost.doPOST(a, "driver-vehicle-set", parameters, 30000, 0, response -> {
             try {
@@ -163,7 +165,7 @@ public class VehicleList extends AppCompatActivity {
             }
         }
         //response on hitting driver-vehicle-set API
-        if (id==2){
+        if (id == 2) {
 
             Intent home = new Intent(VehicleList.this, ActivityHome.class);
             startActivity(home);

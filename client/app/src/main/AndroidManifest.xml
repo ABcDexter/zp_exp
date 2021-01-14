@@ -107,6 +107,10 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="fcm_default_channel" />
 
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/zippe_logo" />
+
         <activity android:name=".UserProfileActivity" />
         <activity
             android:name=".ActivityWelcome">
@@ -132,11 +136,7 @@
             android:required="false" />
 
         <service android:name=".UtilityPollingService" />
-        <service android:name=".Services.MyFirebaseInstanceService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
+        
         <service android:name=".Services.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

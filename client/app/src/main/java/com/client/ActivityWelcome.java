@@ -26,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
@@ -45,7 +44,10 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,12 +59,9 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
 
     private static final String TAG = "ActivityWelcome";
     ImageView zippe_iv, zippe_iv_below, scooty_up, scooty_down;
-    public static final String BUSS_FLAG = "com.client.ride.BussFlag";
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String LOCATION_PICK = "PickLocation";
     public static final String LOCATION_DROP = "DropLocation";
-    public static final String OTP_PICK = "OTPPick";
-    public static final String VAN_PICK = "VanPick";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
     public static final String SRC_NAME = "PICK UP POINT";
@@ -96,34 +95,29 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
     private LinearLayout llRide, llRent, llDelivery, llShop, llServices, llInfo;
     SharedPreferences sharedPreferences1;
     SharedPreferences.Editor sharedEditor1;
+    public static boolean isAppRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // the method is responsible for populating the activity.
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_welcome);
         FrameLayout frameLayout = findViewById(R.id.activity_frame);
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         assert layoutInflater != null;
         View activityView = layoutInflater.inflate(R.layout.activity_welcome, null, false);
         frameLayout.addView(activityView);
         instance = this;
-
+        //retrieve value of auth stored locally
         prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuth = prefAuth.getString(AUTH_KEY, "");
         stringAN = prefAuth.getString(AN_KEY, "");
-
+        //initializing all variables
         btnRent = findViewById(R.id.btn_rent);
-        btnRent.setOnClickListener(this);
         btnRide = findViewById(R.id.btn_ride);
-        btnRide.setOnClickListener(this);
         btnDeliver = findViewById(R.id.btn_deliver);
         btnShop = findViewById(R.id.btn_shop);
         btnConnect = findViewById(R.id.btn_connect);
-        btnDeliver.setOnClickListener(this);
-        btnShop.setOnClickListener(this);
-        btnConnect.setOnClickListener(this);
         textHelp = findViewById(R.id.textHelp);
-        textHelp.setOnClickListener(this);
         rlOverlay = findViewById(R.id.rlOverlay);
         rlTopLayout = findViewById(R.id.rlTopLayout);
         llRide = findViewById(R.id.llRide);
@@ -137,6 +131,12 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         infoDelivery = findViewById(R.id.infoDeliveyBtn);
         infoShop = findViewById(R.id.infoShopBtn);
         infoService = findViewById(R.id.infoServiceBtn);
+        btnRent.setOnClickListener(this);
+        btnRide.setOnClickListener(this);
+        btnDeliver.setOnClickListener(this);
+        btnShop.setOnClickListener(this);
+        btnConnect.setOnClickListener(this);
+        textHelp.setOnClickListener(this);
         infoRide.setOnClickListener(this);
         infoRent.setOnClickListener(this);
         infoDelivery.setOnClickListener(this);
@@ -179,7 +179,14 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         zippe_iv.startAnimation(animMoveL2R);
         scooty_down.startAnimation(animMoveR2L);
 
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(ActivityWelcome.this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String newToken = instanceIdResult.getToken();
+                Log.e("newToken", newToken);
 
+            }
+        });
     }
 
     public boolean isItFirstTime() {
@@ -252,6 +259,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         }
         if (id == 4) {
             dialog_txt.setText(R.string.ride_timed_out);
+
         }
         if (id == 5) {
             dialog_txt.setText(R.string.unable_to_complete_your_ride);
@@ -411,12 +419,12 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                         if (status.equals("AS")) {
                             String otp = response.getString("otp");
                             String van = response.getString("vno");
-                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+                            /*SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
                             sp_otp.edit().putString(OTP_PICK, otp).apply();
-                            sp_otp.edit().putString(VAN_PICK, van).apply();
+                            sp_otp.edit().putString(VAN_PICK, van).apply();*/
                             Intent as = new Intent(ActivityWelcome.this, ActivityRideOTP.class);
-                            as.putExtra("OTP", otp);
-                            as.putExtra("VAN", van);
+                            /*as.putExtra("OTP", otp);
+                            as.putExtra("VAN", van);*/
                             startActivity(as);
                         }
                         if (status.equals("ST")) {
@@ -486,26 +494,25 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                     SharedPreferences.Editor editor = pref.edit();
                     editor.remove(PREFS_LOCATIONS);
                     editor.apply();
-
-                    SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
-                    SharedPreferences.Editor editor1 = prefBuzz.edit();
-                    editor1.remove(BUSS_FLAG);
-                    editor1.apply();
                 }
 
                 if (st.equals("DN")) {
                     ShowPopup(3);
+                    retireTrip();
                 }
                 if (st.equals("TO")) {
                     ShowPopup(4);
+
                 }
                 if (st.equals("FL")) {
                     ShowPopup(5);
+                    retireTrip();
                 }
                 if (st.equals("CN")) {
                     ShowPopup(6);
+                    retireTrip();
                 }
-                retireTrip();
+                //retireTrip();
             }
             if (rtype.equals("1")) {
                 if (st.equals("PD")) {
@@ -519,10 +526,6 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                     editor.remove(LOCATION_PICK_ID);
                     editor.apply();
 
-                    SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
-                    SharedPreferences.Editor editor1 = prefBuzz.edit();
-                    editor1.remove(BUSS_FLAG);
-                    editor1.apply();
                     retireTrip();
                 }
                 if (st.equals("FN")) {
@@ -531,7 +534,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                 if (st.equals("CN")) {
                     retireTrip();
                 }
-                retireTrip();
+                //retireTrip();
 
             }
             //retireTrip();
@@ -549,10 +552,10 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
 
             SharedPreferences prefLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editorLoc = prefLoc.edit();
-            editorLoc.remove(VAN_PICK);
+            //editorLoc.remove(VAN_PICK);
             editorLoc.remove(DST_NAME);
             editorLoc.remove(SRC_NAME);
-            editorLoc.remove(OTP_PICK);
+            //editorLoc.remove(OTP_PICK);
             editorLoc.apply();
 
             sendLocation();
@@ -736,4 +739,9 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         }
         return ranBefore;
     }*/
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isAppRunning = false;
+    }
 }

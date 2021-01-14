@@ -1,4 +1,4 @@
-package com.example.driver;
+package com.zp_driver;
 
 import android.content.Context;
 import android.content.Intent;
@@ -62,7 +62,7 @@ public class RideListAdapter extends RecyclerView.Adapter<RideListAdapter.ViewHo
             public void onClick(View v) {
                 String valueTid = listData.getRideID();
                 Intent details = new Intent(context, ActivityRideSummery.class);
-                details.putExtra("TID",valueTid);
+                details.putExtra("TID", valueTid);
                 context.startActivity(details);
             }
         });

@@ -342,6 +342,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         checkStatus();
 
     }
+
     public void sendLocation() {
         Log.d(TAG, "inside sendLocation()");
         params.put("an", stringAN);
@@ -361,6 +362,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         }, a::onFailure);
 
     }
+
     private void dlAlert() {
         // Create the object of
         // AlertDialog Builder class
@@ -525,11 +527,6 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             drop.putExtra("Request", "destination_rental");
             Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
             startActivity(drop);
-                /*case R.id.txt1:
-                NoHours = "1";
-                imageDialog2.dismiss();
-                hours.setText("1 hr (60 mins) @ ₹ 1.00 / min");
-                break;*/
         } else if (id == R.id.txt2) {
             NoHours = "2";
             imageDialog2.dismiss();

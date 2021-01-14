@@ -27,12 +27,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,6 +64,7 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
     public static final String PHN_KEY = "PhnKey";
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     public static final String AN_KEY = "AadharKey";
+    String newToken;
 
     public void onSuccess(JSONObject response) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
@@ -112,6 +116,15 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
         tnc = findViewById(R.id.tnc);
         text_tnc = findViewById(R.id.txt_tnc);
         text_tnc.setOnClickListener(this);
+
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(ActivityRegistration.this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                newToken = instanceIdResult.getToken();
+                Log.e("newToken", newToken);
+
+            }
+        });
     }
 
     @Override
@@ -217,10 +230,11 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
                 params.put("name", strUserName);
                 params.put("home", strUserState);
                 params.put("gender", strUserGender);
+                params.put("fcm", newToken);
                 JSONObject parameters = new JSONObject(params);
                 ActivityRegistration a = ActivityRegistration.this;
                 Log.d(TAG, "Values: name=" + strUserName + " mobile=" + strUserMobile +
-                        " home state=" + strUserState + " gender=" + strUserGender);
+                        " home state=" + strUserState + " gender=" + strUserGender + " fcm token=" + newToken);
                 Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME register-user-no-aadhaar");
                 UtilityApiRequestPost.doPOST(a, "register-user-no-aadhaar", parameters, 30000, 0, response -> {
                     try {

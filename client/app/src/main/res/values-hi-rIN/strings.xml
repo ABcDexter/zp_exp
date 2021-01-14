@@ -61,18 +61,18 @@
     </string-array>
 
     <string name="qwerty">यह एक अनुमानित शुल्क है।  राइड के समय के अनुसार बदल सकती है। </string>
-    <string name="_1_hr">1 घंटा (60 मिनट) @ ₹ 1.00/मिनट = ₹ 60</string>
-    <string name="_2_hr">2 घंटे (120 मिनट) @ ₹ 0.90/मिनट = ₹ 108</string>
-    <string name="_3_hr">3 घंटे (180 मिनट) @ ₹ 0.80/मिनट = ₹ 144</string>
-    <string name="_4_hr">4 घंटे (240 मिनट) @ ₹ 0.75/मिनट = ₹ 180</string>
-    <string name="_5_hr">5 घंटे (300 मिनट) @ ₹ 0.70/मिनट = ₹ 210</string>
-    <string name="_6_hr">6 घंटे (360 मिनट) @ ₹ 0.65/मिनट = ₹ 234</string>
-    <string name="_7_hr">7 घंटे (420 मिनट) @ ₹ 0.60/मिनट = ₹ 252</string>
-    <string name="_8_hr">8 घंटे (480 मिनट) @ ₹ 0.55/मिनट = ₹ 264</string>
-    <string name="_9_hr">9 घंटे (540 मिनट) @ ₹ 0.50/मिनट = ₹ 270</string>
-    <string name="_10_hr">10 घंटे (600 मिनट) @ ₹ 0.50/मिनट = ₹ 300</string>
-    <string name="_11_hr">11 घंटे (660 मिनट) @ ₹ 0.50/मिनट = ₹ 330</string>
-    <string name="_12_hr">12 घंटे (960 मिनट) @ ₹ 0.50/मिनट = ₹ 360</string>
+    <string name="_1_hr">1 घंटा @ ₹ 1.00/मिनट = ₹ 60</string>
+    <string name="_2_hr">2 घंटे @ ₹ 0.90/मिनट = ₹ 108</string>
+    <string name="_3_hr">3 घंटे @ ₹ 0.80/मिनट = ₹ 144</string>
+    <string name="_4_hr">4 घंटे @ ₹ 0.75/मिनट = ₹ 180</string>
+    <string name="_5_hr">5 घंटे @ ₹ 0.70/मिनट = ₹ 210</string>
+    <string name="_6_hr">6 घंटे @ ₹ 0.65/मिनट = ₹ 234</string>
+    <string name="_7_hr">7 घंटे @ ₹ 0.60/मिनट = ₹ 252</string>
+    <string name="_8_hr">8 घंटे @ ₹ 0.55/मिनट = ₹ 264</string>
+    <string name="_9_hr">9 घंटे @ ₹ 0.50/मिनट = ₹ 270</string>
+    <string name="_10_hr">10 घंटे @ ₹ 0.50/मिनट = ₹ 300</string>
+    <string name="_11_hr">11 घंटे @ ₹ 0.50/मिनट = ₹ 330</string>
+    <string name="_12_hr">12 घंटे @ ₹ 0.50/मिनट = ₹ 360</string>
     <string name="_name">नाम</string>
     <string name="_mobile">मोबाइल</string>
     <string name="are_you_ready_to_confirm_your_delivery">कृपया अपनी डिलीवरी की जानकारी \nकन्फर्म करें</string>
@@ -328,8 +328,8 @@
     <string name="invalid_selection">समय का अमान्य चयन</string>
     <string name="drop_to">पार्सल कहाँ पर छोड़ना है</string>
     <string name="pick_from">पार्सल कहाँ से लेना है (पता)</string>
-    <string name="no_driver_av">कोई भी ड्राइवर ऑनलाइन नहीं है।
-उपलब्ध होने पर मुझे सूचित करें।</string>
+    <string name="no_driver_av">सभी ड्राइवर बुक हैं।
+कृपया कुछ समय के बाद पुनः प्रयास करें।</string>
     <string name="mandatory_fields">सब जानकारी ज़रूरी है</string>
     <string name="this_mandatory_field">यह भरना जरूरी है</string>
     <string name="rate_your_ride">आपको राइड कैसी लगी?</string>
@@ -400,4 +400,6 @@
     <string name="message_rs">₹ %1$s </string>
     <string name="add_email">Add Email</string>
     <string name="something_wrong">Something went wrong. Please try again later.</string>
+    <string name="notifications_admin_channel_name">101</string>
+    <string name="notifications_admin_channel_description">Game Notifications</string>
 </resources>

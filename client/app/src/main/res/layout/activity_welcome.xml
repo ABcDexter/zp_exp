@@ -3,382 +3,381 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<RelativeLayout
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".ActivityWelcome">
-
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <RelativeLayout
-        android:id="@+id/rlTopLayout"
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/black_background1">
+        tools:context=".ActivityWelcome">
 
-        <!--<ImageView
-            android:id="@+id/tx_hi"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"
-            android:src="@drawable/hi" />-->
-
-        <ImageView
-            android:id="@+id/i_am"
-            android:layout_width="170dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="80dp"
-            android:layout_marginBottom="80dp"
-            android:src="@drawable/iam" />
-
-        <ImageView
-            android:id="@+id/iv_zippee"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_above="@id/zippe_logo"
-            android:src="@drawable/zbee_right" />
-
-        <ImageView
-            android:id="@+id/scooty_up"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_above="@id/zippe_logo"
-            android:src="@drawable/scooty_left"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/zippe_logo"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_below="@+id/i_am"
-            android:src="@drawable/zippe_logo" />
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/iv_zippee_bottom"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_below="@id/zippe_logo"
-            android:src="@drawable/zbee_left"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/scooty_down"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_below="@id/zippe_logo"
-            android:src="@drawable/scooty_right" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/rlRent">
-
-            <ImageButton
-                android:id="@+id/btn_ride"
+            <RelativeLayout
+                android:id="@+id/rlTopLayout"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_bkg"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ride" />
+                android:layout_height="match_parent"
+                android:background="@drawable/black_background1">
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/infoRideBtn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="7dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/ic_info" />
-        </RelativeLayout>
+                <!--<ImageView
+                    android:id="@+id/tx_hi"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="40dp"
+                    android:src="@drawable/hi" />-->
 
-        <RelativeLayout
-            android:id="@+id/rlRent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/rlDelivery">
+                <ImageView
+                    android:id="@+id/i_am"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="80dp"
+                    android:layout_marginBottom="80dp"
+                    android:src="@drawable/iam" />
 
-            <ImageButton
-                android:id="@+id/btn_rent"
+                <ImageView
+                    android:id="@+id/iv_zippee"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_above="@id/zippe_logo"
+                    android:src="@drawable/zbee_right" />
+
+                <ImageView
+                    android:id="@+id/scooty_up"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_above="@id/zippe_logo"
+                    android:src="@drawable/scooty_left"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/zippe_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_below="@+id/i_am"
+                    android:src="@drawable/zippe_logo" />
+
+                <ImageView
+                    android:id="@+id/iv_zippee_bottom"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/zippe_logo"
+                    android:src="@drawable/zbee_left"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/scooty_down"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/zippe_logo"
+                    android:src="@drawable/scooty_right" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/rlRent">
+
+                    <ImageButton
+                        android:id="@+id/btn_ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/btn_bkg"
+                        android:padding="10dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ride" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/infoRideBtn"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/ic_info" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlRent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/rlDelivery">
+
+                    <ImageButton
+                        android:id="@+id/btn_rent"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/btn_bkg"
+                        android:padding="10dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/rent" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/infoRentBtn"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/ic_info" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlDelivery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/rlShop">
+
+                    <ImageButton
+                        android:id="@+id/btn_deliver"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/btn_bkg"
+                        android:padding="10dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/delivery" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/infoDeliveyBtn"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/ic_info" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlShop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/rlServices">
+
+                    <ImageButton
+                        android:id="@+id/btn_shop"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/btn_bkg"
+                        android:padding="10dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/shop" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/infoShopBtn"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/ic_info" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlServices"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="20dp">
+
+                    <ImageButton
+                        android:id="@+id/btn_connect"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/btn_bkg"
+                        android:padding="10dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/services" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/infoServiceBtn"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/ic_info" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlOverlay"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_bkg"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/rent" />
+                android:layout_height="match_parent"
+                android:background="#BF000000">
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/infoRentBtn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="7dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/ic_info" />
-        </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/llRide"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/llRent"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/rlDelivery"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/rlShop">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="click to go to Ride module"
+                        android:textColor="@android:color/white"
+                        android:textSize="22sp" />
 
-            <ImageButton
-                android:id="@+id/btn_deliver"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_bkg"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/delivery" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_arrow_downward" />
+                </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/infoDeliveyBtn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="7dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/ic_info" />
-        </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/llRent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/llDelivery"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
 
-        <RelativeLayout
-            android:id="@+id/rlShop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/rlServices">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="click to go to Rent module"
+                        android:textColor="@android:color/white"
+                        android:textSize="22sp" />
 
-            <ImageButton
-                android:id="@+id/btn_shop"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_bkg"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/shop" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_arrow_downward" />
+                </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/infoShopBtn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="7dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/ic_info" />
-        </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/llDelivery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/llShop"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
 
-        <RelativeLayout
-            android:id="@+id/rlServices"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="click to go to Delivery module"
+                        android:textColor="@android:color/white"
+                        android:textSize="22sp" />
 
-            <ImageButton
-                android:id="@+id/btn_connect"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_bkg"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/services" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_arrow_downward" />
+                </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/infoServiceBtn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="7dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/ic_info" />
-        </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/llShop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/llServices"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="click to go to Shop module"
+                        android:textColor="@android:color/white"
+                        android:textSize="22sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_arrow_downward" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llServices"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="50dp"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="click to go to Service module"
+                        android:textColor="@android:color/white"
+                        android:textSize="22sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_arrow_downward" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="150dp"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="45dp"
+                        android:src="@drawable/ic_diagonal_arrow" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="click to view more information"
+                        android:textColor="@android:color/white"
+                        android:textSize="22sp" />
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textHelp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Next"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp" />
+            </RelativeLayout>
+        </FrameLayout>
+
     </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rlOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#BF000000">
-
-        <LinearLayout
-            android:id="@+id/llRide"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/llRent"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="click to go to Ride module"
-                android:textColor="@android:color/white"
-                android:textSize="22sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_arrow_downward" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llRent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/llDelivery"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical"
-            android:visibility="invisible">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="click to go to Rent module"
-                android:textColor="@android:color/white"
-                android:textSize="22sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_arrow_downward" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llDelivery"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/llShop"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical"
-            android:visibility="invisible">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="click to go to Delivery module"
-                android:textColor="@android:color/white"
-                android:textSize="22sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_arrow_downward" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llShop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/llServices"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical"
-            android:visibility="invisible">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="click to go to Shop module"
-                android:textColor="@android:color/white"
-                android:textSize="22sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_arrow_downward" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llServices"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="50dp"
-            android:orientation="vertical"
-            android:visibility="invisible">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="click to go to Service module"
-                android:textColor="@android:color/white"
-                android:textSize="22sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_arrow_downward" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="150dp"
-            android:orientation="vertical"
-            android:visibility="invisible">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="45dp"
-                android:src="@drawable/ic_diagonal_arrow" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="click to view more information"
-                android:textColor="@android:color/white"
-                android:textSize="22sp" />
-
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/textHelp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="Next"
-            android:textColor="@android:color/white"
-            android:textSize="22sp" />
-    </RelativeLayout>
-</FrameLayout>
-
-</RelativeLayout>
 </androidx.drawerlayout.widget.DrawerLayout>
