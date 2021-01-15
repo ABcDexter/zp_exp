@@ -476,6 +476,7 @@ def doOCRback(path):
     # print(ret)
     sArr = [ word.split()[0] for word in arrWords[1:]]
     bFound = False
+    ret['hs'] = ''  # default
     for sA in reversed(sArr):
         if len(sA) > 2 : #smallest state isf Goa with len=3
             # Look for "Home State" fuzzily
