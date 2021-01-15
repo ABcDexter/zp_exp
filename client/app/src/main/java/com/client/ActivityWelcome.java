@@ -58,7 +58,7 @@ import java.util.Map;
 public class ActivityWelcome extends ActivityDrawer implements View.OnClickListener {
 
     private static final String TAG = "ActivityWelcome";
-    ImageView zippe_iv, zippe_iv_below, scooty_up, scooty_down;
+
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String LOCATION_PICK = "PickLocation";
     public static final String LOCATION_DROP = "DropLocation";
@@ -73,29 +73,30 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
-    SharedPreferences prefAuth;
-    String stringAuth;
-    ImageButton btnRent, btnRide, btnDeliver, btnShop, btnConnect, infoRide, infoRent, infoDelivery, infoShop, infoService;
-    ActivityWelcome a = ActivityWelcome.this;
-    Map<String, String> params = new HashMap();
-    String auth;
+
     private static ActivityWelcome instance;
-    FusedLocationProviderClient mFusedLocationClient;
+
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.CALL_PHONE};
-    String lat, lng, stringAN;
 
+    ActivityWelcome a = ActivityWelcome.this;
+    Map<String, String> params = new HashMap();
+
+    SharedPreferences prefAuth, sharedPreferences1;
+    FusedLocationProviderClient mFusedLocationClient;
+    String lat, lng, stringAN, stringAuth, auth;
+    ImageButton btnRent, btnRide, btnDeliver, btnShop, btnConnect, infoRide, infoRent, infoDelivery, infoShop, infoService;
+    ImageView zippe_iv, zippe_iv_below, scooty_up, scooty_down;
     Animation animMoveL2R, animMoveR2L;
-
-    private TextView textHelp;
+    private TextView textHelp, dialog_txt;
     private RelativeLayout rlOverlay, rlTopLayout;
     private LinearLayout llRide, llRent, llDelivery, llShop, llServices, llInfo;
-    SharedPreferences sharedPreferences1;
     SharedPreferences.Editor sharedEditor1;
     public static boolean isAppRunning;
+    Dialog myDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +132,12 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         infoDelivery = findViewById(R.id.infoDeliveyBtn);
         infoShop = findViewById(R.id.infoShopBtn);
         infoService = findViewById(R.id.infoServiceBtn);
+        zippe_iv = findViewById(R.id.iv_zippee);
+        zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
+        scooty_up = findViewById(R.id.scooty_up);
+        scooty_down = findViewById(R.id.scooty_down);
+
+        //making variables clickable
         btnRent.setOnClickListener(this);
         btnRide.setOnClickListener(this);
         btnDeliver.setOnClickListener(this);
@@ -144,6 +151,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         infoService.setOnClickListener(this);
 
         auth = stringAuth;
+        //checking if auth is stored locally or not
         if (auth.equals("")) {
             Intent registerUser = new Intent(ActivityWelcome.this, ActivityRegistration.class);
             startActivity(registerUser);
@@ -151,9 +159,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         }
         sharedPreferences1 = getPreferences(Context.MODE_PRIVATE);
         sharedEditor1 = sharedPreferences1.edit();
-        /*if (isFirstTime()) {
-            rlOverlay.setVisibility(View.VISIBLE);
-        }*/
+        //checking if app is being run for the 1st time or not
         if (isItFirstTime()) {
             Log.d(TAG, "First Time");
             rlOverlay.setVisibility(View.VISIBLE);
@@ -163,32 +169,30 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
             Log.d(TAG, "Not a First Time");
         }
 
-        zippe_iv = findViewById(R.id.iv_zippee);
-        zippe_iv_below = findViewById(R.id.iv_zippee_bottom);
-        scooty_up = findViewById(R.id.scooty_up);
-        scooty_down = findViewById(R.id.scooty_down);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityWelcome.this);
-        getLastLocation();
-        checkStatus();
-        myDialog = new Dialog(this);
+        getLastLocation();// get the last location coordinates
+        checkStatus(); // hitting API user-trip-get-status
+        myDialog = new Dialog(this); //initializing dialog to be populated when required
 
         animMoveL2R = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_l2r);
         animMoveR2L = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_r2l);
 
         zippe_iv.startAnimation(animMoveL2R);
         scooty_down.startAnimation(animMoveR2L);
-
+        //getting firebase instance ID. This is required for push notifications
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(ActivityWelcome.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
                 String newToken = instanceIdResult.getToken();
                 Log.e("newToken", newToken);
-
             }
         });
     }
 
+    /**
+     * this method is used to store boolean value for judging if the app is being run for the first time or not.
+     */
     public boolean isItFirstTime() {
         if (sharedPreferences1.getBoolean("firstTime", true)) {
             sharedEditor1.putBoolean("firstTime", false);
@@ -200,10 +204,20 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         }
     }
 
+    /**
+     * This is creating an instance of ActivityWelcome class
+     */
     public static ActivityWelcome getInstance() {
         return instance;
     }
 
+    /**
+     * This method is used for hitting auth-location-update API on the server
+     * It sends 1) an: Aadhaar number for User
+     * 2,3) lat,lng: location
+     * 4) auth: user auth token as parameters
+     * It receives empty string {} as response.
+     */
     public void sendLocation() {
         Log.d(TAG, "inside sendLocation()");
         params.put("an", stringAN);
@@ -224,6 +238,21 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
 
     }
 
+    /**
+     * This method is used for hitting user-trip-get-status API on the server
+     * Sends  1) auth: user auth token as parameters
+     * This must be polled continuously by the user app to detect any state change
+     * after a ride request is made
+     * Receives:
+     * active(bool): Whether a trip is in progress
+     * status(str): Trip status
+     * tid(str): trip ID
+     * For each of the following statuses, additional data is returned:
+     * AS: otp, dan, van
+     * ST: progress (percent)
+     * TR, FN: price, time (seconds), dist (meters), speed (m/s average)
+     * Note: If active is false, no other data is returned
+     */
     public void checkStatus() {
 
         params.put("auth", auth);
@@ -240,14 +269,13 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         }, a::onFailure);
     }
 
-    Dialog myDialog;
-    TextView dialog_txt;
-
+    /**
+     * This shows a popup with respective information when called
+     */
     private void ShowPopup(int id) {
 
         myDialog.setContentView(R.layout.popup_color);
         dialog_txt = myDialog.findViewById(R.id.info_text);
-        LinearLayout ln = myDialog.findViewById(R.id.layout_btn);
         if (id == 1) {
             dialog_txt.setText("No ride available currently.\nNotify me when available.");
         }
@@ -275,6 +303,12 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         myDialog.setCanceledOnTouchOutside(true);
     }
 
+    /**
+     * This method is called when the app is installed for the 1st time on a phone.
+     * This is responsible for showing a tutorial to the user.
+     * i.e. what happens on click each button. And how to navigate the app.
+     */
+
     private void ShowInfo(int id) {
 
         myDialog.setContentView(R.layout.popup_new_request);
@@ -282,19 +316,19 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         LinearLayout ll = myDialog.findViewById(R.id.layout_btn);
         ll.setVisibility(View.GONE);
         if (id == 1) {
-            infoText.setText("TO BOOK A RIDE PLEASE CLICK HERE.");
+            infoText.setText(R.string.to_ride_click);
         }
         if (id == 2) {
-            infoText.setText("TO BOOK A VEHICLE ON PER HOUR BASES, PLEASE CLICK HERE.");
+            infoText.setText(R.string.to_rent_click);
         }
         if (id == 3) {
-            infoText.setText("TO BOOK A DELIVERY SERVICE, PLEASE CLICK HERE.");
+            infoText.setText(R.string.to_deliver_click);
         }
         if (id == 4) {
-            infoText.setText("TO DO ONLINE SHOPPING, PLEASE CLICK HERE.");
+            infoText.setText(R.string.to_shop_click);
         }
         if (id == 5) {
-            infoText.setText("TO BOOK A SERVICE, PLEASE CLICK HERE.");
+            infoText.setText(R.string.to_service_click);
         }
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -302,20 +336,13 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         myDialog.setCanceledOnTouchOutside(true);
     }
 
-    private void ShowPopup1(int id) {
-
-        myDialog.setContentView(R.layout.popup_new_request);
-        dialog_txt = myDialog.findViewById(R.id.info_text);
-
-        if (id == 2) {
-            dialog_txt.setText(R.string.drivers_available);
-        }
-
-        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        myDialog.show();
-        myDialog.setCanceledOnTouchOutside(true);
-    }
-
+    /**
+     * This method checks 1) if the user has given location permission or not
+     * 2) gets the lng and lat of current location
+     * 3) requestNewLocationData()
+     * 4) for calling sendLocation()
+     * if there is no change in location then sendLocation() is called else requestNewLocationData() is called
+     */
     public void getLastLocation() {
         Log.d(TAG, "Inside getLastLocation()");
         if (hasPermissions(this, PERMISSIONS)) {
@@ -351,6 +378,11 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         }
     }
 
+    /**
+     * Checks if all permissions
+     * 1) Location
+     * 2) Phone Call have be granted by user or not
+     */
     public static boolean hasPermissions(Context context, String... permissions) {
         Log.d(TAG, "inside hasPermission()");
         if (context != null && permissions != null) {
@@ -363,6 +395,10 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         return false;
     }
 
+    /**
+     * Checks if location permissions have been granted by user
+     * calls LocationRequest()
+     */
     private void requestNewLocationData() {
         Log.d(TAG, "inside requestNewLocationData()");
         LocationRequest mLocationRequest = new LocationRequest();
@@ -387,6 +423,9 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                 Looper.myLooper());
     }
 
+    /**
+     * Returns lat lng of the device
+     */
     private LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -397,7 +436,9 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         }
     };
 
-
+    /**
+     * Receives the response from the server
+     */
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG, "RESPONSE:" + response);
         //response on hitting user-trip-get-status API
@@ -417,14 +458,8 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                             startActivity(rq);
                         }
                         if (status.equals("AS")) {
-                            String otp = response.getString("otp");
-                            String van = response.getString("vno");
-                            /*SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                            sp_otp.edit().putString(OTP_PICK, otp).apply();
-                            sp_otp.edit().putString(VAN_PICK, van).apply();*/
+
                             Intent as = new Intent(ActivityWelcome.this, ActivityRideOTP.class);
-                            /*as.putExtra("OTP", otp);
-                            as.putExtra("VAN", van);*/
                             startActivity(as);
                         }
                         if (status.equals("ST")) {
@@ -489,7 +524,6 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
             String rtype = response.getString("rtype");
             if (rtype.equals("0")) {
                 if (st.equals("PD")) {
-                    String price = response.getString("price");
                     SharedPreferences pref = getApplicationContext().getSharedPreferences(PREFS_LOCATIONS, MODE_PRIVATE);
                     SharedPreferences.Editor editor = pref.edit();
                     editor.remove(PREFS_LOCATIONS);
@@ -563,13 +597,31 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
 
         //response on hitting auth-location-update API
         if (id == 4) {
-            /*Intent i = new Intent(this, UtilityPollingService.class);
-            i.setAction("00");
-            startService(i);*/
-
+            //empty response from server
         }
     }
 
+    /**
+     * Called when there is error in response from server
+     */
+    public void onFailure(VolleyError error) {
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
+
+    }
+
+    /**
+     * Used for hitting user-trip-retire API on the server
+     * Sends 1)  auth: user auth token as parameters
+     * The response Resets users active trip
+     * This is called when the user has seen the message pertaining to trip end for these states:
+     * 'TO', 'DN', 'PD',
+     * Following states do not need user to retire trip
+     * CN : user has already retired in userRideCancel()
+     * FL : admin retires this via adminHandleFailedTrip()
+     * TR/FN : Driver will retire via driverConfirmPayment() after user pays money
+     */
     private void retireTrip() {
 
         params.put("auth", auth);
@@ -586,6 +638,12 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         }, a::onFailure);
     }
 
+    /**
+     * Used for hitting auth-trip-get-info API on the server
+     * Sends 1) auth: user auth token as parameters
+     * 2) tid: trip id for user
+     * Response: trip info for this user for any past or current trip
+     */
     private void tripInfo(String tripID) {
 
         params.put("auth", auth);
@@ -603,12 +661,6 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         }, a::onFailure);
     }
 
-    public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
-
-    }
 
     int counter = 1;
 
@@ -616,29 +668,34 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.btn_rent) {
+            //take user to ActivityRentHome activity
             Intent rentIntent = new Intent(ActivityWelcome.this, ActivityRentHome.class);
             startActivity(rentIntent);
         } else if (id == R.id.btn_ride) {
+            //take user to ActivityRideHome activity
             Intent rideIntent = new Intent(ActivityWelcome.this, ActivityRideHome.class);
             startActivity(rideIntent);
         } else if (id == R.id.btn_deliver) {
+            //take user to ActivityPackageDetails activity
             Intent deliverIntent = new Intent(ActivityWelcome.this, ActivityPackageDetails.class);
             startActivity(deliverIntent);
         } else if (id == R.id.btn_shop) {
+            //take user to https://zippe.in/en/shop-by-category/ url
             String shopUrl = "https://zippe.in/en/shop-by-category/";
             Intent shopIntent = new Intent(Intent.ACTION_VIEW);
             shopIntent.setData(Uri.parse(shopUrl));
             startActivity(shopIntent);
         } else if (id == R.id.btn_connect) {
+            //take user to https://zippe.in/en/zippe-connect/ url
             String connectUrl = "https://zippe.in/en/zippe-connect/";
             Intent connectIntent = new Intent(Intent.ACTION_VIEW);
             connectIntent.setData(Uri.parse(connectUrl));
             startActivity(connectIntent);
         } else if (id == R.id.textHelp) {
+            //this displays the instructions for fist time users.
             Log.d(TAG, "counter = " + counter);
             //counter++;
             if (counter == 1) {
-                /*if (textHelp.getText().toString().equals("Next")) {*/
                 llRide.setVisibility(View.INVISIBLE);
                 llRent.setVisibility(View.VISIBLE);
                 llDelivery.setVisibility(View.INVISIBLE);
@@ -647,13 +704,10 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                 llInfo.setVisibility(View.INVISIBLE);
                 rlOverlay.setVisibility(View.VISIBLE);
 
-                textHelp.setText("Next");
+                textHelp.setText(R.string.next);
                 counter = counter + 1;
                 Log.d(TAG, "counter = " + counter);
-                //textHelp.setText("Got It");
-                /*}*/ /*else {
-                        rlOverlay.setVisibility(View.GONE);
-                    }*/
+
             } else if (counter == 2) {
                 llRide.setVisibility(View.INVISIBLE);
                 llRent.setVisibility(View.INVISIBLE);
@@ -663,7 +717,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                 llInfo.setVisibility(View.INVISIBLE);
                 rlOverlay.setVisibility(View.VISIBLE);
 
-                textHelp.setText("Next");
+                textHelp.setText(R.string.next);
                 counter = counter + 1;
             } else if (counter == 3) {
                 llRide.setVisibility(View.INVISIBLE);
@@ -674,7 +728,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                 llInfo.setVisibility(View.INVISIBLE);
                 rlOverlay.setVisibility(View.VISIBLE);
 
-                textHelp.setText("Next");
+                textHelp.setText(R.string.next);
                 counter = counter + 1;
             } else if (counter == 4) {
                 llRide.setVisibility(View.INVISIBLE);
@@ -685,7 +739,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                 llInfo.setVisibility(View.INVISIBLE);
                 rlOverlay.setVisibility(View.VISIBLE);
 
-                textHelp.setText("Next");
+                textHelp.setText(R.string.next);
                 counter = counter + 1;
             } else if (counter == 5) {
                 llRide.setVisibility(View.INVISIBLE);
@@ -696,49 +750,32 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                 llInfo.setVisibility(View.VISIBLE);
                 rlOverlay.setVisibility(View.VISIBLE);
 
-                textHelp.setText("Got It");
+                textHelp.setText(R.string.got_it);
                 counter = counter + 1;
             } else if (counter == 6) {
                 rlOverlay.setVisibility(View.GONE);
-                //rlTopLayout.setVisibility(View.VISIBLE);
             }
         } else if (id == R.id.infoRideBtn) {
+            //call ShowInfo()
             ShowInfo(1);
         } else if (id == R.id.infoRentBtn) {
+            //call ShowInfo()
             ShowInfo(2);
         } else if (id == R.id.infoDeliveyBtn) {
+            //call ShowInfo()
             ShowInfo(3);
         } else if (id == R.id.infoShopBtn) {
+            //call ShowInfo()
             ShowInfo(4);
         } else if (id == R.id.infoServiceBtn) {
+            //call ShowInfo()
             ShowInfo(5);
         }
     }
 
-    /*private boolean isFirstTime() {
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        boolean ranBefore = preferences.getBoolean("RanBefore", false);
-        if (!ranBefore) {
-
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("RanBefore", true);
-            editor.apply();
-            rlOverlay.setVisibility(View.VISIBLE);
-
-            rlOverlay.setOnTouchListener(new View.OnTouchListener() {
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    rlOverlay.setVisibility(View.GONE);
-                    return false;
-                }
-
-            });
-
-
-        }
-        return ranBefore;
-    }*/
+    /**
+     * when app is killed then this is called
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
