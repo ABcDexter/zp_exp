@@ -478,7 +478,7 @@ def doOCRback(path):
     bFound = False
     ret['hs'] = ''  # default
     for sA in reversed(sArr):
-        if len(sA) > 2 : #smallest state isf Goa with len=3
+        if len(sA) > 2:  # smallest state is Goa with len=3
             # Look for "Home State" fuzzily
             # len = range(STATES)
             for tState in STATES:
