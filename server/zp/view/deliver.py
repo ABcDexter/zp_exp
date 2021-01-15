@@ -1345,6 +1345,6 @@ def authLocationNameFromPin(dct, entity):
 
     returns the name of place or none
     '''
-    print("Google Ride Estimate param : ", dct)
+    print("params : ", dct)
     ret = extract_name_from_pin(str(dct['pin']))
     return HttpJSONResponse(ret)

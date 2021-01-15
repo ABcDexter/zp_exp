@@ -143,8 +143,8 @@ def userGRideEstimate(dct, _user, _trip):
     dstlat, dstlng = extract_lat_lng(dct['dstname'])
     print(srclat, srclng, " | ", dstlat, dstlng)
     ret = getRidePrice(srclat, srclng, dstlat, dstlng, dct['vtype'], dct['pmode'], 0)
-    if _user.hs == 'UK':
-        ret['price'] *= 0.9
+    #if _user.hs == 'UK':
+    #    ret['price'] *= 0.9
     return HttpJSONResponse(ret)
 
 
@@ -157,7 +157,7 @@ def userGRideEstimate(dct, _user, _trip):
 @transaction.atomic
 @checkAuth()
 #@checkTripStatus(['INACTIVE'])
-def userGRideRequest(dct, user):#, _trip):
+def userGRideRequest(dct, user):
     '''
     User calls this to request a ride
 
