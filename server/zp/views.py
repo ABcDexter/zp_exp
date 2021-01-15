@@ -1,5 +1,4 @@
 # imports
-import binascii
 import datetime
 import json
 import logging
@@ -325,7 +324,7 @@ def userTripGetStatus(_dct, user):
     '''
     Gets the current trips detail for a user
     This must be polled continuously by the user app to detect any state change
-    after a ride request is madega
+    after a ride request is made
 
     Returns:
         active(bool): Whether a trip is in progress
@@ -366,7 +365,6 @@ def userTripGetStatus(_dct, user):
                 currTime = datetime.now(timezone.utc)
                 # print(currTime, trip.atime)
                 diffTime = (currTime - trip.atime).total_seconds() // 60  # minutes
-                #  print(currTime - trip.atime, (currTime - trip.atime).total_seconds())
                 ret['time'] = 30-diffTime
 
             else:  # RIDE
@@ -384,7 +382,7 @@ def userTripGetStatus(_dct, user):
             if trip.rtype == '1':
                 vehicle = Vehicle.objects.filter(an=trip.van)[0]
                 currTime = datetime.now(timezone.utc)
-                diffTime = (currTime - trip.stime).total_seconds() // 60 # minutes
+                diffTime = (currTime - trip.stime).total_seconds() // 60  # converted to minutes
                 remTimeMins = trip.hrs*60 - diffTime
                 ret['time'] = int(remTimeMins)
                 ret['vno'] = vehicle.regn  # moves to ST state

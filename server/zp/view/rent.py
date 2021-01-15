@@ -475,7 +475,7 @@ def supRentCheck(dct, sup):
         state : for rentals are required
     '''
 
-    # Get the first requested trip from Supervisors place id
+    # Get the first requested trip from/into Supervisors place id
     qsTrip = Trip.objects.filter(rtype=1, srcid=sup.pid, st=dct['state']) | Trip.objects.filter(rtype=1, dstid=sup.pid, st=dct['state'])
     print("%d trips found" % (len(qsTrip)))
     rentals = []
@@ -493,7 +493,17 @@ def supRentCheck(dct, sup):
             vals['rvtype'] = 'ZBEE'
 
         if trip.st == 'ST':
-            vals['price'] = getTripPrice(trip)['price']
+            # oldTime = (trip.etime - trip.rtime).total_seconds() / 60
+            # startTime = trip.stime #datetime.now(timezone.utc)
+            # tdISTdelta = timedelta(hours=iHrs, minutes=0)
+            # endTime = startTime + tdISTdelta
+            actualHrs = datetime.now(timezone.utc) - trip.stime / 3600
+            # recVehicle = Vehicle.objects.filter(an=trip.van)[0]
+            oldPrice = getRentPrice(trip.hrs)
+            newPrice = getRentPrice(extraHrs)
+            print(oldPrice, newPrice)
+
+            vals['price'] = str(max(20, int(float(newPrice['price']) - float(oldPrice['price'])))) + '.00'
         elif trip.st == 'FN':
             vals['price'] = getTripPrice(trip)['price']
         else:
