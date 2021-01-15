@@ -468,15 +468,14 @@ def doOCRback(path):
     arrWords = [word for word in arrWords if len(word) > 0]
     # log(arrWords)
 
-    ret = {}
-    ret['count'] = 0
+    ret = {'count': 0, 'hs':''}
     # get AN again to see whether the front and the back are same or not
     getREMatch(ret, 'an', r'\d{12}', arrWords)
 
     # print(ret)
     sArr = [ word.split()[0] for word in arrWords[1:]]
     bFound = False
-    ret['hs'] = ''  # default
+
     for sA in reversed(sArr):
         if len(sA) > 2:  # smallest state is Goa with len=3
             # Look for "Home State" fuzzily
@@ -1285,44 +1284,6 @@ def extract_name_from_pin(address_or_postalcode, data_type='json'):
     return townName
 
 
-
-'''
-data = pd.read_excel('./pin_codes.xlsx')
->>> data
-           State  District      Location  Pincode
-0    Uttarakhand  Dehradun       Ajabpur   248121
-1    Uttarakhand  Dehradun        Ambari   248125
-2    Uttarakhand  Dehradun      Ambiwala   248007
-3    Uttarakhand  Dehradun      Anarwala   248003
-4    Uttarakhand  Dehradun           Anu   248199
-..           ...       ...           ...      ...
-857  Uttarakhand  Nainital  Thala Manral   244715
-858  Uttarakhand  Nainital        Tukura   244715
-859  Uttarakhand  Nainital       Tushrar   263157
-860  Uttarakhand  Nainital     Unchakote   263134
-861  Uttarakhand  Nainital         Unura   263138
-
-[862 rows x 4 columns]
->>> rows = [ row for ix, row in data.iterrows()]
->>> rows
-len(rows)
-862
->>> 
->>> 
->>> 
->>> 
->>> 
->>> nainital
-set()
->>> for i in range(862):
-...     if rows[i]['District'] == 'Nainital':
-...             nainital.add(rows[i]['Pincode'])
-... 
->>> #data = pd.read_excel('./pin_codes.xlsx')
->>> len(nainital)
-
-'''
-
 def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTime, tripPrice, tripCGST, tripSGST, tripTotal ):
     '''
     sends mail to the user with
@@ -1391,7 +1352,6 @@ def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTim
     server.quit()
     
     
-
 def sendDeliveryInvoiceMail(deliveryType, userEmail, userName, deliveryId, deliveryDate, deliveryTime, deliveryPrice, deliveryCGST, deliverySGST, deliveryTotal ):
     '''
     sends mail to the user with
