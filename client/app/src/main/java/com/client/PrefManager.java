@@ -15,15 +15,19 @@ public class PrefManager {
     private static final String PREF_NAME = "client-welcome";
 
     private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
+   // public static final String AUTH_KEY = "AuthKey";
+    //public static final String SESSION_COOKIE = "com.client.ride.Cookie";
 
     public PrefManager(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+       // pref = _context.getSharedPreferences(SESSION_COOKIE, PRIVATE_MODE);
         editor = pref.edit();
     }
 
     public void setFirstTimeLaunch(boolean isFirstTime) {
         editor.putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime);
+       // editor.putBoolean(AUTH_KEY, isFirstTime);
         editor.commit();
     }
 

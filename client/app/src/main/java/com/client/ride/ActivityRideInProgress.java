@@ -87,6 +87,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (status.equals("ST")) {
+
                         Glide.with(this).load(photo).into(driverPhoto);
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("04");

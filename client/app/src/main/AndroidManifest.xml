@@ -41,11 +41,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".IntroActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".AadharCardUpload" />
         <activity android:name=".deliver.ActivityDeliverySummery" />
@@ -112,8 +108,12 @@
             android:resource="@drawable/zippe_logo" />
 
         <activity android:name=".UserProfileActivity" />
-        <activity
-            android:name=".ActivityWelcome">
+        <activity android:name=".ActivityWelcome">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ActivityRegistration"

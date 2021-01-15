@@ -413,5 +413,11 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="add_email">Add Email</string>
     <string name="notifications_admin_channel_name">101</string>
     <string name="notifications_admin_channel_description">Game Notifications</string>
+    <string name="to_ride_click">TO BOOK A RIDE PLEASE CLICK HERE.</string>
+    <string name="to_rent_click">TO BOOK A VEHICLE ON PER HOUR BASES, PLEASE CLICK HERE.</string>
+    <string name="to_deliver_click">TO BOOK A DELIVERY SERVICE, PLEASE CLICK HERE.</string>
+    <string name="to_shop_click">TO DO ONLINE SHOPPING, PLEASE CLICK HERE.</string>
+    <string name="to_service_click">TO BOOK A SERVICE, PLEASE CLICK HERE.</string>
+    <string name="got_it">Got It</string>
 
 </resources>

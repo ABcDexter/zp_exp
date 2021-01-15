@@ -36,8 +36,8 @@
                     android:layout_height="150dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/driver"
-                    android:contentDescription="@string/driver_photo" />
+                    android:contentDescription="@string/driver_photo"
+                    android:src="@drawable/driver" />
 
                 <TextView
                     android:id="@+id/driver_name"
@@ -348,7 +348,6 @@
             </RelativeLayout>
 
             <ImageButton
-
                 android:id="@+id/cancel_ride_booking"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -357,6 +356,7 @@
                 android:padding="15dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/cancel" />
+
             <!-- <Button
                  android:id="@+id/give_otp"
                  android:layout_width="100dp"

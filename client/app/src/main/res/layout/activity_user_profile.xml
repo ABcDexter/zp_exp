@@ -3,15 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="25dp"
-    android:layout_marginEnd="25dp"
     tools:context=".UserProfileActivity">
 
     <RelativeLayout
         android:id="@+id/containerProfilePic"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp">
 
         <ImageView
             android:id="@+id/aadharFrontImg"
@@ -38,6 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/containerProfilePic"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="20dp"
         android:text="@string/_name"
         android:textAllCaps="true"
@@ -50,6 +51,7 @@
         android:layout_below="@+id/containerProfilePic"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp"
         android:gravity="end"
         android:text=""
         android:textAllCaps="true"
@@ -60,7 +62,9 @@
         android:layout_width="match_parent"
         android:layout_height="25dp"
         android:layout_below="@+id/txt_name"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp"
         android:orientation="horizontal"
         android:weightSum="2">
 
@@ -90,6 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_mobile"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="20dp"
         android:text="@string/change_language"
         android:textAllCaps="true"
@@ -103,6 +108,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginStart="45dp"
         android:layout_marginTop="17dp"
+        android:layout_marginEnd="25dp"
         android:layout_toEndOf="@id/textLC"
         android:background="@drawable/spinner_bg"
         android:orientation="horizontal">
@@ -134,6 +140,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textLC"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="20dp"
         android:paddingEnd="8dp"
         android:text="@string/night_mode"
@@ -147,6 +154,7 @@
         android:layout_below="@+id/layout_spinner"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="25dp"
+        android:layout_marginEnd="25dp"
         android:layout_marginBottom="@android:dimen/app_icon_size"
         android:layout_toEndOf="@+id/txtNightMode"
         android:checked="false"
@@ -158,6 +166,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txtNightMode"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="20dp"
         android:onClick="uploadAadhar"
         android:paddingEnd="8dp"
@@ -171,7 +180,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/upload_aadhar"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp"
         android:drawableEnd="@drawable/ic_edit"
         android:text="@string/add_email"
         android:textAllCaps="true"
