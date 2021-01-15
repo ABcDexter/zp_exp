@@ -493,14 +493,9 @@ def supRentCheck(dct, sup):
             vals['rvtype'] = 'ZBEE'
 
         if trip.st == 'ST':
-            # oldTime = (trip.etime - trip.rtime).total_seconds() / 60
-            # startTime = trip.stime #datetime.now(timezone.utc)
-            # tdISTdelta = timedelta(hours=iHrs, minutes=0)
-            # endTime = startTime + tdISTdelta
-            actualHrs = datetime.now(timezone.utc) - trip.stime / 3600
-            # recVehicle = Vehicle.objects.filter(an=trip.van)[0]
+            actualHrs = datetime.now(timezone.utc) - trip.stime
             oldPrice = getRentPrice(trip.hrs)
-            newPrice = getRentPrice(extraHrs)
+            newPrice = getRentPrice(trip.hrs, acutalHrs.total_seconds()/60)
             print(oldPrice, newPrice)
 
             vals['price'] = str(max(20, int(float(newPrice['price']) - float(oldPrice['price'])))) + '.00'
