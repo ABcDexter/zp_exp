@@ -71,8 +71,10 @@ class ZPException(Exception):
     def response(self):
         return HttpJSONResponse(errMsg(self.message, self.status))
 
+
 class DummyException(Exception):
     pass
+
 
 ##########################################
 # Helpers/Algorithms
@@ -234,7 +236,7 @@ def googleDistAndTime(srcCoOrds, dstCoOrds):
 
 
 #################################
-#OCR v2
+# OCR v2
 
 STATES = [
     ('Andhra Pradesh', 'andhrapradesh',  	'AP'),
@@ -398,7 +400,7 @@ pins_to_name = {
 '263155' : ' Sattal, Nainital '
 
 }
-count = 0
+
 #################################
 
 from fuzzywuzzy import fuzz as fuzzY
@@ -631,7 +633,6 @@ def getClientAuth(an: str, pn: str) -> str:
     return base64.b64encode(m.digest()).decode()[:8]
 
 
-
 def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
     '''
     Determines the price given the trip details and time taken
@@ -681,6 +682,7 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     iTimeHrs is the trip.hrs, min is 1 hour
     iTimeActualMins is etime - stime
 
+    v0
     1:00:00 am	₹ 60.00
     2:00:00 am	₹ 54.00	total	₹ 114.00
     3:00:00 am	₹ 48.00	total	₹ 162.00
@@ -694,6 +696,7 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     11:00:00 am	₹ 30.00	total	₹ 420.00
     12:00:00 pm	₹ 30.00 total	₹ 450.00
 
+    v1
     1	    0-60 	                     ₹60.00
     0.95	0-120	₹114.00	  ₹ 0.00     ₹54.00
     0.9  	0-180	₹162.00	  ₹ 0.00     ₹48.00
@@ -707,6 +710,7 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     0.5	    0-660	₹330.00	  ₹ 90.00    ₹0.00
     0.5	    0-720	₹360.00	  ₹ 90.00    ₹30.00
 
+    v2
     1.00	 	₹ 60.00     ₹ 60.00
     0.90		₹ 108.00    ₹ 48.00
     0.80		₹ 144.00    ₹ 36.00
@@ -721,31 +725,22 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     0.50        ₹ 360.00    ₹ 30.00
     '''
     iMaxSpeed = 25  # capped to 25 kmph
+    # hrs converted to mins
     iTimeActualMins = int(iTimeHrs) * 60 if iTimeActualMins == 0 else int(iTimeActualMins)
-    #hrs converted to mins
-    #lstPrice = [ 0, 100, 90, 80, 70, 60, 50, 50, 50, 50, 50, 50, 50, 50]  # paise per minute for every 1 hour
-    #idx      = [ 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13 ] # for every 1 hour, after 12th hour maybe charge extra
-    #idxNext  = [ 0, 70, 130, 190, 250, 310, 370, 430, 490, 550, 610, 670, 730 ] # for what should be the limit for next hours charges
-    #lstActualPrice = [0, 60.00, 54.00, 48.00, 42.00, 36.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00 ] #finalPrice
-
-    #idxNext = [ 0, 60, 120, 180, 240, 300, 300, 420, 480, 540, 600, 660, 720,
-    #             780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440]  # for next hours charges
-    #lstUpdatedPrice = [0, 60.00, 54.00, 48.00, 42.00, 36.00, 30.00, 24.00, 18.00, 12.00, 6.00, 0.00, 30.00
-    #                  ]  # finalPrice
 
     idxNext = [0, 60, 120, 180, 240, 300, 300, 420, 480, 540, 600, 660, 720]
     #             780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440]  # for next hours charges
     lstUpdatedPrice = [0, 60.00, 48.00, 36.00, 36.00, 30.00, 24.00, 18.00, 12.00, 6.00, 30.00, 30.00, 30.00, 30.00]  # finalPrice
 
     try:
-        idxMul = next(x[0] for x in enumerate(idxNext) if x[1] >= iTimeActualMins) #Find the correct value from the
+        idxMul = next(x[0] for x in enumerate(idxNext) if x[1] >= iTimeActualMins)  # Find the correct value from the idx
     except StopIteration:
         idxMul = 12
-    price = sum(lstUpdatedPrice[1:idxMul+1]) # sum(lstActualPrice[1:idxMul+1])
+    price = sum(lstUpdatedPrice[1:idxMul+1])
     # price = lstPrice[iTimeHrs] * iTimeSec
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
-        'speed': round(iMaxSpeed,0) #(fAvgSpeed * 3.6))
+        'speed': round(iMaxSpeed, 0)  #(fAvgSpeed * 3.6))
     }
 
 
@@ -777,7 +772,7 @@ def getDelPrice(deli, hs):
 sys.path.insert(0, os.path.dirname(__file__))
 
 ############################################
-logging.warning('Enter the Matrix')
+logging.warning('Enter the Matrix!')
 #
 # action (api name)
 # actor(entity)
@@ -793,6 +788,7 @@ field_names = ['api', 'timestampUTC', 'timestampIST', 'response']
 
 ############################################
 # Functions
+
 
 def logEvent(funcName, status ): #entityName, funcName, status ):
     '''
@@ -979,6 +975,7 @@ class checkTripStatus(object):
 
         return decorated_func
 
+
 ###########################################
 # simple Helpers
 
@@ -989,6 +986,7 @@ def retireEntity(entity: [User, Driver, Vehicle]) -> None :
     entity.tid = -1
     entity.save()
 
+
 def retireDelEntity(entity: [User, Agent, Vehicle]) -> None :
     '''
     retired this entity by setting tid = -1
@@ -996,10 +994,9 @@ def retireDelEntity(entity: [User, Agent, Vehicle]) -> None :
     entity.did = -1
     entity.save()
 
+
 ###########################################
-
 # Delivery module
-
 
 def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, tip):
     '''
@@ -1040,7 +1037,6 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
     # print("EXPRESS : ", express)
     if express == '1':
         price += 20.00  # 20 Rs extra for express
-        # print('Expresss okay############')
     '''
     # L = 10
     # XL = 20
@@ -1160,7 +1156,7 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     iTimeSec = nTime*60 if iTime == 0 else iTime
     
     # Calculate the speed if time is known or else use average speed for estimates
-    fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec  #[3, 3.5, 4, 5.5]
+    fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec  # [3, 3.5, 4, 5.5]
 
     # Get base fare for vehicle
     fBaseFare = Vehicle.BASE_FARE[iVType]  # [10, 15, 20, 30]
@@ -1200,7 +1196,6 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     # if str(gdr) == 'F': # 25% off for females
     #   price *= 0.75
 
- 
     return {
         'price': str(round(float('%.2f' % price), 0))+'0',  # rounded off to 2 decimals
         'time': int('%.0f' % ((fDist / fAvgSpeed) / 60)),   # converted seconds to minutes
@@ -1217,6 +1212,7 @@ def getRiPrice(trip):
     vType = vehicle[0].vtype if len(vehicle)>0 else 1
     #print(vType)
     return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)
+
 
 ###############
 # GOOGLE
@@ -1351,7 +1347,7 @@ def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTim
     server.sendmail(FROM, TO, message.as_string())
     server.quit()
     
-    
+
 def sendDeliveryInvoiceMail(deliveryType, userEmail, userName, deliveryId, deliveryDate, deliveryTime, deliveryPrice, deliveryCGST, deliverySGST, deliveryTotal ):
     '''
     sends mail to the user with
