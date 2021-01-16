@@ -495,12 +495,17 @@ def supRentCheck(dct, sup):
         if trip.st == 'ST':
             actualHrs = datetime.now(timezone.utc) - trip.stime
             oldPrice = getRentPrice(trip.hrs)
-            newPrice = getRentPrice(trip.hrs, acutalHrs.total_seconds()/60)
-            print(oldPrice, newPrice)
+            newPrice = getRentPrice(trip.hrs, actualHrs.total_seconds() / 60)
+            #print(oldPrice, newPrice)
 
-            vals['price'] = str(max(20, int(float(newPrice['price']) - float(oldPrice['price'])))) + '.00'
+            vals['price'] = str(max(0, int(float(newPrice['price']) - float(oldPrice['price'])))) + '.00'
+
         elif trip.st == 'FN':
-            vals['price'] = getTripPrice(trip)['price']
+            actualHrs = datetime.now(timezone.utc) - trip.stime
+            oldPrice = getRentPrice(trip.hrs)
+            newPrice = getRentPrice(trip.hrs, actualHrs.total_seconds() / 60)
+
+            vals['price'] = str(max(0, int(float(newPrice['price']) - float(oldPrice['price'])))) + '.00'
         else:
             vals['price'] = getRentPrice(trip.hrs)['price']
         uAuth = User.objects.filter(an=trip.uan)[0].auth
