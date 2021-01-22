@@ -1515,7 +1515,7 @@ def userTripTrack(_dct, user, trip):
     hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID , settings.HYPERTRACK_SECRET_KEY)
 
     trip_data = {"device_id": dct['devid'],
-                 "destination": {"geometry": {"type": "Point", "coordinates": [trip.dstlng, trip.dstlat ]}}}
+                 "destination": {"geometry": {"type": "Point", "coordinates": [trip.dstlng, trip.dstlat] }}}
                 # [29.34856700, 79.5446500]}}} this takes longitude, latitude instead of lat,lng
     trip = hypertrack.trips.create(trip_data)
     resp = {'hypertid': trip['trip_id'], 'hyperurl': trip['views']['share_url']}
