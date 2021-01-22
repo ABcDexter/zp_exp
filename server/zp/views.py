@@ -1508,14 +1508,15 @@ def userTripTrack(_dct, user, trip):
         devid: device id of the android devide from hypertrack SDK
 
     Returns:
-        url : url of the live location link
+        hypertid: trip_id of the hypertrack
+        url : url of the live location link form hypertrack
 
     '''
     hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID , settings.HYPERTRACK_SECRET_KEY)
 
     trip_data = {"device_id": dct['devid'],
                  "destination": {"geometry": {"type": "Point", "coordinates": [trip.dstlng, trip.dstlat ]}}}
-                # [29.34856700, 79.5446500]}}} this takes longitude, latitude
+                # [29.34856700, 79.5446500]}}} this takes longitude, latitude instead of lat,lng
     trip = hypertrack.trips.create(trip_data)
     resp = {'hypertid': trip['trip_id'], 'hyperurl': trip['views']['share_url']}
 
