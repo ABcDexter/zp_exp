@@ -1500,7 +1500,7 @@ def bankValidateData(_, dct:Dict):
 @transaction.atomic
 @checkAuth()
 @checkTripStatus(['ST'])
-def userTripTrack(_dct, user, trip):
+def userTripTrack(dct, user, trip):
     '''
     Args:
         auth: auth of the entity (user)
