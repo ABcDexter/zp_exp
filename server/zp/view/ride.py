@@ -22,6 +22,10 @@ from django.db.utils import OperationalError, IntegrityError
 import urllib.request
 import json
 
+from hypertrack.rest import Client
+from hypertrack.exceptions import HyperTrackException
+
+
 ###########################################
 # Types
 Filename = str
@@ -388,8 +392,12 @@ def driverPaymentConfirm(_dct, driver, trip):
     # vehicle = Vehicle.objects.filter(an=trip.van)[0]
     # retireEntity(vehicle)
     # NOT required AS PER date 9/11/2020
-    
-    
+
+    # STOP tracking the User
+    hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID, settings.HYPERTRACK_SECRET_KEY)
+    hypertrack.trips.complete(str(trip.htid))
+    # done
+
     return HttpJSONResponse({})
 
 

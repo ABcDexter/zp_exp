@@ -1513,6 +1513,9 @@ def userTripTrack(dct, user, trip):
     '''
     if trip.url == None:
         hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID , settings.HYPERTRACK_SECRET_KEY)
+        userName = User.objects.filter(an=trip.uan)[0].name
+
+        hypertrack.devices.change_name(dct['devid'], userName)
 
         trip_data = {"device_id": dct['devid'],
                      "destination": {"geometry": {"type": "Point", "coordinates": [trip.dstlng, trip.dstlat] }}}
