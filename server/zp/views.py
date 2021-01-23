@@ -1507,8 +1507,8 @@ def userTripTrack(_dct, user, trip):
         devid: device id of the android device from hypertrack SDK
 
     Returns:
-        hypertid: trip_id of the hypertrack
-        url : url of the live location link form hypertrack
+        htid: trip_id of the hypertrack
+        hurl : url of the live location link form hypertrack
 
     '''
     hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID , settings.HYPERTRACK_SECRET_KEY)
@@ -1517,6 +1517,6 @@ def userTripTrack(_dct, user, trip):
                  "destination": {"geometry": {"type": "Point", "coordinates": [trip.dstlng, trip.dstlat] }}}
                 # [29.34856700, 79.5446500]}}} this takes longitude, latitude instead of lat,lng
     trip = hypertrack.trips.create(trip_data)
-    resp = {'hypertid': trip['trip_id'], 'hyperurl': trip['views']['share_url']}
+    resp = {'htid': trip['trip_id'], 'hurl': trip['views']['share_url']}
 
     return HttpJSONResponse(resp)
