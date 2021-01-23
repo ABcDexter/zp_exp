@@ -420,4 +420,6 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="to_shop_click">TO DO ONLINE SHOPPING, PLEASE CLICK HERE.</string>
     <string name="to_service_click">TO BOOK A SERVICE, PLEASE CLICK HERE.</string>
     <string name="got_it">Got It</string>
+    <string name="crew">CREW</string>
+    <string name="customer_support">CUSTOMER SUPPORT</string>
 </resources>

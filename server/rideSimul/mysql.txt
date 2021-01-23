@@ -36,6 +36,7 @@ insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl, did, mark) valu
 insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl, did, mark) values('19', '9700000019', 'auth019', -1, FLOOR( 1 + RAND() * 7 ),  24, 'FEMALE', 'Jane 08',  'RJ', 'RJ-123456789008', -1, 0.0);
 insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl, did, mark) values('20', '9700000020', 'auth020', -1, FLOOR( 1 + RAND() * 7 ),  24, 'FEMALE', 'Jane 09',  'RJ', 'RJ-123456789009', -1, 0.0);
 insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl, did, mark) values('21', '9700000021', 'auth021', -1, FLOOR( 1 + RAND() * 7 ),  24, 'FEMALE', 'Jane 10',  'RJ', 'RJ-123456789010', -1, 0.0);
+insert into user(an, pn, auth, tid, pid, age, gdr, name, hs, dl, did, mark) values('917526072449', '7526072449', 'xKrgbPEIbc', -1, 1,  26, 'M', 'Jane 10',  'uk', 'UK-123456789010', -1, 0.0);
 
 
 delete from driver;
@@ -147,25 +148,25 @@ INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid, dan, mark) values('re
 
 delete from super;
 
-INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3000, '9800000000', 'sauth00', 'UK0123456789124', 'OF', -1, 1, 'Super00', 30, 'm', 'uk');
-INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3001, '9800000001', 'sauth01', 'UK0123456789124', 'OF', -1, 2, 'Super01', 30, 'm', 'uk');
-INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3002, '9800000002', 'sauth02', 'UK0123456789125', 'OF', -1, 3, 'Super02', 31, 'f', 'uk');
-INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3003, '9800000003', 'sauth03', 'UK0123456789126', 'OF', -1, 4, 'Super03', 32, 'm', 'uk');
-INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3004, '9800000004', 'sauth04', 'UK0123456780128', 'OF', -1, 5, 'Super04', 33, 'm', 'uk');
-INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3005, '9800000005', 'sauth05', 'UK0123456780129', 'OF', -1, 6, 'Super05', 33, 'm', 'uk');
-INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3006, '9800000006', 'sauth06', 'UK0123456780130', 'OF', -1, 7, 'Super06', 33, 'm', 'uk');
+INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3000, '9800000000', 'sauth00', 'UK0123456789124',  1, 'Super00', 30, 'm', 'uk');
+INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3001, '9800000001', 'sauth01', 'UK0123456789124',  2, 'Super01', 30, 'm', 'uk');
+INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3002, '9800000002', 'sauth02', 'UK0123456789125',  3, 'Super02', 31, 'f', 'uk');
+INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3003, '9800000003', 'sauth03', 'UK0123456789126',  4, 'Super03', 32, 'm', 'uk');
+INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3004, '9800000004', 'sauth04', 'UK0123456780128',  5, 'Super04', 33, 'm', 'uk');
+INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3005, '9800000005', 'sauth05', 'UK0123456780129',  6, 'Super05', 33, 'm', 'uk');
+INSERT INTO super (an, pn, auth, dl,  pid, name, age, gdr, hs) values(3006, '9800000006', 'sauth06', 'UK0123456780130',  7, 'Super06', 33, 'm', 'uk');
 
 
 delete from agent;
-INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(4000, '9800000000', 'daauth00', 'UK0123456789124', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'driver000', 30, 'm', 'uk');
-INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(4001, '9800000001', 'daauth01', 'UK0123456789124', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'driver001', 30, 'm', 'uk');
-INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(4002, '9800000002', 'daauth02', 'UK0123456789125', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'driver002', 31, 'f', 'uk');
-INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(4003, '9800000003', 'daauth03', 'UK0123456789126', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'driver003', 32, 'm', 'uk');
-INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(4004, '9800000004', 'daauth04', 'UK0123456780128', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'driver004', 33, 'm', 'uk');
-INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(4005, '9800000005', 'daauth05', 'UK0123456709129', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'driver005', 34, 'm', 'uk');
-INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(4006, '9800000006', 'daauth06', 'UK0123456089130', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'driver006', 35, 'f', 'uk');
-INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(4007, '9800000007', 'daauth07', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'driver007', 36, 'm', 'uk');
-INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs) values(4008, '9800000008', 'daauth08', 'UK0123456789124', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'driver008', 30, 'm', 'uk');
+INSERT INTO agent (an, pn, auth, dl, mode, pid, name, age, gdr, hs, did, mark, veh) values(4000, '9800000000', 'daauth00', 'UK0123456789124', 'OF', FLOOR( 1 + RAND() * 7 ), 'agent000', 30, 'm', 'uk', -1, 0.0, 0);
+INSERT INTO agent (an, pn, auth, dl, mode, pid, name, age, gdr, hs, did, mark, veh) values(4001, '9800000001', 'daauth01', 'UK0123456789124', 'OF', FLOOR( 1 + RAND() * 7 ), 'agent001', 30, 'm', 'uk', -1, 0.0, 0);
+INSERT INTO agent (an, pn, auth, dl, mode, pid, name, age, gdr, hs, did, mark, veh) values(4002, '9800000002', 'daauth02', 'UK0123456789125', 'OF', FLOOR( 1 + RAND() * 7 ), 'agent002', 31, 'f', 'uk', -1, 0.0, 0);
+INSERT INTO agent (an, pn, auth, dl, mode, pid, name, age, gdr, hs, did, mark, veh) values(4003, '9800000003', 'daauth03', 'UK0123456789126', 'OF', FLOOR( 1 + RAND() * 7 ), 'agent003', 32, 'm', 'uk', -1, 0.0, 0);
+INSERT INTO agent (an, pn, auth, dl, mode, pid, name, age, gdr, hs, did, mark, veh) values(4004, '9800000004', 'daauth04', 'UK0123456780128', 'OF', FLOOR( 1 + RAND() * 7 ), 'agent004', 33, 'm', 'uk', -1, 0.0, 0);
+INSERT INTO agent (an, pn, auth, dl, mode, pid, name, age, gdr, hs, did, mark, veh) values(4005, '9800000005', 'daauth05', 'UK0123456709129', 'OF', FLOOR( 1 + RAND() * 7 ), 'agent005', 34, 'm', 'uk', -1, 0.0, 0);
+INSERT INTO agent (an, pn, auth, dl, mode, pid, name, age, gdr, hs, did, mark, veh) values(4006, '9800000006', 'daauth06', 'UK0123456089130', 'OF', FLOOR( 1 + RAND() * 7 ), 'agent006', 35, 'f', 'uk', -1, 0.0, 0);
+INSERT INTO agent (an, pn, auth, dl, mode, pid, name, age, gdr, hs, did, mark, veh) values(4007, '9800000007', 'daauth07', 'UK0123456089131', 'OF', FLOOR( 1 + RAND() * 7 ), 'agent007', 36, 'm', 'uk', -1, 0.0, 0);
+INSERT INTO agent (an, pn, auth, dl, mode, pid, name, age, gdr, hs, did, mark, veh) values(4008, '9800000008', 'daauth08', 'UK0123456789124', 'OF', FLOOR( 1 + RAND() * 7 ), 'agent008', 30, 'm', 'uk', -1, 0.0, 0);
 
 
 # add location for all entities

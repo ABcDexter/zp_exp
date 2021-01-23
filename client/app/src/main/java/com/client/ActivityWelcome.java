@@ -188,6 +188,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                 Log.e("newToken", newToken);
             }
         });
+
     }
 
     /**
@@ -498,18 +499,8 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                 } else if (active.equals("false")) {
                     String tid = response.getString("tid");
                     Log.d(TAG, "active=" + active + " tid=" + tid);
-
-                    SharedPreferences prefTripDetails = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
-                    String tripIDExists = prefTripDetails.getString(TRIP_ID, "");
-                    if (!tripIDExists.equals("")) {
-                        /*Intent homePage = new Intent(ActivityWelcome.this, ActivityRideHome.class);
-                        homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(homePage);
-                        finish();*/
-                        //tripInfo(tripIDExists);
-                    }
                     if (!tid.equals("-1")) {
-                        tripInfo(tripIDExists);
+                        tripInfo(tid);
                     }
                 }
 
@@ -608,7 +599,6 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
-
     }
 
     /**

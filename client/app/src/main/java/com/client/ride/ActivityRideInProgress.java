@@ -33,7 +33,7 @@ import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.material.snackbar.Snackbar;
+import com.hypertrack.sdk.HyperTrack;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,8 +44,7 @@ import java.util.Map;
 
 public class ActivityRideInProgress extends ActivityDrawer implements View.OnClickListener {
 
-    TextView shareDetails, emergencyCall, trackLocation, nameD, phone, otp, vNum;
-    TextView liveLocation;
+    TextView shareDetails, emergencyCall, trackLocation, nameD, phone, vNum;
     ImageButton endRide;
     ImageView driverPhoto;
     ScrollView scrollView;
@@ -55,7 +54,6 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     public static final String AUTH_KEY = "AuthKey";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    //public static final String OTP_PICK = "OTPPick";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
 
@@ -65,6 +63,9 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     Map<String, String> params = new HashMap();
     Dialog imageDialog;
     String stringAuthCookie;
+    private static final String PUBLISHABLE_KEY = "shXqLCv6GJVJ9QFgdHb6VL0JzE_7X96YoAX3ZxA919DLWOA1fayXhLg_NguIvRNypeaSpLu4U6JlYiwJahN8pA";
+    String deviceId;
+    String locationUrl;
 
     public static ActivityRideInProgress getInstance() {
         return instance;
@@ -72,6 +73,22 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
 
     public void onSuccess(JSONObject response, int id) {
         Log.d(TAG, "RESPONSE:" + response);
+        //response on hitting user-trip-track API
+        if (id == 1) {
+            try {
+                locationUrl = response.getString("hurl");
+                String messageBody = "Hi! I am riding ZIPP-E with\n\nDriver Name: " + nameD.getText().toString()
+                        + "\nMobile Number: " + phone.getText().toString() + "\nTrack my live location here:\n" + locationUrl;
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.setData(Uri.parse("sms:"));
+                sendIntent.putExtra("sms_body", messageBody);
+                startActivity(sendIntent);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
 //response on hitting user-trip-cancel API
         if (id == 2) {
             checkStatus();
@@ -135,7 +152,6 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuthCookie = prefPLoc.getString(AUTH_KEY, "");
         SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-        //String stringOtp = pref.getString(OTP_PICK, "");
         String stringVan = pref.getString(VAN_PICK, "");
         String stringDName = pref.getString(DRIVER_NAME, "");
         String stringDPhn = pref.getString(DRIVER_PHN, "");
@@ -146,8 +162,6 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         nameD.setText(stringDName);
         phone = findViewById(R.id.driver_phone);
         phone.setText(stringDPhn);
-        /*otp = findViewById(R.id.otp_ride);
-        otp.setText(stringOtp);*/
         shareDetails = findViewById(R.id.share_ride_details);
         shareDetails.setOnClickListener(this);
         emergencyCall = findViewById(R.id.emergency);
@@ -157,12 +171,37 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         endRide = findViewById(R.id.end_ride);
         endRide.setOnClickListener(this);
         scrollView = findViewById(R.id.scrollView_ride_OTP);
-        liveLocation = findViewById(R.id.share_location);
-        liveLocation.setOnClickListener(this);
         driverPhoto = findViewById(R.id.photo_driver);
 
         checkStatus();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityRideInProgress.this);
+        getDeviceID();
+    }
+
+    private void getDeviceID() {
+        HyperTrack sdkInstance = HyperTrack
+                .getInstance(PUBLISHABLE_KEY);
+
+        //deviceId.setText(sdkInstance.getDeviceID());
+        Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
+        deviceId = sdkInstance.getDeviceID();
+    }
+
+    private void getLocationUrl() {
+        String stringAuth = stringAuthCookie;
+        params.put("auth", stringAuth);
+        params.put("devid", deviceId);
+        JSONObject param = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-track");
+        UtilityApiRequestPost.doPOST(a, "user-trip-track", param, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 1);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
     }
 
 
@@ -242,74 +281,18 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         startActivity(intent);
     }
 
-    /* private void ImagePopup() {
-
-         imageDialog.setContentView(R.layout.popup_hours);
-         TextView txt1 = (TextView) imageDialog.findViewById(R.id.txt1);
-        */
-    /* TextView txt2 = (TextView) imageDialog.findViewById(R.id.txt2);
-        TextView txt3 = (TextView) imageDialog.findViewById(R.id.txt3);
-        */
-    /*RelativeLayout rl1 = (RelativeLayout) imageDialog.findViewById(R.id.rl_1);
-     */
-    /*RelativeLayout rl2 = (RelativeLayout) imageDialog.findViewById(R.id.rl_2);
-        RelativeLayout rl3 = (RelativeLayout) imageDialog.findViewById(R.id.rl_3);
-*/
-    /*
-        txt1.setText("SEND SMS");
-        */
-    /*txt2.setText("VIDEO CALL");
-        txt3.setText("CANCEL");*/
-    /*
-
-        rl1.setOnClickListener(this);
-       */
-    /* rl2.setOnClickListener(this);
-        rl3.setOnClickListener(this);*/
-    /*
-
-        imageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        imageDialog.show();
-        imageDialog.setCanceledOnTouchOutside(true);
-    }
-*/
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.share_ride_details) {
-            String messageBody = "I am riding ZIPP-E with\n Driver Name: " + nameD.getText().toString() + "\n Driver Mobile Number" + phone.getText().toString();
-            Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-            sendIntent.setData(Uri.parse("sms:"));
-            sendIntent.putExtra("sms_body", messageBody);
-            startActivity(sendIntent);
-            //ImagePopup();
-            //selectAction(ActivityRideInProgress.this);
+            getLocationUrl();
         } else if (id == R.id.emergency) {
             btnSetOnEmergency();
         } else if (id == R.id.end_ride) {
             alertDialog();
         } else if (id == R.id.track_your_location) {
             trackLocation();
-            /*case R.id.rl_1:
-             *//*
-                String messageBody = "I am riding ZIPP-E with\n Driver Name: "+nameD.getText().toString()+"\n Driver Mobile Number"+phone.getText().toString();
-                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.setData(Uri.parse("sms:"));
-                sendIntent.putExtra("sms_body", messageBody);
-                startActivity(sendIntent);
-                imageDialog.dismiss();*//*
-                break;*/
-            /*case R.id.rl_2:
-                Intent whatsappLaunch = getPackageManager().getLaunchIntentForPackage("com.whatsapp");
-                startActivity(whatsappLaunch);
-                imageDialog.dismiss();
-                break;*/
-            /*case R.id.rl_3:
-                imageDialog.dismiss();
-                break;*/
-        } else if (id == R.id.share_location) {
-            Snackbar snackbar = Snackbar.make(scrollView, R.string.coming_soon, Snackbar.LENGTH_LONG);
-            snackbar.show();
+
         }
     }
 }

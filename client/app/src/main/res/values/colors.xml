@@ -10,6 +10,9 @@
     <color name="Black">#000000</color>
     <color name="design_snackbar_background_color" tools:override="true">@color/colorAccent</color>
 
+    <color name="colorLabelStopped">#242213</color>
+    <color name="colorLabelError">#EF1709</color>
+    <color name="colorLabelActive">#00CE5B</color>
 
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>
