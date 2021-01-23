@@ -22,6 +22,10 @@ from django.db.utils import OperationalError, IntegrityError
 import urllib.request
 import json
 
+from hypertrack.rest import Client
+from hypertrack.exceptions import HyperTrackException
+
+
 ###########################################
 # Types
 Filename = str
@@ -265,7 +269,7 @@ def driverRideAccept(dct, driver):
                                     "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
         }
         }
-        dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+        dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA9ac2AKM:APA91bH7N4ocS711aAjNHEYvKo6TZxQ702CWSMqrBBILgAb2hPnZzo2byOb_IHUgHaFCG3xZyKUHH6p8VsUBsXwpfsXKwhxiqtgUSjWGkweKvAcb5p_08ud-U7e3PUIdaC6Sz-TGhHZB'}
         jsonData = json.dumps(params).encode()
         sUrl = 'https://fcm.googleapis.com/fcm/send'
         req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
@@ -388,8 +392,12 @@ def driverPaymentConfirm(_dct, driver, trip):
     # vehicle = Vehicle.objects.filter(an=trip.van)[0]
     # retireEntity(vehicle)
     # NOT required AS PER date 9/11/2020
-    
-    
+
+    # STOP tracking the User
+    hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID, settings.HYPERTRACK_SECRET_KEY)
+    hypertrack.trips.complete(str(trip.htid))
+    # done
+
     return HttpJSONResponse({})
 
 

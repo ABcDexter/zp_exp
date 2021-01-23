@@ -56,7 +56,7 @@ class Driver(Entity):
             self.log('Waiting for payment: Cost: %.2f, Dist %.2f km' % (float(ret['price']), d))
             # self.log('Waiting for payment: Cost: %.2f' % (float(ret['price'])))
 
-            pay = self.tryReadFileData('money.%d' % self.sTID, 'payment')
+            pay = self.tryReadFileData('money.%d' % self.sTID, 'p')
             if pay is not None:
                 self.log('Received payment: %.2f, rating user' % pay)
                 ret = self.callAPI('driver-payment-confirm')
