@@ -86,10 +86,8 @@
         <activity android:name=".rent.ActivityRentOTP" />
         <activity android:name=".rent.ActivityRentRequest" />
         <activity android:name=".rent.ActivityRentHome" />
-        <activity android:name=".UtilityBaseClass" />
         <activity android:name=".ActivityTrackYourProgress" />
         <activity android:name=".ride.ActivityRideRequest" />
-        <activity android:name=".ActivityProfileReview" />
         <activity android:name=".ActivityRateZippe" />
         <activity android:name=".ride.ActivityRideEnded" />
         <activity android:name=".ride.ActivityRideInProgress" />

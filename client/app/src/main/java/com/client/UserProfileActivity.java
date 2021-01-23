@@ -1,30 +1,40 @@
 package com.client;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
 import com.client.ride.ActivityRideHome;
@@ -32,6 +42,7 @@ import com.client.ride.ActivityRideHome;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +65,15 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
     public static final String NAME_KEY = "NameKey";
     public static final String PHN_KEY = "PhnKey";
-
+    ImageView profileImage;
+    int PERMISSION_ALL = 1;
+    String[] PERMISSIONS = {
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.INTERNET};
+    ImageButton btnSave;
+    Bitmap bitmap;
+    String pImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,11 +124,14 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
         nameText = findViewById(R.id.user_name);
         uploadAadhar = findViewById(R.id.upload_aadhar);
         btnEmail = findViewById(R.id.btn_email);
+        btnSave = findViewById(R.id.save_update);
         btnEmail.setOnClickListener(this);
         etEmail = findViewById(R.id.et_email);
         submitEmail = findViewById(R.id.submit);
         rlEmail = findViewById(R.id.rl_email);
         submitEmail.setOnClickListener(this);
+        profileImage = findViewById(R.id.profilePic);
+        profileImage.setOnClickListener(this);
 
         if (stringPhone.isEmpty())
             mobiletxt.setText("");
@@ -190,7 +212,8 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
             btnEmail.setVisibility(View.GONE);
             rlEmail.setVisibility(View.VISIBLE);
 
-        } else if (id == R.id.submit) {
+        }
+        if (id == R.id.submit) {
 
             strEmail = etEmail.getText().toString();
             if (TextUtils.isEmpty(strEmail)) {
@@ -199,6 +222,129 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
                 sendEmailAdd(strEmail);
             }
         }
+        if (id == R.id.profilePic) {
+            selectImage(UserProfileActivity.this);
+
+        }
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void selectImage(Context context) {
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        } else {
+            final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+
+                    if (options[item].equals("Take Photo")) {
+                        Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(takePicture, 1);
+
+                    } else if (options[item].equals("Choose from Gallery")) {
+                        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(pickPhoto, 2);
+
+                    } else if (options[item].equals("Cancel")) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            builder.show();
+        }
+    }
+
+    private void nextActivity(String picture) {
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d(TAG, "Control came to nextActivity()");
+                Map<String, String> params = new HashMap();
+                String auth = stringAuth;
+                params.put("auth", auth);
+                params.put("profilePhoto", picture);
+                JSONObject parameters = new JSONObject(params);
+                UserProfileActivity a = UserProfileActivity.this;
+                Log.d(TAG, "Values: profilePhoto=" + picture + " auth=" + auth);
+                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-photo-save");
+                UtilityApiRequestPost.doPOST(a, "auth-profile-photo-save", parameters, 30000, 0, response -> {
+                    try {
+                        a.onSuccess(response);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }, a::onFailure);
+            }
+        });
+    }
+
+    public void convertAndUpload(int identify) {
+
+        if (identify == 1 || identify == 2) {
+
+            profileImage.buildDrawingCache();
+            bitmap = profileImage.getDrawingCache();
+            //converting image to base64 string
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] imageBytes = baos.toByteArray();
+            pImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+            Log.d(TAG, "Profile Image converted to Base64" + pImage);
+            Log.d(TAG, "Control moved to nextActivity()");
+        }
+
+        nextActivity(pImage);
+    }
+
+    // This method will help to retrieve the image
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // Match the request 'pic id with requestCode
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_CANCELED) {
+            switch (requestCode) {
+                case 1:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
+                        profileImage.setImageBitmap(selectedImage);
+                        convertAndUpload(1);
+                    }
+                    break;
+                case 2:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Uri selectedImage = data.getData();
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                        if (selectedImage != null) {
+                            Cursor cursor = getContentResolver().query(selectedImage,
+                                    filePathColumn, null, null, null);
+                            if (cursor != null) {
+                                cursor.moveToFirst();
+                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                String picturePath = cursor.getString(columnIndex);
+                                profileImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                                cursor.close();
+                                convertAndUpload(2);
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+
     }
 
     private void sendEmailAdd(String email) {

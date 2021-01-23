@@ -420,4 +420,13 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="to_service_click">TO BOOK A SERVICE, PLEASE CLICK HERE.</string>
     <string name="got_it">Got It</string>
 
+    <string name="tracking_stopped" translatable="false">Not Tracking</string>
+    <string name="tracking_active" translatable="false">Tracking</string>
+    <string name="check_publishable_key" translatable="false">Check you publishable key</string>
+    <string name="enable_gps" translatable="false">Enable location data access</string>
+    <string name="permissions_not_granted" translatable="false">Data access permissions were not granted</string>
+    <string name="cant_start_tracking" translatable="false">Can\'t start tracking</string>
+    <string name="crew">CREW</string>
+    <string name="customer_support">CUSTOMER SUPPORT</string>
+
 </resources>

@@ -189,7 +189,7 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
             aadhar_f = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            Log.d(TAG, "CONVERT aadhar front converted to Base64" + aadhar_f);
+            Log.d(TAG, "aadhar front converted to Base64" + aadhar_f);
             Log.d(TAG, "Control moved to nextActivity()");
         }
         if (identify == 3 || identify == 4) {
@@ -200,7 +200,7 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
             aadhar_b = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            Log.d(TAG, "CONVERT aadhar back converted to Base64");
+            Log.d(TAG, "aadhar back converted to Base64");
             Log.d(TAG, "Control moved to nextActivity()");
         }
         nextActivity(aadhar_f, aadhar_b);

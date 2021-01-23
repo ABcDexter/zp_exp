@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -23,10 +25,14 @@ import com.client.rent.ActivityRentHistory;
 import com.client.ride.ActivityRideHistory;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.hypertrack.sdk.HyperTrack;
+import com.hypertrack.sdk.TrackingError;
+import com.hypertrack.sdk.TrackingStateObserver;
 
 import java.util.Objects;
 
-public class ActivityDrawer extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ActivityDrawer extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener , TrackingStateObserver.OnTrackingStateChangeListener{
+    private static final String TAG = "ActivityDrawer";
 
     private DrawerLayout mDrawerLayout = null;
     private ActionBarDrawerToggle mDrawerToggle = null;
@@ -36,8 +42,9 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
     TextView nameText;
     public static final String NAME_KEY = "NameKey";
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
-
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
+    private static final String PUBLISHABLE_KEY = "shXqLCv6GJVJ9QFgdHb6VL0JzE_7X96YoAX3ZxA919DLWOA1fayXhLg_NguIvRNypeaSpLu4U6JlYiwJahN8pA";
+    private HyperTrack sdkInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +54,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         String stringName = prefPLoc.getString(NAME_KEY, "");
 
-        int firstSpace = (stringName.contains(" ")) ? stringName.indexOf(" ") : stringName.length()-1;
+        int firstSpace = (stringName.contains(" ")) ? stringName.indexOf(" ") : stringName.length() - 1;
         String name = stringName.substring(0, firstSpace);
 
         nameText = findViewById(R.id.nameFrmServer);
@@ -55,7 +62,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         if (name.isEmpty())
             nameText.setText("");
         else {
-            nameText.setText(getString(R.string.hi , name));
+            nameText.setText(getString(R.string.hi, name));
             Log.d("USER_NAME", "name:" + name);
 
         }
@@ -100,6 +107,60 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
                 onBackPressed();
             }
         });
+        hyperTrack();
+    }
+
+    //method to use HyperTrack sdk for tracking location of user
+    private void hyperTrack() {
+        HyperTrack.enableDebugLogging();
+        sdkInstance = HyperTrack
+                .getInstance(PUBLISHABLE_KEY)
+                .addTrackingListener(this);
+
+        Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+        if (sdkInstance.isRunning()) {
+            onTrackingStart();
+        } else {
+            onTrackingStop();
+        }
+
+        sdkInstance.requestPermissionsIfNecessary();
+    }
+
+    // TrackingStateObserver.OnTrackingStateChangeListener interface methods
+    @Override
+    public void onError(TrackingError trackingError) {
+        Log.d(TAG, "onError: " + trackingError.message);
+        if (trackingError.code == TrackingError.INVALID_PUBLISHABLE_KEY_ERROR || trackingError.code == TrackingError.AUTHORIZATION_ERROR) {
+            Log.d(TAG, "check your publishable key");
+        } else if (trackingError.code == TrackingError.GPS_PROVIDER_DISABLED_ERROR) {
+            Log.d(TAG, "Enable location data access");
+        } else if (trackingError.code == TrackingError.PERMISSION_DENIED_ERROR) {
+            Log.d(TAG, "data access permissions were not granted");
+        } else {
+            Log.d(TAG, "can't start tracking");
+        }
+    }
+
+    @Override
+    public void onTrackingStart() {
+        Log.d(TAG, "tracking");
+    }
+ @Override
+    public void onTrackingStop() {
+        Log.d(TAG, "not tracking");
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sdkInstance.removeTrackingListener(this);
 
     }
 
@@ -139,11 +200,31 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         super.startActivity(intent);
     }
 
-    @Override
+    boolean doubleBackToExitPressedOnce = false;
+
+    /*@Override
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(ActivityDrawer.this, ActivityWelcome.class));
         finish();
+    }*/
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
     }
 
     @Override
