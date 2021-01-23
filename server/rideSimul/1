@@ -18,3 +18,29 @@ print(trip)
 {'trip_id': 'f1109dca-bbfc-4a35-a476-4c45c69bff56', 'device_id': 'B2F44D6F-4BFF-3858-9323-6B05DA70DEBD', 'started_at': '2021-01-22T09:37:52.132Z', 'completed_at': None, 'status': 'active', 'views': {'embed_url': 'https://embed.hypertrack.com/trips/f1109dca-bbfc-4a35-a476-4c45c69bff56?publishable_key=shXqLCv6GJVJ9QFgdHb6VL0JzE_7X96YoAX3ZxA919DLWOA1fayXhLg_NguIvRNypeaSpLu4U6JlYiwJahN8pA', 'share_url': 'https://trck.at/qedPjNv'}, 'device_info': {'os_version': '10', 'sdk_version': '4.9.0', 'os_name': 'Android'}, 'destination': {'geometry': {'type': 'Point', 'coordinates': [29.348567, 79.54465]}, 'radius': 30, 'scheduled_at': None, 'address': None}, 'summary': None, 'analytics': {}}
 hypertrack.trips.complete('f1109dca-bbfc-4a35-a476-4c45c69bff56')
 
+----------------------------------------
+
+>>> To convert a table to utf-8 mysql
+
+ALTER TABLE rate CONVERT TO CHARACTER SET utf8;
+
+ALTER TABLE rate COLLATE utf8_general_ci;
+
+----------------------------------------
+>>> To make the github webhooks work
+
+chown -R www-data:www-data *
+
+----------------------------------------
+
+>>> To delete __pycache__ and *.pyc files
+
+sudo find . -path "*/__pycache__" -type d -exec rm -r {} ';'
+
+----------------------------------------
+
+>>> To clean migrations
+sudo find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+sudo find . -path "*/migrations/*.pyc" -not -name "__init__.py" -delete
+
+----------------------------------------

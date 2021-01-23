@@ -285,7 +285,7 @@ class Trip(models.Model):
     rtype = models.CharField(db_index=True, choices=TYPES,  max_length=10, default=2)  # default 2, dummy value
     pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)  # default UPI
     hrs = models.IntegerField(db_index=True, default=0)
-    # url = models.CharField(max_length=30, null=True)
+    url = models.CharField(max_length=30, null=True)
 
     class Meta:
         db_table = 'trip'
