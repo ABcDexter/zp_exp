@@ -1502,10 +1502,9 @@ def bankValidateData(_, dct:Dict):
 @checkTripStatus(['ST'])
 def userTripTrack(_dct, user, trip):
     '''
-
     Args:
         auth: auth of the entity (user)
-        devid: device id of the android devide from hypertrack SDK
+        devid: device id of the android device from hypertrack SDK
 
     Returns:
         hypertid: trip_id of the hypertrack
