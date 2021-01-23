@@ -1519,7 +1519,9 @@ def userTripTrack(dct, user, trip):
                     # [29.34856700, 79.5446500]}}} this takes longitude, latitude instead of lat,lng
         htrip = hypertrack.trips.create(trip_data)
         trip.htid = htrip['trip_id']
-        resp = {'htid': htrip['trip_id'], 'hurl': htrip['views']['share_url']}
+        trip.url = htrip['views']['share_url']
+        trip.save()
+        resp = {'htid': trip.htid, 'hurl': trip.url}
     else:
         resp = {'hurl': trip.url}
 
