@@ -2,10 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item
-        android:id="@+id/nav_logout"
-        android:icon="@drawable/ic_logout"
-        android:title="@string/log_out" />
     <!--<item
         android:id="@+id/nav_partner"
         android:icon="@drawable/ic_logo"
@@ -13,7 +9,7 @@
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_account_circle"
-        android:title="@string/profile" />
+        android:title= "@string/profile" />
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home_black"
@@ -34,11 +30,18 @@
     <item
         android:id="@+id/nav_customer_support"
         android:icon="@drawable/ic_insert_comment"
-        android:title="CUSTOMER SUPPORT" />
+        android:title="@string/customer_support" />
 
     <item
         android:id="@+id/nav_tnc"
         android:icon="@drawable/ic_insert_comment"
         android:title="@string/terms_and_conditions" />
-
+    <item
+        android:id="@+id/nav_about"
+        android:icon="@drawable/ic_group"
+        android:title="@string/crew" />
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_logout"
+        android:title="@string/log_out" />
 </menu>

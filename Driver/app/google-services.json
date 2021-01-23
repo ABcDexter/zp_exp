@@ -2,6 +2,7 @@
   "project_info": {
     "project_number": "530793127260",
     "project_id": "zippe-driver-app",
+    "firebase_url": "https://console.firebase.google.com/project/zippe-driver-app/overview",
     "storage_bucket": "zippe-driver-app.appspot.com"
   },
   "client": [
