@@ -1511,12 +1511,16 @@ def userTripTrack(dct, user, trip):
         hurl : url of the live location link form hypertrack
 
     '''
-    hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID , settings.HYPERTRACK_SECRET_KEY)
+    if trip.url == None:
+        hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID , settings.HYPERTRACK_SECRET_KEY)
 
-    trip_data = {"device_id": dct['devid'],
-                 "destination": {"geometry": {"type": "Point", "coordinates": [trip.dstlng, trip.dstlat] }}}
-                # [29.34856700, 79.5446500]}}} this takes longitude, latitude instead of lat,lng
-    trip = hypertrack.trips.create(trip_data)
-    resp = {'htid': trip['trip_id'], 'hurl': trip['views']['share_url']}
+        trip_data = {"device_id": dct['devid'],
+                     "destination": {"geometry": {"type": "Point", "coordinates": [trip.dstlng, trip.dstlat] }}}
+                    # [29.34856700, 79.5446500]}}} this takes longitude, latitude instead of lat,lng
+        htrip = hypertrack.trips.create(trip_data)
+        trip.htid = htrip['trip_id']
+        resp = {'htid': htrip['trip_id'], 'hurl': htrip['views']['share_url']}
+    else:
+        resp = {'hurl': trip.url}
 
     return HttpJSONResponse(resp)
