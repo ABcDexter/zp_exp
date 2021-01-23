@@ -282,7 +282,7 @@ def userDeliverySchedule(dct, user):
     """
 
     
-    print("#######  ", len(dct), "Delivery scheduling request param : ",  dct)
+    print("##", len(dct), "Delivery scheduling request param : ",  dct)
 
     # if user already has a delivery request, don't entertain this one
     
@@ -338,7 +338,7 @@ def userDeliverySchedule(dct, user):
         pDinaank = datetime(pYear, pMonth, pDate, pHour - 6 , (pMinute + 35) % 60, 00)
     else:
         pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , (pMinute - 25) % 60, 00)
-    #pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , ( pMinute - 25 ) % 60  , 00) #does nto work for time with min <30, dated 20-11-2020
+
     print("DATETIME for RQ is : ", pDinaank)
 
     dYear = int(dct['pYear'])
@@ -423,14 +423,14 @@ def userRideSchedule(dct, user):
         dinaank = datetime(year, month, date, hour - 1, (minute - 30) % 60, 00)
     else:
         dinaank = datetime(year, month, date, hour, minute - 30, 00)
-    # dinaank = datetime(year, month, date, hour - 1, minute, 30)
+
     print(dinaank)
     global sched
     sched.pause()
     sched.add_job(callAPI, 'date', run_date=dinaank,
                   args=['user-ride-request', params, user.auth])
     print(sched)
-    print(sched.get_jobs())  # _jobstores.ne #job.next_run_time)
+    print(sched.get_jobs())
     sched.resume()
     time.sleep(5)
 
