@@ -820,5 +820,5 @@ class Job(models.Model):
 
 
     class Meta:
-        db_table = 'place'
+        db_table = 'job'
         managed = True
