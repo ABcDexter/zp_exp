@@ -24,7 +24,7 @@ import json
 import urllib.request
 from woocommerce import API
 from ast import literal_eval
-
+from ..models import Job
 
 ###########################################
 # Types
@@ -137,8 +137,8 @@ def registorServitor(_, dct):
     sJob1 = str(dct['job1'])
     sJob2 = str(dct['job2']) if 'job2' in dct else ''
     sJob3 = str(dct['job3']) if 'job3' in dct else ''
-    sJob3 = str(dct['job4']) if 'job4' in dct else ''
-    sJob3 = str(dct['job5']) if 'job5' in dct else ''
+    sJob4 = str(dct['job4']) if 'job4' in dct else ''
+    sJob5 = str(dct['job5']) if 'job5' in dct else ''
 
     # address proof
     #TODO save the address proof
