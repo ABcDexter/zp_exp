@@ -124,7 +124,6 @@ def registorServitor(_, dct):
         job2: secondary job of servitor
         job3: tertiary job of servitor
 
-        #TODO : add the job field for the servitor, get them as comma separated values....
     '''
 
     sPhone = str(dct['pn'])

@@ -712,8 +712,9 @@ class Servitor(models.Model):
     pid(int):   Index of current place - see Place table
     hs(str):    Home state of the Servitor
     job(str):   What does that person does
-    wage(float) : hourly charge
-    mar(float) : rating of the service person
+    wage(float): hourly charge
+    mark(float): rating of the service person
+    bank(str): bank details of the Servitor
     """
 
     # id is the primary key auto incremented
@@ -733,6 +734,7 @@ class Servitor(models.Model):
     job3  = models.CharField(null=True, max_length=50)
     wage = models.FloatField(db_index=True, default=0.0)
     mark = models.FloatField(db_index=True, default=0.0)
+    bank = models.CharField(null=False, max_length=450, default='')
 
     class Meta:
         db_table = 'servitor'
