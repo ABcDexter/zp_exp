@@ -49,21 +49,18 @@ makeView.APP_NAME = 'zp'
 @checkAuth()
 def authBookingGet(dct, entity):
     '''
-    Adds or edits a product with sku,
+    HTTP Args:
+        auth : auth of the entity
 
-        name(str): name of the product
-        type(bool): simple 0 or grouped 1
-        regular_price (float): MRP of the product 
-        cost_price (float): price we are getting the product at
-        sale_price (float): selling price of the product 
-        
-        stock_quantity(int):   quantity of the item in the stock
-        categories(str): product categories( see Category table)
-        weight (float): weight (in grams) of one unit of the product 
-        SKU(str): PRIMARY key
-        
-        tax_class(float): how much tax on the product
-        low_stock_amount(int): low stock alert
+    get the bookings :
+        servitor : this gives some weird arrOrder which i had previously written
+
+        "start": Starting date and time of the booking
+        "end" : Ending date and time of the booking
+        "billing": billing details of the booking
+        "customer_note": cusotmer_note if any
+        "job": type of the job
+
     '''
    
     #WooCommerce update
@@ -85,12 +82,14 @@ def authBookingGet(dct, entity):
         arrOrder = json.loads( "[" + zz + "]")
         z = arrOrder[0]
 
+        x = i
         if 'start' in z['value']:
             orders = {"servitor": arrOrder,
                       "start": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
                       "end" : str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
                       "billing": i['billing'],
-                      "customer_note": i['customer_note']
+                      "customer_note": i['customer_note'],
+                      "job": x['line_items'][0]['name']
                     }
             #print(orders)
             ordersResp.append(orders)
@@ -128,6 +127,10 @@ def registorServitor(_, dct):
         job5 : 5th job of servitor
 
         bank : Bank details of the servitor
+
+    Resposnse:
+        auth : auth key of the servitor
+        name : name of the servitor
 
     '''
 
@@ -200,6 +203,16 @@ def loginServitor(_, dct):
         pn  : phone number of the Servitor without the ISD code
         key : rot13(auth) of Servitor
 
+    Response :
+        status : true or false depending on whether the login was successful
+
+        if true, then
+
+        auth: auth key of the servitor
+        an: an of the servitor
+        pn: phone number of the servitor
+        name: name of the servitor
+
     '''
 
     sPhone = str(dct['pn'])
@@ -215,9 +228,7 @@ def loginServitor(_, dct):
         log('Auth exists for: %s' % (dct['pn']))
         ret = {'status': True, 'auth':qsServitor[0].auth, 'an':qsServitor[0].an, 'pn' : qsServitor[0].pn, 'name': qsServitor[0].name}    
         return HttpJSONResponse(ret)
-    
-    return HttpJSONResponse({})
-    
+
 
 
 @makeView()
@@ -231,6 +242,8 @@ def servitorJobsList(dct, servitor):
 
     HTTP params:
         auth
+    Response:
+        json of 5 jobs
 
     '''
     return HttpJSONResponse({'job1': str(servitor.job1), 'job2': str(servitor.job2), 'job3': str(servitor.job3),
@@ -250,7 +263,12 @@ def authJobGet(dct, entity):
     HTTP params:
         auth
 
+    Reponse:
+        json Object which contains the list of all jobs
+
     '''
 
     qsJob = Job.objects.all().values('id', 'jname', 'jtype')
     return HttpJSONResponse({'job': list(qsJob)})
+
+
