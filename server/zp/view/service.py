@@ -135,6 +135,8 @@ def registorServitor(_, dct):
 
     # address proof
     # bank details
+    sBank = str(dct['bank']) if 'bank' in dct else ''
+
     # picture
 
     qsServitor = Servitor.objects.filter(pn=sPhone)
@@ -148,7 +150,7 @@ def registorServitor(_, dct):
         servitor.auth = getClientAuth(sAn, sPhone)
         servitor.name = sName
         servitor.pn = sPhone
-
+        servitor.bank = sBank
         servitor.job1 = sJob1
         servitor.job2 = sJob2
         servitor.job3 = sJob3
