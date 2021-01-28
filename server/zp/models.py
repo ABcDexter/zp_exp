@@ -713,24 +713,27 @@ class Servitor(models.Model):
     hs(str):    Home state of the Servitor
     job(str):   What does that person does
     wage(float) : hourly charge
+    mar(float) : rating of the service person
     """
 
     # id is the primary key auto incremented
 
-    an   = models.BigIntegerField(primary_key=True) #db_index=True, null=True)
+    an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
     auth = models.CharField(max_length=16, db_index=True)
     pid  = models.IntegerField(null=True, db_index=True)
 
     dl   = models.CharField(null=True, max_length=20)
     name = models.CharField(null=True, max_length=64, db_index=True)
-    gdr  = models.CharField(null=True, max_length=16, db_index=True)
+    gdr  = models.CharField(null=True, max_length=10, db_index=True)
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
     job1  = models.CharField(null=False, max_length=50, default='')
     job2  = models.CharField(null=True, max_length=50)
     job3  = models.CharField(null=True, max_length=50)
     wage = models.FloatField(db_index=True, default=0.0)
+    mark = models.FloatField(db_index=True, default=0.0)
+
     class Meta:
         db_table = 'servitor'
         managed = True
