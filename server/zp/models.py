@@ -809,13 +809,12 @@ class Job(models.Model):
     jname(str)    :   Job name
     jtype(int)    :   Type of the job
     """
-    jn = models.CharField(max_length=64, db_index=True, unique=True, null=False)
     TYPE = [
         ('esse', 'EssentialServices'),
         ('prof', 'ProfessionalService'),
         ('hire', 'ForHire')
     ]
-    jname = models.CharField(max_length=100, db_index=True)
+    jname = models.CharField(max_length=100, db_index=True, unique=True, null=False)
     jtype = models.CharField(max_length=5, choices=TYPE, default='None')
 
 
