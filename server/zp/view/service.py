@@ -134,6 +134,9 @@ def registorServitor(_, dct):
     sJob2 = str(dct['job2']) if 'job2' in dct else ''
     sJob3 = str(dct['job3']) if 'job3' in dct else ''
 
+    # address proof
+    # bank details
+    # picture
 
     qsServitor = Servitor.objects.filter(pn=sPhone)
 
