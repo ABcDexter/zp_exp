@@ -799,3 +799,26 @@ class Location(models.Model):
         db_table = 'location'
         ordering = ['lat', 'lng']
         managed = True
+
+
+class Job(models.Model):
+    """
+    predefined Jobs for the servitor
+    -----------------------------------------------------
+    id(int)    :   Autoincrement primary key
+    jname(str)    :   Job name
+    jtype(int)    :   Type of the job
+    """
+    jn = models.CharField(max_length=64, db_index=True, unique=True, null=False)
+    TYPE = [
+        ('esse', 'EssentialServices'),
+        ('prof', 'ProfessionalService'),
+        ('hire', 'ForHire')
+    ]
+    jname = models.CharField(max_length=100, db_index=True)
+    jtype = models.CharField(max_length=5, choices=TYPE, default='None')
+
+
+    class Meta:
+        db_table = 'place'
+        managed = True
