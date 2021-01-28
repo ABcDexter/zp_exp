@@ -717,8 +717,6 @@ class Servitor(models.Model):
     bank(str): bank details of the Servitor
     """
 
-    # id is the primary key auto incremented
-
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
     auth = models.CharField(max_length=16, db_index=True)
@@ -729,12 +727,12 @@ class Servitor(models.Model):
     gdr  = models.CharField(null=True, max_length=10, db_index=True)
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
-    job1  = models.CharField(null=False, max_length=50, default='')
-    job2  = models.CharField(null=True, max_length=50)
-    job3  = models.CharField(null=True, max_length=50)
+    job1 = models.CharField(null=False, max_length=50, default='')
+    job2 = models.CharField(null=True, max_length=50)
+    job3 = models.CharField(null=True, max_length=50)
     wage = models.FloatField(db_index=True, default=0.0)
     mark = models.FloatField(db_index=True, default=0.0)
-    bank = models.CharField(null=False, max_length=450, default='')
+    bank = models.CharField(null=False, max_length=300, default='')
 
     class Meta:
         db_table = 'servitor'
