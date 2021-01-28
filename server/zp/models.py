@@ -717,7 +717,7 @@ class Servitor(models.Model):
 
     # id is the primary key auto incremented
 
-    an   = models.BigIntegerField(db_index=True, null=True)
+    an   = models.BigIntegerField(primary_key=True) #db_index=True, null=True)
     pn   = models.CharField(max_length=32, db_index=True)
     auth = models.CharField(max_length=16, db_index=True)
     pid  = models.IntegerField(null=True, db_index=True)
