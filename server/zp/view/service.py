@@ -207,7 +207,7 @@ def loginServitor(_, dct):
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def ServitorProductGet(dct, entity):
+def ServitorJobGet(dct, entity):
     '''
     Get the list of all products from zippe.in website
     #TODO rename this to get all jobs
@@ -217,7 +217,6 @@ def ServitorProductGet(dct, entity):
     '''
     
     #getcontext().prec = 1000
-    qsProduct = Product.objects.all().values('id','name','categories')
-    return HttpJSONResponse({'product': list(qsProduct)})
+    qsJob = Product.objects.all().values('id','name','categories')
+    return HttpJSONResponse({'job': list(qsJob)})
 
-    return HttpJSONResponse(products)
