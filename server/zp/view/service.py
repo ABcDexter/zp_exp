@@ -190,8 +190,9 @@ def loginServitor(_, dct):
     '''
 
     sPhone = str(dct['pn'])
-    sAuth = str(dct['key'])
-    
+    from codecs import encode
+    sAuth = encode(str(dct['key']), 'rot13')
+
     qsServitor = Servitor.objects.filter(auth=sAuth, pn=sPhone)
     bServitorExists = len(qsServitor) != 0
     if not bServitorExists:
