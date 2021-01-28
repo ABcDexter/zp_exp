@@ -701,6 +701,7 @@ class Servitor(models.Model):
     """
     Servitor is the the Service providing person
     --------------------------------------------
+
     an(int):    Aadhaar number
     pn(str):    Phone number
     auth(str):  Servitor auth token
@@ -714,7 +715,9 @@ class Servitor(models.Model):
     wage(float) : hourly charge
     """
 
-    an   = models.BigIntegerField(primary_key=True)
+    # id is the primary key auto incremented
+
+    an   = models.BigIntegerField(db_index=True, null=True)
     pn   = models.CharField(max_length=32, db_index=True)
     auth = models.CharField(max_length=16, db_index=True)
     pid  = models.IntegerField(null=True, db_index=True)
@@ -724,7 +727,7 @@ class Servitor(models.Model):
     gdr  = models.CharField(null=True, max_length=16, db_index=True)
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
-    job  = models.CharField(null=True, max_length=50)
+    job  = models.CharField(null=True, max_length=150)
     wage = models.FloatField(db_index=True, default=0.0)
     class Meta:
         db_table = 'servitor'

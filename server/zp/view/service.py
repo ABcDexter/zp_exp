@@ -18,7 +18,7 @@ from ..utils import getOTP
 from ..utils import handleException, extractParams, checkAuth, retireDelEntity, getClientAuth
 
 import googlemaps
-from ..utils import extract_name_from_pin
+from ..utils import extract_name_from_pin, getClientAuth
 from django.forms.models import model_to_dict
 import json
 import urllib.request
@@ -112,6 +112,57 @@ def authBookingGet(dct, entity):
 @handleException(KeyError, 'Invalid parameters', 501)
 @transaction.atomic
 @extractParams
+def registorServitor(_, dct):
+    '''
+    Servitor registration
+    makes the Servitor register with phone number
+
+    HTTP Args:
+        pn: phone number of the Servitor without the ISD code
+        key: auth of Servitor
+
+        #TODO : add the job field for the servitor, get them as comma separated values....
+    '''
+
+    sPhone = str(dct['pn'])
+    sName = str(dct['name'])
+    sJob = str(dct['jobs'])
+
+
+    qsServitor = Servitor.objects.filter(pn=sPhone)
+
+    bServitorExists = len(qsServitor) != 0
+    if not bServitorExists:
+        log('Servitor not registered with phone : %s' % (dct['pn']))
+
+        servitor = Servitor()
+        tempAn = servitor.id
+        servitor.auth = getClientAuth(tempAn, sPhone)
+        servitor.name = sName
+        servitor.pn = sPhone
+        servitor.job = sJob
+        servitor.save()
+
+        return HttpJSONResponse({'status': 'false'})
+    else:
+        log('Auth exists for: %s' % (dct['pn']))
+
+        qsServitor[0].name = sName
+        qsServitor[0].job = sJob
+        qsServitor[0].save()
+
+        ret = {'status': True, 'auth': qsServitor[0].auth, 'an': qsServitor[0].an, 'pn': qsServitor[0].pn,
+               'name': qsServitor[0].name}
+        return HttpJSONResponse(ret)
+
+    return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
 def loginServitor(_, dct):
     '''
     Servitor login
@@ -120,7 +171,7 @@ def loginServitor(_, dct):
     HTTP Args:
         pn: phone number of the Servitor without the ISD code
         key: auth of Servitor
-        
+
     '''
 
     sPhone = str(dct['pn'])
