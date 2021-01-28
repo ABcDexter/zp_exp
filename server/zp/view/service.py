@@ -49,18 +49,24 @@ makeView.APP_NAME = 'zp'
 @checkAuth()
 def authBookingGet(dct, entity):
     '''
+    get the bookings
+
     HTTP Args:
         auth : auth of the entity
 
-    get the bookings :
-        servitor : this gives some weird arrOrder which i had previously written
-
-        "start": Starting date and time of the booking
-        "end" : Ending date and time of the booking
-        "billing": billing details of the booking
-        "customer_note": cusotmer_note if any
-        "job": type of the job
-
+    Respose:
+    bookings : [
+        {
+            bid                 : booking id
+            "start"             : Starting date and time of the booking
+            "end"               : Ending date and time of the booking
+            "job"               : type of the job
+            "customer_name"     : customer name,
+            "customer_phone"    : customer phone number
+            "customer_address"  : customer address with PIN code
+            "customer_note"     : cusotmer_note if any
+        }
+    ]
     '''
    
     #WooCommerce update
@@ -84,18 +90,26 @@ def authBookingGet(dct, entity):
 
         x = i
         if 'start' in z['value']:
-            orders = {"servitor": arrOrder,
+            orders = {
+                      #"servitor": arrOrder,
+                      "bid" : x['id'],
+                      "job": x['line_items'][0]['name'],
+
                       "start": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
                       "end" : str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
-                      "billing": i['billing'],
+
+                      #"billing": i['billing'],
+                      "customer_name": i['billing']['first_name'] + " " + i['billing']['last_name'] ,
+                      "customer_phone": i['billing']['phone'],
                       "customer_note": i['customer_note'],
-                      "job": x['line_items'][0]['name']
+                      "customer_address": i['billing']['address_1'] + " , " + i['billing']['address_2'] + " , " +
+                                          i['billing']['city'] + " , " + i['billing']['state'] + " , " +
+                                          i['billing']['postcode']
+
                     }
             #print(orders)
             ordersResp.append(orders)
-
-    print(ordersResp)
-
+    #print(ordersResp)
 
     return HttpJSONResponse({"booking":ordersResp})
 
