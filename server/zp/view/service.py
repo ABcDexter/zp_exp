@@ -118,11 +118,16 @@ def registorServitor(_, dct):
     makes the Servitor register with phone number
 
     HTTP Args:
-        pn: phone number of the Servitor without the ISD code
-        key: auth of Servitor
-        job1: primary job of servitor (Compulsary)
-        job2: secondary job of servitor
-        job3: tertiary job of servitor
+        pn   : phone number of the Servitor without the ISD code
+        name : auth of Servitor
+
+        job1 : primary job of servitor (Compulsary)
+        job2 : secondary job of servitor
+        job3 : tertiary job of servitor
+        job4 : 4th job of servitor
+        job5 : 5th job of servitor
+
+        bank : Bank details of the servitor
 
     '''
 
@@ -132,12 +137,17 @@ def registorServitor(_, dct):
     sJob1 = str(dct['job1'])
     sJob2 = str(dct['job2']) if 'job2' in dct else ''
     sJob3 = str(dct['job3']) if 'job3' in dct else ''
+    sJob3 = str(dct['job4']) if 'job4' in dct else ''
+    sJob3 = str(dct['job5']) if 'job5' in dct else ''
 
     # address proof
+    #TODO save the address proof
+
     # bank details
     sBank = str(dct['bank']) if 'bank' in dct else ''
 
     # picture
+    #TODO save the picture
 
     qsServitor = Servitor.objects.filter(pn=sPhone)
 
@@ -154,6 +164,8 @@ def registorServitor(_, dct):
         servitor.job1 = sJob1
         servitor.job2 = sJob2
         servitor.job3 = sJob3
+        servitor.job4 = sJob4
+        servitor.job5 = sJob5
         servitor.save()
 
         return HttpJSONResponse({'auth' : servitor.auth, 'name':servitor.name})
@@ -164,13 +176,14 @@ def registorServitor(_, dct):
         qsServitor[0].job1 = sJob1
         qsServitor[0].job2 = sJob2
         qsServitor[0].job3 = sJob3
+        qsServitor[0].job4 = sJob4
+        qsServitor[0].job5 = sJob5
         qsServitor[0].save()
 
         ret = {'status': True, 'auth': qsServitor[0].auth, 'an': qsServitor[0].an, 'pn': qsServitor[0].pn,
                'name': qsServitor[0].name}
         return HttpJSONResponse(ret)
 
-    return HttpJSONResponse({})
 
 
 @makeView()
@@ -184,8 +197,8 @@ def loginServitor(_, dct):
     makes the Servitor login with phone number
     
     HTTP Args:
-        pn: phone number of the Servitor without the ISD code
-        key: auth of Servitor
+        pn  : phone number of the Servitor without the ISD code
+        key : rot13(auth) of Servitor
 
     '''
 
@@ -212,15 +225,32 @@ def loginServitor(_, dct):
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def ServitorJobGet(dct, entity):
+def servitorJobsList(dct, servitor):
     '''
-    Get the list of all products from zippe.in website
-    #TODO rename this to get all jobs
+    Get the list of the 5 jobs that this servitor can get
+
     HTTP params:
         auth
 
     '''
-    
-    qsJob = Product.objects.all().values('id','name','categories')
-    return HttpJSONResponse({'job': list(qsJob)})
+    return HttpJSONResponse({'job1': str(servitor.job1), 'job2': str(servitor.job2), 'job3': str(servitor.job3),
+                            'job4': str(servitor.job4), 'job5': str(servitor.job5)})
 
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def authJobGet(dct, entity):
+    '''
+    Get the list of all jobs from Job table for this entity
+
+    HTTP params:
+        auth
+
+    '''
+
+    qsJob = Job.objects.all().values('id', 'jname', 'jtype')
+    return HttpJSONResponse({'job': list(qsJob)})

@@ -727,9 +727,14 @@ class Servitor(models.Model):
     gdr  = models.CharField(null=True, max_length=10, db_index=True)
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
-    job1 = models.CharField(null=False, max_length=50, default='')
-    job2 = models.CharField(null=True, max_length=50)
-    job3 = models.CharField(null=True, max_length=50)
+
+    # 5 jobs of the Servitor
+    job1 = models.CharField(null=False, max_length=3, default='')
+    job2 = models.CharField(null=True, max_length=3)
+    job3 = models.CharField(null=True, max_length=3)
+    job4 = models.CharField(null=True, max_length=3)
+    job5 = models.CharField(null=True, max_length=3)
+
     wage = models.FloatField(db_index=True, default=0.0)
     mark = models.FloatField(db_index=True, default=0.0)
     bank = models.CharField(null=False, max_length=300, default='')
