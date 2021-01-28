@@ -218,7 +218,6 @@ def ServitorJobGet(dct, entity):
 
     '''
     
-    #getcontext().prec = 1000
     qsJob = Product.objects.all().values('id','name','categories')
     return HttpJSONResponse({'job': list(qsJob)})
 
