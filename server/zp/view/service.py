@@ -120,13 +120,19 @@ def registorServitor(_, dct):
     HTTP Args:
         pn: phone number of the Servitor without the ISD code
         key: auth of Servitor
+        job1: primary job of servitor (Compulsary)
+        job2: secondary job of servitor
+        job3: tertiary job of servitor
 
         #TODO : add the job field for the servitor, get them as comma separated values....
     '''
 
     sPhone = str(dct['pn'])
+    sAn = '91' + sPhone
     sName = str(dct['name'])
-    sJob = str(dct['jobs'])
+    sJob1 = str(dct['job1'])
+    sJob2 = str(dct['job2']) if 'job2' in dct else ''
+    sJob3 = str(dct['job3']) if 'job3' in dct else ''
 
 
     qsServitor = Servitor.objects.filter(pn=sPhone)
@@ -136,19 +142,24 @@ def registorServitor(_, dct):
         log('Servitor not registered with phone : %s' % (dct['pn']))
 
         servitor = Servitor()
-        tempAn = servitor.id
-        servitor.auth = getClientAuth(tempAn, sPhone)
+        servitor.an = sAn
+        servitor.auth = getClientAuth(sAn, sPhone)
         servitor.name = sName
         servitor.pn = sPhone
-        servitor.job = sJob
+
+        servitor.job1 = sJob1
+        servitor.job2 = sJob2
+        servitor.job3 = sJob3
         servitor.save()
 
-        return HttpJSONResponse({'status': 'false'})
+        return HttpJSONResponse({'auth' : servitor.auth, 'name':servitor.name})
     else:
         log('Auth exists for: %s' % (dct['pn']))
 
         qsServitor[0].name = sName
-        qsServitor[0].job = sJob
+        qsServitor[0].job1 = sJob1
+        qsServitor[0].job2 = sJob2
+        qsServitor[0].job3 = sJob3
         qsServitor[0].save()
 
         ret = {'status': True, 'auth': qsServitor[0].auth, 'an': qsServitor[0].an, 'pn': qsServitor[0].pn,
@@ -199,7 +210,7 @@ def loginServitor(_, dct):
 def ServitorProductGet(dct, entity):
     '''
     Get the list of all products from zippe.in website
-        
+    #TODO rename this to get all jobs
     HTTP params:
         auth
 
