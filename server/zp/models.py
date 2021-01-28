@@ -727,7 +727,9 @@ class Servitor(models.Model):
     gdr  = models.CharField(null=True, max_length=16, db_index=True)
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
-    job  = models.CharField(null=True, max_length=150)
+    job1  = models.CharField(null=False, max_length=50, default='')
+    job2  = models.CharField(null=True, max_length=50)
+    job3  = models.CharField(null=True, max_length=50)
     wage = models.FloatField(db_index=True, default=0.0)
     class Meta:
         db_table = 'servitor'
