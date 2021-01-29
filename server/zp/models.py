@@ -25,6 +25,7 @@ class User(models.Model):
     adhar(int) :   Aadhaar number of the user
     email(str) :   Email of the user
     fcm(str)   :   Firebase Cloud Messaging token of the User android app
+    -----------------------------------------
     """
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
@@ -66,6 +67,7 @@ class Driver(models.Model):
     hs(str)    :   Home state of the Driver
     mark(float):   Float field for the rating of the driver.
     fcm(str)   :   Firebase Cloud Messaging token of the Driver android app
+    -----------------------------------------
     """
     MODES = [
         ('RG', 'registering'),  # driver is under registration process
@@ -107,6 +109,7 @@ class Place(models.Model):
     lng(float) :   Longitude
     alt(int)   :   Altitude in meters
     wt(int)    :   Weightage - economic weightage (0 is remote village, 100 is a commercial place)
+    -----------------------------------------
     """
     pn = models.CharField(max_length=64, db_index=True, unique=True, null=False)
     lat = models.FloatField()
@@ -126,6 +129,7 @@ class Route(models.Model):
     idx(int): first place id from places table
     idy(int): second place id from places table
     dist(int): distance in meters
+    -----------------------------------------
     """
     idx = models.IntegerField()
     idy = models.IntegerField()
@@ -155,7 +159,7 @@ class Vehicle(models.Model):
     pid(id)       :  Place where this vehicle is parked
     vtype(int)    :  vehicle type (e-cycle/ escooty/ ebike/ zbee)
     mark(float)   :  float field has the rating, binary system same as that of the user/driver
-
+    -----------------------------------------
     Note:
         hrs represents total time when the vehicle was mobile, not total trip time
         - this data has to come from the vehicle IoT data
@@ -211,10 +215,10 @@ class Trip(models.Model):
     uan(int)  : User aadhaar
     dan(int)  : Driver aadhaar
     van(int)  : Vehicle assigned number
-    rtime     :    Trip request timestamp
-    atime     :    Trip assign timestamp
-    stime     :    Trip start timestamp
-    etime     :    Trip end time (regardless of completion or failure)
+    rtime     : Trip request timestamp
+    atime     : Trip assign timestamp
+    stime     : Trip start timestamp
+    etime     : Trip end time (regardless of completion or failure)
     srcid     : Source place id
     dstid     : Destination place id
     srcname   : Name of Source
@@ -230,6 +234,7 @@ class Trip(models.Model):
     rvtype    : requested vehicle type
     url       : url for tracking
     htid      : tid for trip
+    -----------------------------------------
     """
     STATUSES = [
         ('RQ', 'requested'),  # requested from the user via app
@@ -300,7 +305,7 @@ class Progress(models.Model):
     ------------------------------------------------------------------
     tid(int): trip id
     pct(int):  progress percent
-
+    -----------------------------------------
     """
     tid = models.IntegerField(primary_key=True)
     pct = models.IntegerField(db_index=True)
@@ -323,6 +328,7 @@ class Supervisor(models.Model):
     age(int):   Age
     pid(int):   Index of current place - see Place table
     hs(str):    Home state of the Supervisor
+    -----------------------------------------
     """
 
     an   = models.BigIntegerField(primary_key=True)
@@ -356,6 +362,7 @@ class Manager(models.Model):
     pid(int): Index of the current hub - todo Hub table
     #todo how to add list of vehicle to this Manager
     hs(str): Home state
+    -----------------------------------------
     """
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
@@ -379,6 +386,8 @@ class Manager(models.Model):
 class Delivery(models.Model):
     """
     tabula rasa
+    -----------------------------------------
+    -----------------------------------------
     """
     STATUSES = [
         ('SC', 'scheduled'),  # scheduler by the user via app
@@ -509,6 +518,7 @@ class Agent(models.Model):
     veh(int): Has a vehicle or not
     mark(float): float field has the rating, binary system same as that of the user/driver
     fcm(str)   :   Firebase Cloud Messaging token of the Agent android app
+    -----------------------------------------
     """
     MODES = [
         ('RG', 'registering'),  # Agent is under registration process
@@ -554,6 +564,7 @@ class Rate(models.Model):
     rev = review in detail
     time = timestamp when rating was done
     dan = driver/supervisor aadhaar number
+    -----------------------------------------
     """
     TYPE = [
         ('RIDE', 'ride'),
@@ -603,6 +614,7 @@ class Product(models.Model):
     
     tax_class(float): how much tax on the product
     low_stock_amount(int): low stock alert
+    -----------------------------------------
     """
     #id is given by default
     #id = models.AutoField(primary_key=True)
@@ -674,6 +686,7 @@ class Purchaser(models.Model):
     pid(int):   Index of current place - see Place table
     hs(str):    Home state of the Purchaser
     fcm(str):   Firebase cloud messaging token of the Purchaser android app
+    -----------------------------------------
     """
 
     an   = models.BigIntegerField(primary_key=True)
@@ -715,6 +728,7 @@ class Servitor(models.Model):
     wage(float): hourly charge
     mark(float): rating of the service person
     bank(str): bank details of the Servitor
+    -----------------------------------------
     """
 
     an   = models.BigIntegerField(primary_key=True)
@@ -751,6 +765,7 @@ class Job(models.Model):
     id(int)    :   Autoincrement primary key
     jname(str)    :   Job name
     jtype(int)    :   Type of the job
+    -----------------------------------------
     """
     TYPE = [
         ('esse', 'EssentialServices'),
@@ -844,7 +859,7 @@ class Location(models.Model):
     lat(float):   Latitude of user/driver
     long(float):  Longitude of user/driver
     kind(int):    0 is user, 1 is driver, 2 rental user, 3 is a vehicle
-
+    -----------------------------------------
     '''
     an    = models.BigIntegerField(primary_key=True, default=0)
     lat   = models.FloatField()
