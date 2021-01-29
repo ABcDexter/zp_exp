@@ -44,6 +44,7 @@ class User(models.Model):
     adhar= models.BigIntegerField(db_index=True, null=True)
     email= models.CharField(db_index=True, null=True, max_length=100)
     fcm  = models.CharField(db_index=True, null=True, max_length=512)
+
     class Meta:
         db_table = 'user'
         managed = True
@@ -782,6 +783,17 @@ class Booking(models.Model):
     Bookings for the servitor
     -----------------------------------------------------
     order_number(BIG int)    :   Order number of the booking primary key
+    order_status(str) :
+
+        Pending payment — Order received, no payment initiated. Awaiting payment (unpaid).
+        Failed — Payment failed or was declined (unpaid) or requires authentication (SCA). Note that this status may not show immediately and instead show as Pending until verified (e.g., PayPal).
+        Processing — Payment received (paid) and stock has been reduced; order is awaiting fulfillment. All product orders require processing, except those that only contain products which are both Virtual and Downloadable.
+        Completed — Order fulfilled and complete – requires no further action.
+        On hold — Awaiting payment – stock is reduced, but you need to confirm payment.
+        Canceled — Canceled by an admin or the customer – stock is increased, no further action required.
+        Refunded — Refunded by an admin – no further action required.
+        Authentication required — Awaiting action by the customer to authenticate the transaction and/or complete SCA requirements.
+    https://docs.woocommerce.com/document/managing-orders/
 
     -----------------------------------------------------
     Note : Bookings are uploaded from the booking csv
@@ -789,14 +801,12 @@ class Booking(models.Model):
 
     order_number = models.BigIntegerField(primary_key=True)
     order_status = models.CharField(max_length=10, null=False, default='')
-    order_date  = models.DateTimeField(auto_now=True)
+    order_date = models.DateTimeField(auto_now=True)
 
     customer_note = models.CharField(null=True, max_length=256)
 
+    # Billing address
     first_name_billing = models.CharField(max_length=32, null=False, default='')
-    last_name_billing = models.CharField(max_length=32, null=False, default='')
-
-    last_name_billing = models.CharField(max_length=32, null=False, default='')
     last_name_billing = models.CharField(max_length=32, null=False, default='')
 
     company_billing = models.CharField(max_length=32, null=False, default='')
@@ -809,6 +819,7 @@ class Booking(models.Model):
     email_billing = models.CharField(max_length=16, null=False, default='')
     phone_billing = models.CharField(max_length=12, null=False, default='')
 
+    # Shipping address
     first_name_shipping = models.CharField(null=True, max_length=32)
     last_name_shipping = models.CharField(null=True, max_length=32)
     address_1_2_shipping = models.CharField(null=True, max_length=32)

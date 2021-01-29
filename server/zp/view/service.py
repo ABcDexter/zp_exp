@@ -343,7 +343,6 @@ def servitorJobsList(dct, servitor):
                             'job4': str(servitor.job4), 'job5': str(servitor.job5)})
 
 
-
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
