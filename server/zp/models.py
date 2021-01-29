@@ -797,7 +797,6 @@ class Job(models.Model):
     email_billing = models.CharField(max_length=16, null=False, default='')
     phone_billing = models.CharField(max_length=12, null=False, default='')
 
-
     first_name_shipping = models.CharField(null=True, max_length=32)
     last_name_shipping = models.CharField(null=True, max_length=32)
     address_1_2_shipping = models.CharField(null=True, max_length=32)
@@ -818,7 +817,7 @@ class Job(models.Model):
 
     sku = models.CharField(null=True, max_length=32)
 
-    item_ = models.CharField(null=True, max_length=32)
+    item_qty = models.CharField(null=True, max_length=32)
     item_name = models.CharField(null=True, max_length=32)
     quantity = models.IntegerField(db_index=True, default=1)
     item_cost = models.FloatField(db_index=True, default=0.0)
