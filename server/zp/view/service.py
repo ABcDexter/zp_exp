@@ -47,9 +47,9 @@ makeView.APP_NAME = 'zp'
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def authBookingGet(dct, entity):
+def authBookingGet(_dct, _entity):
     '''
-    get the bookings
+    get all the bookings from woocommerce
 
     HTTP Args:
         auth : auth of the entity
@@ -114,6 +114,83 @@ def authBookingGet(dct, entity):
     return HttpJSONResponse({"booking":ordersResp})
 
 
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def servitorBookingGet(_dct, servitor):
+    '''
+    get the bookings for servitor
+
+    HTTP Args:
+        auth : auth of the entity
+
+    Respose:
+    bookings : [
+        {
+            bid                 : booking id
+            "start"             : Starting date and time of the booking
+            "end"               : Ending date and time of the booking
+            "job"               : type of the job
+            "customer_name"     : customer name,
+            "customer_phone"    : customer phone number
+            "customer_address"  : customer address with PIN code
+            "customer_note"     : cusotmer_note if any
+        }
+    ]
+    '''
+
+    # WooCommerce update
+    wcapi = API(url="https://zippe.in", consumer_key=settings.WP_CONSUMER_KEY,
+                consumer_secret=settings.WP_CONSUMER_SECRET_KEY, version="wc/v3")
+    ret = wcapi.get("orders")
+    # print(ret.status_code)
+    ordersRelevant = []
+    ordersOther = []
+    for i in ret.json():
+        orig = "'" + str(i['line_items']).replace('\'', '\"')[1:-1] + "'"
+
+        rep = orig.replace("None", "\"None\"").replace("False", "\"False\"").replace("True", "\"True\"")
+
+        from ast import literal_eval
+        a = literal_eval(rep)
+        y = json.loads(a)
+
+        zz = str(y['meta_data']).replace('\'', '\"')[1:-1]
+
+        arrOrder = json.loads("[" + zz + "]")
+        z = arrOrder[0]
+
+        x = i
+        if 'start' in z['value']:
+            orders = {
+                # "servitor": arrOrder,
+                "bid": x['id'],
+                "job": x['line_items'][0]['name'],
+
+                "start": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
+                "end": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
+
+                # "billing": i['billing'],
+                "customer_name": i['billing']['first_name'] + " " + i['billing']['last_name'],
+                "customer_phone": i['billing']['phone'],
+                "customer_note": i['customer_note'],
+                "customer_address": i['billing']['address_1'] + " , " + i['billing']['address_2'] + " , " +
+                                    i['billing']['city'] + " , " + i['billing']['state'] + " , " +
+                                    i['billing']['postcode']
+
+            }
+            # print(orders)
+            if orders['bid'] in [servitor.job1, servitor.job2, servitor.job3]:
+                ordersRelevant.append(orders)
+            elif orders['bid'] in [servitor.job4, servitor.job5]:
+                ordersOther.append(orders)
+
+    # print(ordersResp)
+
+    return HttpJSONResponse({"booking": ordersRelevant, 'other':ordersOther})
+
 
 # ============================================================================
 # Servitor views
@@ -158,7 +235,7 @@ def registorServitor(_, dct):
     sJob5 = str(dct['job5']) if 'job5' in dct else ''
 
     # address proof
-    #TODO save the address proof
+    #TODO save the picture of the address proof
 
     # bank details
     sBank = str(dct['bank']) if 'bank' in dct else ''
@@ -185,7 +262,7 @@ def registorServitor(_, dct):
         servitor.job5 = sJob5
         servitor.save()
 
-        return HttpJSONResponse({'auth' : servitor.auth, 'name':servitor.name})
+        return HttpJSONResponse({'auth': servitor.auth, 'name': servitor.name})
     else:
         log('Auth exists for: %s' % (dct['pn']))
 
@@ -240,7 +317,8 @@ def loginServitor(_, dct):
         return HttpJSONResponse({'status':'false'})
     else:
         log('Auth exists for: %s' % (dct['pn']))
-        ret = {'status': True, 'auth':qsServitor[0].auth, 'an':qsServitor[0].an, 'pn' : qsServitor[0].pn, 'name': qsServitor[0].name}    
+        ret = {'status': True, 'auth':qsServitor[0].auth, 'an': qsServitor[0].an, 'pn': qsServitor[0].pn,
+               'name': qsServitor[0].name}
         return HttpJSONResponse(ret)
 
 
