@@ -126,9 +126,9 @@ class Route(models.Model):
     """
     Route is a convenience table storing road distance between any pair of places
     -----------------------------------------------------------------------------
-    idx(int): first place id from places table
-    idy(int): second place id from places table
-    dist(int): distance in meters
+    idx(int)  : first place id from places table
+    idy(int)  : second place id from places table
+    dist(int) : distance in meters
     -----------------------------------------
     """
     idx = models.IntegerField()
@@ -303,8 +303,8 @@ class Progress(models.Model):
     """
     Progress table contains the live percentage progress of every trip
     ------------------------------------------------------------------
-    tid(int): trip id
-    pct(int):  progress percent
+    tid(int) : trip id
+    pct(int) :  progress percent
     -----------------------------------------
     """
     tid = models.IntegerField(primary_key=True)
@@ -319,15 +319,15 @@ class Supervisor(models.Model):
     """
     Supervisor is for the rental module, supervises the vehicles
     ------------------------------------------------------------
-    an(int):    Aadhaar number
-    pn(str):    Phone number
-    auth(str):  Supervisor auth token
-    dl(str):    Driving licence no.
-    name(str):  Real name
-    gdr(str):   Gender
-    age(int):   Age
-    pid(int):   Index of current place - see Place table
-    hs(str):    Home state of the Supervisor
+    an(int)   :    Aadhaar number
+    pn(str)   :    Phone number
+    auth(str) :    Supervisor auth token
+    dl(str)   :    Driving licence no.
+    name(str) :    Real name
+    gdr(str)  :    Gender
+    age(int)  :    Age
+    pid(int)  :    Index of current place - see Place table
+    hs(str)   :    Home state of the Supervisor
     -----------------------------------------
     """
 
@@ -352,16 +352,16 @@ class Manager(models.Model):
     """
     Manager is for the ride module, assgins the vehicles to Driver
     --------------------------------------------------------------
-    an(int): Aadhaar number
-    pn(str): Phone number
-    auth(str): Hub manager auth token
-    dl(str): DL no.
-    name(str): Name
-    gdr(str): Gender
-    age(int): Age in years
-    pid(int): Index of the current hub - todo Hub table
+    an(int)   : Aadhaar number
+    pn(str)   : Phone number
+    auth(str) : Hub manager auth token
+    dl(str)   : DL no.
+    name(str) : Name
+    gdr(str)  : Gender
+    age(int)  : Age in years
+    pid(int)  : Index of the current hub - todo Hub table
     #todo how to add list of vehicle to this Manager
-    hs(str): Home state
+    hs(str)   : Home state
     -----------------------------------------
     """
     an   = models.BigIntegerField(primary_key=True)
@@ -504,19 +504,19 @@ class Agent(models.Model):
     """
     Delivery agent
     --------------
-    an(int):    Aadhaar number
-    pn(str):    Phone number
-    auth(str):  Client auth token
-    dl(str):    Agent licence no.
-    name(str):  Real name
-    gdr(str):   Gender
-    age(int)
-    mode(str):   Driver mode registering(RG), available(AV), booked(BK), offline(OF), locked(LK)
-    pid(int):   Index of current place - see Place table
-    tid(int):   Index of current trip - see Trip table
-    hs(str):    Home state of the Agent
-    veh(int): Has a vehicle or not
-    mark(float): float field has the rating, binary system same as that of the user/driver
+    an(int)    :   Aadhaar number
+    pn(str)    :   Phone number
+    auth(str)  :   Client auth token
+    dl(str)    :   Agent licence no.
+    name(str)  :   Real name
+    gdr(str)   :   Gender
+    age(int)   :   Age
+    mode(str)  :   Driver mode registering(RG), available(AV), booked(BK), offline(OF), locked(LK)
+    pid(int)   :   Index of current place - see Place table
+    tid(int)   :   Index of current trip - see Trip table
+    hs(str)    :   Home state of the Agent
+    veh(int)   :   Has a vehicle or not
+    mark(float):   float field has the rating, binary system same as that of the user/driver
     fcm(str)   :   Firebase Cloud Messaging token of the Agent android app
     -----------------------------------------
     """
@@ -557,13 +557,12 @@ class Rate(models.Model):
     """
     Rate stores the rating and the money paid for the trip
     ------------------------------------------------------
-    id (int): Autoincrement primary key
-
-    type = type of the rating, which is rent+rentid, or ride+rideid, deli+deliveryid
-    rating = basic rating
-    rev = review in detail
-    time = timestamp when rating was done
-    dan = driver/supervisor aadhaar number
+    id (int)    : Autoincrement primary key
+    type(str)   : type of the rating, which is rent+rentid, or ride+rideid, deli+deliveryid
+    rating(str) : basic rating
+    rev(str)    : review in detail
+    time(time)  : timestamp when rating was done
+    dan(int)    : driver/supervisor aadhaar number
     -----------------------------------------
     """
     TYPE = [
@@ -601,19 +600,17 @@ class Product(models.Model):
     Product in the SHOP module
     --------------------------
 
-    name(str): name of the product
-    type(bool): simple 0 or grouped 1
-    regular_price (float): MRP of the product 
-    cost_price (float): price we are getting the product at
-    sale_price (float): selling price of the product 
-    
-    stock_quantity(int):   quantity of the item in the stock
-    categories(str): product categories( see Category table)
-    weight (float): weight (in grams) of one unit of the product 
-    SKU(str): PRIMARY key
-    
-    tax_class(float): how much tax on the product
-    low_stock_amount(int): low stock alert
+    name(str)             : name of the product
+    type(bool)            : simple 0 or grouped 1
+    regular_price (float) : MRP of the product
+    cost_price (float)    : price we are getting the product at
+    sale_price (float)    : selling price of the product
+    stock_quantity(int)   : quantity of the item in the stock
+    categories(str)       : product categories( see Category table)
+    weight (float)        : weight (in grams) of one unit of the product
+    SKU(str)              : PRIMARY key
+    tax_class(float)      : how much tax on the product
+    low_stock_amount(int) : low stock alert
     -----------------------------------------
     """
     #id is given by default
@@ -676,16 +673,16 @@ class Purchaser(models.Model):
     """
     Purchaser goes to have a purchase for SHOP module
     -------------------------------------------------
-    an(int):    Aadhaar number
-    pn(str):    Phone number
-    auth(str):  Purchaser auth token
-    dl(str):    Driving licence no.
-    name(str):  Real name
-    gdr(str):   Gender
-    age(int):   Age
-    pid(int):   Index of current place - see Place table
-    hs(str):    Home state of the Purchaser
-    fcm(str):   Firebase cloud messaging token of the Purchaser android app
+    an(int)   :   Aadhaar number
+    pn(str)   :   Phone number
+    auth(str) :   Purchaser auth token
+    dl(str)   :   Driving licence no.
+    name(str) :   Real name
+    gdr(str)  :   Gender
+    age(int)  :   Age
+    pid(int)  :   Index of current place - see Place table
+    hs(str)   :   Home state of the Purchaser
+    fcm(str)  :   Firebase cloud messaging token of the Purchaser android app
     -----------------------------------------
     """
 
@@ -715,19 +712,19 @@ class Servitor(models.Model):
     Servitor is the the Service providing person
     --------------------------------------------
 
-    an(int):    Aadhaar number
-    pn(str):    Phone number
-    auth(str):  Servitor auth token
-    dl(str):    Driving licence no.
-    name(str):  Real name
-    gdr(str):   Gender
-    age(int):   Age
-    pid(int):   Index of current place - see Place table
-    hs(str):    Home state of the Servitor
-    job(str):   What does that person does
-    wage(float): hourly charge
-    mark(float): rating of the service person
-    bank(str): bank details of the Servitor
+    an(int)    :   Aadhaar number
+    pn(str)    :   Phone number
+    auth(str)  :   Servitor auth token
+    dl(str)    :   Driving licence no.
+    name(str)  :   Real name
+    gdr(str)   :   Gender
+    age(int)   :   Age
+    pid(int)   :   Index of current place - see Place table
+    hs(str)    :   Home state of the Servitor
+    job(str)   :   What does that person does
+    wage(float):   hourly charge
+    mark(float):   rating of the service person
+    bank(str)  :   bank details of the Servitor
     -----------------------------------------
     """
 
@@ -763,8 +760,8 @@ class Job(models.Model):
     predefined Jobs for the servitor
     -----------------------------------------------------
     id(int)    :   Autoincrement primary key
-    jname(str)    :   Job name
-    jtype(int)    :   Type of the job
+    jname(str) :   Job name
+    jtype(int) :   Type of the job
     -----------------------------------------
     """
     TYPE = [
@@ -854,11 +851,11 @@ class Location(models.Model):
     '''
     Locations logs the the locations of the drivers/users updated periodically
     --------------------------------------------------------------------------
-    an(int):      User/Driver Aadhaar number or vehicle ID
-    time:         Log entry timestamp
-    lat(float):   Latitude of user/driver
-    long(float):  Longitude of user/driver
-    kind(int):    0 is user, 1 is driver, 2 rental user, 3 is a vehicle
+    an(int)     :    User/Driver Aadhaar number or vehicle ID
+    time        :    Log entry timestamp
+    lat(float)  :    Latitude of user/driver
+    long(float) :    Longitude of user/driver
+    kind(int)   :    0 is user, 1 is driver, 2 rental user, 3 is a vehicle
     -----------------------------------------
     '''
     an    = models.BigIntegerField(primary_key=True, default=0)
