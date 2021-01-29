@@ -765,7 +765,7 @@ class Job(models.Model):
         managed = True
 
 
-class Job(models.Model):
+class Booking(models.Model):
     """
     Bookings for the servitor
     -----------------------------------------------------
