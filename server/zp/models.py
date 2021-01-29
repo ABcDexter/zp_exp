@@ -744,6 +744,94 @@ class Servitor(models.Model):
         managed = True
 
 
+class Job(models.Model):
+    """
+    predefined Jobs for the servitor
+    -----------------------------------------------------
+    id(int)    :   Autoincrement primary key
+    jname(str)    :   Job name
+    jtype(int)    :   Type of the job
+    """
+    TYPE = [
+        ('esse', 'EssentialServices'),
+        ('prof', 'ProfessionalService'),
+        ('hire', 'ForHire')
+    ]
+    jname = models.CharField(max_length=100, db_index=True, unique=True, null=False)
+    jtype = models.CharField(max_length=5, choices=TYPE, default='None')
+
+    class Meta:
+        db_table = 'job'
+        managed = True
+
+
+class Job(models.Model):
+    """
+    Bookings for the servitor
+    -----------------------------------------------------
+    order_number(BIG int)    :   Order number of the booking primary key
+
+    -----------------------------------------------------
+    Note : Bookings are uploaded from the booking csv
+    """
+
+    order_number = models.BigIntegerField(primary_key=True)
+    order_status = models.CharField(max_length=10, null=False, default='')
+    order_date  = models.DateTimeField(auto_now=True)
+
+    customer_note = models.CharField(null=True, max_length=256)
+
+    first_name_billing = models.CharField(max_length=32, null=False, default='')
+    last_name_billing = models.CharField(max_length=32, null=False, default='')
+
+    last_name_billing = models.CharField(max_length=32, null=False, default='')
+    last_name_billing = models.CharField(max_length=32, null=False, default='')
+
+    company_billing = models.CharField(max_length=32, null=False, default='')
+    address_1_2_billing = models.CharField(max_length=64, null=False, default='')
+    city_billing = models.CharField(max_length=32, null=False, default='')
+    state_code_billing = models.CharField(max_length=8, null=False, default='')
+    postcode_billing = models.CharField(max_length=6, null=False, default='')
+    country_code_billing = models.CharField(max_length=4, null=False, default='IN')
+
+    email_billing = models.CharField(max_length=16, null=False, default='')
+    phone_billing = models.CharField(max_length=12, null=False, default='')
+
+
+    first_name_shipping = models.CharField(null=True, max_length=32)
+    last_name_shipping = models.CharField(null=True, max_length=32)
+    address_1_2_shipping = models.CharField(null=True, max_length=32)
+    city_shipping = models.CharField(null=True, max_length=32)
+    state_code_shipping = models.CharField(null=True, max_length=32)
+    postcode_shipping = models.CharField(null=True, max_length=6)
+    country_code_shipping = models.CharField(null=True, max_length=4)
+    payment_method_title = models.CharField(null=True, max_length=20)
+
+    cart_discount_amount = models.FloatField(db_index=True, default=0.0)
+    order_subtotal_amount = models.FloatField(db_index=True, default=0.0)
+    shipping_method_title = models.CharField(null=True, max_length=32)
+    order_shipping_amount = models.FloatField(db_index=True, default=0.0)
+    order_refund_amount = models.FloatField(db_index=True, default=0.0)
+
+    order_total_amount = models.FloatField(db_index=True, default=0.0)
+    order_total_tax_amount = models.FloatField(db_index=True, default=0.0)
+
+    sku = models.CharField(null=True, max_length=32)
+
+    item_ = models.CharField(null=True, max_length=32)
+    item_name = models.CharField(null=True, max_length=32)
+    quantity = models.IntegerField(db_index=True, default=1)
+    item_cost = models.FloatField(db_index=True, default=0.0)
+
+    coupon_Code = models.CharField(null=True, max_length=32)
+    discount_amount = models.FloatField(null=True)
+    discount_amount_tax = models.FloatField(null=True)
+
+    class Meta:
+        db_table = 'booking'
+        managed = True
+
+
 ########################
 # Location
 ########################
@@ -806,23 +894,3 @@ class Location(models.Model):
         managed = True
 
 
-class Job(models.Model):
-    """
-    predefined Jobs for the servitor
-    -----------------------------------------------------
-    id(int)    :   Autoincrement primary key
-    jname(str)    :   Job name
-    jtype(int)    :   Type of the job
-    """
-    TYPE = [
-        ('esse', 'EssentialServices'),
-        ('prof', 'ProfessionalService'),
-        ('hire', 'ForHire')
-    ]
-    jname = models.CharField(max_length=100, db_index=True, unique=True, null=False)
-    jtype = models.CharField(max_length=5, choices=TYPE, default='None')
-
-
-    class Meta:
-        db_table = 'job'
-        managed = True
