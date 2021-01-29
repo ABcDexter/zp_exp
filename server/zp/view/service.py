@@ -182,6 +182,7 @@ def servitorBookingGet(_dct, servitor):
 
             }
             # print(orders)
+            print(orders['bid'], servitor.job1,servitor.job2, servitor.job3, servitor.job4, servitor.job5)
             if orders['bid'] in [servitor.job1, servitor.job2, servitor.job3]:
                 ordersRelevant.append(orders)
             elif orders['bid'] in [servitor.job4, servitor.job5]:
