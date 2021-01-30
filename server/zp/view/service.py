@@ -323,9 +323,9 @@ def loginServitor(_, dct):
     '''
 
     sPhone = str(dct['pn'])
-    from codecs import encode
-    sAuth = encode(str(dct['key']), 'rot13')
-
+    # from codecs import encode
+    # sAuth = encode(str(dct['key']), 'rot13')  # rot13 of the auth
+    sAuth = str(dct['key'])
     qsServitor = Servitor.objects.filter(auth=sAuth, pn=sPhone)
     bServitorExists = len(qsServitor) != 0
     if not bServitorExists:
@@ -336,7 +336,6 @@ def loginServitor(_, dct):
         ret = {'status': True, 'auth': qsServitor[0].auth, 'an': qsServitor[0].an, 'pn': qsServitor[0].pn,
                'name': qsServitor[0].name}
         return HttpJSONResponse(ret)
-
 
 
 @makeView()
