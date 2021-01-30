@@ -1163,9 +1163,9 @@ def authProfileUpdate(dct, entity):
     # only for servitor
     if 'job1' in dct:
         entity.job1 = dct['job1']
-    elif 'job2' in dct:
+    if 'job2' in dct:
         entity.job2 = dct['job2']
-    elif 'job3' in dct:
+    if 'job3' in dct:
         entity.job3 = dct['job3']
 
     entity.save()
