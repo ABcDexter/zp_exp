@@ -289,7 +289,7 @@ def registorServitor(_, dct):
 
         qsServitor[0].save()
 
-        ret = {'status': True, 'auth': qsServitor[0].auth, 'an': qsServitor[0].an, 'pn': qsServitor[0].pn,
+        ret = {'auth': qsServitor[0].auth, 'an': qsServitor[0].an, 'pn': qsServitor[0].pn,
                'name': qsServitor[0].name}
     return HttpJSONResponse(ret)
 

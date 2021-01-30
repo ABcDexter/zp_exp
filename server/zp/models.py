@@ -713,19 +713,19 @@ class Servitor(models.Model):
     Servitor is the the Service providing person
     --------------------------------------------
 
-    an(int)    :   Aadhaar number
-    pn(str)    :   Phone number
-    auth(str)  :   Servitor auth token
-    dl(str)    :   Driving licence no.
-    name(str)  :   Real name
-    gdr(str)   :   Gender
-    age(int)   :   Age
-    pid(int)   :   Index of current place - see Place table
-    hs(str)    :   Home state of the Servitor
-    job(str)   :   What does that person does
-    wage(float):   hourly charge
-    mark(float):   rating of the service person
-    bank(str)  :   bank details of the Servitor
+    an(int)     :   Aadhaar number
+    pn(str)     :   Phone number
+    auth(str)   :   Servitor auth token
+    dl(str)     :   Driving licence no.
+    name(str)   :   Real name
+    gdr(str)    :   Gender
+    age(int)    :   Age
+    pid(int)    :   Index of current place - see Place table
+    hs(str)     :   Home state of the Servitor
+    job(str)    :   What does that person does (job1 primary, job2 secondary, job3 tertiary)
+    wage(float) :   hourly charge
+    mark(float) :   rating of the service person
+    bank(str)   :   bank details of the Servitor
     -----------------------------------------
     """
 
@@ -741,11 +741,11 @@ class Servitor(models.Model):
     hs   = models.CharField(null=True, max_length=50)
 
     # 5 jobs of the Servitor
-    job1 = models.CharField(null=False, max_length=3, default='')
-    job2 = models.CharField(null=True, max_length=3)
-    job3 = models.CharField(null=True, max_length=3)
-    job4 = models.CharField(null=True, max_length=3)
-    job5 = models.CharField(null=True, max_length=3)
+    job1 = models.CharField(null=False, max_length=32, default='')
+    job2 = models.CharField(null=True, max_length=32)
+    job3 = models.CharField(null=True, max_length=32)
+    job4 = models.CharField(null=True, max_length=32)
+    job5 = models.CharField(null=True, max_length=32)
 
     wage = models.FloatField(db_index=True, default=0.0)
     mark = models.FloatField(db_index=True, default=0.0)
