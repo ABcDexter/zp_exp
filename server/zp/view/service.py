@@ -329,10 +329,10 @@ def loginServitor(_, dct):
     bServitorExists = len(qsServitor) != 0
     if not bServitorExists:
         log('Servitor not registered with phone : %s' % (dct['pn']))
-        return HttpJSONResponse({'status':'false'})
+        return HttpJSONResponse({'status': 'false'})
     else:
         log('Auth exists for: %s' % (dct['pn']))
-        ret = {'status': True, 'auth':qsServitor[0].auth, 'an': qsServitor[0].an, 'pn': qsServitor[0].pn,
+        ret = {'status': True, 'auth': qsServitor[0].auth, 'an': qsServitor[0].an, 'pn': qsServitor[0].pn,
                'name': qsServitor[0].name}
         return HttpJSONResponse(ret)
 

@@ -869,41 +869,44 @@ class checkAuth(object):
             if isUser or isAuth:
                 qsUser = User.objects.filter(auth=auth)
                 if (qsUser is not None) and len(qsUser) > 0:
+                    print("user : ", qsUser)
                     return func(dct, qsUser[0])
 
             if isDriver or isAuth:
                 qsDriver = Driver.objects.filter(auth=auth)
-                print("driver : ", qsDriver)
                 # Ensure we have a confirmed driver
                 if (qsDriver is not None) and (len(qsDriver) > 0) and qsDriver[0].mode != 'RG':
+                    print("driver : ", qsDriver)
                     # Ensure the driver is in the desired state if any
                     if self.driverMode is None or qsDriver[0].mode in self.driverMode:
                         return func(dct, qsDriver[0])
 
             if isAgent or isAuth:
                 qsAgent = Agent.objects.filter(auth=auth)
-                print("agents : ", qsAgent)
                 # Ensure we have a confirmed Agent
                 if (qsAgent is not None) and (len(qsAgent) > 0) and qsAgent[0].mode != 'RG':
+                    print("agents : ", qsAgent)
                     # Ensure the agent is in the desired state if any
-                    if self.driverMode is None or qsAgent[0].mode in self.driverMode: #agent is basically driver
+                    if self.driverMode is None or qsAgent[0].mode in self.driverMode: # agent is basically driver
                         return func(dct, qsAgent[0])
 
             if isSuper or isAuth:
                 qsSuper = Supervisor.objects.filter(auth=auth)
                 if (qsSuper is not None) and (len(qsSuper) > 0):
+                    print("super : ", qsSuper)
                     return func(dct, qsSuper[0])
 
             if isPurchaser or isAuth:
                 qsPur = Purchaser.objects.filter(auth=auth)
                 if (qsPur is not None) and (len(qsPur) > 0):
+                    print("purchaser : ", qsPur)
                     return func(dct, qsPur[0])
                     
             if isServitor or isAuth:
                 qsSer = Servitor.objects.filter(auth=auth)
                 if (qsSer is not None) and (len(qsSer) > 0):
+                    print("servitor : ", qsSer)
                     return func(dct, qsSer[0])
-
 
             return HttpJSONError('Unauthorized', 403)
 
