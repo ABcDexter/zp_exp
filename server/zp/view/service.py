@@ -201,9 +201,10 @@ def servitorBookingGet(_dct, servitor):
                 "date": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S'))[:10],
                 "time": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S'))[11:-3],
                 "hours": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S') -
-                             datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
+                             datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')).split(":")[0],
+                "area": i['billing']['address_2'] + " , " +  i['billing']['city'],
 
-                "earn": "100",
+                "earn": "500",
                 # "billing": i['billing'],
                 "customer_name": i['billing']['first_name'] + " " + i['billing']['last_name'],
                 "customer_phone": i['billing']['phone'],
