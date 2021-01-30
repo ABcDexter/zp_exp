@@ -1,4 +1,5 @@
 # imports
+import os
 import datetime
 from datetime import datetime, timedelta
 from decimal import getcontext
@@ -277,6 +278,10 @@ def registorServitor(_, dct):
         servitor.save()
         log('Servitor registered with phone : %s' % (dct['pn']))
 
+        dpFileName = 'dp_' + servitor.auth + '_.jpg'
+        os.rename(sPhotoFileName, os.path.join(settings.PROFILE_PHOTO_DIR, dpFileName))
+        log('New photo saved: %s' % dpFileName)
+
         ret = {'auth': servitor.auth, 'name': servitor.name, 'an': servitor.an, 'pn': servitor.pn}
     else:
         log('Auth exists for: %s, %s' % (dct['pn'], qsServitor[0].name))
@@ -289,6 +294,10 @@ def registorServitor(_, dct):
         qsServitor[0].ps = dct['ps']
 
         qsServitor[0].save()
+
+        dpFileName = 'dp_' + qsServitor[0].auth + '_.jpg'
+        os.rename(sPhotoFileName, os.path.join(settings.PROFILE_PHOTO_DIR, dpFileName))
+        log('New photo saved: %s' % dpFileName)
 
         ret = {'auth': qsServitor[0].auth, 'an': qsServitor[0].an, 'pn': qsServitor[0].pn,
                'name': qsServitor[0].name}
