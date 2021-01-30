@@ -136,8 +136,8 @@ def servitorBookingCheck(_dct, servitor):
         count
 
     '''
-    qsBooking = Booking.objects.all().values(item_name__in=[servitor.job1, servitor.job2, servitor.job3])
-    return HttpJSONResponse({'count':len(qsBooking)})
+    qsBooking = Booking.objects.filter(item_name__in=[servitor.job1, servitor.job2,servitor.job3)
+    return HttpJSONResponse({'count': str(len(qsBooking))})
 
 
 @makeView()
