@@ -751,6 +751,8 @@ class Servitor(models.Model):
     mark = models.FloatField(db_index=True, default=0.0)
     bank = models.CharField(null=False, max_length=300, default='')
 
+    ps = models.CharField(null=False, max_length=50, default='')
+
     class Meta:
         db_table = 'servitor'
         managed = True

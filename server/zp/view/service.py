@@ -45,6 +45,7 @@ makeView.APP_NAME = 'zp'
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IndexError, 'No bookings', 502)
 @extractParams
 @checkAuth()
 def authBookingGet(_dct, _entity):
@@ -209,16 +210,22 @@ def registorServitor(_, dct):
     makes the Servitor register with phone number
 
     HTTP Args:
-        pn   : phone number of the Servitor without the ISD code
-        name : auth of Servitor
+        1. name         : name of Servitor
+        2. pn           : phone number without the ISD code
+        3. photo        : selfie photo in base64
+        4. aadhaarFront : Front of the aadhaar
+           aadhaarBack  : Back of the aadhaar
+        5. gdr          : gender
+        6. ps           : name of the nearest Police station
 
-        job1 : primary job of servitor (Compulsary)
-        job2 : secondary job of servitor
-        job3 : tertiary job of servitor
-        job4 : 4th job of servitor
-        job5 : 5th job of servitor
+        7. job1         : primary job of servitor (Compulsary)
+           job2         : secondary job of servitor
+           job3         : tertiary job of servitor
 
-        bank : Bank details of the servitor
+        8,9?
+        hs           : home state (this we can automatically pick from aadhaar card)
+        bank         : Bank details of the servitor
+
 
     Resposnse:
         auth : auth key of the servitor
@@ -226,6 +233,7 @@ def registorServitor(_, dct):
 
     '''
 
+    # save the details of Servitor
     sPhone = str(dct['pn'])
     sAn = '91' + sPhone
     sName = str(dct['name'])
@@ -236,14 +244,18 @@ def registorServitor(_, dct):
     sJob5 = str(dct['job5']) if 'job5' in dct else ''
 
     # address proof
-    #TODO save the picture of the address proof
+    sAadharFrontFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarFront'], 'ser_' + sPhone + '_front')
+    sAadharBackFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarBack'], 'ser_' + sPhone + '_back')
+    log('Servitor Registration request - Aadhaar images saved at %s, %s' % (sAadharFrontFilename, sAadharBackFilename))
 
     # bank details
     sBank = str(dct['bank']) if 'bank' in dct else ''
 
     # picture
-    #TODO save the picture
+    sPhotoFileName = saveTmpImgFile(settings.PROFILE_PHOTO_DIR, dct['photo'], 'dp_' + sPhone)
+    log('User Registration request - Aadhar images saved at %s' % (sPhotoFileName))
 
+    # check whether servitor with the same phone number exists or not
     qsServitor = Servitor.objects.filter(pn=sPhone)
 
     bServitorExists = len(qsServitor) != 0
@@ -261,23 +273,25 @@ def registorServitor(_, dct):
         servitor.job3 = sJob3
         servitor.job4 = sJob4
         servitor.job5 = sJob5
+        servitor.ps = dct['ps']
         servitor.save()
 
-        return HttpJSONResponse({'auth': servitor.auth, 'name': servitor.name})
+        ret= {'auth': servitor.auth, 'name': servitor.name, 'an': servitor.an}
     else:
-        log('Auth exists for: %s' % (dct['pn']))
+        log('Auth exists for: %s, %s' % (dct['pn'], qsServitor[0].name))
 
-        qsServitor[0].name = sName
         qsServitor[0].job1 = sJob1
         qsServitor[0].job2 = sJob2
         qsServitor[0].job3 = sJob3
         qsServitor[0].job4 = sJob4
         qsServitor[0].job5 = sJob5
+        qsServitor[0].ps = dct['ps']
+
         qsServitor[0].save()
 
         ret = {'status': True, 'auth': qsServitor[0].auth, 'an': qsServitor[0].an, 'pn': qsServitor[0].pn,
                'name': qsServitor[0].name}
-        return HttpJSONResponse(ret)
+    return HttpJSONResponse(ret)
 
 
 
