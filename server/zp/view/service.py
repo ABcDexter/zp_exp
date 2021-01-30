@@ -25,7 +25,7 @@ import json
 import urllib.request
 from woocommerce import API
 from ast import literal_eval
-from ..models import Job
+from ..models import Job, Booking
 
 ###########################################
 # Types
@@ -115,9 +115,30 @@ def authBookingGet(_dct, _entity):
 
     return HttpJSONResponse({"booking":ordersResp})
 
+
 # ============================================================================
 # Servitor views
 # ============================================================================
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def servitorBookingCheck(_dct, servitor):
+    '''
+
+    Args:
+        _dct:
+        servitor:
+
+    Returns:
+        count
+
+    '''
+    qsBooking = Booking.objects.all().values(item_name__in=[servitor.job1, servitor.job2, servitor.job3])
+    return HttpJSONResponse({'count':len(qsBooking)})
+
 
 @makeView()
 @csrf_exempt
@@ -394,3 +415,20 @@ def authJobGet(dct, entity):
     return HttpJSONResponse({'job': list(qsJob)})
 
 
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def servitorOrderGet(_dct, servitor):
+    '''
+
+    HTTP params:
+        auth
+
+    '''
+
+    # getcontext().prec = 1000
+    qsBooking = Booking.objects.all().values()  # 'id', 'name', 'categories', 'stock_quantity', 'cost_price','regular_price', 'weight')
+    return HttpJSONResponse({'orders': list(qsBooking)})
