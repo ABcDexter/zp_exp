@@ -71,7 +71,7 @@ def authBookingGet(_dct, _entity):
    
     #WooCommerce update
     wcapi = API(url="https://zippe.in", consumer_key=settings.WP_CONSUMER_KEY, consumer_secret=settings.WP_CONSUMER_SECRET_KEY, version="wc/v3")
-    ret = wcapi.get("orders")
+    ret = wcapi.get("orders?per_page=100") # get 100 requests
     # print(ret.status_code)
     ordersResp = []
     for i in ret.json():
@@ -106,13 +106,16 @@ def authBookingGet(_dct, _entity):
                                           i['billing']['city'] + " , " + i['billing']['state'] + " , " +
                                           i['billing']['postcode']
 
-                    }
+            }
             #print(orders)
             ordersResp.append(orders)
     #print(ordersResp)
 
     return HttpJSONResponse({"booking":ordersResp})
 
+# ============================================================================
+# Servitor views
+# ============================================================================
 
 @makeView()
 @csrf_exempt
@@ -144,7 +147,7 @@ def servitorBookingGet(_dct, servitor):
     # WooCommerce update
     wcapi = API(url="https://zippe.in", consumer_key=settings.WP_CONSUMER_KEY,
                 consumer_secret=settings.WP_CONSUMER_SECRET_KEY, version="wc/v3")
-    ret = wcapi.get("orders")
+    ret = wcapi.get("orders?per_page=10") #get 10 orders
     # print(ret.status_code)
     ordersRelevant = []
     ordersOther = []
@@ -186,16 +189,13 @@ def servitorBookingGet(_dct, servitor):
             if orders['job'] in [servitor.job1, servitor.job2, servitor.job3]:
                 ordersRelevant.append(orders)
             elif orders['job'] in [servitor.job4, servitor.job5]:
-                ordersOther.append(orders)
+        ordersOther.append(orders)
 
     # print(ordersResp)
 
     return HttpJSONResponse({"booking": ordersRelevant, 'other':ordersOther})
 
 
-# ============================================================================
-# Servitor views
-# ============================================================================
 
 
 @makeView()
