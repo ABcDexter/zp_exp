@@ -260,7 +260,7 @@ def registorServitor(_, dct):
 
     bServitorExists = len(qsServitor) != 0
     if not bServitorExists:
-        log('Servitor not registered with phone : %s' % (dct['pn']))
+        log('Servitor not found with phone : %s' % (dct['pn']))
 
         servitor = Servitor()
         servitor.an = sAn
@@ -275,8 +275,9 @@ def registorServitor(_, dct):
         servitor.job5 = sJob5
         servitor.ps = dct['ps']
         servitor.save()
+        log('Servitor registered with phone : %s' % (dct['pn']))
 
-        ret= {'auth': servitor.auth, 'name': servitor.name, 'an': servitor.an}
+        ret = {'auth': servitor.auth, 'name': servitor.name, 'an': servitor.an, 'pn': servitor.pn}
     else:
         log('Auth exists for: %s, %s' % (dct['pn'], qsServitor[0].name))
 
