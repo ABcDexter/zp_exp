@@ -189,7 +189,7 @@ def servitorBookingGet(_dct, servitor):
             if orders['job'] in [servitor.job1, servitor.job2, servitor.job3]:
                 ordersRelevant.append(orders)
             elif orders['job'] in [servitor.job4, servitor.job5]:
-        ordersOther.append(orders)
+                ordersOther.append(orders)
 
     # print(ordersResp)
 
