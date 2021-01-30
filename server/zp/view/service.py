@@ -188,9 +188,10 @@ def servitorBookingGet(_dct, servitor):
             }
             # print(orders)
             # print(orders['job'], servitor.job1,servitor.job2, servitor.job3, servitor.job4, servitor.job5)
-            if orders['job'] in [servitor.job1, servitor.job2, servitor.job3]:
+            if orders['job'].upper().lower() in [servitor.job1.upper().lower(), servitor.job2.upper().lower(),
+                                                 servitor.job3.upper().lower()]:
                 ordersRelevant.append(orders)
-            elif orders['job'] in [servitor.job4, servitor.job5]:
+            elif orders['job'].upper().lower() in [servitor.job4.upper().lower(), servitor.job5.upper().lower()]:
                 ordersOther.append(orders)
 
     # print(ordersResp)

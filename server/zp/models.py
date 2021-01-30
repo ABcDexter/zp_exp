@@ -868,7 +868,7 @@ class Location(models.Model):
     time        :    Log entry timestamp
     lat(float)  :    Latitude of user/driver
     long(float) :    Longitude of user/driver
-    kind(int)   :    0 is user, 1 is driver, 2 rental user, 3 is a vehicle
+    kind(int)   :    0 user, 1  driver, 2 Vehicle, 3 rental supervisor, 4 agent, 5  servitor, 6 purchaser
     -----------------------------------------
     '''
     an    = models.BigIntegerField(primary_key=True, default=0)
@@ -877,8 +877,8 @@ class Location(models.Model):
     time  = models.DateTimeField(auto_now=True)
     kind  = models.IntegerField(db_index=True, default=0)
 
-    KINDS = {User: 0, Driver: 1, Vehicle: 2, Supervisor: 3, Agent: 4, Servitor:5}
-    ENTITIES = [User, Driver, Vehicle, Supervisor, Agent, Servitor]
+    KINDS = {User: 0, Driver: 1, Vehicle: 2, Supervisor: 3, Agent: 4, Servitor: 5, Purchaser: 6}
+    ENTITIES = [User, Driver, Vehicle, Supervisor, Agent, Servitor, Purchaser]
 
     def save(self, *args, **kwargs):
         '''

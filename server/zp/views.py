@@ -768,6 +768,7 @@ def authTripRetire(dct, entity, trip):
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
+#@handleException(IndexError, 'Invalid an', 502)
 @extractParams
 @checkAuth()
 def authLocationUpdate(dct, entity):
