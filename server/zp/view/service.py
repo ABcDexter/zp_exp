@@ -149,7 +149,7 @@ def servitorBookingGet(_dct, servitor):
     # WooCommerce update
     wcapi = API(url="https://zippe.in", consumer_key=settings.WP_CONSUMER_KEY,
                 consumer_secret=settings.WP_CONSUMER_SECRET_KEY, version="wc/v3")
-    ret = wcapi.get("orders?per_page=10") #get 10 orders
+    ret = wcapi.get("orders?per_page=10")  # get 10 orders
     # print(ret.status_code)
     ordersRelevant = []
     ordersOther = []
@@ -177,6 +177,11 @@ def servitorBookingGet(_dct, servitor):
                 "start": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
                 "end": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
 
+                "date": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')[:]),
+                "time": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S'))[:],
+                "hours": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')-datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
+
+                "earn": "100",
                 # "billing": i['billing'],
                 "customer_name": i['billing']['first_name'] + " " + i['billing']['last_name'],
                 "customer_phone": i['billing']['phone'],

@@ -818,7 +818,7 @@ class Booking(models.Model):
     postcode_billing = models.CharField(max_length=6, null=False, default='')
     country_code_billing = models.CharField(max_length=4, null=False, default='IN')
 
-    email_billing = models.CharField(max_length=16, null=False, default='')
+    email_billing = models.CharField(max_length=64, null=False, default='')
     phone_billing = models.CharField(max_length=12, null=False, default='')
 
     # Shipping address
