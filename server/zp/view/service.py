@@ -167,7 +167,7 @@ def servitorBookingGet(_dct, servitor):
     ]
     '''
 
-    # WooCommerce update
+    # WooCommerce
     wcapi = API(url="https://zippe.in", consumer_key=settings.WP_CONSUMER_KEY,
                 consumer_secret=settings.WP_CONSUMER_SECRET_KEY, version="wc/v3")
     ret = wcapi.get("orders?per_page=10")  # get 10 orders
@@ -191,28 +191,14 @@ def servitorBookingGet(_dct, servitor):
         x = i
         if 'start' in z['value']:
             orders = {
-                # "servitor": arrOrder,
                 "bid": x['id'],
                 "job": x['line_items'][0]['name'],
-
-                "start": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
-                "end": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
 
                 "date": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S'))[:10],
                 "time": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S'))[11:-3],
                 "hours": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S') -
                              datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')).split(":")[0],
-                "area": i['billing']['address_2'] + " , " +  i['billing']['city'],
-
-                "earn": "500",
-                # "billing": i['billing'],
-                "customer_name": i['billing']['first_name'] + " " + i['billing']['last_name'],
-                "customer_phone": i['billing']['phone'],
-                "customer_note": i['customer_note'],
-                "customer_address": i['billing']['address_1'] + " , " + i['billing']['address_2'] + " , " +
-                                    i['billing']['city'] + " , " + i['billing']['state'] + " , " +
-                                    i['billing']['postcode']
-
+                "earn": "500"
             }
             # print(orders)
             # print(orders['job'], servitor.job1,servitor.job2, servitor.job3, servitor.job4, servitor.job5)
@@ -225,8 +211,6 @@ def servitorBookingGet(_dct, servitor):
     # print(ordersResp)
 
     return HttpJSONResponse({"booking": ordersRelevant, 'other':ordersOther})
-
-
 
 
 @makeView()
@@ -416,7 +400,6 @@ def authJobGet(dct, entity):
     return HttpJSONResponse({'job': list(qsJob)})
 
 
-
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
@@ -433,3 +416,73 @@ def servitorOrderGet(_dct, servitor):
     # getcontext().prec = 1000
     qsBooking = Booking.objects.all().values()  # 'id', 'name', 'categories', 'stock_quantity', 'cost_price','regular_price', 'weight')
     return HttpJSONResponse({'orders': list(qsBooking)})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def servitorBookingData(dct, servitor):
+    '''
+
+    HTTP params:
+        auth:
+        bid
+
+    '''
+
+    # getcontext().prec = 1000
+    wcapi = API(url="https://zippe.in", consumer_key=settings.WP_CONSUMER_KEY,
+                consumer_secret=settings.WP_CONSUMER_SECRET_KEY, version="wc/v3")
+    ret = wcapi.get("orders/" + dct['bid'])
+    # print(ret.status_code)
+
+    i = ret.json()
+    orig = "'" + str(i['line_items']).replace('\'', '\"')[1:-1] + "'"
+
+    rep = orig.replace("None", "\"None\"").replace("False", "\"False\"").replace("True", "\"True\"")
+
+    from ast import literal_eval
+    a = literal_eval(rep)
+    y = json.loads(a)
+
+    zz = str(y['meta_data']).replace('\'', '\"')[1:-1]
+
+    arrOrder = json.loads("[" + zz + "]")
+    z = arrOrder[0]
+
+    x = i
+    resp={}
+    if 'start' in z['value']:
+        orders = {
+            # "servitor": arrOrder,
+            "bid": x['id'],
+            "job": x['line_items'][0]['name'],
+
+            "start": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
+            "end": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
+
+            "date": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S'))[:10],
+            "time": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S'))[11:-3],
+            "hours": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S') -
+                         datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')).split(":")[0],
+            "area": i['billing']['address_2'] + " , " +  i['billing']['city'],
+
+            "earn": "500",
+            # "billing": i['billing'],
+            "customer_name": i['billing']['first_name'] + " " + i['billing']['last_name'],
+            "customer_phone": i['billing']['phone'],
+            "customer_note": i['customer_note'],
+            "customer_address": i['billing']['address_1'] + " , " + i['billing']['address_2'] + " , " +
+                                i['billing']['city'] + " , " + i['billing']['state'] + " , " +
+                                i['billing']['postcode']
+
+        }
+        #print(orders)
+        resp = orders
+    print(resp)
+
+    return HttpJSONResponse(resp)
+
+
