@@ -264,7 +264,7 @@ def registorServitor(_, dct):
 
         servitor = Servitor()
         servitor.an = sAn
-        servitor.auth = getClientAuth(sAn, sPhone)
+        servitor.auth = getClientAuth(sAn, sPhone)[:6]  # shortened the auth key
         servitor.name = sName
         servitor.pn = sPhone
         servitor.bank = sBank

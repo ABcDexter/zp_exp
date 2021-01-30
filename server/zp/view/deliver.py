@@ -501,7 +501,7 @@ def adminAgentRegister(dct):
     if recAgent.mode != 'RG':
         raise ZPException('Agent is already registered', 501)
 
-    dct['auth'] = getClientAuth(str(recAgent.an), str(recAgent.pn))
+    dct['auth'] = getClientAuth(str(recAgent.an), str(recAgent.pn))[:6]
     dct['st'] = 'OF'
 
     for key, val in dct.items():
@@ -748,7 +748,7 @@ def registerAgent(_, dct):
             # Aadhaar exists, if mobile has changed, get new auth
             if agent.pn != sPhone:
                 agent.pn = sPhone
-                sAuth =  getClientAuth(agent.an, agent.pn)
+                sAuth =  getClientAuth(agent.an, agent.pn)[:6]
                 log('Auth changed for Agent: %s' % sAadhaar)
             else:
                 # Aadhaar exists, phone unchanged, just return existing auth
@@ -759,7 +759,7 @@ def registerAgent(_, dct):
             raise ZPException('Registration pending', 501)
 
     # Deterministic registration token will be checked by isAgentVerified
-    ret = {'token': getClientAuth(sAadhaar, sPhone + '-register'), 'an': sAadhaar, 'pn': sPhone }
+    ret = {'token': getClientAuth(sAadhaar, sPhone + '-register')[:6], 'an': sAadhaar, 'pn': sPhone }
     return HttpJSONResponse(ret)
 
 
@@ -781,7 +781,7 @@ def isAgentVerified(_, dct):
     # Fetch this agent based on aadhaar - if confirmed, send the auth back
     agent = Agent.objects.filter(an=dct['an'])[0]
     ret = {'status': False}
-    if agent.mode != 'RG' and dct['token'] == getClientAuth(dct['an'], dct['pn'] + '-register'):
+    if agent.mode != 'RG' and dct['token'] == getClientAuth(dct['an'], dct['pn'] + '-register')[:6]:
         ret = {'status': True, 'auth': agent.auth}
 
     return HttpJSONResponse(ret)
