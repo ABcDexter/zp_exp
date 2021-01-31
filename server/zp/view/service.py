@@ -568,7 +568,7 @@ def servitorBookingCancel(dct, _serv):
     qsBooking = Booking.objects.filter(order_number=dct['bid'])
     booking = qsBooking[0]
 
-    booking. = 'CANC'
+    booking.status = 'CANC'
     booking.order_status = 'CANC'
     booking.etime = datetime.now(timezone.utc)
     booking.save()
