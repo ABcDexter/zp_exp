@@ -212,14 +212,14 @@ def servitorBookingGet(_dct, servitor):
     # print(ordersResp)
     '''
     qsBooking = Booking.objects.all().values('order_number', 'item_name', 'order_date', 'order_date')
-    qsOrder = Booking.objects.filter( item_name__in=[servitor.job1, servitor.job2,servitor.job3])
+    # qsOrder = Booking.objects.filter( item_name__in=[servitor.job1, servitor.job2,servitor.job3])
 
     ordersRelevant = {}
     if len(qsBooking):
         for ith in qsBooking:
             if ith['item_name'] in [servitor.job1, servitor.job2,servitor.job3]:
                 ordersRelevant = {'bid': ith['order_number'], 'job': ith['item_name'],
-                                  'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:], 'earn': 500}
+                                  'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:-5], 'earn': 500}
     #ordersOther = qsOrder
     return HttpJSONResponse({"booking": ordersRelevant,
                              }) #'other': ordersOther})
@@ -443,7 +443,7 @@ def servitorBookingData(dct, servitor):
         bid
 
     '''
-
+    '''
     # getcontext().prec = 1000
     wcapi = API(url="https://zippe.in", consumer_key=settings.WP_CONSUMER_KEY,
                 consumer_secret=settings.WP_CONSUMER_SECRET_KEY, version="wc/v3")
@@ -494,6 +494,20 @@ def servitorBookingData(dct, servitor):
         #print(orders)
         resp = orders
     print(resp)
+    '''
+    qsBooking = Booking.objects.filter(order_number=dct['bid'])
+
+    resp = {}
+    if len(qsBooking):
+        ith = qsBooking[0]
+        if ith['item_name'] in [servitor.job1, servitor.job2, servitor.job3]:
+            resp = {
+                            'bid': ith['order_number'], 'job': ith['item_name'],
+                            'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:-5],
+                            'hours': '2',
+                            'area': str(ith['address_1_2_billing']),
+                            'earn': 500
+            }
 
     return HttpJSONResponse(resp)
 
