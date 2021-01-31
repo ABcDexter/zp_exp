@@ -522,3 +522,30 @@ def servitorBookingData(dct, servitor):
     return HttpJSONResponse(resp)
 
 
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Booking not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def servitorBookingStart(dct, _serv):
+    '''
+    Servitor calls this to start the Booking providing the OTP that the user shared
+    HTTP Args:
+        OTP,
+        bid
+    '''
+    qsBooking = Booking.objects.filter(id=dct['bid'])
+    booking = qsBooking[0]
+
+    if str(dct['otp']) == '1243':  # str(getOTP(booking.uan, booking.dan, booking.order_date)):
+        booking.order_status = 'STARTED'
+        #trip.stime = datetime.now(timezone.utc)
+        booking.save()
+    else:
+        raise ZPException(403, 'Invalid OTP')
+
+    return HttpJSONResponse({})
+
+
