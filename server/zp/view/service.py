@@ -217,12 +217,12 @@ def servitorBookingGet(_dct, servitor):
     ordersRelevant = {}
     if len(qsBooking):
         for ith in qsBooking:
-            if ith['item_name'] in [servitor.job1, servitor.job2,servitor.job3]:
+            if str(ith['item_name']).upper().lower() in [servitor.job1.upper().lower(), servitor.job2.upper().lower(),
+                                                         servitor.job3.upper().lower()]:
                 ordersRelevant = {'bid': ith['order_number'], 'job': ith['item_name'],
                                   'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:-5], 'earn': 500}
-    #ordersOther = qsOrder
     return HttpJSONResponse({"booking": ordersRelevant,
-                             }) #'other': ordersOther})
+                             })
 
 
 @makeView()
@@ -426,7 +426,7 @@ def servitorOrderGet(_dct, servitor):
     '''
 
     # getcontext().prec = 1000
-    qsBooking = Booking.objects.all().values() 
+    qsBooking = Booking.objects.all().values()
     return HttpJSONResponse({'orders': list(qsBooking)})
 
 
@@ -499,13 +499,16 @@ def servitorBookingData(dct, servitor):
 
     resp = {}
 
-    if booking['item_name'] in [servitor.job1, servitor.job2, servitor.job3]:
+    if booking.item_name.upper().lower() in [servitor.job1.upper().lower(), servitor.job2.upper().lower(),
+                                             servitor.job3.upper().lower()]:
         resp = {
-                        'bid': booking['order_number'], 'job': booking['item_name'],
-                        'date': str(booking['order_date'])[:10], 'time': str(booking['order_date'])[11:-5],
-                        'hours': '2',
-                        'area': str(booking['address_1_2_billing']),
-                        'earn': 500
+                'bid': booking.order_number,
+                'job': booking.item_name,
+                'date': str(booking.order_date)[:10],
+                'time': str(booking.order_date)[11:-5],
+                'hours': '2',
+                'area': str(booking.address_1_2_billing),
+                'earn': 500
         }
 
     return HttpJSONResponse(resp)
