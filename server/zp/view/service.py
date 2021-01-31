@@ -426,7 +426,7 @@ def servitorOrderGet(_dct, servitor):
     '''
 
     # getcontext().prec = 1000
-    qsBooking = Booking.objects.all().values()  # 'id', 'name', 'categories', 'stock_quantity', 'cost_price','regular_price', 'weight')
+    qsBooking = Booking.objects.all().values() 
     return HttpJSONResponse({'orders': list(qsBooking)})
 
 
@@ -495,19 +495,18 @@ def servitorBookingData(dct, servitor):
         resp = orders
     print(resp)
     '''
-    qsBooking = Booking.objects.filter(order_number=dct['bid'])
+    booking = Booking.objects.filter(order_number=dct['bid'])[0]
 
     resp = {}
-    if len(qsBooking):
-        ith = qsBooking[0]
-        if ith['item_name'] in [servitor.job1, servitor.job2, servitor.job3]:
-            resp = {
-                            'bid': ith['order_number'], 'job': ith['item_name'],
-                            'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:-5],
-                            'hours': '2',
-                            'area': str(ith['address_1_2_billing']),
-                            'earn': 500
-            }
+
+    if booking['item_name'] in [servitor.job1, servitor.job2, servitor.job3]:
+        resp = {
+                        'bid': booking['order_number'], 'job': booking['item_name'],
+                        'date': str(booking['order_date'])[:10], 'time': str(booking['order_date'])[11:-5],
+                        'hours': '2',
+                        'area': str(booking['address_1_2_billing']),
+                        'earn': 500
+        }
 
     return HttpJSONResponse(resp)
 
