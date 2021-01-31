@@ -213,9 +213,16 @@ def servitorBookingGet(_dct, servitor):
     '''
     qsBooking = Booking.objects.all().values('order_number', 'item_name', 'order_date', 'order_date')
     qsOrder = Booking.objects.filter( item_name__in=[servitor.job1, servitor.job2,servitor.job3])
-    ordersRelevant = qsBooking
+
+    ordersRelevant = {}
+    if len(qsBooking):
+        for ith in qsBooking:
+            if ith['item_name'] in [servitor.job1, servitor.job2,servitor.job3]:
+                ordersRelevant = {'bid': ith['order_number'], 'job': ith['item_name'],
+                                  'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:], 'earn': 500}
     ordersOther = qsOrder
-    return HttpJSONResponse({"booking": ordersRelevant, 'other':ordersOther})
+    return HttpJSONResponse({"booking": ordersRelevant,
+                             'other': ordersOther})
 
 
 @makeView()
