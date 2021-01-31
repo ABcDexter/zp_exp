@@ -220,9 +220,9 @@ def servitorBookingGet(_dct, servitor):
             if ith['item_name'] in [servitor.job1, servitor.job2,servitor.job3]:
                 ordersRelevant = {'bid': ith['order_number'], 'job': ith['item_name'],
                                   'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:], 'earn': 500}
-    ordersOther = qsOrder
+    #ordersOther = qsOrder
     return HttpJSONResponse({"booking": ordersRelevant,
-                             'other': ordersOther})
+                             }) #'other': ordersOther})
 
 
 @makeView()
