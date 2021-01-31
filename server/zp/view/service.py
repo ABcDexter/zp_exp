@@ -542,6 +542,7 @@ def servitorBookingStart(dct, _serv):
     if str(dct['otp']) == '1243':
         print(dct['otp'], str(getOTP(booking.uan, booking.servan, booking.rtime)))
         booking.order_status = 'START'
+        booking.status = 'START'
         booking.stime = datetime.now(timezone.utc)
         booking.save()
     else:
@@ -549,4 +550,28 @@ def servitorBookingStart(dct, _serv):
 
     return HttpJSONResponse({})
 
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Booking not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def servitorBookingCancel(dct, _serv):
+    '''
+    Servitor calls this to cancel the Booking
+    HTTP Args:
+        auth
+        bid
+    '''
+    qsBooking = Booking.objects.filter(order_number=dct['bid'])
+    booking = qsBooking[0]
+
+    booking. = 'CANC'
+    booking.order_status = 'CANC'
+    booking.etime = datetime.now(timezone.utc)
+    booking.save()
+
+    return HttpJSONResponse({})
 
