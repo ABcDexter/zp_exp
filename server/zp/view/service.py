@@ -575,3 +575,27 @@ def servitorBookingCancel(dct, _serv):
 
     return HttpJSONResponse({})
 
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Booking not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def servitorBookingEnd(dct, _serv):
+    '''
+    Servitor calls this to end the Booking in a normal manner
+    HTTP Args:
+        auth
+        bid
+    '''
+    qsBooking = Booking.objects.filter(order_number=dct['bid'])
+    booking = qsBooking[0]
+
+    booking.status = 'DONE'
+    booking.order_status = 'DONE'
+    booking.etime = datetime.now(timezone.utc)
+    booking.save()
+
+    return HttpJSONResponse({})
