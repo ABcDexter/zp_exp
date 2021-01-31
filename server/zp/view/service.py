@@ -512,7 +512,8 @@ def servitorBookingData(dct, servitor):
                 'hours': '2',
                 'area': str(booking.address_1_2_billing),
                 'earn': 500,
-                'customer_note': str(booking.customer_note)
+                'customer_note': str(booking.customer_note),
+                'customer_address': str(booking.address_1_2_billing)
         }
 
     return HttpJSONResponse(resp)
