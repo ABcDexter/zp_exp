@@ -220,7 +220,7 @@ def servitorBookingGet(_dct, servitor):
             if str(ith['item_name']).upper().lower() in [servitor.job1.upper().lower(), servitor.job2.upper().lower(),
                                                          servitor.job3.upper().lower()]:
                 ordersRelevant = {'bid': ith['order_number'], 'job': ith['item_name'],
-                                  'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:-5], 'earn': 500}
+                                  'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:-9], 'earn': 500}
     return HttpJSONResponse({"booking": ordersRelevant,
                              })
 
@@ -505,7 +505,7 @@ def servitorBookingData(dct, servitor):
                 'bid': booking.order_number,
                 'job': booking.item_name,
                 'date': str(booking.order_date)[:10],
-                'time': str(booking.order_date)[11:-5],
+                'time': str(booking.order_date)[11:-9],
                 'hours': '2',
                 'area': str(booking.address_1_2_billing),
                 'earn': 500
