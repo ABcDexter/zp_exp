@@ -167,6 +167,7 @@ def servitorBookingGet(_dct, servitor):
     ]
     '''
 
+    '''
     # WooCommerce
     wcapi = API(url="https://zippe.in", consumer_key=settings.WP_CONSUMER_KEY,
                 consumer_secret=settings.WP_CONSUMER_SECRET_KEY, version="wc/v3")
@@ -207,9 +208,13 @@ def servitorBookingGet(_dct, servitor):
                 ordersRelevant.append(orders)
             elif orders['job'].upper().lower() in [servitor.job4.upper().lower(), servitor.job5.upper().lower()]:
                 ordersOther.append(orders)
-
+    
     # print(ordersResp)
-
+    '''
+    qsBooking = Booking.objects.all().values('order_number', 'item_name', 'order_date', 'order_date')
+    qsOrder = Booking.objects.filter( item_name__in=[servitor.job1, servitor.job2,servitor.job3])
+    ordersRelevant = qsBooking
+    ordersOther = qsOrder
     return HttpJSONResponse({"booking": ordersRelevant, 'other':ordersOther})
 
 
