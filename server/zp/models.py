@@ -782,7 +782,7 @@ class Job(models.Model):
 
 class Booking(models.Model):
     """
-    Bookings for the servitor
+    Bookings of the SERVICE module
     -----------------------------------------------------
     order_number(BIG int)    :   Order number of the booking primary key
     order_status(str) :
@@ -850,6 +850,40 @@ class Booking(models.Model):
     coupon_Code = models.CharField(null=True, max_length=32)
     discount_amount = models.FloatField(null=True)
     discount_amount_tax = models.FloatField(null=True)
+
+    # ---
+    # our fields
+    # user an from User table
+    uan = models.BigIntegerField(null=True)
+
+    # servitor an, who is accepting the booking
+    servan = models.BigIntegerField(null=True)
+
+    STATUSES = [
+        ('PEND', 'Pending payment'),  # Order received, no payment initiated. Awaiting payment (unpaid)
+        ('FAIL', 'Payment failed'),  # Payment failed or was declined (unpaid) or requires authentication (SCA)
+        ('RECE', 'Processing'),  # Payment received (paid) and stock has been reduced; order is awaiting fulfillment
+        ('CANC', 'CANCELLED'),  # Canceled by an admin or the customer or the servitor after reaching the destination
+        ('HOLD', 'ON HOLD'),  # Awaiting payment – stock is reduced, but you need to confirm payment.
+        ('REFU', 'REFUNDED'),  # Refunded by an admin – no further action required.
+        ('START', 'STARTED'),  # Started by a Servitor
+        ('DONE', 'Completed')  # Booking fulfilled and completed
+    ]
+    # as per the state diagram :
+    status = models.CharField(max_length=5, choices=STATUSES, default='', db_index=True)
+
+    # Booking request time
+    rtime = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    # Booking accept time
+    atime = models.DateTimeField(db_index=True, null=True)
+
+    # Booking start time
+    stime = models.DateTimeField(db_index=True, null=True)
+
+    # Booking end time
+    etime = models.DateTimeField(db_index=True, null=True)
+    # ---
 
     class Meta:
         db_table = 'booking'

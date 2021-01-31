@@ -539,9 +539,10 @@ def servitorBookingStart(dct, _serv):
     qsBooking = Booking.objects.filter(order_number=dct['bid'])
     booking = qsBooking[0]
 
-    if str(dct['otp']) == '1243':  # str(getOTP(booking.uan, booking.dan, booking.order_date)):
-        booking.order_status = 'STARTED'
-        #trip.stime = datetime.now(timezone.utc)
+    if str(dct['otp']) == '1243':
+        print(dct['otp'], str(getOTP(booking.uan, booking.servan, booking.rtime)))
+        booking.order_status = 'START'
+        booking.stime = datetime.now(timezone.utc)
         booking.save()
     else:
         raise ZPException(403, 'Invalid OTP')
