@@ -618,7 +618,7 @@ def servitorJobsAccepted(_dct, serv):
 
     currBookings = Booking.objects.filter(order_number=serv.coid)
 
-    resp = {'status': False}
+    status = False
 
     if len(currBookings):
         currBooking = currBookings[0]
@@ -631,12 +631,10 @@ def servitorJobsAccepted(_dct, serv):
                           'area': str(currBooking.address_1_2_billing),
                           'earn': 500
         }
-        resp.update({'status': True})
+        status = True
 
     else:
         currentBooking = {}
-
-    resp.update(currentBooking)
 
     upcomingBookings = []
     today = datetime.now(timezone.utc)
@@ -656,6 +654,18 @@ def servitorJobsAccepted(_dct, serv):
             }
             upcomingBookings.append(data)
 
-    resp.update({'upcoming': json.loads("[" + str(upcomingBookings).replace('\'', '\"')[1:-1]) + "]"})
+    if not status:
+        return HttpJSONResponse({'status': status,  'upcoming': upcomingBookings})
+    else:
+        return HttpJSONResponse( {
+            'bid': currentBooking.order_number,
+            'job': currentBooking.item_name,
+            'date': str(currentBooking.order_date)[:10],
+            'time': str(currentBooking.order_date)[11:-9],
+            'hours': '2',
+            'area': str(currentBooking.address_1_2_billing),
+            'earn': 500,
+            'upcoming': upcomingBookings
 
-    return HttpJSONResponse(resp)
+        }
+        )
