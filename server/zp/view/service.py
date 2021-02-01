@@ -658,12 +658,12 @@ def servitorJobsAccepted(_dct, serv):
         return HttpJSONResponse({'status': status,  'upcoming': upcomingBookings})
     else:
         return HttpJSONResponse( {
-            'bid': currentBooking.order_number,
-            'job': currentBooking.item_name,
-            'date': str(currentBooking.order_date)[:10],
-            'time': str(currentBooking.order_date)[11:-9],
+            'bid': currentBooking['order_number'],
+            'job': currentBooking['item_name'],
+            'date': str(currentBooking['order_date'])[:10],
+            'time': str(currentBooking['order_date'])[11:-9],
             'hours': '2',
-            'area': str(currentBooking.address_1_2_billing),
+            'area': str(currentBooking['address_1_2_billing']),
             'earn': 500,
             'upcoming': upcomingBookings
 
