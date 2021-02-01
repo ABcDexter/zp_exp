@@ -726,6 +726,8 @@ class Servitor(models.Model):
     wage(float) :   hourly charge
     mark(float) :   rating of the service person
     bank(str)   :   bank details of the Servitor
+    ps(str)     :   nearest police station
+    coid        :   current order id which has been automatically assigned to this servitor
     -----------------------------------------
     """
 
@@ -752,6 +754,8 @@ class Servitor(models.Model):
     bank = models.CharField(null=False, max_length=300, default='')
 
     ps = models.CharField(null=False, max_length=50, default='')
+    coid = models.BigIntegerField(null=True)
+
 
     class Meta:
         db_table = 'servitor'

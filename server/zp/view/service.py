@@ -599,3 +599,49 @@ def servitorBookingEnd(dct, _serv):
     booking.save()
 
     return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Booking not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def servitorJobsAccepted(dct, serv):
+    '''
+    Servitor calls this to get the Bookings which are ongoing or yet to come
+    HTTP Args:
+        auth
+        bid
+    '''
+    qsBooking = Booking.objects.filter(servan=serv.an)
+
+    currBooking = Booking.objects.filter(order_number=serv.coid)[0]
+    currentBooking = {
+                        'bid': currBooking.order_number,
+                        'job': currBooking.item_name,
+                        'date': str(currBooking.order_date)[:10],
+                        'time': str(currBooking.order_date)[11:-9],
+                        'hours': '2',
+                        'area': str(currBooking.address_1_2_billing),
+                        'earn': 500,
+    }
+    upcomingBookings = []
+    today = datetime.now(timezone.utc)
+
+    for i in qsBooking:
+
+        if i.order_date > today:
+
+            data = {
+                'bid': i.order_number,
+                'job': i.item_name,
+                'date': str(i.order_date)[:10],
+                'time': str(i.order_date)[11:-9],
+                'hours': '2',
+                'area': str(i.address_1_2_billing),
+                'earn': 500,
+            }
+        upcomingBookings.append(data)
+
+    return HttpJSONResponse({'current': currentBooking, 'upcoming': upcomingBookings})
