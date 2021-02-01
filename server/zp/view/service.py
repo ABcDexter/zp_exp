@@ -702,5 +702,5 @@ def servitorJobsCompleted(_dct, serv):
             }
             if i.order_date < today:
                 pastBookings.append(data)
-            
+
     return HttpJSONResponse({'past': pastBookings})
