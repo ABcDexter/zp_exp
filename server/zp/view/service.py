@@ -669,6 +669,38 @@ def servitorJobsAccepted(_dct, serv):
             'earn': currentBooking['earn'],
 
             'upcoming': upcomingBookings
+        })
 
-        }
-        )
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Booking not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def servitorJobsCompleted(_dct, serv):
+    '''
+    Servitor calls this to get the Bookings which are completed
+    HTTP Args:
+        auth
+    '''
+    qsBooking = Booking.objects.filter(servan=serv.an)
+
+    pastBookings = []
+
+    if len(qsBooking):
+        today = datetime.now(timezone.utc)
+
+        for i in qsBooking:
+            data = {
+                          'bid': i.order_number,
+                          'job': i.item_name,
+                          'date': str(i.order_date)[:10],
+                          'time': str(i.order_date)[11:-9],
+                          'hours': '2',
+                          'earn': 500
+            }
+            if i.order_date < today:
+                pastBookings.append(data)
+            
+    return HttpJSONResponse({'past': pastBookings})
