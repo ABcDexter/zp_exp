@@ -633,7 +633,7 @@ def servitorJobsAccepted(dct, serv):
         currentBooking = {'status': False}
 
     upcomingBookings = []
-    
+
     today = datetime.now(timezone.utc)
 
     for i in qsBooking:
@@ -649,6 +649,6 @@ def servitorJobsAccepted(dct, serv):
                 'area': str(i.address_1_2_billing),
                 'earn': 500
             }
-        upcomingBookings.append(data)
-
+            upcomingBookings.append(data)
+        
     return HttpJSONResponse({'current': currentBooking, 'upcoming': upcomingBookings})
