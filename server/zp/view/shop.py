@@ -241,7 +241,6 @@ def loginPurchaser(_, dct):
         return HttpJSONResponse(ret)
 
 
-
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)

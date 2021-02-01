@@ -25,6 +25,7 @@ class User(models.Model):
     adhar(int) :   Aadhaar number of the user
     email(str) :   Email of the user
     fcm(str)   :   Firebase Cloud Messaging token of the User android app
+    -----------------------------------------
     """
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
@@ -43,6 +44,7 @@ class User(models.Model):
     adhar= models.BigIntegerField(db_index=True, null=True)
     email= models.CharField(db_index=True, null=True, max_length=100)
     fcm  = models.CharField(db_index=True, null=True, max_length=512)
+
     class Meta:
         db_table = 'user'
         managed = True
@@ -66,6 +68,7 @@ class Driver(models.Model):
     hs(str)    :   Home state of the Driver
     mark(float):   Float field for the rating of the driver.
     fcm(str)   :   Firebase Cloud Messaging token of the Driver android app
+    -----------------------------------------
     """
     MODES = [
         ('RG', 'registering'),  # driver is under registration process
@@ -107,6 +110,7 @@ class Place(models.Model):
     lng(float) :   Longitude
     alt(int)   :   Altitude in meters
     wt(int)    :   Weightage - economic weightage (0 is remote village, 100 is a commercial place)
+    -----------------------------------------
     """
     pn = models.CharField(max_length=64, db_index=True, unique=True, null=False)
     lat = models.FloatField()
@@ -123,9 +127,10 @@ class Route(models.Model):
     """
     Route is a convenience table storing road distance between any pair of places
     -----------------------------------------------------------------------------
-    idx(int): first place id from places table
-    idy(int): second place id from places table
-    dist(int): distance in meters
+    idx(int)  : first place id from places table
+    idy(int)  : second place id from places table
+    dist(int) : distance in meters
+    -----------------------------------------
     """
     idx = models.IntegerField()
     idy = models.IntegerField()
@@ -155,7 +160,7 @@ class Vehicle(models.Model):
     pid(id)       :  Place where this vehicle is parked
     vtype(int)    :  vehicle type (e-cycle/ escooty/ ebike/ zbee)
     mark(float)   :  float field has the rating, binary system same as that of the user/driver
-
+    -----------------------------------------
     Note:
         hrs represents total time when the vehicle was mobile, not total trip time
         - this data has to come from the vehicle IoT data
@@ -211,10 +216,10 @@ class Trip(models.Model):
     uan(int)  : User aadhaar
     dan(int)  : Driver aadhaar
     van(int)  : Vehicle assigned number
-    rtime     :    Trip request timestamp
-    atime     :    Trip assign timestamp
-    stime     :    Trip start timestamp
-    etime     :    Trip end time (regardless of completion or failure)
+    rtime     : Trip request timestamp
+    atime     : Trip assign timestamp
+    stime     : Trip start timestamp
+    etime     : Trip end time (regardless of completion or failure)
     srcid     : Source place id
     dstid     : Destination place id
     srcname   : Name of Source
@@ -230,6 +235,7 @@ class Trip(models.Model):
     rvtype    : requested vehicle type
     url       : url for tracking
     htid      : tid for trip
+    -----------------------------------------
     """
     STATUSES = [
         ('RQ', 'requested'),  # requested from the user via app
@@ -298,9 +304,9 @@ class Progress(models.Model):
     """
     Progress table contains the live percentage progress of every trip
     ------------------------------------------------------------------
-    tid(int): trip id
-    pct(int):  progress percent
-
+    tid(int) : trip id
+    pct(int) :  progress percent
+    -----------------------------------------
     """
     tid = models.IntegerField(primary_key=True)
     pct = models.IntegerField(db_index=True)
@@ -314,15 +320,16 @@ class Supervisor(models.Model):
     """
     Supervisor is for the rental module, supervises the vehicles
     ------------------------------------------------------------
-    an(int):    Aadhaar number
-    pn(str):    Phone number
-    auth(str):  Supervisor auth token
-    dl(str):    Driving licence no.
-    name(str):  Real name
-    gdr(str):   Gender
-    age(int):   Age
-    pid(int):   Index of current place - see Place table
-    hs(str):    Home state of the Supervisor
+    an(int)   :    Aadhaar number
+    pn(str)   :    Phone number
+    auth(str) :    Supervisor auth token
+    dl(str)   :    Driving licence no.
+    name(str) :    Real name
+    gdr(str)  :    Gender
+    age(int)  :    Age
+    pid(int)  :    Index of current place - see Place table
+    hs(str)   :    Home state of the Supervisor
+    -----------------------------------------
     """
 
     an   = models.BigIntegerField(primary_key=True)
@@ -346,16 +353,17 @@ class Manager(models.Model):
     """
     Manager is for the ride module, assgins the vehicles to Driver
     --------------------------------------------------------------
-    an(int): Aadhaar number
-    pn(str): Phone number
-    auth(str): Hub manager auth token
-    dl(str): DL no.
-    name(str): Name
-    gdr(str): Gender
-    age(int): Age in years
-    pid(int): Index of the current hub - todo Hub table
+    an(int)   : Aadhaar number
+    pn(str)   : Phone number
+    auth(str) : Hub manager auth token
+    dl(str)   : DL no.
+    name(str) : Name
+    gdr(str)  : Gender
+    age(int)  : Age in years
+    pid(int)  : Index of the current hub - todo Hub table
     #todo how to add list of vehicle to this Manager
-    hs(str): Home state
+    hs(str)   : Home state
+    -----------------------------------------
     """
     an   = models.BigIntegerField(primary_key=True)
     pn   = models.CharField(max_length=32, db_index=True)
@@ -379,6 +387,8 @@ class Manager(models.Model):
 class Delivery(models.Model):
     """
     tabula rasa
+    -----------------------------------------
+    -----------------------------------------
     """
     STATUSES = [
         ('SC', 'scheduled'),  # scheduler by the user via app
@@ -495,20 +505,21 @@ class Agent(models.Model):
     """
     Delivery agent
     --------------
-    an(int):    Aadhaar number
-    pn(str):    Phone number
-    auth(str):  Client auth token
-    dl(str):    Agent licence no.
-    name(str):  Real name
-    gdr(str):   Gender
-    age(int)
-    mode(str):   Driver mode registering(RG), available(AV), booked(BK), offline(OF), locked(LK)
-    pid(int):   Index of current place - see Place table
-    tid(int):   Index of current trip - see Trip table
-    hs(str):    Home state of the Agent
-    veh(int): Has a vehicle or not
-    mark(float): float field has the rating, binary system same as that of the user/driver
+    an(int)    :   Aadhaar number
+    pn(str)    :   Phone number
+    auth(str)  :   Client auth token
+    dl(str)    :   Agent licence no.
+    name(str)  :   Real name
+    gdr(str)   :   Gender
+    age(int)   :   Age
+    mode(str)  :   Driver mode registering(RG), available(AV), booked(BK), offline(OF), locked(LK)
+    pid(int)   :   Index of current place - see Place table
+    tid(int)   :   Index of current trip - see Trip table
+    hs(str)    :   Home state of the Agent
+    veh(int)   :   Has a vehicle or not
+    mark(float):   float field has the rating, binary system same as that of the user/driver
     fcm(str)   :   Firebase Cloud Messaging token of the Agent android app
+    -----------------------------------------
     """
     MODES = [
         ('RG', 'registering'),  # Agent is under registration process
@@ -547,13 +558,13 @@ class Rate(models.Model):
     """
     Rate stores the rating and the money paid for the trip
     ------------------------------------------------------
-    id (int): Autoincrement primary key
-
-    type = type of the rating, which is rent+rentid, or ride+rideid, deli+deliveryid
-    rating = basic rating
-    rev = review in detail
-    time = timestamp when rating was done
-    dan = driver/supervisor aadhaar number
+    id (int)    : Autoincrement primary key
+    type(str)   : type of the rating, which is rent+rentid, or ride+rideid, deli+deliveryid
+    rating(str) : basic rating
+    rev(str)    : review in detail
+    time(time)  : timestamp when rating was done
+    dan(int)    : driver/supervisor aadhaar number
+    -----------------------------------------
     """
     TYPE = [
         ('RIDE', 'ride'),
@@ -590,19 +601,18 @@ class Product(models.Model):
     Product in the SHOP module
     --------------------------
 
-    name(str): name of the product
-    type(bool): simple 0 or grouped 1
-    regular_price (float): MRP of the product 
-    cost_price (float): price we are getting the product at
-    sale_price (float): selling price of the product 
-    
-    stock_quantity(int):   quantity of the item in the stock
-    categories(str): product categories( see Category table)
-    weight (float): weight (in grams) of one unit of the product 
-    SKU(str): PRIMARY key
-    
-    tax_class(float): how much tax on the product
-    low_stock_amount(int): low stock alert
+    name(str)             : name of the product
+    type(bool)            : simple 0 or grouped 1
+    regular_price (float) : MRP of the product
+    cost_price (float)    : price we are getting the product at
+    sale_price (float)    : selling price of the product
+    stock_quantity(int)   : quantity of the item in the stock
+    categories(str)       : product categories( see Category table)
+    weight (float)        : weight (in grams) of one unit of the product
+    SKU(str)              : PRIMARY key
+    tax_class(float)      : how much tax on the product
+    low_stock_amount(int) : low stock alert
+    -----------------------------------------
     """
     #id is given by default
     #id = models.AutoField(primary_key=True)
@@ -664,16 +674,17 @@ class Purchaser(models.Model):
     """
     Purchaser goes to have a purchase for SHOP module
     -------------------------------------------------
-    an(int):    Aadhaar number
-    pn(str):    Phone number
-    auth(str):  Purchaser auth token
-    dl(str):    Driving licence no.
-    name(str):  Real name
-    gdr(str):   Gender
-    age(int):   Age
-    pid(int):   Index of current place - see Place table
-    hs(str):    Home state of the Purchaser
-    fcm(str):   Firebase cloud messaging token of the Purchaser android app
+    an(int)   :   Aadhaar number
+    pn(str)   :   Phone number
+    auth(str) :   Purchaser auth token
+    dl(str)   :   Driving licence no.
+    name(str) :   Real name
+    gdr(str)  :   Gender
+    age(int)  :   Age
+    pid(int)  :   Index of current place - see Place table
+    hs(str)   :   Home state of the Purchaser
+    fcm(str)  :   Firebase cloud messaging token of the Purchaser android app
+    -----------------------------------------
     """
 
     an   = models.BigIntegerField(primary_key=True)
@@ -701,17 +712,23 @@ class Servitor(models.Model):
     """
     Servitor is the the Service providing person
     --------------------------------------------
-    an(int):    Aadhaar number
-    pn(str):    Phone number
-    auth(str):  Servitor auth token
-    dl(str):    Driving licence no.
-    name(str):  Real name
-    gdr(str):   Gender
-    age(int):   Age
-    pid(int):   Index of current place - see Place table
-    hs(str):    Home state of the Servitor
-    job(str):   What does that person does
-    wage(float) : hourly charge
+
+    an(int)     :   Aadhaar number
+    pn(str)     :   Phone number
+    auth(str)   :   Servitor auth token
+    dl(str)     :   Driving licence no.
+    name(str)   :   Real name
+    gdr(str)    :   Gender
+    age(int)    :   Age
+    pid(int)    :   Index of current place - see Place table
+    hs(str)     :   Home state of the Servitor
+    job(str)    :   What does that person does (job1 primary, job2 secondary, job3 tertiary)
+    wage(float) :   hourly charge
+    mark(float) :   rating of the service person
+    bank(str)   :   bank details of the Servitor
+    ps(str)     :   nearest police station
+    coid        :   current order id which has been automatically assigned to this servitor
+    -----------------------------------------
     """
 
     an   = models.BigIntegerField(primary_key=True)
@@ -721,13 +738,159 @@ class Servitor(models.Model):
 
     dl   = models.CharField(null=True, max_length=20)
     name = models.CharField(null=True, max_length=64, db_index=True)
-    gdr  = models.CharField(null=True, max_length=16, db_index=True)
+    gdr  = models.CharField(null=True, max_length=10, db_index=True)
     age  = models.IntegerField(null=True, db_index=True)
     hs   = models.CharField(null=True, max_length=50)
-    job  = models.CharField(null=True, max_length=50)
+
+    # 5 jobs of the Servitor
+    job1 = models.CharField(null=False, max_length=32, default='')
+    job2 = models.CharField(null=True, max_length=32)
+    job3 = models.CharField(null=True, max_length=32)
+    job4 = models.CharField(null=True, max_length=32)
+    job5 = models.CharField(null=True, max_length=32)
+
     wage = models.FloatField(db_index=True, default=0.0)
+    mark = models.FloatField(db_index=True, default=0.0)
+    bank = models.CharField(null=False, max_length=300, default='')
+
+    ps = models.CharField(null=False, max_length=50, default='')
+    coid = models.BigIntegerField(null=True)
+
+
     class Meta:
         db_table = 'servitor'
+        managed = True
+
+
+class Job(models.Model):
+    """
+    predefined Jobs for the servitor
+    -----------------------------------------------------
+    id(int)    :   Autoincrement primary key
+    jname(str) :   Job name
+    jtype(int) :   Type of the job
+    -----------------------------------------
+    """
+    TYPE = [
+        ('esse', 'EssentialServices'),
+        ('prof', 'ProfessionalService'),
+        ('hire', 'ForHire')
+    ]
+    jname = models.CharField(max_length=100, db_index=True, unique=True, null=False)
+    jtype = models.CharField(max_length=5, choices=TYPE, default='None')
+
+    class Meta:
+        db_table = 'job'
+        managed = True
+
+
+class Booking(models.Model):
+    """
+    Bookings of the SERVICE module
+    -----------------------------------------------------
+    order_number(BIG int)    :   Order number of the booking primary key
+    order_status(str) :
+
+        Pending payment — Order received, no payment initiated. Awaiting payment (unpaid).
+        Failed — Payment failed or was declined (unpaid) or requires authentication (SCA). Note that this status may not show immediately and instead show as Pending until verified (e.g., PayPal).
+        Processing — Payment received (paid) and stock has been reduced; order is awaiting fulfillment. All product orders require processing, except those that only contain products which are both Virtual and Downloadable.
+        Completed — Order fulfilled and complete – requires no further action.
+        On hold — Awaiting payment – stock is reduced, but you need to confirm payment.
+        Canceled — Canceled by an admin or the customer – stock is increased, no further action required.
+        Refunded — Refunded by an admin – no further action required.
+        Authentication required — Awaiting action by the customer to authenticate the transaction and/or complete SCA requirements.
+    https://docs.woocommerce.com/document/managing-orders/
+
+    -----------------------------------------------------
+    Note : Bookings are uploaded from the booking csv
+    """
+
+    order_number = models.BigIntegerField(primary_key=True)
+    order_status = models.CharField(max_length=10, null=False, default='')
+    order_date = models.DateTimeField(auto_now=True)
+
+    customer_note = models.CharField(null=True, max_length=256)
+
+    # Billing address
+    first_name_billing = models.CharField(max_length=32, null=False, default='')
+    last_name_billing = models.CharField(max_length=32, null=False, default='')
+
+    company_billing = models.CharField(max_length=32, null=False, default='')
+    address_1_2_billing = models.CharField(max_length=64, null=False, default='')
+    city_billing = models.CharField(max_length=32, null=False, default='')
+    state_code_billing = models.CharField(max_length=8, null=False, default='')
+    postcode_billing = models.CharField(max_length=6, null=False, default='')
+    country_code_billing = models.CharField(max_length=4, null=False, default='IN')
+
+    email_billing = models.CharField(max_length=64, null=False, default='')
+    phone_billing = models.CharField(max_length=12, null=False, default='')
+
+    # Shipping address
+    first_name_shipping = models.CharField(null=True, max_length=32)
+    last_name_shipping = models.CharField(null=True, max_length=32)
+    address_1_2_shipping = models.CharField(null=True, max_length=32)
+    city_shipping = models.CharField(null=True, max_length=32)
+    state_code_shipping = models.CharField(null=True, max_length=32)
+    postcode_shipping = models.CharField(null=True, max_length=6)
+    country_code_shipping = models.CharField(null=True, max_length=4)
+    payment_method_title = models.CharField(null=True, max_length=20)
+
+    cart_discount_amount = models.FloatField(db_index=True, default=0.0)
+    order_subtotal_amount = models.FloatField(db_index=True, default=0.0)
+    shipping_method_title = models.CharField(null=True, max_length=32)
+    order_shipping_amount = models.FloatField(db_index=True, default=0.0)
+    order_refund_amount = models.FloatField(db_index=True, default=0.0)
+
+    order_total_amount = models.FloatField(db_index=True, default=0.0)
+    order_total_tax_amount = models.FloatField(db_index=True, default=0.0)
+
+    sku = models.CharField(null=True, max_length=32)
+
+    item_qty = models.CharField(null=True, max_length=32)
+    item_name = models.CharField(null=True, max_length=32)
+    quantity = models.IntegerField(db_index=True, default=1)
+    item_cost = models.FloatField(db_index=True, default=0.0)
+
+    coupon_Code = models.CharField(null=True, max_length=32)
+    discount_amount = models.FloatField(null=True)
+    discount_amount_tax = models.FloatField(null=True)
+
+    # ---
+    # our fields
+    # user an from User table
+    uan = models.BigIntegerField(null=True)
+
+    # servitor an, who is accepting the booking
+    servan = models.BigIntegerField(null=True)
+
+    STATUSES = [
+        ('PEND', 'Pending payment'),  # Order received, no payment initiated. Awaiting payment (unpaid)
+        ('FAIL', 'Payment failed'),  # Payment failed or was declined (unpaid) or requires authentication (SCA)
+        ('RECE', 'Processing'),  # Payment received (paid) and stock has been reduced; order is awaiting fulfillment
+        ('CANC', 'CANCELLED'),  # Canceled by an admin or the customer or the servitor after reaching the destination
+        ('HOLD', 'ON HOLD'),  # Awaiting payment – stock is reduced, but you need to confirm payment.
+        ('REFU', 'REFUNDED'),  # Refunded by an admin – no further action required.
+        ('START', 'STARTED'),  # Started by a Servitor
+        ('DONE', 'Completed')  # Booking fulfilled and completed
+    ]
+    # as per the state diagram :
+    status = models.CharField(max_length=5, choices=STATUSES, default='', db_index=True)
+
+    # Booking request time
+    rtime = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    # Booking accept time
+    atime = models.DateTimeField(db_index=True, null=True)
+
+    # Booking start time
+    stime = models.DateTimeField(db_index=True, null=True)
+
+    # Booking end time
+    etime = models.DateTimeField(db_index=True, null=True)
+    # ---
+
+    class Meta:
+        db_table = 'booking'
         managed = True
 
 
@@ -739,12 +902,12 @@ class Location(models.Model):
     '''
     Locations logs the the locations of the drivers/users updated periodically
     --------------------------------------------------------------------------
-    an(int):      User/Driver Aadhaar number or vehicle ID
-    time:         Log entry timestamp
-    lat(float):   Latitude of user/driver
-    long(float):  Longitude of user/driver
-    kind(int):    0 is user, 1 is driver, 2 rental user, 3 is a vehicle
-
+    an(int)     :    User/Driver Aadhaar number or vehicle ID
+    time        :    Log entry timestamp
+    lat(float)  :    Latitude of user/driver
+    long(float) :    Longitude of user/driver
+    kind(int)   :    0 user, 1  driver, 2 Vehicle, 3 rental supervisor, 4 agent, 5  servitor, 6 purchaser
+    -----------------------------------------
     '''
     an    = models.BigIntegerField(primary_key=True, default=0)
     lat   = models.FloatField()
@@ -752,8 +915,8 @@ class Location(models.Model):
     time  = models.DateTimeField(auto_now=True)
     kind  = models.IntegerField(db_index=True, default=0)
 
-    KINDS = {User: 0, Driver: 1, Vehicle: 2, Supervisor: 3, Agent: 4, Servitor:5}
-    ENTITIES = [User, Driver, Vehicle, Supervisor, Agent, Servitor]
+    KINDS = {User: 0, Driver: 1, Vehicle: 2, Supervisor: 3, Agent: 4, Servitor: 5, Purchaser: 6}
+    ENTITIES = [User, Driver, Vehicle, Supervisor, Agent, Servitor, Purchaser]
 
     def save(self, *args, **kwargs):
         '''
@@ -791,3 +954,5 @@ class Location(models.Model):
         db_table = 'location'
         ordering = ['lat', 'lng']
         managed = True
+
+

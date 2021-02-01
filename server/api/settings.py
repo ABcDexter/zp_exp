@@ -23,9 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+8^8@0w0p1)6yr-g)!3l04&qp-ggjwz@9f_-fvpm_qta0g&36r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# NOTE : If this is turned False, then the static files won't work!!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "media.villageapps.in", "159.65.144.72", "86d9a981a121.ngrok.io" ] # ngrok http http://127.0.0.1:9999
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "media.villageapps.in", "159.65.144.72",
+                 "86d9a981a121.ngrok.io"]  # ngrok http http://127.0.0.1:9999
 
 PROFILE_PHOTO_DIR = '/srv/data/static/dp'
 AADHAAR_DIR = '/srv/data/aadhaar/'
@@ -34,8 +36,8 @@ GOOGLE_APPLICATION_CREDENTIALS="/srv/zp/server/google-cloud/serviceAccountKey.js
 # GOOGLE_MAPS_KEY = "AIzaSyBMFQPIDHSPfdiQqjX2ieF4l-qQB2tB61c"  # anubhav.balodhi@gmail.com
 GOOGLE_MAPS_KEY  = "AIzaSyALViFhty2ig13ep-ZU49BoPNQQo38QN7Q"  # zippe-server : zippeindia@gmail.com
 GOOGLE_PLACES_KEY = "AIzaSyALViFhty2ig13ep-ZU49BoPNQQo38QN7Q"
-DB_FILE_PATH  = '/srv/data/db'
-ADMIN_AUTH    = '437468756c68752066687461676e'
+DB_FILE_PATH = '/srv/data/db'
+ADMIN_AUTH = '437468756c68752066687461676e'
 GM_PSWD = 'ivyyntr+pbaarpg@2103'
 
 M_PER_DEG_LNG = 97220.765  # These values are specific to fleet location
@@ -57,9 +59,9 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 26214400 # 25 MB
 
 WP_CONSUMER_KEY = 'ck_97e691622c4bd5e13fb7b18cbb266c8277257372'
 
-WP_CONSUMER_SECRET_KEY ='cs_63badebe75887e2f94142f9484d06f257194e2c3'
+WP_CONSUMER_SECRET_KEY = 'cs_63badebe75887e2f94142f9484d06f257194e2c3'
 
-DEL_AGENT_EARN = 0.10 # 10% earning to agent 
+DEL_AGENT_EARN = 0.10  # 10% earning to agent
 
 BANK_AUTH = 'vpvpv_314159'
 
@@ -78,7 +80,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders'   
+    'corsheaders'#,
+    #'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -119,18 +122,18 @@ CORS_ORIGIN_ALLOW_ALL = True
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-#    'sqlite': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(DB_FILE_PATH, 'zp.sqlite3'),
-#    },
+    #    'sqlite': {
+    #        'ENGINE': 'django.db.backends.sqlite3',
+    #        'NAME': os.path.join(DB_FILE_PATH, 'zp.sqlite3'),
+    #    },
     # Setup mysql doin
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('ZP_DB_NAME'),
         'USER': os.environ.get('ZP_DB_USER'),
         'PASSWORD': os.environ.get('ZP_DB_PASSWD'),
-        'HOST': 'localhost', #os.environ.get('ZP_DB_HOST'),
-        'PORT': '3306' #os.environ.get('ZP_DB_PORT')
+        'HOST': 'localhost',  # os.environ.get('ZP_DB_HOST'),
+        'PORT': '3306'  # os.environ.get('ZP_DB_PORT')
     }
 }
 
@@ -160,7 +163,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC' #Asia/Kolkata
+TIME_ZONE = 'UTC'  # Asia/Kolkata
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True

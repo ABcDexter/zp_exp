@@ -290,17 +290,20 @@ def driverRideAccept(dct, driver):
 @checkTripStatus(['AS'])
 def driverRideCancel(_dct, driver, trip):
     '''
-    Called by driver to deny a trip that was assigned (AS)
+    Called by driver to deny/cancel a trip that was assigned (AS)
     '''
     # Change trip status from assigned to  denied
+
     # Set the state for the trip and driver - driver is set to OF on failure
     if trip.st == 'AS':
-        driver.mode = 'AV'
+        # force the driver to be offline
+        driver.mode = 'OF'
         trip.st = 'DN'
+    else:
+        driver.mode = 'AV'
 
     # Reset driver tid, but not users since they need to see the DN state
     retireEntity(driver)
-
     # Note the time of trip cancel/fail and save
     trip.etime = datetime.now(timezone.utc)
     trip.save()
@@ -394,9 +397,10 @@ def driverPaymentConfirm(_dct, driver, trip):
     # NOT required AS PER date 9/11/2020
 
     # STOP tracking the User
-    hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID, settings.HYPERTRACK_SECRET_KEY)
-    hypertrack.trips.complete(str(trip.htid))
-    # done
+    if trip.htid :
+        hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID, settings.HYPERTRACK_SECRET_KEY)
+        hypertrack.trips.complete(str(trip.htid))
+        # done
 
     return HttpJSONResponse({})
 
@@ -719,7 +723,7 @@ def adminDriverReached(dct):
                                     "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
             }
             }
-            dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+            dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA9ac2AKM:APA91bH7N4ocS711aAjNHEYvKo6TZxQ702CWSMqrBBILgAb2hPnZzo2byOb_IHUgHaFCG3xZyKUHH6p8VsUBsXwpfsXKwhxiqtgUSjWGkweKvAcb5p_08ud-U7e3PUIdaC6Sz-TGhHZB'}
             jsonData = json.dumps(params).encode()
             sUrl = 'https://fcm.googleapis.com/fcm/send'
             req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
