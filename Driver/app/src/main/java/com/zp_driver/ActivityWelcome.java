@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ public class ActivityWelcome extends AppCompatActivity {
     SharedPreferences cookie;
     String strAuth /*strToken*/;
     public static final String AUTH_KEY = "Auth";
+    public static final String TAG = "ActivityWelcome";
     public static final String AUTH_COOKIE = "com.agent.cookie";
     public static final String PICTURE_UPLOAD_STATUS = "com.driver.pictureUploadStatus";
     // public static final String VERIFICATION_TOKEN = "Token";
@@ -35,6 +37,8 @@ public class ActivityWelcome extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
         // strToken = sharedPreferences.getString(VERIFICATION_TOKEN, "");
         String auth = strAuth;
+        Log.d(TAG,"auth: "+auth);
+
         //String token = strToken;
         //checking if the user is registered or not.
         if (auth.isEmpty()) {

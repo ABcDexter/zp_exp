@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.client.rent.ActivityRateRent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,13 +29,18 @@ import java.util.Map;
 
 public class ActivityRateZippe extends ActivityDrawer implements View.OnClickListener {
 
-    ImageButton happy,sad;
+    ImageButton happy, sad;
     ScrollView scrollView;
-    Dialog myDialog,checkDialog;
+    Dialog myDialog, checkDialog;
 
     public static final String AUTH_KEY = "AuthKey";
     private static final String TAG = "ActivityRateZippe";
+    public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
+    public static final String SRC_NAME = "PICK UP POINT";
+    public static final String DST_NAME = "DROP POINT";
     String stringAuthCookie;
+    ActivityRateZippe a = ActivityRateZippe.this;
+    Map<String, String> params = new HashMap();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +78,10 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
             CheckPopup();
         }
     }
+
     private void ShowPopup() {
         rateTrip("", "1");
+
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = (TextView) myDialog.findViewById(R.id.info_text);
 
@@ -93,6 +99,33 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
                 finish();
             }
         }, 5000);
+    }
+
+    /**
+     * Used for hitting user-trip-retire API on the server
+     * Sends 1)  auth: user auth token as parameters
+     * The response Resets users active trip
+     * This is called when the user has seen the message pertaining to trip end for these states:
+     * 'TO', 'DN', 'PD',
+     * Following states do not need user to retire trip
+     * CN : user has already retired in userRideCancel()
+     * FL : admin retires this via adminHandleFailedTrip()
+     * TR/FN : Driver will retire via driverConfirmPayment() after user pays money
+     */
+    private void retireTrip() {
+
+        params.put("auth", stringAuthCookie);
+        JSONObject parameters = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + stringAuthCookie);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-retire");
+        UtilityApiRequestPost.doPOST(a, "user-trip-retire", parameters, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 3);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
     }
 
     private void CheckPopup() {
@@ -128,29 +161,29 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
             @Override
             public void onClick(View v) {
                 ShowPopup1();
-                String str1="",str2="",str3="",str4="";
+                String str1 = "", str2 = "", str3 = "", str4 = "";
                 checkDialog.dismiss();
                 if (chk1.isChecked()) {
                     str1 = "Attitude of contact person";
-                }else if (!chk1.isChecked()){
-                    str1="";
+                } else if (!chk1.isChecked()) {
+                    str1 = "";
                 }
-                if (chk2.isChecked()){
+                if (chk2.isChecked()) {
                     str2 = "Vehicle condition";
-                }else if (!chk2.isChecked()){
-                    str2="";
+                } else if (!chk2.isChecked()) {
+                    str2 = "";
                 }
-                if (chk3.isChecked()){
+                if (chk3.isChecked()) {
                     str3 = "Vehicle cleanliness";
-                }else if (!chk3.isChecked()){
-                    str3="";
+                } else if (!chk3.isChecked()) {
+                    str3 = "";
                 }
-                if (chk4.isChecked()){
+                if (chk4.isChecked()) {
                     str4 = specify.getText().toString();
-                }else if (!chk4.isChecked()){
-                    str4="";
+                } else if (!chk4.isChecked()) {
+                    str4 = "";
                 }
-                rateTrip(str1+str2+str3+str4, "0");
+                rateTrip(str1 + str2 + str3 + str4, "0");
             }
         });
 
@@ -181,7 +214,7 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
         params.put("rev", rev);
         JSONObject parameters = new JSONObject(params);
         ActivityRateZippe a = ActivityRateZippe.this;
-        Log.d(TAG, "Values: auth=" + auth+ " rate="+i+" rev="+rev);
+        Log.d(TAG, "Values: auth=" + auth + " rate=" + i + " rev=" + rev);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-rate");
         UtilityApiRequestPost.doPOST(a, "auth-trip-rate", parameters, 20000, 0, response -> {
             try {
@@ -198,6 +231,7 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
 
         //response on hitting auth-trip-get-info API
         if (id == 1) {
+            retireTrip();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -209,6 +243,22 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
             }, 5000);
 
         }
+        if (id == 3) {
+            SharedPreferences preferences = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+
+            SharedPreferences prefLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editorLoc = prefLoc.edit();
+            //editorLoc.remove(VAN_PICK);
+            editorLoc.remove(DST_NAME);
+            editorLoc.remove(SRC_NAME);
+            //editorLoc.remove(OTP_PICK);
+            editorLoc.apply();
+
+        }
+
     }
 
     public void onFailure(VolleyError error) {

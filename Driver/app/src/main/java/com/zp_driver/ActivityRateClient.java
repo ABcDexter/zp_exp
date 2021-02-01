@@ -66,14 +66,11 @@ public class ActivityRateClient extends ActivityDrawer implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.satisfied:
-                ShowPopup();
-                break;
-            case R.id.notSatisfied:
-                CheckPopup();
-                break;
-
+        int id = v.getId();
+        if (id == R.id.satisfied) {
+            ShowPopup();
+        } else if (id == R.id.notSatisfied) {
+            CheckPopup();
         }
     }
 
@@ -87,7 +84,7 @@ public class ActivityRateClient extends ActivityDrawer implements View.OnClickLi
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
         myDialog.setCanceledOnTouchOutside(false);
-        new Handler().postDelayed(new Runnable() {
+        /*new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 myDialog.dismiss();
@@ -95,7 +92,7 @@ public class ActivityRateClient extends ActivityDrawer implements View.OnClickLi
                 startActivity(finishIntent);
                 finish();
             }
-        }, 5000);
+        }, 5000);*/
     }
 
     private void CheckPopup() {

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,7 +23,7 @@ import java.util.List;
 public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.ViewHolder> {
     private List<HubListData> hub_list_data;
     private Context context;
-    private int intentValue;
+    private final int intentValue;
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String LOCATION_PICK = "PickLocation";
     public static final String LOCATION_DROP = "DropLocation";
@@ -61,7 +62,7 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
         String strLat = listData.getLatitude();
         String strLng = listData.getLongitude();
 
-        holder.txtName.setOnClickListener(new View.OnClickListener() {
+        holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -142,9 +143,11 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtName, txtLat, txtLng, txtID;
+        private LinearLayout layout;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            layout = itemView.findViewById(R.id.layout_hub);
             txtName = itemView.findViewById(R.id.text_name);
             txtID = itemView.findViewById(R.id.pidName);
             txtLat = itemView.findViewById(R.id.text_lat);

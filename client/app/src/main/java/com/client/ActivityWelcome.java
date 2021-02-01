@@ -499,6 +499,8 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                 } else if (active.equals("false")) {
                     String tid = response.getString("tid");
                     Log.d(TAG, "active=" + active + " tid=" + tid);
+
+
                     if (!tid.equals("-1")) {
                         tripInfo(tid);
                     }
@@ -519,6 +521,9 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                     SharedPreferences.Editor editor = pref.edit();
                     editor.remove(PREFS_LOCATIONS);
                     editor.apply();
+                    Intent home = new Intent(ActivityWelcome.this, ActivityRateZippe.class);
+                    startActivity(home);
+                    finish();
                 }
 
                 if (st.equals("DN")) {
@@ -571,7 +576,6 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
-
 
             Log.d(TAG, "tripID= " + TRIP_ID + DRIVER_NAME + DRIVER_PHN);
 

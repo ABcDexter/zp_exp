@@ -18,14 +18,12 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
@@ -45,27 +43,15 @@ import java.util.Map;
 
 public class ActivityHome extends ActivityDrawer implements View.OnClickListener {
     private static final String TAG = "ActivityHome";
-
-    public static final String DELIVERY_DETAILS = "serviceproviderapp.DeliveryDetails";
-    public static final String DID = "DeliveryID";
-    public static final String SRCLAT = "DeliverySrcLat";
-    public static final String SRCLNG = "DeliverySrcLng";
-    public static final String MY_LAT = "MYSrcLAT";
-    public static final String MY_LNG = "MYSrcLng";
     public static final String AUTH_COOKIE = "serviceproviderapp.cookie";
     public static final String AUTH_KEY = "Auth";
-    public static final String PICTURE_UPLOAD_STATUS = "serviceproviderapp.pictureUploadStatus";
-    public static final String AADHAR = "Aadhar";
-    public static final String DRIVER_STATUS = "DriverStatus";
-    public static final String STATUS = "Status";
+    public static final String AN = "An";
 
     FusedLocationProviderClient mFusedLocationClient;
     Dialog myDialog;
-    SwitchCompat status_duty;
-    String driverStatus = "";
     ScrollView scrollView;
     TextView newOrder, inProgress, completedOrder, totalEarnings, notify;
-    String lat, lng, aadhar, earn, strAuth, auth, deliveryID;
+    String lat, lng, strAadhar, earn, strAuth, auth, aadhar, deliveryID;
     Vibrator vibrator;
     private static ActivityHome instance;
 
@@ -96,23 +82,15 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
+        strAadhar = cookie.getString(AN, "");// retrieve aadhaar value stored locally and assign it to String aadhar
         auth = strAuth;
-        SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
-        aadhar = sharedPreferences.getString(AADHAR, "");// retrieve aadhaar value stored locally and assign it to String aadhar
+        aadhar = strAadhar;
 
-        SharedPreferences pref = getSharedPreferences(DRIVER_STATUS, Context.MODE_PRIVATE);
-        String stringStatus = pref.getString(STATUS, "");
-
-        SharedPreferences delPref = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
-        String strDid = delPref.getString(DID, "");
-
-        deliveryID = strDid;
         //initializing variables
-        status_duty = findViewById(R.id.dutyStatus);
         scrollView = findViewById(R.id.scrollLayout);
-        newOrder = findViewById(R.id.new_order);
-        inProgress = findViewById(R.id.order_in_progress);
-        completedOrder = findViewById(R.id.completed_orders);
+        newOrder = findViewById(R.id.new_job);
+        inProgress = findViewById(R.id.job_accepted);
+        completedOrder = findViewById(R.id.completed_jobs);
         //totalEarnings = findViewById(R.id.earnings);
         notify = findViewById(R.id.notifNo);
 
@@ -124,47 +102,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         myDialog = new Dialog(this);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityHome.this);// needed for gsp tracking
-
-        if (stringStatus.equals("AV")) {
-            status_duty.setChecked(true);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent i = new Intent(ActivityHome.this, UtilityPollingService.class);
-                    i.setAction("01");
-                    startService(i);
-                }
-            }, 5000);
-            getLastLocation();// method for getting the last know latitude and longitude of driver
-            //getStatus();
-        }
-        if (!stringStatus.equals("AV")) {
-            status_duty.setChecked(false);
-        }
-        status_duty.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    driverStatus = "AV";//agent online
-                    //store the value of driver status (AV) in Shared Preference
-                    SharedPreferences sp_cookie = getSharedPreferences(DRIVER_STATUS, Context.MODE_PRIVATE);
-                    sp_cookie.edit().putString(STATUS, driverStatus).apply(); // storing driver status locally for later use
-                    Log.d(TAG, "driverStatus = " + driverStatus);
-                    //agentSetMode(driverStatus);
-                    getLastLocation();// method for getting the last know latitude and longitude of driver
-                    //getStatus();
-
-                } else {
-                    driverStatus = "OF";//agent offline
-                    //store the value of driver status (OF) in Shared Preference
-                    SharedPreferences sp_cookie = getSharedPreferences(DRIVER_STATUS, Context.MODE_PRIVATE);
-                    sp_cookie.edit().putString(STATUS, driverStatus).apply();
-                    ShowPopup(2);
-                    Log.d(TAG, "driverStatus = " + driverStatus);
-                    //agentSetMode(driverStatus);
-                }
-            }
-        });
+        servitorBookingCheck();
     }
 
 
@@ -246,9 +184,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                                 lat = location.getLatitude() + "";
                                 lng = location.getLongitude() + "";
                                 Log.d(TAG, "lat = " + lat + " lng = " + lng);
-                                SharedPreferences sp_cookie = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
-                                sp_cookie.edit().putString(MY_LAT, lat).apply();
-                                sp_cookie.edit().putString(MY_LNG, lng).apply();
                                 sendLocation();// method to hit auth-location-update API
                             }
                         }
@@ -305,40 +240,19 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.new_order) {
-            //agentDelCheck();
-                Intent newOrderIntent = new Intent(ActivityHome.this, ActivityNewBooking.class);
-                startActivity(newOrderIntent);
-        } else if (id == R.id.order_in_progress) {
-           /* Intent inProgressIntent = new Intent(ActivityHome.this, ActivityAccepted.class);
-            startActivity(inProgressIntent);*/
-                /*case R.id.completed_orders:
-                Intent completedOrderIntent = new Intent(ActivityHome.this, ActivityCompletedOrders.class);
-                startActivity(completedOrderIntent);
-                break;*/
-            /*case R.id.earnings:
-                Intent earningsIntent = new Intent(ActivityHome.this, ActivityTotalEarnings.class);
-                startActivity(earningsIntent);
-                break;*/
+        if (id == R.id.new_job) {
+            //servitorBookingCheck();
+            Intent newOrderIntent = new Intent(ActivityHome.this, ActivityNewJobList.class);
+            startActivity(newOrderIntent);
+        } else if (id == R.id.job_accepted) {
+            Intent inProgressIntent = new Intent(ActivityHome.this, ActivityAllJobsAccepted.class);
+            startActivity(inProgressIntent);
+            finish();
+        } else if (id == R.id.completed_jobs) {
+            Intent inProgressIntent = new Intent(ActivityHome.this, ActivityCompletedJobList.class);
+            startActivity(inProgressIntent);
+            finish();
         }
-    }
-
-    private void agentSetMode(String mode) {
-
-        params.put("auth", auth);
-        params.put("st", mode);
-        JSONObject parameters = new JSONObject(params);
-
-        Log.d(TAG, "auth= " + auth + " st=" + mode);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST agent-set-mode");
-        UtilityApiRequestPost.doPOST(a, "agent-set-mode", parameters, 30000, 0, response -> {
-            try {
-                a.onSuccess(response, 1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, a::onFailure);
-
     }
 
     public void sendLocation() {
@@ -377,14 +291,14 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         }, a::onFailure);
     }
 
-    public void agentDelCheck() {
+    public void servitorBookingCheck() {
 
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
 
         Log.d(TAG, "auth = " + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST agent-delivery-check");
-        UtilityApiRequestPost.doPOST(a, "agent-delivery-check", parameters, 30000, 0, response -> {
+        Log.d(TAG, "UtilityApiRequestPost.doPOST servitor-booking-check");
+        UtilityApiRequestPost.doPOST(a, "servitor-booking-check", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response, 4);
             } catch (Exception e) {
@@ -432,32 +346,13 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
         Log.d(TAG, "RESPONSE:" + response);
 
-        if (id==2){
+        if (id == 2) {
             Log.d(TAG, "RESPONSE of auth-location-update :" + response);
-        }
-        //response on hitting agent-set-mode API
-        if (id == 1) {
-            String st = response.getString("st");
-            switch (st) {
-                case "AV":
-                    getLastLocation();
-                    status_duty.setChecked(true);
-                    break;
-                case "LK":
-                    ShowPopup(3);
-                    break;
-                case "OF":
-                    status_duty.setChecked(false);
-                    break;
-                case "BK":
-                    Log.d(TAG, "agent booked");
-                    break;
-            }
         }
 
         //response on hitting agent-delivery-get-status API
         if (id == 3) {
-            try {
+           /* try {
                 String active = response.getString("active");
                 if (active.equals("true")) {
                     String status = response.getString("st");
@@ -467,18 +362,18 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
                     deliveryID = did;
                     if (status.equals("AS")) {
 
-                       /* Intent reachClient = new Intent(ActivityHome.this, ActivityAccepted.class);
+                       *//* Intent reachClient = new Intent(ActivityHome.this, ActivityOTP.class);
                         startActivity(reachClient);
-                        finish();*/
+                        finish();*//*
                     }
                     if (status.equals("ST")) {
-                       /* Intent st = new Intent(ActivityHome.this, ActivityEnroute.class);
-                        startActivity(st);*/
+                       *//* Intent st = new Intent(ActivityHome.this, ActivityEnroute.class);
+                        startActivity(st);*//*
 
                     }
                     if (status.equals("RC")) {
-                        /*Intent pd = new Intent(ActivityHome.this, ActivityAccepted.class);
-                        startActivity(pd);*/
+                        *//*Intent pd = new Intent(ActivityHome.this, ActivityOTP.class);
+                        startActivity(pd);*//*
 
                     }
 
@@ -490,38 +385,38 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
                     } catch (Exception e) {
                         e.printStackTrace();
-                        agentDelCheck();
+                        servitorBookingCheck();
                     }
 
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
                 //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            }*/
         }
-        //response on hitting agent-delivery-check API
+        //response on hitting servitor-booking-check API
         if (id == 4) {
             try {
                 String count = response.getString("count");
                 if (!count.equals("0")) {
-                    String did = response.getString("did");
-                    String srclng = response.getString("srclng");
-                    String srclat = response.getString("srclat");
                     notify.setVisibility(View.VISIBLE);
-                    notify.setText("1");
-                    SharedPreferences sp_cookie = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
-                    sp_cookie.edit().putString(DID, did).apply();
-                    sp_cookie.edit().putString(SRCLNG, srclng).apply();
-                    sp_cookie.edit().putString(SRCLAT, srclat).apply();
+                    notify.setText(count);
 
                     /*Intent newOrderIntent = new Intent(ActivityHome.this, MapsReachClient.class);
                     startActivity(newOrderIntent);
                     finish();*/
 
                 } else {
-                    /*Intent i = new Intent(this, UtilityPollingService.class);
-                    i.setAction("02");
-                    startService(i);*/
+                    notify.setVisibility(View.VISIBLE);
+                    notify.setText("0");
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Do something after 45s = 45000ms
+                            servitorBookingCheck();
+                        }
+                    }, 45000);
                 }
 
             } catch (Exception e) {
@@ -532,7 +427,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         }
         //response on hitting auth-delivery-get-info API
         if (id == 5) {
-            String status = response.getString("st");
+            /*String status = response.getString("st");
             //String did = response.getString("did");
             if (status.equals("FL")) {
                 ShowPopup(6);
@@ -549,15 +444,15 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             if (status.equals("FN")) {
                 earn = response.getString("earn");
                 ShowPopup(4);
-            }
+            }*/
 
         }
         //response on hitting agent-delivery-retire API
         if (id == 6) {
-            SharedPreferences preferences = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
+            /*SharedPreferences preferences = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
-            editor.apply();
+            editor.apply();*/
         }
     }
 
@@ -565,5 +460,13 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
         Toast.makeText(instance, R.string.something_wrong, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 }

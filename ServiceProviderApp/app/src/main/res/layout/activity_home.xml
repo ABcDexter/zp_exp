@@ -17,34 +17,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/dutyStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="124dp"
-                android:layout_marginTop="12dp"
-                android:checked="false"
-                android:text="@string/off_duty"
-                android:textColor="@color/txtColor"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="14dp"
-                android:layout_toEndOf="@id/dutyStatus"
-                android:text="@string/on_duty"
-                android:textColor="@color/txtColor"
-                android:textSize="15sp"
-                android:textStyle="bold" />
             <include
                 android:id="@+id/layoutZippeee"
                 layout="@layout/zippe_logo"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_above="@id/rl_order"
-                android:layout_marginBottom="100dp"/>
+                android:layout_marginBottom="100dp" />
+
             <RelativeLayout
                 android:id="@+id/rl_order"
                 android:layout_width="wrap_content"
@@ -52,35 +32,36 @@
                 android:layout_centerInParent="true">
 
                 <TextView
+                    android:id="@+id/notifNo"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
+                    android:layout_alignTop="@+id/new_job"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
                     android:background="@drawable/circle"
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="0"
                     android:textSize="14sp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="20dp"
-                    android:layout_alignTop="@+id/new_order"
                     android:translationZ="5dp"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/notifNo"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
+
                 <Button
-                    android:id="@+id/new_order"
+                    android:id="@+id/new_job"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginStart="25dp"
                     android:layout_marginEnd="25dp"
                     android:background="@drawable/btn_bkg"
-                    android:text="@string/new_booking"
-                    android:layout_alignParentBottom="true"/>
+                    android:text="@string/new_booking" />
 
             </RelativeLayout>
 
             <Button
-                android:id="@+id/order_in_progress"
+                android:id="@+id/job_accepted"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_below="@+id/rl_order"
@@ -91,10 +72,10 @@
                 android:text="@string/ongoing_booking" />
 
             <Button
-                android:id="@+id/completed_orders"
+                android:id="@+id/completed_jobs"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@+id/order_in_progress"
+                android:layout_below="@+id/job_accepted"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"

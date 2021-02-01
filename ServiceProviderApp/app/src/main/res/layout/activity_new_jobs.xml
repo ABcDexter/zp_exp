@@ -74,7 +74,7 @@
                     android:paddingEnd="20dp"
                     android:text=""
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/infoDate"
@@ -86,10 +86,112 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_address"
+                android:id="@+id/layout_time"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_below="@id/layout_name"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rect_box_outline"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/txtT"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="@string/time"
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="28dp"
+                    android:gravity="center|start"
+                    android:text="@string/colon"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:maxLength="10"
+                    android:paddingEnd="20dp"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoTime"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_info" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_hrs"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/layout_time"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rect_box_outline"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/txtH"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="@string/duration"
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="28dp"
+                    android:gravity="center|start"
+                    android:text="@string/colon"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+                <TextView
+                    android:id="@+id/tvHrs"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:maxLength="10"
+                    android:paddingEnd="20dp"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textSize="16sp"/>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoHrs"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_info" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_address"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/layout_hrs"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/rect_box_outline"
                 android:orientation="horizontal"
@@ -116,7 +218,7 @@
                     android:textSize="23sp" />
 
                 <TextView
-                    android:id="@+id/tvCity"
+                    android:id="@+id/tvArea"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -125,10 +227,10 @@
                     android:paddingEnd="20dp"
                     android:text=""
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/infoCity"
+                    android:id="@+id/infoArea"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center"
@@ -137,10 +239,10 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_land"
+                android:id="@+id/layout_cust_note"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_below="@id/layout_phn"
+                android:layout_below="@id/layout_earn"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/rect_box_outline"
                 android:orientation="vertical">
@@ -150,7 +252,7 @@
                     android:layout_height="50dp">
 
                     <TextView
-                        android:id="@+id/txtLand"
+                        android:id="@+id/txtCustNote"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -174,13 +276,13 @@
                     android:id="@+id/tvNote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:textAlignment="center"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_phn"
+                android:id="@+id/layout_earn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_below="@id/layout_address"
@@ -190,13 +292,13 @@
                 android:weightSum="2">
 
                 <TextView
-                    android:id="@+id/txtPhn"
+                    android:id="@+id/txtEarn"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:paddingStart="10dp"
-                    android:text="@string/phone"
+                    android:text="@string/you_earn"
                     android:textAllCaps="true"
                     android:textSize="16sp" />
 
@@ -210,7 +312,7 @@
                     android:textSize="23sp" />
 
                 <TextView
-                    android:id="@+id/tvPhone"
+                    android:id="@+id/tvEarn"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -219,15 +321,15 @@
                     android:paddingEnd="20dp"
                     android:text=""
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/dialPhn"
+                    android:id="@+id/infoEarn"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:layout_marginEnd="5dp"
-                    android:background="@drawable/ic_phone" />
+                    android:background="@drawable/ic_info" />
             </LinearLayout>
 
             <LinearLayout

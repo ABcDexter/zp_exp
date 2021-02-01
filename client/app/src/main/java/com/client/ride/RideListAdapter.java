@@ -63,7 +63,7 @@ public class RideListAdapter extends RecyclerView.Adapter<RideListAdapter.ViewHo
                 holder.rideVType.setText(vtype);
                 break;
         }
-        holder.rideDate.setOnClickListener(new View.OnClickListener() {
+        holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String valueTid = listData.getRideID();
@@ -82,11 +82,12 @@ public class RideListAdapter extends RecyclerView.Adapter<RideListAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView rideID, rideStatus, rideDate, rideVType, rideTxt, rideTxt2, srcTxt, dstTxt;
-        private LinearLayout llSrc, llDst;
+        private LinearLayout llSrc, llDst, layout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             llSrc = itemView.findViewById(R.id.ll_src);
+            layout = itemView.findViewById(R.id.layout);
             llDst = itemView.findViewById(R.id.ll_dst);
             llSrc.setVisibility(View.VISIBLE);
             llDst.setVisibility(View.VISIBLE);

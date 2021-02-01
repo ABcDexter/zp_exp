@@ -23,8 +23,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityAccepted"></activity>
-        <activity android:name=".ActivityNewBooking" />
+        <activity android:name=".ActivityCompletedJobList" />
+        <activity android:name=".ActivityOngoingJob" />
+        <activity android:name=".ActivityAllJobsAccepted" />
+        <activity android:name=".ActivityNewJobList" />
+        <activity android:name=".ActivityRegistration" />
+        <activity android:name=".ActivityOTP" />
+        <activity android:name=".ActivityNewJobs" />
         <activity android:name=".ActivityLogin" />
         <activity android:name=".ActivityHome" />
         <activity android:name=".ActivityDrawer" />

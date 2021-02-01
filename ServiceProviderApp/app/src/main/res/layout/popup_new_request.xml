@@ -12,13 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:text=""
+        android:textAlignment="center"
+        android:text="asd"
         android:textAllCaps="false"
         android:textColor="#000"
         android:textSize="22sp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
-        android:paddingBottom="30dp"/>
+        android:paddingBottom="20dp"
+        android:paddingTop="15dp"/>
 
     <LinearLayout
         android:id="@+id/layout_btn"

@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="@string/booking_information"
+                android:text="@string/ongoing_job"
                 android:textAllCaps="true"
                 android:textSize="20sp" />
 
@@ -35,6 +35,7 @@
                 android:weightSum="2">
 
                 <TextView
+                    android:id="@+id/txtr"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -63,7 +64,7 @@
                     android:paddingEnd="20dp"
                     android:text=""
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/infoDate"
@@ -75,10 +76,112 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_name"
+                android:id="@+id/layout_time"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_below="@id/layout_date"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rect_box_outline"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/txtT"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="@string/time"
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="28dp"
+                    android:gravity="center|start"
+                    android:text="@string/colon"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:maxLength="10"
+                    android:paddingEnd="20dp"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoTime"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_info" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_hrs"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/layout_time"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rect_box_outline"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/txtH"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="@string/duration"
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="28dp"
+                    android:gravity="center|start"
+                    android:text="@string/colon"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+                <TextView
+                    android:id="@+id/tv_hrs"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:maxLength="10"
+                    android:paddingEnd="20dp"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoHrs"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_info" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/layout_hrs"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/rect_box_outline"
                 android:orientation="horizontal"
@@ -113,7 +216,7 @@
                     android:paddingEnd="20dp"
                     android:text=""
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/infoName"
@@ -123,56 +226,6 @@
                     android:layout_marginEnd="5dp"
                     android:background="@drawable/ic_info" />
             </LinearLayout>
-
-            <!--<LinearLayout
-                android:id="@+id/layout_city"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_below="@id/layout_phn"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/rect_box_outline"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center|start"
-                    android:paddingStart="10dp"
-                    android:text="@string/address"
-                    android:textAllCaps="true"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="28dp"
-                    android:gravity="center|start"
-                    android:text="@string/colon"
-                    android:textAllCaps="true"
-                    android:textSize="23sp" />
-
-                <TextView
-                    android:id="@+id/tvCity"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center|end"
-                    android:maxLength="10"
-                    android:paddingEnd="20dp"
-                    android:text=""
-                    android:textAllCaps="true"
-                    android:textSize="20sp" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/infoCity"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/ic_info" />
-            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/layout_note"
@@ -211,15 +264,16 @@
                     android:id="@+id/tv_note"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:textAlignment="center"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/layout_add"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_below="@id/layout_phn"
+                android:layout_below="@id/layout_earn"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/rect_box_outline"
                 android:orientation="vertical">
@@ -252,9 +306,9 @@
                     android:id="@+id/tv_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:textAlignment="center"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -297,7 +351,7 @@
                     android:paddingEnd="20dp"
                     android:text=""
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/dialPhn"
@@ -307,51 +361,68 @@
                     android:layout_marginEnd="5dp"
                     android:background="@drawable/ic_phone" />
             </LinearLayout>
-            <EditText
-                android:id="@+id/enter_otp"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_below="@id/layout_note"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/rect_box_outline"
-                android:hint="@string/enter_otp_provided_by_user"
-                android:inputType="number"
-                android:maxLength="4"
-                android:padding="5dp"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textColor="@color/txtColor"
-                android:textSize="20sp" />
 
             <LinearLayout
+                android:id="@+id/layout_earn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@+id/enter_otp"
-                android:layout_marginTop="100dp"
+                android:layout_below="@id/layout_phn"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rect_box_outline"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
-                <Button
-                    android:id="@+id/yes"
+                <TextView
+                    android:id="@+id/txtEarn"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="5dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_bkg"
-                    android:text="@string/start"
-                    android:textColor="#FFFFFF" />
+                    android:gravity="center|start"
+                    android:paddingStart="10dp"
+                    android:text="@string/you_earn"
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
 
-                <Button
-                    android:id="@+id/no"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="28dp"
+                    android:gravity="center|start"
+                    android:text="@string/colon"
+                    android:textAllCaps="true"
+                    android:textSize="23sp" />
+
+                <TextView
+                    android:id="@+id/tv_earn"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="5dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_bkg"
-                    android:text="@string/reject"
-                    android:textColor="#FFFFFF" />
+                    android:gravity="center|end"
+                    android:maxLength="10"
+                    android:paddingEnd="20dp"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textSize="16sp" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/infoEarn"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/ic_info" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/end_service"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/layout_note"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/end"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="30dp"/>
+
         </RelativeLayout>
     </ScrollView>
 </androidx.drawerlayout.widget.DrawerLayout>

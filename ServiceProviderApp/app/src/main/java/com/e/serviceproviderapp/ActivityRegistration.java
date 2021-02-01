@@ -1,4 +1,4 @@
- package com.e.serviceproviderapp;
+package com.e.serviceproviderapp;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,31 +15,33 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
-import com.bumptech.glide.Glide;
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.gms.tasks.TaskExecutors;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,237 +49,185 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-public class ActivityUserProfile extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class ActivityRegistration extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    private static final String TAG = ActivityUserProfile.class.getName();
-    private Spinner spLanguage;
-    Locale myLocale;
-    String currentLanguage = "en", currentLang;
-    NavigationView nv;
-    TextView mobileTxt, nameTxt;
+    private static final String TAG = "ActivityRegistration";
+
     public static final String AUTH_COOKIE = "serviceproviderapp.cookie";
     public static final String AUTH_KEY = "Auth";
-    public static final String MOBILE = "Mobile";
-    public static final String NAME = "Name";
+    public static final String MOBILE = "Aadhar";
+    public static final String NAME = "Aadhar";
 
-    private ImageView imgProfilePic;
-    private TextView upload;
-    String profilePic;
+    EditText etName, etMobile, etOTP;
+    Button btnGdr, btnPS, btnJ1, btnJ2, btnJ3, btnCancel, btnSave;
+    ImageView ivProfile, ivAdharF, ivAdharB;
+    ImageButton login;
+    ProgressBar progressBar;
+    RelativeLayout rlProfile, rlAdhF, rlAdhB;
+    ScrollView scrollView;
+    TextView btnVerifyPhone;
+    Dialog myDialog, myDialog1, myDialog2;
+    String aadhar_f, aadhar_b, profilePic, mobile, name, gdr, ps, job1, job2, job3;
     Bitmap bitmap;
-    ProgressBar simpleProgressBar;
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.INTERNET};
-    String strAuth, strName, strMobile;
-    Dialog imageDialog, myDialog2;
     static int count = 0;
     ArrayList<String> arrayList = new ArrayList<String>();
-    TextView jobTxt1, jobTxt2, jobTxt3;
-    Button btnCancel, btnSave;
-    String job1, job2, job3;
-    Map<String, String> params = new HashMap();
-    ActivityUserProfile a = ActivityUserProfile.this;
-
-    public void onSuccess(JSONObject response, int id) {
-        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
-        //response on hitting auth-profile-photo-save API
-        if (id == 1) {
-            Log.d(TAG, "RESPONSE of auth-location-update :" + response);
-            simpleProgressBar.setVisibility(View.GONE);
-
-        }
-        //response on hitting servitor-jobs-list API
-        if (id == 2) {
-            Log.d(TAG, "RESPONSE of servitor-jobs-list :" + response);
-            try {
-                String job1 = response.getString("job1");
-                String job2 = response.getString("job2");
-                String job3 = response.getString("job3");
-
-                jobTxt1.setText(job1);
-                jobTxt2.setText(job2);
-                jobTxt3.setText(job3);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        //response on hitting auth-profile-update API
-        if (id == 3) {
-            Log.d(TAG, "RESPONSE of auth-profile-update :" + response);
-        }
-    }
-
-    public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
-        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
-        simpleProgressBar.setVisibility(View.GONE);
-    }
+    CheckBox tnc;
+    TextView text_tnc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (UtilityInitApplication.getInstance().isNightModeEnabled()) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-        setContentView(R.layout.activity_user_profile);
-        SwitchCompat switchCompat = findViewById(R.id.switchCompat);
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
-            switchCompat.setChecked(true);
+        setContentView(R.layout.activity_registration);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    UtilityInitApplication.getInstance().setIsNightModeEnabled(true);
-                    Intent intent = getIntent();
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    finish();
-                    startActivity(intent);
+        etName = findViewById(R.id.editTextName);
+        etMobile = findViewById(R.id.editTextMobile);
+        etOTP = findViewById(R.id.editTextOTP);
+        btnGdr = findViewById(R.id.btnGender);
+        btnPS = findViewById(R.id.btnPS);
+        btnJ1 = findViewById(R.id.list_job1);
+        btnJ2 = findViewById(R.id.list_job2);
+        btnJ3 = findViewById(R.id.list_job3);
+        ivProfile = findViewById(R.id.profile_picture);
+        ivAdharF = findViewById(R.id.aadharFrontImg);
+        ivAdharB = findViewById(R.id.aadharBackImg);
+        progressBar = findViewById(R.id.simpleProgressBar);
+        rlProfile = findViewById(R.id.containerProfilePic);
+        rlAdhF = findViewById(R.id.containerAadhar);
+        rlAdhB = findViewById(R.id.containerAadharBack);
+        scrollView = findViewById(R.id.scrollLayout);
+        login = findViewById(R.id.login);
+        btnVerifyPhone = findViewById(R.id.buttonVerifyPhoneNo);
 
-                } else {
-                    UtilityInitApplication.getInstance().setIsNightModeEnabled(false);
-                    Intent intent = getIntent();
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    finish();
-                    startActivity(intent);
-                }
-            }
-        });
-        mobileTxt = findViewById(R.id.mobile);
-        nameTxt = findViewById(R.id.user_name);
-        jobTxt1 = findViewById(R.id.txt_job_1);
-        jobTxt2 = findViewById(R.id.txt_job_2);
-        jobTxt3 = findViewById(R.id.txt_job_3);
-        jobTxt1.setOnClickListener(this);
-        jobTxt2.setOnClickListener(this);
-        jobTxt3.setOnClickListener(this);
-        SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
-        strAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to strAuth
-        strName = cookie.getString(NAME, ""); // retrieve name stored locally and assign it to strName
-        strMobile = cookie.getString(MOBILE, ""); // retrieve mobile stored locally and assign it to strMobile
+        btnGdr.setOnClickListener(this);
+        btnPS.setOnClickListener(this);
+        btnJ1.setOnClickListener(this);
+        btnJ2.setOnClickListener(this);
+        btnJ3.setOnClickListener(this);
+        ivProfile.setOnClickListener(this);
+        ivAdharF.setOnClickListener(this);
+        ivAdharB.setOnClickListener(this);
+        btnVerifyPhone.setOnClickListener(this);
 
-        Log.d("AUTH", "Auth Key from server: " + strAuth);
-        Log.d("NAME", "Name Key from server: " + strName);
-        Log.d("MOBILE", "Mobile Key from server: " + strMobile);
-        if (strMobile.isEmpty())
-            mobileTxt.setText("XXXXXXXXXX");
-        else {
-            mobileTxt.setText(strMobile);
-        }
-        if (strName.isEmpty())
-            nameTxt.setText("NAME");
-        else {
-            nameTxt.setText(strName);
-        }
-
-        currentLanguage = getIntent().getStringExtra(currentLang);
-        List<String> list = new ArrayList<>();
-
-        list.add("Select");
-        list.add("English");
-        list.add("Hindi");
-
-        nv = findViewById(R.id.nv);
-
-        spLanguage = findViewById(R.id.spinner);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spLanguage.setAdapter(adapter);
-
-        spLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        break;
-                    case 1:
-                        setLocale("en");
-                        break;
-                    case 2:
-                        setLocale("hi");
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-
-        upload = findViewById(R.id.upload_file_txt);
-        upload.setOnClickListener(this);
-        imgProfilePic = findViewById(R.id.profile_picture);
-        imgProfilePic.setOnClickListener(this);
-
-        imageDialog = new Dialog(this);
+        myDialog = new Dialog(this);
+        myDialog1 = new Dialog(this);
         myDialog2 = new Dialog(this);
-        getData();
-        String imageURL = "https://api.villageapps.in:8090/media/dp_" + strAuth + "_.jpg";
-        try {
-            Glide.with(this).load(imageURL).into(imgProfilePic);
-        } catch (Exception e) {
-            Log.d(TAG, "imageURL=" + imageURL);
-            Log.d(TAG, "Display Picture Error:" + e.toString());
-            e.printStackTrace();
-        }
-    }
 
-    private void getData() {
-
-        params.put("auth", strAuth);
-        JSONObject parameters = new JSONObject(params);
-
-        Log.d(TAG, "auth = " + strAuth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST servitor-jobs-list");
-        UtilityApiRequestPost.doPOST(a, "servitor-jobs-list", parameters, 30000, 0, response -> {
-            a.onSuccess(response, 2);
-        }, a::onFailure);
-    }
-
-    public void setLocale(String localeName) {
-        if (!localeName.equals(currentLanguage)) {
-            myLocale = new Locale(localeName);
-            Resources res = getResources();
-            DisplayMetrics dm = res.getDisplayMetrics();
-            Configuration conf = res.getConfiguration();
-            conf.locale = myLocale;
-            res.updateConfiguration(conf, dm);
-            Intent refresh = new Intent(this, ActivityHome.class);
-            refresh.putExtra(currentLang, localeName);
-            startActivity(refresh);
-        } else {
-            Toast.makeText(ActivityUserProfile.this, "Language already selected!", Toast.LENGTH_SHORT).show();
-        }
+        FirebaseAuth.getInstance(); //done to perform a variety of authentication-related operations
+        tnc = findViewById(R.id.tnc);
+        text_tnc = findViewById(R.id.txt_tnc);
+        text_tnc.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.profile_picture) {
-            selectImage(ActivityUserProfile.this);
-        } else if (id == R.id.upload_file_txt) {
-            updateJobs();
-        } else if (id == R.id.txt_job_1) {
+        if (id == R.id.txt_tnc) {
+            Uri uri = Uri.parse("https://zippe.in/en/terms-and-conditions/"); // missing 'http://' will cause crashed
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        } else if (id == R.id.btnGender) {
+            ShowPopup();
+        } else if (id == R.id.btnPS) {
+            ShowPopup1();
+        } else if (id == R.id.list_job1) {
+            //showDialog();
             ShowPopup2();
             count = 0;
             arrayList.clear();
-        } else if (id == R.id.txt_job_2) {
+        } else if (id == R.id.list_job2) {
             ShowPopup2();
             count = 0;
             arrayList.clear();
-        } else if (id == R.id.txt_job_3) {
+        } else if (id == R.id.list_job3) {
             ShowPopup2();
             count = 0;
             arrayList.clear();
+        } else if (id == R.id.profile_picture) {
+            selectImage(ActivityRegistration.this, 3);
+            Log.d(TAG, "profile_picture clicked");
+        } else if (id == R.id.aadharFrontImg) {
+            selectImage(ActivityRegistration.this, 1);
+        } else if (id == R.id.aadharBackImg) {
+            selectImage(ActivityRegistration.this, 2);
+        } else if (id == R.id.pop_txt1) {
+            myDialog.dismiss();
+            btnGdr.setText(R.string.female);
+            gdr = "f";
+        } else if (id == R.id.pop_txt2) {
+            myDialog.dismiss();
+            btnGdr.setText(R.string.male);
+            gdr = "m";
+        } else if (id == R.id.pop_txt3) {
+            myDialog.dismiss();
+            btnGdr.setText(R.string.non_binary);
+            gdr = "o";
+        } else if (id == R.id.pop1_txt1) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_banbhulpura);
+            ps = "banbhulpura";
+        } else if (id == R.id.pop1_txt2) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_betalghat);
+            ps = "betalghat";
+        } else if (id == R.id.pop1_txt3) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_bhimtal);
+            ps = "bhimtal";
+        } else if (id == R.id.pop1_txt4) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_bhowali);
+            ps = "bhowali";
+        } else if (id == R.id.pop1_txt5) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_chorgalia);
+            ps = "chorgalia";
+        } else if (id == R.id.pop1_txt6) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_haldwani);
+            ps = "haldwani";
+        } else if (id == R.id.pop1_txt7) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_kaladhungi);
+            ps = "kaladhungi";
+        } else if (id == R.id.pop1_txt8) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_kathgodam);
+            ps = "kathgodam";
+        } else if (id == R.id.pop1_txt9) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_lalkuwan);
+            ps = "lalkuwan";
+        } else if (id == R.id.pop1_txt10) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_mallital);
+            ps = "mallital";
+        } else if (id == R.id.pop1_txt11) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_mukhani);
+            ps = "mukhani";
+        } else if (id == R.id.pop1_txt12) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_mukteshwar);
+            ps = "mukteshwar";
+        } else if (id == R.id.pop1_txt13) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_ramnagar);
+            ps = "ramnagar";
+        } else if (id == R.id.pop1_txt14) {
+            myDialog1.dismiss();
+            btnPS.setText(R.string.ps_tallital);
+            ps = "tallital";
+        } else if (id == R.id.buttonVerifyPhoneNo) {
+            verifyPhone();
         } else if (id == R.id.cancel_selection) {
             count = 0;
             myDialog2.dismiss();
@@ -288,9 +236,9 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
                 myDialog2.dismiss();
                 for (int j = 0; j <= 3; j++) {
                     try {
-                        jobTxt1.setText(arrayList.get(0));
-                        jobTxt2.setText(arrayList.get(1));
-                        jobTxt3.setText(arrayList.get(2));
+                        btnJ1.setText(arrayList.get(0));
+                        btnJ2.setText(arrayList.get(1));
+                        btnJ3.setText(arrayList.get(2));
                         job1 = arrayList.get(0);
                         job2 = arrayList.get(1);
                         job3 = arrayList.get(2);
@@ -306,21 +254,90 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void updateJobs() {
-        String j1 = jobTxt1.getText().toString();
-        String j2 = jobTxt2.getText().toString();
-        String j3 = jobTxt3.getText().toString();
-        params.put("auth", strAuth);
-        params.put("job1", j1);
-        params.put("job2", j2);
-        params.put("job3", j3);
-        JSONObject parameters = new JSONObject(params);
+    private void ShowPopup() {
+        myDialog.setContentView(R.layout.popup);
+        TextView txtTitle = (TextView) myDialog.findViewById(R.id.pop_title);
+        TextView txt1 = (TextView) myDialog.findViewById(R.id.pop_txt1);
+        TextView txt2 = (TextView) myDialog.findViewById(R.id.pop_txt2);
+        TextView txt3 = (TextView) myDialog.findViewById(R.id.pop_txt3);
 
-        Log.d(TAG, "auth = " + strAuth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST auth-profile-update");
-        UtilityApiRequestPost.doPOST(a, "auth-profile-update", parameters, 30000, 0, response -> {
-            a.onSuccess(response, 3);
-        }, a::onFailure);
+        txtTitle.setText(R.string.gender);
+        txt1.setText(R.string.female);
+        txt2.setText(R.string.male);
+        txt3.setText(R.string.non_binary);
+        txt1.setOnClickListener(this);
+        txt2.setOnClickListener(this);
+        txt3.setOnClickListener(this);
+
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+        //wmlp.x = 100;   //x position
+        wmlp.y = 80;   //y position
+        myDialog.show();
+        Window window = myDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        myDialog.setCanceledOnTouchOutside(false);
+    }
+
+    private void ShowPopup1() {
+        myDialog1.setContentView(R.layout.popup1);
+        TextView txtTitle = (TextView) myDialog1.findViewById(R.id.pop1_title);
+        TextView txt1 = (TextView) myDialog1.findViewById(R.id.pop1_txt1);
+        TextView txt2 = (TextView) myDialog1.findViewById(R.id.pop1_txt2);
+        TextView txt3 = (TextView) myDialog1.findViewById(R.id.pop1_txt3);
+        TextView txt4 = (TextView) myDialog1.findViewById(R.id.pop1_txt4);
+        TextView txt5 = (TextView) myDialog1.findViewById(R.id.pop1_txt5);
+        TextView txt6 = (TextView) myDialog1.findViewById(R.id.pop1_txt6);
+        TextView txt7 = (TextView) myDialog1.findViewById(R.id.pop1_txt7);
+        TextView txt8 = (TextView) myDialog1.findViewById(R.id.pop1_txt8);
+        TextView txt9 = (TextView) myDialog1.findViewById(R.id.pop1_txt9);
+        TextView txt10 = (TextView) myDialog1.findViewById(R.id.pop1_txt10);
+        TextView txt11 = (TextView) myDialog1.findViewById(R.id.pop1_txt11);
+        TextView txt12 = (TextView) myDialog1.findViewById(R.id.pop1_txt12);
+        TextView txt13 = (TextView) myDialog1.findViewById(R.id.pop1_txt13);
+        TextView txt14 = (TextView) myDialog1.findViewById(R.id.pop1_txt14);
+
+        txtTitle.setText(R.string.nearest_police_station);
+        txt1.setText(R.string.ps_banbhulpura);
+        txt2.setText(R.string.ps_betalghat);
+        txt3.setText(R.string.ps_bhimtal);
+        txt4.setText(R.string.ps_bhowali);
+        txt5.setText(R.string.ps_chorgalia);
+        txt6.setText(R.string.ps_haldwani);
+        txt7.setText(R.string.ps_kaladhungi);
+        txt8.setText(R.string.ps_kathgodam);
+        txt9.setText(R.string.ps_lalkuwan);
+        txt10.setText(R.string.ps_mallital);
+        txt11.setText(R.string.ps_mukhani);
+        txt12.setText(R.string.ps_mukteshwar);
+        txt13.setText(R.string.ps_ramnagar);
+        txt14.setText(R.string.ps_tallital);
+
+        txt1.setOnClickListener(this);
+        txt2.setOnClickListener(this);
+        txt3.setOnClickListener(this);
+        txt4.setOnClickListener(this);
+        txt5.setOnClickListener(this);
+        txt6.setOnClickListener(this);
+        txt7.setOnClickListener(this);
+        txt8.setOnClickListener(this);
+        txt9.setOnClickListener(this);
+        txt10.setOnClickListener(this);
+        txt11.setOnClickListener(this);
+        txt12.setOnClickListener(this);
+        txt13.setOnClickListener(this);
+        txt14.setOnClickListener(this);
+
+        myDialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = myDialog1.getWindow().getAttributes();
+
+        wmlp.y = 80;   //y position
+        myDialog1.show();
+        Window window = myDialog1.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        myDialog1.setCanceledOnTouchOutside(false);
     }
 
     private void ShowPopup2() {
@@ -482,6 +499,66 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         myDialog2.setCanceledOnTouchOutside(false);
     }
 
+    //check id the mobile number is valid or not
+    private void verifyPhone() {
+        mobile = etMobile.getText().toString().trim();
+        if (mobile.isEmpty() || mobile.length() < 10) {
+            etMobile.setError("ENTER A VALID NUMBER");
+            etMobile.requestFocus();
+            Log.d(TAG, "Error in Mobile Number");
+            return;
+        }
+        sendVerificationCode(mobile);// firebase method to send 6 digit OTP to this "mobile" number
+    }
+
+    private void sendVerificationCode(String mobile) {
+
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                "+91" + mobile,
+                60,
+                TimeUnit.SECONDS,
+                TaskExecutors.MAIN_THREAD,
+                mCallbacks);
+        Log.d(TAG, "OTP test received from Firebase to mobile number" + mobile + "in method sendVerificationCode");
+    }
+
+    //the callback to detect the verification status
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        @Override
+        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+            //Getting the code sent by SMS
+            String code = phoneAuthCredential.getSmsCode();
+            Log.d(TAG, "OTP not detected automatically");
+            if (code != null) {
+                Log.d(TAG, "OTP detected automatically");
+                etOTP.setText(code);
+                //verifying the code
+                verifyVerificationCode(code);
+            }
+        }
+
+        //if verification fails for whatever reason
+        @Override
+        public void onVerificationFailed(FirebaseException e) {
+            Snackbar snackbar = Snackbar
+                    .make(scrollView, R.string.verification_failed + e.getMessage(), Snackbar.LENGTH_LONG);
+            snackbar.show();
+            Log.d(TAG, "" + e.getMessage());
+        }
+    };
+
+    //verifying the entered OTP code
+    private void verifyVerificationCode(String code) {
+        try {
+            Log.d(TAG, "signing in the user in method verifyVerificationCode");
+        } catch (Exception e) {
+            Snackbar snackbar = Snackbar
+                    .make(scrollView, "Verification Code is wrong", Snackbar.LENGTH_LONG);
+            snackbar.show();
+            Log.d(TAG, "Error" + e);
+        }
+    }
+
     public static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -493,58 +570,96 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         return true;
     }
 
-    private void selectImage(Context context) {
-        if (!hasPermissions(this, PERMISSIONS)) {
-            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        } else {
-            final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setItems(options, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int item) {
+    private void selectImage(Context context, int fromRID) {
 
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (fromRID == 1) {
                     if (options[item].equals("Take Photo")) {
-                        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(takePicture, 1);
 
                     } else if (options[item].equals("Choose from Gallery")) {
-                        Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         startActivityForResult(pickPhoto, 2);
 
                     } else if (options[item].equals("Cancel")) {
                         dialog.dismiss();
                     }
                 }
-            });
-            builder.show();
-        }
+                if (fromRID == 2) {
+                    if (options[item].equals("Take Photo")) {
+                        Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(takePicture, 3);
+
+                    } else if (options[item].equals("Choose from Gallery")) {
+                        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(pickPhoto, 4);//one can be replaced with any action code
+
+                    } else if (options[item].equals("Cancel")) {
+                        dialog.dismiss();
+                    }
+                }
+                if (fromRID == 3) {
+                    if (options[item].equals("Take Photo")) {
+                        Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(takePicture, 5);
+
+                    } else if (options[item].equals("Choose from Gallery")) {
+                        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(pickPhoto, 6);//one can be replaced with any action code
+
+                    } else if (options[item].equals("Cancel")) {
+                        dialog.dismiss();
+                    }
+                }
+            }
+        });
+        builder.show();
+
     }
 
-    private void nextActivity(String profilePic) {
-
-        upload.setOnClickListener(new View.OnClickListener() {
+    private void nextActivity(String aadharF, String aadharB, String profileP) {
+        name = etName.getText().toString();
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                simpleProgressBar = findViewById(R.id.simpleProgressBar);
+                if (!tnc.isChecked()) {
+                    Toast.makeText(ActivityRegistration.this, R.string.agree_to_terms, Toast.LENGTH_SHORT).show();
+                } else {
+                    progressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
 
-                Log.d(TAG, "Control came to nextActivity()");
-                simpleProgressBar.setVisibility(View.VISIBLE);
-                Map<String, String> params = new HashMap();
-                String auth = strAuth;
-                params.put("auth", auth);
-                params.put("profilePhoto", profilePic);
-                JSONObject parameters = new JSONObject(params);
-                ActivityUserProfile a = ActivityUserProfile.this;
-                Log.d(TAG, "Values: profilePhoto=" + profilePic + " auth=" + auth);
-                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-photo-save");
-                UtilityApiRequestPost.doPOST(a, "auth-profile-photo-save", parameters, 20000, 0, response -> {
-                    try {
-                        a.onSuccess(response, 1);
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                        e.printStackTrace();
-                    }
-                }, a::onFailure);
+                    Log.d(TAG, "Control came to nextActivity()");
+                    progressBar.setVisibility(View.VISIBLE);
+                    Map<String, String> params = new HashMap();
+
+                    params.put("name", name);
+                    params.put("pn", mobile);
+                    params.put("photo", profileP);
+                    params.put("gdr", gdr);
+                    params.put("ps", ps);
+                    params.put("job1", job1);
+                    params.put("job2", job2);
+                    params.put("job3", job3);
+                    params.put("aadhaarFront", aadharF);
+                    params.put("aadhaarBack", aadharB);
+                    JSONObject parameters = new JSONObject(params);
+                    ActivityRegistration a = ActivityRegistration.this;
+                    Log.d(TAG, "Values: aadhaarFront=" + aadharF + " aadhaarBack=" + aadharB +
+                            " name=" + name + " pn=" + mobile + " photo=" + profileP + " gdr=" + gdr + " ps=" + ps
+                            + " job1=" + job1 + " job2=" + job2 + " job3=" + job3);
+                    Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME registor-servitor");
+                    UtilityApiRequestPost.doPOST(a, "registor-servitor", parameters, 30000, 0, response -> {
+                        try {
+                            a.onSuccess(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }, a::onFailure);
+                }
             }
         });
     }
@@ -553,17 +668,39 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
 
         if (identify == 1 || identify == 2) {
 
-            imgProfilePic.buildDrawingCache();
-            bitmap = imgProfilePic.getDrawingCache();
+            ivAdharF.buildDrawingCache();
+            bitmap = ivAdharF.getDrawingCache();
+            //converting image to base64 string
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] imageBytes = baos.toByteArray();
+            aadhar_f = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+            Log.d(TAG, "aadhar front converted to Base64" + aadhar_f);
+            Log.d(TAG, "Control moved to nextActivity()");
+        }
+        if (identify == 3 || identify == 4) {
+            ivAdharB.buildDrawingCache();
+            bitmap = ivAdharB.getDrawingCache();
+            //converting image to base64 string
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] imageBytes = baos.toByteArray();
+            aadhar_b = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+            Log.d(TAG, "aadhar back converted to Base64");
+            Log.d(TAG, "Control moved to nextActivity()");
+        }
+        if (identify == 5 || identify == 6) {
+            ivProfile.buildDrawingCache();
+            bitmap = ivProfile.getDrawingCache();
             //converting image to base64 string
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
             profilePic = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            Log.d(TAG, "CONVERT aadhar front converted to Base64" + profilePic);
+            Log.d(TAG, "profile picture converted to Base64");
             Log.d(TAG, "Control moved to nextActivity()");
         }
-        nextActivity(profilePic);
+        nextActivity(aadhar_f, aadhar_b, profilePic);
     }
 
     // This method will help to retrieve the image
@@ -576,7 +713,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
                 case 1:
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
-                        imgProfilePic.setImageBitmap(selectedImage);
+                        ivAdharF.setImageBitmap(selectedImage);
                         convertAndUpload(1);
                     }
                     break;
@@ -591,22 +728,94 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
                                 cursor.moveToFirst();
                                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                                 String picturePath = cursor.getString(columnIndex);
-                                imgProfilePic.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                                ivAdharF.setImageBitmap(BitmapFactory.decodeFile(picturePath));
                                 cursor.close();
                                 convertAndUpload(2);
                             }
                         }
                     }
                     break;
+                case 3:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
+                        ivAdharB.setImageBitmap(selectedImage);
+                        convertAndUpload(3);
+                    }
+
+                    break;
+                case 4:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Uri selectedImage = data.getData();
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                        if (selectedImage != null) {
+                            Cursor cursor = getContentResolver().query(selectedImage,
+                                    filePathColumn, null, null, null);
+                            if (cursor != null) {
+                                cursor.moveToFirst();
+                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                String picturePath = cursor.getString(columnIndex);
+                                Log.d(TAG, "image set");
+                                ivAdharB.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                                convertAndUpload(4);
+                                cursor.close();
+                            }
+                        }
+                    }
+                    break;
+                case 5:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
+                        ivProfile.setImageBitmap(selectedImage);
+                        convertAndUpload(5);
+                    }
+                    break;
+                case 6:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Uri selectedImage = data.getData();
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                        if (selectedImage != null) {
+                            Cursor cursor = getContentResolver().query(selectedImage,
+                                    filePathColumn, null, null, null);
+                            if (cursor != null) {
+                                cursor.moveToFirst();
+                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                String picturePath = cursor.getString(columnIndex);
+                                ivProfile.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                                cursor.close();
+                                convertAndUpload(6);
+                            }
+                        }
+                    }
+                    break;
             }
         }
+
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        startActivity(new Intent(ActivityUserProfile.this, ActivityHome.class));
+    public void onSuccess(JSONObject response) throws JSONException {
+        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        //response on hitting registor-servitor API
+        String auth = response.getString("auth");
+        String an = response.getString("an");
+        String pn = response.getString("pn");
+        String name = response.getString("name");
+
+        SharedPreferences sp_jStatus = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
+        // sp_jStatus.edit().putString(AADHAR, an).apply();
+        sp_jStatus.edit().putString(AUTH_KEY, auth).apply();
+        sp_jStatus.edit().putString(NAME, name).apply();
+        sp_jStatus.edit().putString(MOBILE, pn).apply();
+
+        Intent home = new Intent(ActivityRegistration.this, ActivityLogin.class);
+        startActivity(home);
         finish();
+    }
+
+    public void onFailure(VolleyError error) {
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -1108,4 +1317,3 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         }
     }
 }
-

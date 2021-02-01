@@ -31,7 +31,7 @@ import com.hypertrack.sdk.TrackingStateObserver;
 
 import java.util.Objects;
 
-public class ActivityDrawer extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener , TrackingStateObserver.OnTrackingStateChangeListener{
+public class ActivityDrawer extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TrackingStateObserver.OnTrackingStateChangeListener {
     private static final String TAG = "ActivityDrawer";
 
     private DrawerLayout mDrawerLayout = null;
@@ -153,10 +153,12 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
     public void onTrackingStart() {
         Log.d(TAG, "tracking");
     }
- @Override
+
+    @Override
     public void onTrackingStop() {
         Log.d(TAG, "not tracking");
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

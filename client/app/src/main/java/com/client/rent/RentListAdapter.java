@@ -64,7 +64,7 @@ public class RentListAdapter extends RecyclerView.Adapter<RentListAdapter.ViewHo
                 holder.rentVType.setText(vtype);
                 break;
         }
-        holder.rentDate.setOnClickListener(new View.OnClickListener() {
+        holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String valueTid = listData.getRideID();
@@ -83,10 +83,11 @@ public class RentListAdapter extends RecyclerView.Adapter<RentListAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView rentID, rentStatus,  rentVType, rentDate, rentTxt,rentTxt2, srcTxt, dstTxt;
-        private LinearLayout llSrc, llDst;
+        private LinearLayout llSrc, llDst,layout;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            layout = itemView.findViewById(R.id.layout);
             llSrc = itemView.findViewById(R.id.ll_src);
             llDst = itemView.findViewById(R.id.ll_dst);
             llSrc.setVisibility(View.VISIBLE);

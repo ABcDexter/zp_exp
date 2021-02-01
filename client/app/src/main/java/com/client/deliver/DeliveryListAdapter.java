@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,7 +44,7 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
         holder.txtIType.setText(listData.getDeliveryID());
         holder.delText2.setText(R.string.price);
 
-        holder.delText2.setOnClickListener(new View.OnClickListener() {
+        holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String valueScid = listData.getDeliveryID();
@@ -63,10 +64,12 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView txtID, txtStatus, txtPrice, txtIType, delText2;
+       final private TextView txtID, txtStatus, txtPrice, txtIType, delText2;
+       final private LinearLayout layout;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            layout = itemView.findViewById(R.id.layout);
             delText2 = itemView.findViewById(R.id.delText2);
             txtID = itemView.findViewById(R.id.delivery_id);
             txtStatus = itemView.findViewById(R.id.delivery_status);

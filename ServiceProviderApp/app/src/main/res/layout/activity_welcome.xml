@@ -19,7 +19,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=" I AM"
+        android:text="I AM"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:textSize="50sp"

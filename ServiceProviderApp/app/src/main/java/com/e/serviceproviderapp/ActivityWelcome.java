@@ -4,19 +4,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ActivityWelcome extends AppCompatActivity {
 
     ImageView zippe_iv, zippe_iv_below;
     SharedPreferences cookie;
-    String strAuth, strToken;
+    String strAuth, strToken, auth;
+    public static final String TAG = "ActivityWelcome";
     public static final String AUTH_COOKIE = "serviceproviderapp.cookie";
     public static final String AUTH_KEY = "Auth";
     public static final String PICTURE_UPLOAD_STATUS = "serviceproviderapp.pictureUploadStatus";
     public static final String VERIFICATION_TOKEN = "Token";
+    Map<String, String> params = new HashMap();
+    ActivityWelcome a = ActivityWelcome.this;
 
     //When an Activity first call or launched then onCreate(Bundle savedInstanceState) method is responsible to create the activity.
     @Override
@@ -26,7 +39,7 @@ public class ActivityWelcome extends AppCompatActivity {
 
         cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, "");
-        String auth = strAuth;
+        auth = strAuth;
         SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(VERIFICATION_TOKEN, "");
         String token = strToken;
@@ -34,12 +47,13 @@ public class ActivityWelcome extends AppCompatActivity {
         //checking if the user is registered or not.
         if (auth.equals("")) {
 
-            Intent registerUser = new Intent(ActivityWelcome.this, ActivityLogin.class);
+            Intent registerUser = new Intent(ActivityWelcome.this, ActivityRegistration.class);
             startActivity(registerUser);
             finish();
 
         } else {
             Intent intent = new Intent(ActivityWelcome.this, ActivityHome.class);
+            //Intent intent = new Intent(ActivityWelcome.this, ActivityJob.class);
             startActivity(intent);
         }
 
