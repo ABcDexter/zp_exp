@@ -35,6 +35,10 @@ from .utils import googleDistAndTime
 from zp.view import schedule
 from .models import Rate, Supervisor
 
+from hypertrack.rest import Client
+from hypertrack.exceptions import HyperTrackException
+
+
 ###########################################
 # Types
 Filename = str
@@ -1487,3 +1491,41 @@ def bankValidateData(_, dct:Dict):
     else:
         raise ZPException(502,'Auth not valid!')
 
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(HyperTrackException, 'No route found', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+@checkTripStatus(['ST'])
+def userTripTrack(dct, user, trip):
+    '''
+    Args:
+        auth: auth of the entity (user)
+        devid: device id of the android device from hypertrack SDK
+
+    Returns:
+        htid: trip_id of the hypertrack
+        hurl : url of the live location link form hypertrack
+
+    '''
+    if trip.url == None:
+        hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID , settings.HYPERTRACK_SECRET_KEY)
+        userName = User.objects.filter(an=trip.uan)[0].name
+
+        hypertrack.devices.change_name(dct['devid'], userName)
+
+        trip_data = {"device_id": dct['devid'],
+                     "destination": {"geometry": {"type": "Point", "coordinates": [trip.dstlng, trip.dstlat] }}}
+                    # [29.34856700, 79.5446500]}}} this takes longitude, latitude instead of lat,lng
+        htrip = hypertrack.trips.create(trip_data)
+        trip.htid = htrip['trip_id']
+        trip.url = htrip['views']['share_url']
+        trip.save()
+        resp = {'htid': trip.htid, 'hurl': trip.url}
+    else:
+        resp = {'hurl': trip.url}
+
+    return HttpJSONResponse(resp)

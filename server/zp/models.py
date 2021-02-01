@@ -228,6 +228,8 @@ class Trip(models.Model):
     pmode     : payment mode (cash / upi)
     hrs       : for RENTAL, number of hours
     rvtype    : requested vehicle type
+    url       : url for tracking
+    htid      : tid for trip
     """
     STATUSES = [
         ('RQ', 'requested'),  # requested from the user via app
@@ -284,6 +286,8 @@ class Trip(models.Model):
     rtype = models.CharField(db_index=True, choices=TYPES,  max_length=10, default=2)  # default 2, dummy value
     pmode = models.CharField(db_index=True, choices=PAYMENT, max_length=10, default=1)  # default UPI
     hrs = models.IntegerField(db_index=True, default=0)
+    url = models.CharField(max_length=30, null=True)
+    htid = models.CharField(max_length=50, null=True)
 
     class Meta:
         db_table = 'trip'

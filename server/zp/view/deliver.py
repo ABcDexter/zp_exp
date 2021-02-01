@@ -26,6 +26,10 @@ from django.core.serializers.json import DjangoJSONEncoder
 import urllib.request
 from django.http import HttpResponse
 
+from hypertrack.rest import Client
+from hypertrack.exceptions import HyperTrackException
+
+
 ###########################################
 # Types
 Filename = str
