@@ -657,7 +657,9 @@ def servitorJobsAccepted(_dct, serv):
     if not status:
         return HttpJSONResponse({'status': status,  'upcoming': upcomingBookings})
     else:
-        return HttpJSONResponse( {
+        return HttpJSONResponse({
+            'status': status,
+
             'bid': currentBooking['bid'],
             'job': currentBooking['job'],
             'date': currentBooking['date'],
