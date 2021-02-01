@@ -1399,7 +1399,7 @@ def authTripRate(dct, entity, trip):
             rate = Rate()
             rate.id = 'rent' + str(trip.id)
             rate.type = 'rent'
-            rate.money = getTripPrice(trip)
+            rate.money = float(getTripPrice(trip)['price'])
 
         rate.rev = dct['rev']
         rate.dan = trip.dan

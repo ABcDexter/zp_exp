@@ -290,17 +290,20 @@ def driverRideAccept(dct, driver):
 @checkTripStatus(['AS'])
 def driverRideCancel(_dct, driver, trip):
     '''
-    Called by driver to deny a trip that was assigned (AS)
+    Called by driver to deny/cancel a trip that was assigned (AS)
     '''
     # Change trip status from assigned to  denied
+
     # Set the state for the trip and driver - driver is set to OF on failure
     if trip.st == 'AS':
-        driver.mode = 'AV'
+        # force the driver to be offline
+        driver.mode = 'OF'
         trip.st = 'DN'
+    else:
+        driver.mode = 'AV'
 
     # Reset driver tid, but not users since they need to see the DN state
     retireEntity(driver)
-
     # Note the time of trip cancel/fail and save
     trip.etime = datetime.now(timezone.utc)
     trip.save()
