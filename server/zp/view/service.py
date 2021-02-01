@@ -656,6 +656,6 @@ def servitorJobsAccepted(_dct, serv):
             }
             upcomingBookings.append(data)
 
-    resp.update({'upcoming': str(upcomingBookings)})
+    resp.update({'upcoming': json.loads(str(upcomingBookings))})
     
     return HttpJSONResponse(resp)
