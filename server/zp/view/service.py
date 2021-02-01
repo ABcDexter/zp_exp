@@ -616,17 +616,24 @@ def servitorJobsAccepted(dct, serv):
     '''
     qsBooking = Booking.objects.filter(servan=serv.an)
 
-    currBooking = Booking.objects.filter(order_number=serv.coid)[0]
-    currentBooking = {
+    currBookings = Booking.objects.filter(order_number=serv.coid)
+
+    if len(currBookings):
+        currBooking = currBookings[0]
+        currentBooking = {'status': True,
                         'bid': currBooking.order_number,
                         'job': currBooking.item_name,
                         'date': str(currBooking.order_date)[:10],
                         'time': str(currBooking.order_date)[11:-9],
                         'hours': '2',
                         'area': str(currBooking.address_1_2_billing),
-                        'earn': 500,
-    }
+                        'earn': 500
+        }
+    else:
+        currentBooking = {'status': False}
+
     upcomingBookings = []
+    
     today = datetime.now(timezone.utc)
 
     for i in qsBooking:
@@ -640,7 +647,7 @@ def servitorJobsAccepted(dct, serv):
                 'time': str(i.order_date)[11:-9],
                 'hours': '2',
                 'area': str(i.address_1_2_billing),
-                'earn': 500,
+                'earn': 500
             }
         upcomingBookings.append(data)
 
