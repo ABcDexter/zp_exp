@@ -607,7 +607,7 @@ def servitorBookingEnd(dct, _serv):
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
-def servitorJobsAccepted(dct, serv):
+def servitorJobsAccepted(_dct, serv):
     '''
     Servitor calls this to get the Bookings which are ongoing or yet to come
     HTTP Args:
@@ -618,22 +618,27 @@ def servitorJobsAccepted(dct, serv):
 
     currBookings = Booking.objects.filter(order_number=serv.coid)
 
+    resp = {'status': False}
+
     if len(currBookings):
         currBooking = currBookings[0]
-        currentBooking = {'status': True,
-                        'bid': currBooking.order_number,
-                        'job': currBooking.item_name,
-                        'date': str(currBooking.order_date)[:10],
-                        'time': str(currBooking.order_date)[11:-9],
-                        'hours': '2',
-                        'area': str(currBooking.address_1_2_billing),
-                        'earn': 500
+        currentBooking = {
+                          'bid': currBooking.order_number,
+                          'job': currBooking.item_name,
+                          'date': str(currBooking.order_date)[:10],
+                          'time': str(currBooking.order_date)[11:-9],
+                          'hours': '2',
+                          'area': str(currBooking.address_1_2_billing),
+                          'earn': 500
         }
+        resp.update({'status': True})
+
     else:
-        currentBooking = {'status': False}
+        currentBooking = {}
+
+    resp.update(currentBooking)
 
     upcomingBookings = []
-
     today = datetime.now(timezone.utc)
 
     for i in qsBooking:
@@ -650,5 +655,7 @@ def servitorJobsAccepted(dct, serv):
                 'earn': 500
             }
             upcomingBookings.append(data)
-        
-    return HttpJSONResponse({'current': currentBooking, 'upcoming': upcomingBookings})
+
+    resp.update({'upcoming': str(upcomingBookings)})
+    
+    return HttpJSONResponse(resp)
