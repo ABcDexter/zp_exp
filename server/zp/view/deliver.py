@@ -501,7 +501,7 @@ def adminAgentRegister(dct):
     if recAgent.mode != 'RG':
         raise ZPException('Agent is already registered', 501)
 
-    dct['auth'] = getClientAuth(str(recAgent.an), str(recAgent.pn))
+    dct['auth'] = getClientAuth(str(recAgent.an), str(recAgent.pn))[:6]
     dct['st'] = 'OF'
 
     for key, val in dct.items():
@@ -613,7 +613,7 @@ def adminAgentReached(dct):
                                     "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
             }
             }
-            dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+            dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA9ac2AKM:APA91bH7N4ocS711aAjNHEYvKo6TZxQ702CWSMqrBBILgAb2hPnZzo2byOb_IHUgHaFCG3xZyKUHH6p8VsUBsXwpfsXKwhxiqtgUSjWGkweKvAcb5p_08ud-U7e3PUIdaC6Sz-TGhHZB'}
             jsonData = json.dumps(params).encode()
             sUrl = 'https://fcm.googleapis.com/fcm/send'
             req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
@@ -748,7 +748,7 @@ def registerAgent(_, dct):
             # Aadhaar exists, if mobile has changed, get new auth
             if agent.pn != sPhone:
                 agent.pn = sPhone
-                sAuth =  getClientAuth(agent.an, agent.pn)
+                sAuth =  getClientAuth(agent.an, agent.pn)[:6]
                 log('Auth changed for Agent: %s' % sAadhaar)
             else:
                 # Aadhaar exists, phone unchanged, just return existing auth
@@ -759,7 +759,7 @@ def registerAgent(_, dct):
             raise ZPException('Registration pending', 501)
 
     # Deterministic registration token will be checked by isAgentVerified
-    ret = {'token': getClientAuth(sAadhaar, sPhone + '-register'), 'an': sAadhaar, 'pn': sPhone }
+    ret = {'token': getClientAuth(sAadhaar, sPhone + '-register')[:6], 'an': sAadhaar, 'pn': sPhone }
     return HttpJSONResponse(ret)
 
 
@@ -781,7 +781,7 @@ def isAgentVerified(_, dct):
     # Fetch this agent based on aadhaar - if confirmed, send the auth back
     agent = Agent.objects.filter(an=dct['an'])[0]
     ret = {'status': False}
-    if agent.mode != 'RG' and dct['token'] == getClientAuth(dct['an'], dct['pn'] + '-register'):
+    if agent.mode != 'RG' and dct['token'] == getClientAuth(dct['an'], dct['pn'] + '-register')[:6]:
         ret = {'status': True, 'auth': agent.auth}
 
     return HttpJSONResponse(ret)
@@ -1112,7 +1112,7 @@ def agentDeliveryDone(_dct, agent, deli):
                                     "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
     }
     }
-    dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+    dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA9ac2AKM:APA91bH7N4ocS711aAjNHEYvKo6TZxQ702CWSMqrBBILgAb2hPnZzo2byOb_IHUgHaFCG3xZyKUHH6p8VsUBsXwpfsXKwhxiqtgUSjWGkweKvAcb5p_08ud-U7e3PUIdaC6Sz-TGhHZB'}
     jsonData = json.dumps(params).encode()
     sUrl = 'https://fcm.googleapis.com/fcm/send'
     req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)

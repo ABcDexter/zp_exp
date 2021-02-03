@@ -82,6 +82,14 @@ class DummyException(Exception):
 def saveTmpImgFile(sPath, sImage, sSuffix):
     '''
     Saves the given base64 image data to a file: <sPath>/<random>-<sSuffix>.jpg
+    -----------------------------------------
+    Args:
+        sPath: path to the temp file
+        sImage: base64 encoded image
+        sSuffix: suffix which needs to be used with the file
+    -----------------------------------------
+    Returns:
+        sFilePath : saved File Path
     '''
     # Get a temp random filename
     random.seed(datetime.now())
@@ -98,8 +106,12 @@ def saveTmpImgFile(sPath, sImage, sSuffix):
 
 def renameTmpImgFiles(sPath, sFrontFilePath, sBackFilePath, sPrefix):
     '''
-    Moves/Renames files sFrontFilePath and sBackFilePath to:
+    Moves/Renames files
+    -----------------------------------------
+    sFrontFilePath and sBackFilePath to:
+    -----------------------------------------
     <sPath>/<sPrefix>_front.jpg and <sPath>/<sPrefix>_back.jpg
+    -----------------------------------------
     '''
     os.rename(sFrontFilePath, os.path.join(sPath, sPrefix + '_front.jpg'))
     os.rename(sBackFilePath, os.path.join(sPath, sPrefix + '_back.jpg'))
@@ -108,6 +120,11 @@ def renameTmpImgFiles(sPath, sFrontFilePath, sBackFilePath, sPrefix):
 def doOCR(path):
     '''
     does the OCR for a given image
+    -----------------------------------------
+    Args :
+        path : filepath for the image
+    -----------------------------------------
+
     '''
 
     def fuzzMatch(s1, s2):
@@ -203,13 +220,16 @@ def doOCR(path):
 
 def googleDistAndTime(srcCoOrds, dstCoOrds):
     '''
-
+    Calculate Distance and Time for two geographical points
+    -----------------------------------------
     Args:
         srcCoOrds: list of lat,lng of the source
         dstCoOrds: list of lat, lng of the destination
+    -----------------------------------------
 
     Returns:
-        dictionary of dist, time
+        dist: in metres
+        time: in minutes
     '''
 
     import googlemaps
@@ -408,7 +428,16 @@ from fuzzywuzzy import fuzz as fuzzY
 def doOCRback(path):
     '''
     does the OCR for backside,
-    give the Home State and AN(aadhaar number again)
+    -----------------------------------------
+    Args:
+        path : image path
+    -----------------------------------------
+    Returns:
+        hs: Home State
+        an: aadhaar number
+    -----------------------------------------
+     Note:
+        AN again for cross-verification whether Front and Back were of the same given aadhaar
     '''
     def fuzzMatch(s1, s2):
         mn = min(len(s1), len(s2))
@@ -422,7 +451,6 @@ def doOCRback(path):
         frat = fuzzY.ratio(s1.lower(), s2.lower())
         # print('fuzz : ', fuzz, 'frat : ', frat / 100)
         return max(fuzz, frat / 100)
-
 
     def is_ascii(s):
         return all(ord(c) < 128 for c in s)
@@ -501,6 +529,14 @@ def doOCRback(path):
 def getSCID(an: int, admin: int, rtime: datetime) -> int:
     '''
     Generates a deterministic SCID
+    -----------------------------------------
+    Args:
+        an : aadhaar number
+        admin: admin number
+        rtime: request time
+    -----------------------------------------
+    Returns:
+        10 character long scid
     '''
     sText = 'zippee-otp-%s-%s-%s' % (str(an), str(admin), str(rtime))
     shaText = sText.encode('utf-8')
@@ -513,6 +549,14 @@ def getSCID(an: int, admin: int, rtime: datetime) -> int:
 def getOTP(an: int, dan: int, rtime: datetime) -> int:
     '''
     Generates a deterministic 4 digit OTP
+    -----------------------------------------
+    Args:
+        an : aadhaar number
+        dan: driver/supervisor/agent etc
+        rtime: request time
+    -----------------------------------------
+    Returns:
+        4 digit OTP
     '''
     print((str(an), str(dan), str(rtime)))
     sText = 'zippee-otp-%s-%s-%s' % (str(an), str(dan), str(rtime))
@@ -531,9 +575,14 @@ def getOTP(an: int, dan: int, rtime: datetime) -> int:
     return otp
 
 
-def gvOCR(path) : #sPath: Filename, nChunks:int = 3, nChunkSize: int = 4) -> str:
+def gvOCR(path):  # sPath: Filename, nChunks:int = 3, nChunkSize: int = 4) -> str:
     '''
-        does the OCR for a given image, returns JSON
+    does the OCR for a given image,
+    -----------------------------------------
+    Args:
+        filepath of aadhaar image
+    -----------------------------------------
+        returns JSON
     '''
     import io, json
     from google.cloud import vision
@@ -572,6 +621,12 @@ def gvOCR(path) : #sPath: Filename, nChunks:int = 3, nChunkSize: int = 4) -> str
 def aadhaarNumVerify(sNum: str) -> bool:
     '''
     Verifies an aadhaar number using Verhoeff's algorithm
+    -----------------------------------------
+    Args :
+        sNum : aadhaar number
+    -----------------------------------------
+    Returns:
+        True or False depending on whether successful
     '''
     verhoeff_table_d = (
         (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
@@ -598,7 +653,9 @@ def aadhaarNumVerify(sNum: str) -> bool:
     # verhoeff_table_inv = (0, 4, 3, 2, 1, 5, 6, 7, 8, 9)
 
     def checksum(s: str) -> int:
-        '''For a given number generates a Verhoeff digit and returns number + digit'''
+        '''
+        For a given number generates a Verhoeff digit and returns number + digit
+        '''
         c = 0
         for i, item in enumerate(reversed(s)):
             c = verhoeff_table_d[c][verhoeff_table_p[i % 8][int(item)]]
@@ -611,6 +668,8 @@ def aadhaarNumVerify(sNum: str) -> bool:
 def updateTrip(_loc, trip: Trip):
     '''
     This method calculates the trip completion %age and updates the progress table
+    -----------------------------------------
+
     TODO: add google Places and Geocoding api to do this
     '''
     # For now just pretend progress is being made, Later set progress based on vehicle/driver location
@@ -624,8 +683,17 @@ def updateTrip(_loc, trip: Trip):
             prog.save()
 
 
-# Helper to generate auth
 def getClientAuth(an: str, pn: str) -> str:
+    """
+    Helper to generate auth
+    -----------------------------------------
+    Args:
+        an:
+        pn:
+    -----------------------------------------
+    Returns:
+        8 characters of base 64
+    """
     sText = 'zippee-salt-' + an + '-' + pn
     shaText = sText.encode('utf-8')  # setting the encoding
     m = hashlib.sha256()
@@ -636,12 +704,15 @@ def getClientAuth(an: str, pn: str) -> str:
 def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
     '''
     Determines the price given the trip details and time taken
-    if time taken is not provided, its estimated from vehicle type
+    -----------------------------------------
+
+    if time taken is not provided, it's estimated from vehicle type
+
     '''
     # Get this route distance
     #recRoute = Route.getRoute(idSrc, idDst)
-    fDist = 6000 #iDist  #recRoute.dist
-    iVType, iPayMode, iTimeSec = int(iVType), int(iPayMode), int(iTimeSec) #need explicit type conversion to int
+    fDist = 6000  # iDist  #recRoute.dist
+    iVType, iPayMode, iTimeSec = int(iVType), int(iPayMode), int(iTimeSec)  # need explicit type conversion to int
     
     # Calculate the speed if time is known or else use average speed for estimates
     fAvgSpeed = Vehicle.AVG_SPEED_M_PER_S[iVType] if iTimeSec == 0 else fDist / iTimeSec
@@ -673,14 +744,16 @@ def getRoutePrice(idSrc, idDst, iVType, iPayMode, iTimeSec=0):
 
 def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     '''
-    #old was depending of the time as well, but other factors
-    #def getRentPrice(idSrc, idDst, iVType, iPayMode, iTimeHrs=0):
-
     Determines the price given the rent details and time taken
     TIME is the only factor :
+    -----------------------------------------
 
+    #old was depending of the time as well, but other factors
+    #def getRentPrice(idSrc, idDst, iVType, iPayMode, iTimeHrs=0):
+    -----------------------------------------
     iTimeHrs is the trip.hrs, min is 1 hour
     iTimeActualMins is etime - stime
+    -----------------------------------------
 
     v0
     1:00:00 am	₹ 60.00
@@ -695,6 +768,7 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     10:00:00 am	₹ 30.00	total	₹ 390.00
     11:00:00 am	₹ 30.00	total	₹ 420.00
     12:00:00 pm	₹ 30.00 total	₹ 450.00
+    -----------------------------------------
 
     v1
     1	    0-60 	                     ₹60.00
@@ -709,6 +783,7 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     0.55	0-600	₹330.00	  ₹ 60.00    ₹6.00
     0.5	    0-660	₹330.00	  ₹ 90.00    ₹0.00
     0.5	    0-720	₹360.00	  ₹ 90.00    ₹30.00
+    -----------------------------------------
 
     v2
     1.00	 	₹ 60.00     ₹ 60.00
@@ -733,14 +808,14 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
     lstUpdatedPrice = [0, 60.00, 48.00, 36.00, 36.00, 30.00, 24.00, 18.00, 12.00, 6.00, 30.00, 30.00, 30.00, 30.00]  # finalPrice
 
     try:
-        idxMul = next(x[0] for x in enumerate(idxNext) if x[1] >= iTimeActualMins)  # Find the correct value from the idx
+        idxMul = next(x[0] for x in enumerate(idxNext) if x[1] >= iTimeActualMins)  # Find the correct value from idx
     except StopIteration:
         idxMul = 12
     price = sum(lstUpdatedPrice[1:idxMul+1])
     # price = lstPrice[iTimeHrs] * iTimeSec
     return {
         'price': str(round(float('%.2f' % price),0))+'0',
-        'speed': round(iMaxSpeed, 0)  #(fAvgSpeed * 3.6))
+        'speed': round(iMaxSpeed, 0)  # (fAvgSpeed * 3.6))
     }
 
 
@@ -753,7 +828,7 @@ def getTripPrice(trip):
         return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vehicle.vtype, trip.pmode, (trip.etime - trip.stime).seconds)
     else :
         hrs = datetime.now(timezone.utc) - trip.stime if trip.st == 'ST' else trip.etime- trip.stime
-        return getRentPrice(trip.hrs, hrs.seconds//60) #convert seconds to minutes
+        return getRentPrice(trip.hrs, hrs.seconds//60)  # convert seconds to minutes
 
 
 def getDelPrice(deli, hs):
@@ -790,20 +865,21 @@ field_names = ['api', 'timestampUTC', 'timestampIST', 'response']
 # Functions
 
 
-def logEvent(funcName, status ): #entityName, funcName, status ):
+def logEvent(funcName, status ):  # entityName, funcName, status ):
     '''
     Logs the event to the file
-
-    funName is the API being hit, status is the JSON reponse
+    -----------------------------------------
+    funName is the API being hit,
+    status is the JSON reponse
     '''
     currTimeUTC = timezone.now()
     tdISTdelta  = timedelta(hours=5, minutes=30)
     currTimeIST = currTimeUTC + tdISTdelta
 
     # Writing to a txt file
-    #with open(sLogFileName, 'a+') as logFile:
-    #    # logFile.write("<" + entityName + ">" +" hit the API : " + funcName + " at TIME : [" + str(
-    #    logFile.write("hit the API : " + funcName + " at TIME : [" + str(
+    # with open(sLogFileName, 'a+') as logFile:
+    #     # logFile.write("<" + entityName + ">" +" hit the API : " + funcName + " at TIME : [" + str(
+    #     logFile.write("hit the API : " + funcName + " at TIME : [" + str(
     #            currTimeUTC) + "(in UTC)] and in IST : [" + str(currTimeIST) + "! Status : " + str(status) + ",\n")
 
     # Writing to a CSV
@@ -813,13 +889,14 @@ def logEvent(funcName, status ): #entityName, funcName, status ):
         csvwriter.writerow({'api': funcName, 'timestampUTC': currTimeUTC, 'timestampIST': currTimeIST, 'response': status})
 
 
-
 ###########################################
 # Decorators
 
 def extractParams(func):
     '''
     Decorator applied to a view function to retrieve GET/POST data as a dict
+    -----------------------------------------
+
     POST is treated as JSON
     '''
     def _decorator(request):
@@ -837,7 +914,9 @@ def extractParams(func):
 class checkAuth(object):
     '''
     Decorator class that performs authentication with auth=dct[auth] and returns the object
-    Decides which table to check based on whether the function name starts with user, driver, admin or auth (which means either of user or driver)
+    -----------------------------------------
+    Decides which table to check based on whether the function name starts with user, driver, admin or
+    auth (which means either of user or driver)
     '''
     def __init__(self, driverMode=None):
         self.driverMode = driverMode
@@ -869,41 +948,44 @@ class checkAuth(object):
             if isUser or isAuth:
                 qsUser = User.objects.filter(auth=auth)
                 if (qsUser is not None) and len(qsUser) > 0:
+                    print("user : ", qsUser)
                     return func(dct, qsUser[0])
 
             if isDriver or isAuth:
                 qsDriver = Driver.objects.filter(auth=auth)
-                print("driver : ", qsDriver)
                 # Ensure we have a confirmed driver
                 if (qsDriver is not None) and (len(qsDriver) > 0) and qsDriver[0].mode != 'RG':
+                    print("driver : ", qsDriver)
                     # Ensure the driver is in the desired state if any
                     if self.driverMode is None or qsDriver[0].mode in self.driverMode:
                         return func(dct, qsDriver[0])
 
             if isAgent or isAuth:
                 qsAgent = Agent.objects.filter(auth=auth)
-                print("agents : ", qsAgent)
                 # Ensure we have a confirmed Agent
                 if (qsAgent is not None) and (len(qsAgent) > 0) and qsAgent[0].mode != 'RG':
+                    print("agents : ", qsAgent)
                     # Ensure the agent is in the desired state if any
-                    if self.driverMode is None or qsAgent[0].mode in self.driverMode: #agent is basically driver
+                    if self.driverMode is None or qsAgent[0].mode in self.driverMode: # agent is basically driver
                         return func(dct, qsAgent[0])
 
             if isSuper or isAuth:
                 qsSuper = Supervisor.objects.filter(auth=auth)
                 if (qsSuper is not None) and (len(qsSuper) > 0):
+                    print("super : ", qsSuper)
                     return func(dct, qsSuper[0])
 
             if isPurchaser or isAuth:
                 qsPur = Purchaser.objects.filter(auth=auth)
                 if (qsPur is not None) and (len(qsPur) > 0):
+                    print("purchaser : ", qsPur)
                     return func(dct, qsPur[0])
                     
             if isServitor or isAuth:
                 qsSer = Servitor.objects.filter(auth=auth)
                 if (qsSer is not None) and (len(qsSer) > 0):
+                    print("servitor : ", qsSer)
                     return func(dct, qsSer[0])
-
 
             return HttpJSONError('Unauthorized', 403)
 
@@ -913,6 +995,7 @@ class checkAuth(object):
 class handleException(object):
     '''
     handles exceptions and returns it as a HTTP response
+    -----------------------------------------
     '''
 
     def __init__(self, class_name=None, message=None, status=None):
@@ -944,8 +1027,12 @@ class checkTripStatus(object):
     '''
     Decorator which ensures that the given entity has a trip and the latest trip status is
     one of the values specified in the decorators parameter (as an array)
+    -----------------------------------------
+
     if arrValid == None all statuses are valid
-    This MUST be used only after the checkAuth decorator
+    -----------------------------------------
+    Note:
+        This MUST be used only after the checkAuth decorator
     '''
     def __init__(self, arrValid=None):
         self.arrValid = arrValid
@@ -981,7 +1068,8 @@ class checkTripStatus(object):
 
 def retireEntity(entity: [User, Driver, Vehicle]) -> None :
     '''
-    retired this entity by setting tid = -1
+    retired this entity by setting Trip id tid = -1
+    -----------------------------------------
     '''
     entity.tid = -1
     entity.save()
@@ -989,7 +1077,8 @@ def retireEntity(entity: [User, Driver, Vehicle]) -> None :
 
 def retireDelEntity(entity: [User, Agent, Vehicle]) -> None :
     '''
-    retired this entity by setting tid = -1
+    retires this entity by setting Delivery Id did = -1
+    -----------------------------------------
     '''
     entity.did = -1
     entity.save()
@@ -1001,7 +1090,23 @@ def retireDelEntity(entity: [User, Agent, Vehicle]) -> None :
 def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, tip):
     '''
     Determines the price given the rent details and time taken
-    time is etime - stime
+    -----------------------------------------
+    Args:
+            srclat : latitude of the source
+            srclng : longitude of the source
+            dstlat : latitude of the destination
+            dstlng : longitude of the destination
+            size   : size of the package
+            pmode  : NOT bein used
+            express: express or standard
+            hs     : home state of the user
+            tip    : in case tip is added
+    -----------------------------------------
+    Returns :
+        price
+    -----------------------------------------
+    Note:
+        time is etime - stime
     '''
     # Get this route distance
 
@@ -1031,12 +1136,13 @@ def getDeliveryPrice(srclat, srclng, dstlat, dstlng, size, pmode, express, hs, t
     price = fBaseFare  # + (fDist / 1000) * vehiclePricePerKM * avgWt
     if fDist > 5000:
         price += ceil((fDist - 5000) / 1000) * 10.00
-        #print(fDist, ceil((fDist - 5000) / 1000), price )
-    #if iPayMode == Trip.UPI:
+        # print(fDist, ceil((fDist - 5000) / 1000), price )
+    # if iPayMode == Trip.UPI:
     #    price *= 0.9
     # print("EXPRESS : ", express)
     if express == '1':
         price += 20.00  # 20 Rs extra for express
+
     '''
     # L = 10
     # XL = 20
@@ -1063,8 +1169,12 @@ class checkDeliveryStatus(object):
     '''
     Decorator which ensures that the given entity has a Delivery and the latest Delivery status is
     one of the values specified in the decorators parameter (as an array)
+    -----------------------------------------
+
     if arrValid == None all statuses are valid
-    This MUST be used only after the checkAuth decorator
+    -----------------------------------------
+    Note :
+        This MUST be used only after the checkAuth decorator
     '''
     def __init__(self, arrValid = None):
         self.arrValid = arrValid
@@ -1098,16 +1208,17 @@ class checkDeliveryStatus(object):
 
 
 def headers(h):
-    """Decorator adding arbitrary HTTP headers to the response.
+    """
+    Decorator adding arbitrary HTTP headers to the response.
 
     This decorator adds HTTP headers specified in the argument (map), to the
     HTTPResponse returned by the function being decorated.
-
+    -----------------------------------------
     Example:
 
     @headers({'Refresh': '10', 'X-Bender': 'Bite my shiny, metal ass!'})
     def index(request):
-        ....
+
     """
     def headers_wrapper(fun):
         def wrapped_function(*args, **kwargs):
@@ -1126,8 +1237,9 @@ def headers(h):
 
 def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     '''
-
-    Determines the price given 
+    Determines the price given
+    -----------------------------------------
+    Args :
         srclat : latitude of the source 
         srclng : longitude of the source 
         dstlat : latitude of the destination
@@ -1135,8 +1247,8 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
         iVType : type of the vehicle (0 for cycle, 1 for scooty, 2 for bike, 3 for ZBee)
         iPayMode : payment type (0 for cash, 1 for UPI)
         iTime : time taken for the ride in seconds, this is required to calculate actual price (for eg drierRideEnd )
-    
-    returns 
+    -----------------------------------------
+    returns:
         'price': Price for t,
         'time': time taken in minutes  # converted seconds to minutes
         'dist': Distance in Kilometers,
@@ -1147,9 +1259,10 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     dstCoOrds = ['%s,%s' % (dstlat,dstlng)]
     # print(srcCoOrds, dstCoOrds)
 
+    # get the Distance in metres and Time in minutes
     gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
-    nDist, nTime = gMapsRet['dist'], gMapsRet['time']    
-    # print(nDist, nTime)  # this is the Distance in metres and Time in minutes
+    nDist, nTime = gMapsRet['dist'], gMapsRet['time']
+    # print(nDist, nTime)
 
     fDist = nDist + 1.0  # fail safe for divide by zero error
     iVType, iPayMode = int(iVType), int(iPayMode)
@@ -1187,6 +1300,7 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
     # Calculate price 
     price = (iTimeSec / 60) * vehiclePricePerMIN * avgWt
     print(iTimeSec, iTimeSec/60, vehiclePricePerMIN, avgWt, " PRICE : ", price)
+
     # if iPayMode == Trip.UPI:  # UPI has 10% off
     #    price *= 0.9
 
@@ -1207,10 +1321,17 @@ def getRidePrice(srclat, srclng, dstlat, dstlng, iVType, iPayMode, iTime=0):
 def getRiPrice(trip):
     '''
     Gets price info for non active trips
+    -----------------------------------------
+    Args :
+        trip
+    -----------------------------------------
+    Returns:
+        price
+    -----------------------------------------
     '''
     vehicle = Vehicle.objects.filter(an=trip.van)
     vType = vehicle[0].vtype if len(vehicle)>0 else 1
-    #print(vType)
+    # print(vType)
     return getRidePrice(trip.srclat, trip.srclng, trip.dstlat, trip.dstlng, vType, trip.pmode)
 
 
@@ -1219,13 +1340,15 @@ def getRiPrice(trip):
 
 def extract_lat_lng(address_or_postalcode, data_type = 'json'):
     """
-
+    Extract latitude, longitude given the address of a place
+    -----------------------------------------
     Args:
         address_or_postalcode:
         data_type:
-
+    -----------------------------------------
     Returns:
         lat,lng of the place
+    -----------------------------------------
     """
     endpoint = f"https://maps.googleapis.com/maps/api/geocode/{data_type}"
     params = {"address": address_or_postalcode, "key": settings.GOOGLE_PLACES_KEY}
@@ -1246,13 +1369,15 @@ def extract_lat_lng(address_or_postalcode, data_type = 'json'):
 
 def extract_name_from_pin(address_or_postalcode, data_type='json'):
     """
-
+    Extract the name of a place from PIN (only for Nainital, Dehradun and Udaipur)
+    -----------------------------------------
     Args:
         address_or_postalcode:
         data_type:
-
+    -----------------------------------------
     Returns:
         lat,lng of the place
+    -----------------------------------------
     """
     '''
     endpoint = f"https://maps.googleapis.com/maps/api/geocode/{data_type}"
@@ -1282,7 +1407,8 @@ def extract_name_from_pin(address_or_postalcode, data_type='json'):
 
 def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTime, tripPrice, tripCGST, tripSGST, tripTotal ):
     '''
-    sends mail to the user with
+    sends mail to the user with Trip invoice
+    -----------------------------------------
     Args:
         tripType : ride or rent
         userEmail : username@xyz.com
@@ -1294,7 +1420,8 @@ def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTim
         tripCGST : Central GST, as of now it is 5%
         tripSGST : Central GST, as of now it is 5%
         tripTotal : total money which is the acutal money taken from the user 
-        
+
+    -----------------------------------------
     #TODO take the message as per what happens to the ride, say Ride/Rental was TOed then send apt email
     
     '''
@@ -1350,7 +1477,8 @@ def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTim
 
 def sendDeliveryInvoiceMail(deliveryType, userEmail, userName, deliveryId, deliveryDate, deliveryTime, deliveryPrice, deliveryCGST, deliverySGST, deliveryTotal ):
     '''
-    sends mail to the user with
+    sends mail to the user with Devliery invoice
+    -----------------------------------------
     Args:
         deliveryType : Express or Scheduled
         userEmail : username@xyz.com
@@ -1362,7 +1490,8 @@ def sendDeliveryInvoiceMail(deliveryType, userEmail, userName, deliveryId, deliv
         deliveryCGST : Central GST, as of now it is 5%
         deliverySGST : Central GST, as of now it is 5%
         deliveryTotal : total money which is the acutal money taken from the user 
-        
+    -----------------------------------------
+
     '''
     import smtplib, ssl
     from email.mime.text import MIMEText

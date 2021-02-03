@@ -1,9 +1,10 @@
 # imports
-import datetime
+import os
 import json
 import logging
-import os
+import datetime
 import random
+
 from datetime import datetime, timedelta
 from decimal import getcontext
 from functools import wraps
@@ -19,6 +20,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 
+from .models import Rate, Supervisor
 from .models import Driver, User, Vehicle, Delivery
 from .models import Place, Trip, Progress, Location, Route
 
@@ -28,27 +30,24 @@ from .utils import getRoutePrice, getTripPrice, getRentPrice, getRidePrice, getR
 from .utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from .utils import headers
 from .utils import sendTripInvoiceMail, sendDeliveryInvoiceMail
+from .utils import googleDistAndTime
 
 from url_magic import makeView
-from zp.view import rent, ride, deliver, pwa, shop, service
-from .utils import googleDistAndTime
+
 from zp.view import schedule
-from .models import Rate, Supervisor
+from zp.view import rent, ride, deliver, pwa, shop, service
 
 from hypertrack.rest import Client
 from hypertrack.exceptions import HyperTrackException
-
 
 ###########################################
 # Types
 Filename = str
 
-
 ###########################################
 # Constants
 
 makeView.APP_NAME = 'zp'
-
 
 ##############################################################################
 # General Views
@@ -66,12 +65,17 @@ def registerUserNoAadhaar(_, dct: Dict):
     Creates a user record for the aadhar number OCR'd from the image via Google Vision
     Aadhaar scans are archived in settings.AADHAAR_DIR as
     <aadhaar>_front.jpg and <aadhaar>_back.jpg
+    -----------------------------------------
 
     HTTP Args:
         name: name of the user
         phone; phone number of the user without the ISD code
         home: home state of the user
         gender: gender of the user
+    -----------------------------------------
+    Response:
+        dictionary of the User data
+    -----------------------------------------
 
     Notes:
         Registration is done atomically since we also need to save aadhar scans after DB write
@@ -299,12 +303,17 @@ def isDriverVerified(_, dct):
     Returns the drivers registration status and valid auth once the mode
     is changed from 'RG'
     The mode is changed by the call center after human verification of driver bona fides
-
-    HTTP args:
+    -----------------------------------------
+    HTTP args :
         token : which was sent in response to  the driver registration request
         an : aadhaar number
         pn : phone number
+    -----------------------------------------
+    Response:
+        status: true or false
+        auth : iff the status is true
     '''
+
     # Fetch this driver based on aadhaar - if confirmed, send the auth back
     driver = Driver.objects.filter(an=dct['an'])[0]
     ret = {'status': False}
@@ -329,6 +338,10 @@ def userTripGetStatus(_dct, user):
     Gets the current trips detail for a user
     This must be polled continuously by the user app to detect any state change
     after a ride request is made
+    -----------------------------------------
+    HTTP args:
+        auth : auth key of the user
+    -----------------------------------------
 
     Returns:
         active(bool): Whether a trip is in progress
@@ -339,6 +352,7 @@ def userTripGetStatus(_dct, user):
             AS: otp, dan, van
             ST: progress (percent)
             TR, FN: price, time (seconds), dist (meters), speed (m/s average)
+    -----------------------------------------
 
         Note: If active is false, no other data is returned
     '''
@@ -428,7 +442,8 @@ def userTripGetStatus(_dct, user):
 @checkTripStatus(['INACTIVE'])
 def userTripRequest(dct, user, _trip):
     '''
-    User calls this to request a ride
+    User calls this to request a ride/rent
+    -----------------------------------------
 
     HTTP args:
     Ride :
@@ -439,13 +454,18 @@ def userTripRequest(dct, user, _trip):
         vtype - vehicle type
         pmode - payment mode (cash / upi)
 
-     Rent :
+    Rent :
         srcid - id of the selected start place
         dstid - id of the selected destination
         rtype - rent or ride
         vtype - vehicle type
         pmode - payment mode (cash / upi)
         hrs   - number of hours
+    -----------------------------------------
+    Response:
+        tid: trip id
+        price: how much money did it cost
+
     '''
     print("Trip Request param : ", dct)
 
@@ -496,9 +516,20 @@ def userTripRequest(dct, user, _trip):
 @extractParams
 @checkAuth()
 @checkTripStatus('AS')
-def userRideGetDriver(_dct, entity, trip):
+def userRideGetDriver(_dct, _entity, trip):
     '''
     Returns aadhaar, name and phone of current assigned driver
+    -----------------------------------------
+    HTTP args :
+        auth : auth key of the user
+    -----------------------------------------
+    Response:
+        pn : phone number of driver
+        an : an of the driver
+        name : name of driver
+        photourl : photo of driver
+    -----------------------------------------
+    Note : static images don't work with Product On in settings
     '''
     driver = Driver.objects.filter(an=trip.dan)[0]
     ret = {'pn': driver.pn, 'an': driver.an, 'name': driver.name, 'photourl' : "https://api.villageapps.in:8090/media/dp_" + driver.auth + "_.jpg"}
@@ -516,6 +547,12 @@ def userTripCancel(_dct, user, trip):
     '''
     Cancel the ride for a user if requested, assigned or started
     A Terminated trip will still require payment confirmation to end
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+    -----------------------------------------
+    Response:
+        {}
     '''
     # Set the status of the trip to CN or TR based on current state
     trip.st = 'TR' if trip.st == 'ST' else 'CN'
@@ -547,6 +584,12 @@ def userTripRetire(_dct, user, trip):
     CN : user has already retired in userRideCancel()
     FL : admin retires this via adminHandleFailedTrip()
     TR/FN : Driver will retire via driverConfirmPayment() after user pays money
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+    -----------------------------------------
+    Response:
+        {}
     '''
     # reset the tid to -1
     retireEntity(user)
@@ -566,6 +609,12 @@ def userTripRetire(_dct, user, trip):
 def authVehicleGetAvail(_dct, entity):
     '''
     Returns the available vehicles at the pid of the entity
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+    -----------------------------------------
+    Response:
+        vehicles: list of vehicles
     '''
     # TODO give vehicles from the nearest "hub", say 5 km radius
     qsVehicles = Vehicle.objects.filter(tid=-1, dan=-1)
@@ -581,6 +630,16 @@ def authVehicleGetAvail(_dct, entity):
 def authTripGetInfo(dct, entity):
     '''
     Returns trip info for this driver or user for any past or current trip
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+    -----------------------------------------
+    Response:
+        price: price for the trip
+        st : status of the trip
+        rtype: 0 for ride, 1 for rent
+    -----------------------------------------
+    Note : give remaining price when the Trip is in FN, TR, PD
     '''
     # get the trip and ensure entity was in it
     trip = Trip.objects.filter(id=dct['tid'])[0]
@@ -609,6 +668,12 @@ def authTripGetInfo(dct, entity):
 def authPlaceGet(_dct, _entity):
     '''
     Returns a list of places data corresponding to zbee stations.
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+    -----------------------------------------
+    Response:
+        hublist : list of places
     '''
     getcontext().prec = 20
     qsPlaces = Place.objects.all().values()
@@ -625,6 +690,12 @@ def authPlaceGet(_dct, _entity):
 def authTripFail(dct, entity, trip):
     '''
     Called by driver or user in an emergency which causes the trip to end
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+    -----------------------------------------
+    Response :
+        {}
     '''
     # Note the time of trip cancel/fail and set state to failed
     trip.st = 'FL'
@@ -659,8 +730,15 @@ def authTripRetire(dct, entity, trip):
     The entity causing the trip end does not call this method, since
     the methods ending the trip reset it directly
     'TO', 'CN', 'DN', 'PD', 'FL'
-
-    In case of Driver reset mode and release vehicle
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+    -----------------------------------------
+    Response:
+        {}
+    -----------------------------------------
+    Note:
+        In case of Driver reset mode and release vehicle
     '''
     print(dct, " | entity : ", entity, " |  trip :", trip)
     if type(entity) is Driver:
@@ -690,21 +768,25 @@ def authTripRetire(dct, entity, trip):
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
+#@handleException(IndexError, 'Invalid an', 502)
 @extractParams
 @checkAuth()
 def authLocationUpdate(dct, entity):
     '''
     Driver/User app calls this every 30 seconds to update the location table
-    _____
-    an  (driver/user/vehicle id: string) = Aadhaar number for user/driver table and id for vehicle
-    lat  (latitude : float) = last Latitude of driver
-    long (longitude: float) = last longitude of driver
+    -----------------------------------------
+        an  (driver/user/vehicle id: string) = Aadhaar number for user/driver table and id for vehicle
+        lat  (latitude : float) = last Latitude of driver
+        long (longitude: float) = last longitude of driver
 
-    HTTP args:
-    an: Aadhaar number for User/Driver, AN for Vehicle
-    lat,lng: location
-    auth: driver/user/vehicle auth token
-
+    HTTP args :
+        auth: driver/user/vehicle auth token
+        an: Aadhaar number for User/Driver, AN for Vehicle
+        lat,lng: location
+    -----------------------------------------
+    Response :
+            {}
+    -----------------------------------------
     TODO: Add some sanity checks - check that d/dt delta from previous location is not unreasonably high!
     '''
     if not dct['lat'] or not dct['lng']:
@@ -824,6 +906,19 @@ def adminProgressAdvance(dct):
 def adminPlaceSet(dct):
     '''
     Adds or edits a place with name, lat, long, alt, wt
+    -----------------------------------------
+    HTTP args :
+        auth : auth key of the ADMIN
+        name :
+        lat  :
+        lng  :
+        alt  :
+        wt   :
+    -----------------------------------------
+    Respose:
+        {}
+    -----------------------------------------
+    Note : see Place table
     '''
     name = dct['name']
     qsPlace = Place.objects.filter(pn=name)
@@ -851,6 +946,13 @@ def adminPlaceSet(dct):
 def adminPlaceDel(dct):
     '''
     Deletes a place given the name
+    -----------------------------------------
+    HTTP args :
+        auth : auth key of ADMIN
+        name :
+    -----------------------------------------
+    Response :
+        {}
     '''
     Place.objects.filter(pn=dct['name'])[0].delete()
     return HttpJSONResponse({})
@@ -868,6 +970,11 @@ def adminRefresh(dct):
     1) Handle trip request and trip start timeouts
     2) Update the location data for the ride share web page
     3) Update any data in the team dashboard
+    -----------------------------------------
+    HTTP args :
+        auth : auth key of the ADMIN
+    -----------------------------------------
+
     '''
     qsTrip = Trip.objects.filter(st__in=['AS', 'RQ'])
     for trip in qsTrip:
@@ -977,11 +1084,13 @@ def adminRouteUpdate(dct):
 def authAdminEntityUpdate(dct, entity):
     '''
     Updates details for a registered entity (needs admin privileges)
-
-    HTTP args:
+    -----------------------------------------
+    HTTP args :
+        adminAuth : auth key of ADMIN
         auth: auth of entity to update
         adminAuth: admins authentication key
         *: Any fields that are relevant to the entity
+    -----------------------------------------
 
     Note:
         Method requires the entity auth key as 'auth' for checkAuth,
@@ -1014,7 +1123,9 @@ def adminVehicleUpdate(dct):
     '''
     Updates details for a vehicle
 
-    HTTP args:
+    -----------------------------------------
+    HTTP args :
+        auth : auth key of ADMIN
         van: vehicle to update
         *: Any fields that are relevant to the entity
 
@@ -1024,8 +1135,6 @@ def adminVehicleUpdate(dct):
     vehicle.save()
 
     return HttpJSONResponse({})
-
-
 
 
 @makeView()
@@ -1038,10 +1147,12 @@ def adminVehicleUpdate(dct):
 def adminDriverRegister(dct):
     '''
     Completes driver registration after background verification is done offline
-
-    HTTP args:
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
         an: driver aadhar
         *: Any other fields that need to be updated/corrected (except state)
+    -----------------------------------------
 
     Note:
         No checking is done for fields - passing an invalid field will be silently ignored by the DB
@@ -1094,6 +1205,12 @@ def adminDataGet(dct):
 def adminHandleFailedTrip(dct):
     '''
     Returns entities whose last trip failed together
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+    -----------------------------------------
+    Response :
+        lockedList : list of locked entities
     '''
     rawQuery = Trip.objects.raw('''SELECT T.id as id, V.an as van, D.auth as dauth, U.auth as uauth FROM trip T INNER JOIN vehicle V ON T.van=V.an INNER JOIN driver D ON T.dan=D.an INNER JOIN user  U on T.uan=U.an WHERE T.st = 'FL' and (D.tid=T.id or V.tid = -2  or U.tid=T.id);''');
     lockedList = json.dumps([{'tid': fld.id,'dauth': fld.dauth, 'uauth': fld.uauth, 'van': fld.van} for fld in rawQuery], cls=DjangoJSONEncoder)
@@ -1112,8 +1229,9 @@ def adminHandleFailedTrip(dct):
 def userTripEstimate(dct, user, _trip):
     '''
     Returns the estimated price for the trip
-
-    HTTP args:
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
         rtype
         vtype
         npas
@@ -1122,15 +1240,17 @@ def userTripEstimate(dct, user, _trip):
         pmode
 
         hrs
+    -----------------------------------------
+    Response:
+        price:
+
     '''
     print("Ride Estimate param : ", dct)
     if dct['rtype'] == '0':
         ret =  getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)
         #getRoutePrice(user.pid, dct['dstid'], dct['vtype'], dct['pmode'])
 
-    #should it not allow the prices from point A(source) to point B(destination) instead of taking the pid of user?
     else:
-        #make this ask srcid as well
         #ret = getRentPrice(dct['srcid'],  dct['dstid'], dct['vtype'], dct['pmode'], dct['hrs'])
         ret = getRentPrice(dct['hrs'])
 
@@ -1146,20 +1266,32 @@ def userTripEstimate(dct, user, _trip):
 def authProfileUpdate(dct, entity):
     '''
     Updates details for a registered entity (self auth)
-
-    HTTP args:
+    -----------------------------------------
+    HTTP args :
         auth: auth of entity to update
         name: name of the entity
         gdr:  gender of the entity
-    Note:
+    -----------------------------------------
+    Response :
+        {}
+    -----------------------------------------
+    Note: the keys should be there in the dct otherwise they won't be updated
     '''
     if 'gdr' in dct:
         entity.gdr = dct['gdr']
     if 'name' in dct:
         entity.name = dct['name']
     if 'email' in dct:
-        # only for user
         entity.email = dct['email']
+
+    # only for servitor
+    if 'job1' in dct:
+        entity.job1 = dct['job1']
+    if 'job2' in dct:
+        entity.job2 = dct['job2']
+    if 'job3' in dct:
+        entity.job3 = dct['job3']
+
     entity.save()
 
     return HttpJSONResponse({})
@@ -1238,10 +1370,14 @@ def userGiveOtp(dct, user, _trip):
 def authTripRate(dct, entity, trip):
     '''
     rating system...
-    HTTP args:
-        auth,
-        rate,
-        rev,
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+        rate : good or bad
+        rev  : review in a bit detail
+    -----------------------------------------
+    Response:
+        {}
 
     '''
     print(dct, entity, trip)
@@ -1263,7 +1399,7 @@ def authTripRate(dct, entity, trip):
             rate = Rate()
             rate.id = 'rent' + str(trip.id)
             rate.type = 'rent'
-            rate.money = getTripPrice(trip)
+            rate.money = float(getTripPrice(trip)['price'])
 
         rate.rev = dct['rev']
         rate.dan = trip.dan
@@ -1301,9 +1437,15 @@ def authProfilePhotoSave(dct, entity):
     '''
     entity sends and saves his/her profile photo
 
+    -----------------------------------------
     HTTP Args:
-        auth
-        Display photo base 64 encoded
+        auth        : auth of the entity
+        profiePhoto : Display photo base 64 encoded
+    -----------------------------------------
+    Response :
+        {}
+    -----------------------------------------
+
     Notes:
         needs production settings
     '''
@@ -1329,10 +1471,16 @@ def authAadhaarSave(dct, entity):
     '''
     entity sends and saves his/her profile photo
 
+    -----------------------------------------
+
     HTTP Args:
         auth
         Aadhaar photo base 64 encoded
             aadhaarFront, aadhaarBack
+    -----------------------------------------
+    Respnse:
+        {}
+    -----------------------------------------
     Notes:
         needs production settings
     '''
@@ -1378,12 +1526,16 @@ def authAadhaarSave(dct, entity):
 #@handleException(IndexError, 'Invalid trip', 501) #should NOT tell the API user whether a trip exists or not
 @extractParams
 @checkAuth()
-def authTripData(dct, entity):
+def authTripData(dct, _entity):
     '''
     Returns all the data of a Trip
-        Https:
-            auth, tid
-            
+
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+        tid: trip id
+    -----------------------------------------
+    Response:
         returns:
       # for user
       
@@ -1391,7 +1543,7 @@ def authTripData(dct, entity):
           # date 
           # pickup point #can be dine
           # pickup time (stime) #sdate and rdate are same 
-      
+    -----------------------------------------
 
     '''
     trip = Trip.objects.filter(id=dct['tid']).values('id','st','uan','dan','van','rtime','stime','etime','srcid','dstid','srclat','srclng','dstlat','dstlng','hrs','rtype','rvtype','srcname','dstname')
@@ -1502,11 +1654,14 @@ def bankValidateData(_, dct:Dict):
 @checkTripStatus(['ST'])
 def userTripTrack(dct, user, trip):
     '''
-    Args:
-        auth: auth of the entity (user)
+    Generates a hypertrack url for the current trip
+    -----------------------------------------
+    HTTP args :
+        auth : auth of the entity (user)
         devid: device id of the android device from hypertrack SDK
 
-    Returns:
+    -----------------------------------------
+    Response:
         htid: trip_id of the hypertrack
         hurl : url of the live location link form hypertrack
 
