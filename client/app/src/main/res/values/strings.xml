@@ -346,7 +346,8 @@ your ride with</string>
     <string name="pick_from">PICK-UP ADDRESS</string>
     <string name="mandatory_fields">All Fields Mandatory</string>
     <string name="this_mandatory_field">This field is mandatory</string>
-    <string name="no_driver_av">All drivers are booked.
+    <string name="no_driver_av">We apologize for the inconvenience.
+        All drivers are booked.
 Please try again after some time.</string>
     <string name="rate_your_ride">rate your ride</string>
     <string name="i_am_not_satisfied_because">I am not satisfied with</string>
@@ -398,9 +399,9 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="slide_3_title">ZIPP-E Delivery</string>
     <string name="slide_3_desc">Want something delivered to your home? Use ZIPP-E Delivery!</string>
 
-    <string name="something_wrong">Something went wrong. Please try again later.</string>
+    <string name="something_wrong">Please check your internet connection.</string>
     <string name="slide_4_title">ZIPP-e Shop</string>
-    <string name="slide_4_desc">Order every ranging from groceries to oevr the counter medicines!</string>
+    <string name="slide_4_desc">Order every ranging from groceries to over the counter medicines!</string>
     <string name="slide_5_title">ZIPP-e Services</string>
     <string name="slide_5_desc">Find best handymen or professional service providers with ZIPP-E Services!</string>
     <string name="itype">iType</string>

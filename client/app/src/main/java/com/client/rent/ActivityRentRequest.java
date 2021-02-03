@@ -47,7 +47,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     public static final String LOCATION_DROP = "DropLocation";
     public static final String COST_DROP = "";
     // public static final String SPEED_DROP = "00";
-    public static final String OTP_PICK = "OTPPick";
+    //public static final String OTP_PICK = "OTPPick";
     public static final String VAN_PICK = "VanPick";
 
     public static final String LOCATION_PICK_ID = "PickLocationID";

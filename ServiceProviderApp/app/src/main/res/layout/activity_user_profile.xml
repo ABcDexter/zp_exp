@@ -293,9 +293,22 @@
             android:background="@drawable/btn_bkg"
             android:gravity="center"
             android:padding="5dp"
-            android:textAllCaps="true"
             android:text="@string/save"
+            android:textAllCaps="true"
             android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/uploadImages"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/upload_file_txt"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/button_bkg"
+            android:padding="15dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/update"
+            android:textAllCaps="true" />
 
         <ProgressBar
             android:id="@+id/simpleProgressBar"

@@ -55,7 +55,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     public static final String COST_DROP = "CostDrop";
-    public static final String OTP_PICK = "OTPPick";
+    //public static final String OTP_PICK = "OTPPick";
     public static final String VAN_PICK = "VanPick";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
@@ -150,8 +150,8 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         if (id == 6) {
             String otp = response.getString("otp");
             //String van = response.getString("vno");
-            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-            sp_otp.edit().putString(OTP_PICK, otp).apply();
+            /*SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+            sp_otp.edit().putString(OTP_PICK, otp).apply();*/
             OTP.setText(otp);
             lock.setVisibility(View.GONE);
             OTP.setVisibility(View.VISIBLE);
@@ -191,7 +191,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         dropLat = prefPLoc.getString(LOCATION_DROP_LAT, "");
         dropLng = prefPLoc.getString(LOCATION_DROP_LNG, "");
         String stringCost = prefPLoc.getString(COST_DROP, "");
-        String otpPick = prefPLoc.getString(OTP_PICK, "");
+        /*String otpPick = prefPLoc.getString(OTP_PICK, "");*/
         String vType = prefPLoc.getString(VEHICLE_TYPE, "");
 
         supPhoto = findViewById(R.id.photo_sup);
@@ -240,14 +240,14 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
         myDialog = new Dialog(this);
 
-        if (otpPick.isEmpty()) {
+        /*if (otpPick.isEmpty()) {
             OTP.setVisibility(View.GONE);
             lock.setVisibility(View.VISIBLE);
         } else {
             OTP.setVisibility(View.VISIBLE);
             OTP.setText(otpPick);
             lock.setVisibility(View.GONE);
-        }
+        }*/
 
         supDetails();
 

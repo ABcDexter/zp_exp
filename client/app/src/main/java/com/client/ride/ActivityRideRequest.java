@@ -55,12 +55,9 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
     public static final String DST_NAME = "DROP POINT";
     public static final String RENT_RIDE = "RentRide";
     public static final String PAYMENT_MODE = "PaymentMode";
-    //public static final String VAN_PICK = "com.client.Locations";
     public static final String AUTH_KEY = "AuthKey";
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
-    //public static final String OTP_PICK = "OTPPick";
-    //public static final String DRIVER_MINS = "DriverMins";
 
     ImageButton next, costInfo, timeInfo, pickInfo, dropInfo;
     TextView costEst, timeEst, pickPlaceInfo, dropPlaceInfo;
@@ -88,8 +85,6 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
                 String time = response.getString("time");
                 costEst.setText(getString(R.string.message_rs, price));
                 timeEst.setText(getString(R.string.message_min, time));
-                //costEst.setText("₹ " + price);
-                //timeEst.setText(time + getString(R.string.min));
                 SharedPreferences sp_cookie = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
                 sp_cookie.edit().putString(TIME_DROP, time).apply();
                 sp_cookie.edit().putString(COST_DROP, price).apply();
@@ -98,6 +93,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            //checkStatus();
         }
         //response on hitting user-ride-request API
         if (id == 2) {
@@ -135,15 +131,10 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
                         startService(intent);
                     }
                     if (status.equals("AS")) {
-                        //String otp = response.getString("otp");
-                        //String van = response.getString("vno");
-                        //String mins = response.getString("time");
+
                         Intent as = new Intent(ActivityRideRequest.this, ActivityRideOTP.class);
                         startActivity(as);
-                        //SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                        //sp_otp.edit().putString(OTP_PICK, otp).apply();
-                        //sp_otp.edit().putString(VAN_PICK, van).apply();
-                        //sp_otp.edit().putString(DRIVER_MINS,mins).apply();
+
                     }
                 } else {
                     myDialog.setContentView(R.layout.popup_new_request);
@@ -164,10 +155,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
                             finish();
                         }
                     }, 5000);
-                    /*Intent homePage = new Intent(ActivityRideRequest.this, ActivityWelcome.class);
-                    homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(homePage);
-                    finish();*/
+
                 }
 
             } catch (JSONException e) {
@@ -250,15 +238,8 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         dropInfo.setOnClickListener(this);
         pickInfo.setOnClickListener(this);
         try {
-            /*String[] splitted = stringPick.split(",",2);
-            System.out.println(splitted[0]);
-            System.out.println(splitted[1]);
-            //String kept = stringPick.substring(0, stringPick.indexOf(","));
-            //String remainder = stringPick.substring(stringPick.indexOf(",")+1, stringPick.length());
-            pickPlaceInfo.setText(splitted[0]);*/
             String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 20));
             pickPlaceInfo.setText(upToNCharacters);
-            //Log.d(TAG, "qwertyuiop"+upToNCharacters);
         } catch (Exception e) {
             pickPlaceInfo.setText(stringPick);
             e.printStackTrace();
@@ -279,18 +260,11 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         rideEstimate();
 
         if (!time.equals("")) {
-            //timeEst.setText(time + getString(R.string.min));
             timeEst.setText(getString(R.string.message_min, time));
         }
         if (!cost.equals("")) {
-            // costEst.setText(cost);
-            /*if(this.currency.equals("\u20B9")) {
-                r="₹ "+r;
-            }*/
             costEst.setText(getString(R.string.message_rs, cost));
-            //costEst.setText("₹ " + cost);
         }
-       // checkStatus();
     }
 
     private void cancelRequest() {
@@ -338,7 +312,6 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
 
             String sourceString = part1 + "<b>" + part2 + "</b> " + part3;
             infoText.setText(Html.fromHtml(sourceString));
-            //infoText.setText("This is an approximate cost as per <b> Google Maps (distance and time taken)</b>. May change depending on ride time.");
         }
         if (id == 2) {
             ll.setVisibility(View.GONE);
@@ -349,8 +322,6 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
             String sourceString = part1 + "<b>" + part2 + "</b> " + part3;
             infoText.setText(Html.fromHtml(sourceString));
 
-
-            //infoText.setText("Approximate time as per <b>Google Maps</b>. May change depending on traffic.");
         }
         if (id == 3) {
             infoText.setText(stringPick);
@@ -372,17 +343,6 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         scooty_down.setVisibility(View.VISIBLE);
         zbeeR.startAnimation(animMoveL2R);
         scooty_down.startAnimation(animMoveR2L);
-
-        /*zbeeL.setVisibility(View.VISIBLE);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(zbeeL, "translationX", 1500, 0f);
-        objectAnimator.setDuration(1500);
-        objectAnimator.start();
-        objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
-
-        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(zbeeR, "translationX", 0f, 1500);
-        objectAnimator1.setDuration(1500);
-        objectAnimator1.start();
-        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);*/
     }
 
     @Override
@@ -457,20 +417,6 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         Button buttonNegative = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         buttonNegative.setTextColor(ContextCompat.getColor(this, R.color.Black));
     }
-
-   /* private void moveScooty() {
-        scooty_up.setVisibility(View.VISIBLE);
-        scooty_down.setVisibility(View.VISIBLE);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(scooty_down, "translationX", 1500, 0f);
-        objectAnimator.setDuration(1500);
-        objectAnimator.start();
-        objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
-
-        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(scooty_up, "translationX", 0f, 1500);
-        objectAnimator1.setDuration(1500);
-        objectAnimator1.start();
-        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
-    }*/
 
     private void rideEstimate() {
         String auth = stringAuth;

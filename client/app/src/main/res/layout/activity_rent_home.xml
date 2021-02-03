@@ -107,7 +107,8 @@
                     android:paddingEnd="10dp"
                     android:text="@string/schedule_rental"
                     android:textAllCaps="true"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:visibility="gone"/>
 
                 <include
                     android:id="@+id/layoutZippeee"

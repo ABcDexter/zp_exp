@@ -84,15 +84,13 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         if (id == 2) {
             String count = response.getString("count");
             if (count.equals("0")) {
+                Log.d(TAG, "111count" + count);
                 ShowPopup();
-                next.setEnabled(false);
             } else {
-                next.setEnabled(true);
                 Intent rideIntent = new Intent(ActivityRideHome.this, ActivityRideRequest.class);
                 rideIntent.putExtra("npas", RiderNo);
                 rideIntent.putExtra("vtype", VehicleType);
                 startActivity(rideIntent);
-
             }
         }
     }
@@ -150,7 +148,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         etPlace = (EditText) srcAutocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
         //etPlace.setHint("PICK UP POINT");
         if (!stringPick.equals("")) {
-            Log.d(TAG, "stringPick="+stringPick);
+            Log.d(TAG, "stringPick=" + stringPick);
             etPlace.setText(stringPick);
             srcName = stringPick;
             etPlace.setTextColor(Color.parseColor("#FFFFFF"));
@@ -169,7 +167,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         etDst = (EditText) dstAutocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
         //etDst.setHint("DROP POINT");
         if (!stringDrop.equals("")) {
-            Log.d(TAG, "stringDrop="+stringDrop);
+            Log.d(TAG, "stringDrop=" + stringDrop);
             etDst.setText(stringDrop);
             dstName = stringDrop;
             etDst.setTextColor(Color.parseColor("#FFFFFF"));
@@ -254,7 +252,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     }
 
     private void ShowPopup() {
-
+        Log.d(TAG, "ShowPopup() called");
         myDialog.setContentView(R.layout.popup_new_request);
         dialog_txt = myDialog.findViewById(R.id.info_text);
         LinearLayout ln = myDialog.findViewById(R.id.layout_btn);

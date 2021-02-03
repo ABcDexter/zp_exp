@@ -353,7 +353,8 @@ your ride with</string>
     <string name="pick_from">PICK-UP ADDRESS</string>
     <string name="mandatory_fields">All Fields Mandatory</string>
     <string name="this_mandatory_field">This field is mandatory</string>
-    <string name="no_driver_av">All drivers are booked.
+    <string name="no_driver_av">We apologize for the inconvenience.
+        All drivers are booked.
 Please try again after some time.</string>
     <string name="rate_your_ride">rate your ride</string>
     <string name="i_am_not_satisfied_because">I am not satisfied with</string>
