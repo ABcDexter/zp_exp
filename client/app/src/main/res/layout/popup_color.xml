@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:text="dfghjklp[ouytfghjklpoiuytfcbjkl;oiuyfdxvn,"
+        android:text=""
         android:textAllCaps="false"
         android:textColor="#000"
         android:textSize="18sp" />

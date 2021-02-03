@@ -429,5 +429,6 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="cant_start_tracking" translatable="false">Can\'t start tracking</string>
     <string name="crew">CREW</string>
     <string name="customer_support">CUSTOMER SUPPORT</string>
+    <string name="please_be_patient_nwe_are_searching_for_drivers_nearest_to_you">Please be patient.\nWe are searching for drivers nearest to you.</string>
 
 </resources>

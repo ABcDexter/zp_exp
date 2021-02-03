@@ -410,4 +410,5 @@
     <string name="got_it">Got It</string>
     <string name="crew">CREW</string>
     <string name="customer_support">CUSTOMER SUPPORT</string>
+    <string name="please_be_patient_nwe_are_searching_for_drivers_nearest_to_you">Please be patient.\nWe are searching for drivers nearest to you.</string>
 </resources>

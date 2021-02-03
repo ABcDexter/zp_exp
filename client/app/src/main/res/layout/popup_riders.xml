@@ -22,16 +22,7 @@
         android:textColor="#fff"
         android:textSize="20sp"
         android:textStyle="bold" />
-    <!--<TextView
-        android:id="@+id/info_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:text="dfghjklp[ouytfghjklpoiuytfcbjkl;oiuyfdxvn,"
-        android:textAllCaps="false"
-        android:textColor="@color/txtColor"
-        android:textSize="18sp" />-->
+
     <RelativeLayout
         android:id="@+id/per_1"
         android:layout_width="match_parent"

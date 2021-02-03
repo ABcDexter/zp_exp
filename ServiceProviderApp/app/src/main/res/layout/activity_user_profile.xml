@@ -297,6 +297,17 @@
             android:textAllCaps="true"
             android:textSize="20sp" />
 
+        <!--<ImageButton
+            android:id="@+id/uploadImages"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/upload_file_txt"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:padding="15dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/update"
+            android:textAllCaps="true" />-->
         <ImageButton
             android:id="@+id/uploadImages"
             android:layout_width="match_parent"
@@ -304,7 +315,7 @@
             android:layout_below="@+id/upload_file_txt"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:background="@drawable/button_bkg"
+            android:background="@drawable/blue_button_bkg"
             android:padding="15dp"
             android:scaleType="centerInside"
             android:src="@drawable/update"

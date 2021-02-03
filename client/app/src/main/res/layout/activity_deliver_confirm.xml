@@ -277,7 +277,7 @@
                 android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/btn_bkg"
+                android:background="@drawable/green_button_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/confirm"

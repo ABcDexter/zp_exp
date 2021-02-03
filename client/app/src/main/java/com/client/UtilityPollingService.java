@@ -19,6 +19,7 @@ import com.client.ride.ActivityRideHome;
 import com.client.ride.ActivityRideInProgress;
 import com.client.ride.ActivityRideOTP;
 import com.client.ride.ActivityRideRequest;
+import com.client.ride.ActivitySearchingDriver;
 
 public class UtilityPollingService extends Service {
     // private int secondsActLocSel;
@@ -137,6 +138,41 @@ public class UtilityPollingService extends Service {
 
                     if (stopTimerActLocSel == false) {
                         Log.d(" ActivityRideRequest.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+
+                        handler.postDelayed(this, 1000);
+                    } else {
+                        stopSelf();
+                    }
+                }
+            });
+        }
+if (intent != null && intent.getAction() != null && intent.getAction().equals("002")) {
+            final int fixedTimeUpdateLoc = 30;
+            //final boolean stopTimerFlag2 = false;
+            secondsActLocSel = fixedTimeUpdateLoc;
+            //stopTimer2 = stopTimerFlag2;
+
+            //seconds = 30;
+/*
+            if (stop) {
+*/
+            final Handler handler = new Handler();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    secondsActLocSel--;
+                    if (secondsActLocSel < 0) {
+                        Log.d(" ActivitySearchingDriver.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+
+                        stopTimerActLocSel = true;
+                        ActivitySearchingDriver.getInstance().checkStatus();
+
+                    } else {
+                        stopTimerActLocSel = false;
+                    }
+
+                    if (stopTimerActLocSel == false) {
+                        Log.d(" ActivitySearchingDriver.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
                     } else {

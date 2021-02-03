@@ -40,9 +40,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".IntroActivity">
-
-        </activity>
+        <activity android:name=".ride.ActivitySearchingDriver"></activity>
+        <activity android:name=".IntroActivity"></activity>
         <activity android:name=".AadharCardUpload" />
         <activity android:name=".deliver.ActivityDeliverySummery" />
         <activity android:name=".rent.ActivityUpdateHours" />
@@ -100,7 +99,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="fcm_default_channel" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/zippe_logo" />
@@ -134,7 +132,6 @@
             android:required="false" />
 
         <service android:name=".UtilityPollingService" />
-        
         <service android:name=".Services.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

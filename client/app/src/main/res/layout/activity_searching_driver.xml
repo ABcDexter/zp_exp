@@ -23,13 +23,7 @@
                 android:layout_height="40dp"
                 android:layout_above="@+id/layoutZippeee"
                 android:src="@drawable/zbee_right" />
-            <!--<ImageView
-                android:id="@+id/scooty_up"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_above="@id/layoutZippeee"
-                android:src="@drawable/scooty_left"
-                android:visibility="gone"/>-->
+
             <include
                 android:id="@+id/layoutZippeee"
                 layout="@layout/zippe_logo"
@@ -44,106 +38,59 @@
                 android:layout_below="@+id/layoutZippeee"
                 android:src="@drawable/zbee_left"
                 android:visibility="invisible" />
+
             <ImageView
                 android:id="@+id/scooty_down"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_below="@id/layoutZippeee"
                 android:src="@drawable/scooty_right"
-                android:visibility="gone"/>
+                android:visibility="gone" />
+
             <LinearLayout
                 android:id="@+id/rl_cost"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_above="@id/image_zbee"
-                android:layout_marginBottom="50dp"
+                android:layout_above="@id/rl_pick"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/rect_box_outline"
-                android:padding="5dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/txtc"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="center|start"
-                    android:text="@string/cost_estimate"
                     android:paddingStart="15dp"
+                    android:text="@string/cost_estimate"
                     android:textAllCaps="true"
-                    android:textSize="20sp"
-                    android:layout_weight="1" />
+                    android:textSize="20sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="25dp"
                     android:gravity="center|start"
                     android:text="@string/colon"
                     android:textAlignment="center"
                     android:textAllCaps="true"
-                    android:textSize="20sp"
-                    android:layout_marginStart="25dp"/>
+                    android:textSize="20sp" />
+
                 <TextView
                     android:id="@+id/cost_estimate"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="center|start"
                     android:text=""
                     android:textAlignment="center"
                     android:textAllCaps="true"
-                    android:textSize="20sp"
-                    android:layout_weight="1"  />
+                    android:textSize="20sp" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/infoCost"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/ic_info" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_above="@id/rl_cost"
-                android:layout_marginBottom="30dp"
-                android:background="@drawable/rect_box_outline"
-                android:padding="5dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <TextView
-                    android:id="@+id/txtt"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center|start"
-                    android:text="@string/ride_time"
-                    android:paddingStart="15dp"
-                    android:textAllCaps="true"
-                    android:textSize="20sp"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center|start"
-                    android:text="@string/colon"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="20sp"
-                    android:layout_marginStart="25dp"/>
-
-                <TextView
-                    android:id="@+id/time_estimate"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center|start"
-                    android:text=""
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textSize="20sp"
-                    android:layout_weight="1"/>
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/infoTime"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginEnd="5dp"
@@ -155,8 +102,8 @@
                 android:id="@+id/rl_pick"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/image_zbee_below"
-                android:layout_marginTop="50dp"
+                android:layout_above="@+id/rl_drop"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/rect_box_outline">
 
                 <TextView
@@ -181,22 +128,12 @@
                     android:background="@drawable/ic_info" />
             </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/rl_pick"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_arrow_downward" />
-
-
             <RelativeLayout
                 android:id="@+id/rl_drop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/arrow"
-                android:layout_marginTop="10dp"
+                android:layout_above="@+id/image_zbee"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/rect_box_outline">
 
                 <TextView
@@ -222,9 +159,26 @@
 
             </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/rl_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rect_box_outline"
+            android:layout_below="@+id/image_zbee_below"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="@string/please_be_patient_nwe_are_searching_for_drivers_nearest_to_you"
+                android:textAllCaps="true"
+                android:textSize="20sp"/>
+        </RelativeLayout>
 
             <ImageButton
-                android:id="@+id/confirm_ride_book"
+                android:id="@+id/cancel_ride_request"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_alignParentEnd="true"
@@ -232,10 +186,10 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="-2dp"
-                android:background="@drawable/green_button_bkg"
+                android:background="@drawable/orange_button_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/confirm"
+                android:src="@drawable/cancel"
                 android:textAllCaps="true" />
 
 

@@ -37,7 +37,7 @@ import com.client.ride.ActivityRideEnded;
 import com.client.ride.ActivityRideHome;
 import com.client.ride.ActivityRideInProgress;
 import com.client.ride.ActivityRideOTP;
-import com.client.ride.ActivityRideRequest;
+import com.client.ride.ActivitySearchingDriver;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -454,8 +454,9 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (rtype.equals("0")) {
                         if (status.equals("RQ")) {
-                            Intent rq = new Intent(ActivityWelcome.this, ActivityRideRequest.class);
-                            rq.putExtra("st", "RQ");
+                            //Intent rq = new Intent(ActivityWelcome.this, ActivityRideRequest.class);
+                            Intent rq = new Intent(ActivityWelcome.this, ActivitySearchingDriver.class);
+                            //rq.putExtra("st", "RQ");
                             startActivity(rq);
                         }
                         if (status.equals("AS")) {
@@ -476,8 +477,8 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                             Log.d(TAG, "trip cancelled");
                         }
                         if (status.equals("TO") || status.equals("DN") || status.equals("FL")) {
-
                             Log.d(TAG, "error");
+                            //retireTrip();
                         }
                     }
 
@@ -532,7 +533,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                 }
                 if (st.equals("TO")) {
                     ShowPopup(4);
-
+                    retireTrip();
                 }
                 if (st.equals("FL")) {
                     ShowPopup(5);
