@@ -1558,6 +1558,7 @@ def encode(num, alphabet):
     - `num`: The number to encode
     - `alphabet`: The alphabet to use for encoding
     """
+    num = int(num)
     if num == 0:
         return alphabet[0]
     arr = []
