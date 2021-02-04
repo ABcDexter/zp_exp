@@ -62,6 +62,27 @@ INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, 
 INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1019, '9800000019', 'dauth19', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver019', 36, 'm', 'uk', 0, 2019);
 INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1020, '9800000020', 'dauth20', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver020', 36, 'm', 'uk', 0, 2020);
 INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1021, '9800000021', 'dauth21', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver021', 36, 'm', 'uk', 0, 2021);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1022, '9800000022', 'dauth22', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver022', 36, 'm', 'uk', 0, 2022);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1023, '9800000023', 'dauth23', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver023', 36, 'm', 'uk', 0, 2023);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1024, '9800000024', 'dauth24', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver024', 36, 'm', 'uk', 0, 2024);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1025, '9800000025', 'dauth25', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver025', 36, 'm', 'uk', 0, 2025);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1026, '9800000026', 'dauth26', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver026', 36, 'm', 'uk', 0, 2026);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1027, '9800000027', 'dauth27', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver027', 36, 'm', 'uk', 0, 2027);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1028, '9800000028', 'dauth28', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver028', 36, 'm', 'uk', 0, 2028);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1029, '9800000029', 'dauth29', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver029', 36, 'm', 'uk', 0, 2029);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1030, '9800000030', 'dauth30', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver030', 36, 'm', 'uk', 0, 2030);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1031, '9800000031', 'dauth31', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver031', 36, 'm', 'uk', 0, 2031);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1032, '9800000032', 'dauth32', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver032', 36, 'm', 'uk', 0, 2032);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1033, '9800000033', 'dauth33', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver033', 36, 'm', 'uk', 0, 2033);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1034, '9800000034', 'dauth34', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver034', 36, 'm', 'uk', 0, 2034);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1035, '9800000035', 'dauth35', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver035', 36, 'm', 'uk', 0, 2035);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1036, '9800000036', 'dauth36', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver036', 36, 'm', 'uk', 0, 2036);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1037, '9800000037', 'dauth37', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver037', 36, 'm', 'uk', 0, 2037);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1038, '9800000038', 'dauth38', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver038', 36, 'm', 'uk', 0, 2038);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1039, '9800000039', 'dauth39', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver039', 36, 'm', 'uk', 0, 2039);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1040, '9800000040', 'dauth40', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver040', 36, 'm', 'uk', 0, 2040);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1041, '9800000041', 'dauth41', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver041', 36, 'm', 'uk', 0, 2041);
+INSERT INTO driver (an, pn, auth, dl, mode, tid, pid, name, age, gdr, hs, mark, van) values(1042, '9800000042', 'dauth42', 'UK0123456089131', 'OF', -1,FLOOR( 1 + RAND() * 7 ), 'Mr. Driver042', 36, 'm', 'uk', 0, 2042);
 
 delete from vehicle;
 INSERT INTO vehicle (regn, dist, hrs, pid, vtype, an, tid, dan, mark) values('reg00', 0, 0,FLOOR( 1 + RAND() * 7 ), 0, '2000', -1, -1, 0.0);
@@ -220,3 +241,7 @@ select * from route;
 
 # to test the capability of the MySql server
 # sudo mysqlslap --user=$ZP_DB_USER --password --host=localhost  --concurrency=100 --iterations=1000 --number-int-cols=5 --number-char-cols=20 --auto-generate-sql --verbose
+
+
+####
+INSERT INTO booking(order_status,order_date,customer_note,first_name_billing,last_Name_billing,company_billing,address_1_2_billing,city_billing,state_code_billing,postcode_billing,country_code_billing,email_billing,phone_billing,first_name_shipping,last_name_shipping,address_1_2_shipping,city_shipping,state_code_shipping,postcode_shipping,country_code_shipping,payment_method_title,cart_discount_amount,order_subtotal_amount,shipping_method_title,order_shipping_amount,order_refund_amount,order_total_amount,order_total_tax_amount,sku,item_qty,item_name,quantity,item_cost,coupon_code,discount_amount,discount_amount_tax, order_number,rtime, status) VALUES ('Processing', NOW() + INTERVAL 1 DAY ,NULL,'ANUBHAV','BALODHI',NULL,'Pandey Gaon','Nainital','UK','263136','IN','abc.de.gen.x@gmail.com',752607249,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Pay with UPI QR Code',0,10,NULL,0,0,10,0,NULL,1,'Doctor',1,10,NULL,NULL,NULL, 5006, NOW(), 'PROC');
