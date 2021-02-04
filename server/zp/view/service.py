@@ -27,6 +27,7 @@ from woocommerce import API
 from ast import literal_eval
 from ..models import Job, Booking
 
+from ..utils import encode, decode
 ###########################################
 # Types
 Filename = str
@@ -363,7 +364,7 @@ def loginServitor(_, dct):
     # from codecs import encode
     # sAuth = encode(str(dct['key']), 'rot13')  # rot13 of the auth  #NOT safe enough
 
-    sAuth = settings.encode(str(dct['key']), settings.BASE62)
+    sAuth = encode(str(dct['key']), settings.BASE62)
 
     qsServitor = Servitor.objects.filter(auth=sAuth, pn=sPhone)
     bServitorExists = len(qsServitor) != 0
