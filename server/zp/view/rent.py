@@ -434,7 +434,7 @@ def supRentLogin(_, dct):
         pn : phone number,
         sa : super login key, base 62 encoded
     '''
-    sAuth = encode(str(dct['key']), settings.BASE62)
+    sAuth = encode(str(dct['sa']), settings.BASE62)
     print("super auth Key : ", sAuth, "phone :", dct['pn'])
 
     sup = Supervisor.objects.filter(pn=dct['pn'], auth=sAuth)[0]
