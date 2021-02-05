@@ -29,7 +29,7 @@ from django.http import HttpResponse
 from hypertrack.rest import Client
 from hypertrack.exceptions import HyperTrackException
 
-
+from ..utils import encode, decode
 ###########################################
 # Types
 Filename = str
@@ -648,13 +648,17 @@ def loginAgent(_, dct):
         
 
     Notes:
-        Rot 13 is important
+        Rot 13 is important,
+        Date 5th/Feb/2020 using base 62 conversion instead of rot13 cipher
     '''
 
     sPhone = str(dct['pn'])
-    from codecs import encode
-    sAuth = encode(str(dct['key']), 'rot13')
-    
+    # from codecs import encode
+    # sAuth = encode(str(dct['key']), 'rot13')
+
+    sAuth = encode(str(dct['key']), settings.BASE62)
+    print("delivery auth Key : ", sAuth, "phone :", dct['pn'])
+
     qsAgent = Agent.objects.filter(auth=sAuth, pn=sPhone)
     bAgentExists = len(qsAgent) != 0
     if not bAgentExists:
