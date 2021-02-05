@@ -365,7 +365,7 @@ def loginServitor(_, dct):
     # sAuth = encode(str(dct['key']), 'rot13')  # rot13 of the auth  #NOT safe enough
 
     sAuth = encode(str(dct['key']), settings.BASE62)
-    print("serv auth Key : ", sAuth, "phone :", sPhone)
+    # print("serv auth Key : ", sAuth, "phone :", sPhone)
     qsServitor = Servitor.objects.filter(auth=sAuth, pn=sPhone)
     bServitorExists = len(qsServitor) != 0
     if not bServitorExists:

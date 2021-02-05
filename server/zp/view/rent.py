@@ -16,6 +16,9 @@ from ..utils import getTripPrice, getRentPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from django.db.utils import IntegrityError
 
+from django.conf import settings
+from ..utils import encode, decode
+
 ###########################################
 # Types
 Filename = str
@@ -429,10 +432,13 @@ def supRentLogin(_, dct):
     Makes the supervisor login 
     HTTPS args:
         pn : phone number,
-        sa : super auth
+        sa : super login key, base 62 encoded
     '''
-    sup = Supervisor.objects.filter(pn=dct['pn'], auth=dct['sa'])[0]
-    ret = {'auth': sup.auth, 'name':sup.name, 'redirect':True,"redirect_url": "dashboard.html"} #index.html"}
+    sAuth = encode(str(dct['key']), settings.BASE62)
+    print("super auth Key : ", sAuth, "phone :", dct['pn'])
+
+    sup = Supervisor.objects.filter(pn=dct['pn'], auth=sAuth)[0]
+    ret = {'auth': sup.auth, 'name': sup.name, 'redirect': True, "redirect_url": "dashboard.html"}
     return HttpJSONResponse(ret)
 
 
