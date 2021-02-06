@@ -652,7 +652,7 @@ def adminRetireToUsers(dct):
 
     # do one user at a time, but do all the users
     for user in qsUser:
-        qsDeli = Delivery.objects.filter(id=user.did, st__in=['TO', 'DN'])
+        qsDeli = Delivery.objects.filter(id=user.did, st__in=['TO', 'DN']) if len(user.did) < 9 else Delivery.objects.filter(scid=user.did, st__in=['TO', 'DN'])
 
         if len(qsDeli):
             print("Retired delivery id " + str(deli.id) + " for user " + str(user.an))
