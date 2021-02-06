@@ -655,10 +655,11 @@ def adminRetireToUsers(dct):
         qsDeli = Delivery.objects.filter(id=user.did, st__in=['TO', 'DN']) if len(user.did) < 9 else Delivery.objects.filter(scid=user.did, st__in=['TO', 'DN'])
 
         if len(qsDeli):
-            print("Retired delivery id " + str(deli.id) + " for user " + str(user.an))
 
             # end the trip
             deli = qsDeli[0]
+            print("Retired delivery id " + str(deli.id) + " for user " + str(user.an))
+
             deli.etime = datetime.now(timezone.utc)
             deli.save()
 
