@@ -588,7 +588,7 @@ def servitorBookingCancel(dct, _serv):
 @extractParams
 @transaction.atomic
 @checkAuth()
-def servitorBookingEnd(dct, _serv):
+def servitorBookingEnd(dct, serv):
     '''
     Servitor calls this to end the Booking in a normal manner
     HTTP Args:
@@ -602,6 +602,23 @@ def servitorBookingEnd(dct, _serv):
     booking.order_status = 'DONE'
     booking.etime = datetime.now(timezone.utc)
     booking.save()
+
+    user = Booking.objects.filter(an=booking.uan)[0]
+
+    params = {"to": str(user.fcm), "notification": {
+        "title": "ZIPPE kar lo...",
+        "body": "Your Service has been marked as completed by the service provider. Please give a rating.",
+        "imageUrl": "https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+        "gameUrl": "https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+    }
+              }
+    dctHdrs = {'Content-Type': 'application/json',
+               'Authorization': 'key=AAAA9ac2AKM:APA91bH7N4ocS711aAjNHEYvKo6TZxQ702CWSMqrBBILgAb2hPnZzo2byOb_IHUgHaFCG3xZyKUHH6p8VsUBsXwpfsXKwhxiqtgUSjWGkweKvAcb5p_08ud-U7e3PUIdaC6Sz-TGhHZB'}
+    jsonData = json.dumps(params).encode()
+    sUrl = 'https://fcm.googleapis.com/fcm/send'
+    req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+    jsonResp = urllib.request.urlopen(req, timeout=30).read()
+    ret = json.loads(jsonResp)
 
     return HttpJSONResponse({})
 
