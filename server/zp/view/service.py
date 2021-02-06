@@ -603,7 +603,7 @@ def servitorBookingEnd(dct, serv):
     booking.etime = datetime.now(timezone.utc)
     booking.save()
 
-    user = Booking.objects.filter(an=booking.uan)[0]
+    user = User.objects.filter(an=booking.uan)[0]
 
     params = {"to": str(user.fcm), "notification": {
         "title": "ZIPPE kar lo...",
