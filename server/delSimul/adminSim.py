@@ -37,7 +37,7 @@ class Admin(Entity):
             self.logIfErr(dctRet)
             if not self.logIfErr(dctRet) and prob(0.5):
             # Fix failed vehicles and drivers very lazily with 50% probability
-                self.log('Fixing trip failures')
+                self.log('Fixing delivery failures')
 
                 failedList = self.callAPI('admin-handle-failed-trip')
                 if len(failedList):
@@ -81,7 +81,11 @@ class Admin(Entity):
                     print(" values : ", did, "auth of agent reached ", auth)
                     response = self.callAPI('agent-delivery-reached', {'did': did}, auth)
 
-                self.log('Retiring user with TO did')
+                self.log('Retiring Users with TO did')
+                resp = self.callAPI('admin-retire-to-users')
+
+                if not self.logIfErr(resp):
+                    print("## DONE ##")
 
             pass
 

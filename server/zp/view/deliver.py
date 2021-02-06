@@ -563,6 +563,7 @@ def adminAgentAssign(dct):
     auth = choosenAgent.auth
     return HttpJSONResponse({'babua': auth, 'did': delId})
 
+
 @makeView()
 @csrf_exempt
 @handleException(IndexError, 'Agent not found', 404)
@@ -626,6 +627,46 @@ def adminAgentReached(dct):
             #deli.save()
             
     return HttpJSONResponse({'babua': auth, 'did': delId})
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Agent not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Transaction error', 500)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def adminRetireToUsers(dct):
+    '''
+    Checks for deliveries in TO state.
+
+    HTTP args:
+        *: Any other fields that need to be updated/corrected (except state)
+
+    Note: This is the latest code which does raw sql
+    '''
+    # Get the deliveries and look for RQ ones
+
+    qsUser = User.objects.exclude(did__in=['', '-1'])  # find out the users which have their did not as '' or '-1'
+
+    # do one user at a time, but do all the users
+    for user in qsUser:
+        qsDeli = Delivery.objects.filter(id=user.did, st__in=['TO', 'DN'])
+
+        if len(qsDeli):
+            print("Retired delivery id " + str(deli.id) + " for user " + str(user.an))
+
+            # end the trip
+            deli = qsDeli[0]
+            deli.etime = datetime.now(timezone.utc)
+            deli.save()
+
+            # retire the user
+            user.did = ''
+            user.save()
+
+    return HttpJSONResponse({})
 
 # ============================================================================
 # Agent views

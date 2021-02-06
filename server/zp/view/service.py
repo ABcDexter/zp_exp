@@ -740,12 +740,17 @@ def userBookingRate(dct, user):
     booking.etime = datetime.now(timezone.utc)
     booking.save()
 
+    servitor = Servitor.objects.filter(an=booking.servan)[0]
+    numBook = Booking.objects.filter(servan=servitor.an).count()
+    servitor.mark = (servitor.mark + int(dct['rate'])) / (numBook + 1)
+    servitor.save()
+
     rate = Rate()
     rate.id = 'book' + str(booking.order_number)
     rate.type = 'SERV'
     rate.rev = dct['rev']
     rate.money = float(500)
-
+    rate.dan = servitor.an
     if 'attitude' in dct['rev'].lower():
         rate.rating = 'attitude'
     elif 'quality' in dct['rev'].lower():
@@ -753,11 +758,6 @@ def userBookingRate(dct, user):
     else:
         rate.rating = dct['rev']
     rate.save()
-
-    servitor = Servitor.objects.filter(an=booking.servan)[0]
-    numBook = Booking.objects.filter(servan=servitor.an).count()
-    servitor.mark = (servitor.mark + int(dct['rate'])) / (numBook + 1)
-    servitor.save()
 
     return HttpJSONResponse({})
 
