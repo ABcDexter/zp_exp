@@ -28,6 +28,8 @@ from ast import literal_eval
 from ..models import Job, Booking
 
 from ..utils import encode, decode
+from ..models import Rate
+
 ###########################################
 # Types
 Filename = str
@@ -707,3 +709,55 @@ def servitorJobsCompleted(_dct, serv):
                 pastBookings.append(data)
 
     return HttpJSONResponse({'past': pastBookings})
+
+
+# ============================================================================
+# User views
+# ============================================================================
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Booking not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def userBookingRate(dct, user):
+    '''
+    User calls this to rate the booking which has been completed
+    HTTP Args:
+        auth,
+        on = order number
+        rate= rating 0 or 1
+        rev = detailed review about the servitor
+
+    '''
+    qsBooking = Booking.objects.filter(order_number=dct['on'])
+    booking = qsBooking[0]
+
+    booking.status = 'RATE'
+    booking.order_status = 'RATE'
+    booking.etime = datetime.now(timezone.utc)
+    booking.save()
+
+    rate = Rate()
+    rate.id = 'book' + str(booking.order_number)
+    rate.type = 'SERV'
+    rate.rev = dct['rev']
+    rate.money = float(500)
+
+    if 'attitude' in dct['rev'].lower():
+        rate.rating = 'attitude'
+    elif 'quality' in dct['rev'].lower():
+        rate.rating = 'quality'
+    else:
+        rate.rating = dct['rev']
+    rate.save()
+
+    servitor = Servitor.objects.filter(an=booking.servan)[0]
+    numBook = Booking.objects.filter(servan=servitor.an).count()
+    servitor.mark = (servitor.mark + int(dct['rate'])) / (numBook + 1)
+    servitor.save()
+
+    return HttpJSONResponse({})
+

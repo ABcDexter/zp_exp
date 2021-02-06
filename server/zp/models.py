@@ -570,6 +570,8 @@ class Rate(models.Model):
         ('RIDE', 'ride'),
         ('RENT', 'rental'),
         ('DELI', 'delivery'),
+        ('SHOP', 'shop'),
+        ('SERV', 'services'),
         ('NAN', 'null')
     ]
 
@@ -871,7 +873,8 @@ class Booking(models.Model):
         ('HOLD', 'ON HOLD'),  # Awaiting payment – stock is reduced, but you need to confirm payment.
         ('REFU', 'REFUNDED'),  # Refunded by an admin – no further action required.
         ('START', 'STARTED'),  # Started by a Servitor
-        ('DONE', 'Completed')  # Booking fulfilled and completed
+        ('DONE', 'Completed'),  # Booking fulfilled and completed
+        ('RATE', 'Rated')  # Booking rated bu the User
     ]
     # as per the state diagram :
     status = models.CharField(max_length=5, choices=STATUSES, default='', db_index=True)
