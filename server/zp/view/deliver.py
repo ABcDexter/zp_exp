@@ -817,7 +817,7 @@ def registerAgent(_, dct):
             raise ZPException('Registration pending', 501)
 
     # Deterministic registration token will be checked by isAgentVerified
-    ret = {'an': sAn, 'pn': sPhone}
+    ret = {'an': sAn, 'pn': sPhone, 'name': sName}
     return HttpJSONResponse(ret)
 
 
