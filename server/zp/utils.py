@@ -1472,7 +1472,7 @@ def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTim
     #message.attach(part2)
     message.attach(part3)
     # Send the mail
-    print(message.as_string())
+    # print(message.as_string()) # this prints the final invoice mail in base 64 encoding
     server = smtplib.SMTP(SENDER_SERVER)
     server.sendmail(FROM, TO, message.as_string())
     server.quit()

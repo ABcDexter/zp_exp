@@ -381,7 +381,10 @@ def driverPaymentConfirm(_dct, driver, trip):
     '''
     print("Ride Payment confirm param : ", _dct)
 
+    #param: {'auth': 'dauth08', 'tid': '31'}
+
     trip.st = 'PD'
+    trip.pmode = str(int(_dct['pmode']) - 1)
     trip.save()
 
     # driver.mode = 'AV'
