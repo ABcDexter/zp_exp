@@ -724,7 +724,9 @@ def registerAgent(_, dct):
     with adminAgentRegister
 
     HTTP Args:
-        name, phone, gdr, fcm
+        name,
+        phone,
+        gdr, fcm
         licenseFront, licenseBack = driving license scans
 
     Notes:
@@ -785,7 +787,10 @@ def registerAgent(_, dct):
         agent.auth = getClientAuth( '91'+ sPhone, sPhone + '-register')[:5] # str(random.randint(0, 0xFFFFFFFF))
 
         agent.save()
-
+        
+        sAn = agent.an
+        sName = agent.name
+        
         # licenses are also stored with the aadhar in the file name but under settings.DL_DIR
         # renameTmpImgFiles(settings.AADHAAR_DIR, sAadharFrontFilename, sAadharBackFilename, sAadhaar)
         renameTmpImgFiles(settings.DL_DIR, sLicFrontFilename, sLicBackFilename, agent.an)
@@ -804,7 +809,10 @@ def registerAgent(_, dct):
                 # Aadhaar exists, phone unchanged, just return existing auth
                 sAuth = agent.auth
                 log('Auth exists for Agent: %s' % agent.an)
+                
             sAn = agent.an
+            sName = agent.name
+
         else:
             raise ZPException('Registration pending', 501)
 
