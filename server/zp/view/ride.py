@@ -379,6 +379,8 @@ def driverPaymentConfirm(_dct, driver, trip):
     Note:
         Since state goes to PD, the trip retiring is done here
     '''
+    print("Ride Payment confirm param : ", _dct)
+
     trip.st = 'PD'
     trip.save()
 
@@ -557,7 +559,7 @@ def userIsDriverAv(dct, user):
 
             #if nTime or nDist:
             if nDist < 50_000:  # 10 kms
-                print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
+                # print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
                 drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
     print("drivers found in 10km radius : ", len(drivers))
     ret.update({'count': len(drivers)}) # {'drivers': drivers})

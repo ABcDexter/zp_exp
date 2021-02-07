@@ -1448,7 +1448,7 @@ def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTim
     Hi %s, """ % (str(userName))#+"""\"""
     #\n
     #Thanks for riding with Zippe!\n"""
-    print(body)
+    # print(body)
 
     html = ("""<!doctype html> <html>  <head>  <meta charset="utf-8">  <title>Zipp-e Trip Invoice</title>  <style>  .invoice-box {  max-width: 800px""" + str(';') + """  margin: auto""" + str(';') + """  padding: 30px""" + str(';') + """  border: 1px solid #eee""" + str(';') + """  box-shadow: 0 0 10px rgba(0, 0, 0, .15)""" + str(';') + """  font-size: 16px""" + str(';') + """  line-height: 24px"""  
     + str(';') + """  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif""" + str(';') + """  color: #555""" + str(';') + """  }    .invoice-box table {  width: 100%""" + str(';') + """  line-height: inherit""" + str(';') + """  text-align: left""" + str(';') + """  }    .invoice-box table td {  padding: 5px""" + str(';') + """  vertical-align: top""" + str(';') + """  }    .invoice-box table tr td:nth-child(2) {  text-align: right""" 
@@ -1460,7 +1460,7 @@ def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTim
     parsed = """ <td>  Invoice # : %s<br>  Dated : %s<br>  </td>  </tr>  </table>  </td>  </tr>      <tr class="heading">  <td>  Item  </td>    <td>  Details  </td>  </tr>  <tr class="item">  <td>  Trip time  </td>  <td>  %s minutes  </td>  </tr>    <tr class="item">  <td>  Bill amount  </td>  <td>  %s  </td>  </tr>  <tr class="item">  <td>  CGST ( 2.5 percent )  </td>    <td>  %s   </td>  </tr>    <tr class="item last">  <td>  SGST ( 2.5 percent)  </td>    <td>  %s  </td>  </tr>    <tr class="total">  <td></td>    <td>  Total: %s  </td>  </tr>  </table>  </div>    <br>  Note : Fares are inclusive of GST.  </body>  </html>""" % ( str(0)+str(tripId), str(tripDate), str(tripTime), str(u"\u20B9")+" "+ str(tripPrice), str(u"\u20B9")+" "+str(tripCGST), str(u"\u20B9") + " "+str(tripSGST),str(u"\u20B9")+" "+str(tripTotal))
     
     msg = body + html + parsed
-    print(html)
+    # print(html)
 
     #set the correct MIMETexts
     part1 = MIMEText(body, "plain")
