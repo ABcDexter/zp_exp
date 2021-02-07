@@ -293,7 +293,7 @@ def registorServitor(_, dct):
 
         servitor = Servitor()
         servitor.an = sAn
-        servitor.auth = getClientAuth(sAn, sPhone)[:6]  # shortened the auth key
+        servitor.auth = getClientAuth(sAn, sPhone)[:5]  # shortened the auth key of proper decoding base 64 into base 10
         servitor.name = sName
         servitor.pn = sPhone
         servitor.bank = sBank
@@ -361,8 +361,10 @@ def loginServitor(_, dct):
 
     sPhone = str(dct['pn'])
     # from codecs import encode
-    # sAuth = encode(str(dct['key']), 'rot13')  # rot13 of the auth
-    sAuth = str(dct['key'])
+    # sAuth = encode(str(dct['key']), 'rot13')  # rot13 of the auth  #NOT safe enough
+
+    sAuth = settings.encode(str(dct['key']), settings.BASE62)
+
     qsServitor = Servitor.objects.filter(auth=sAuth, pn=sPhone)
     bServitorExists = len(qsServitor) != 0
     if not bServitorExists:
