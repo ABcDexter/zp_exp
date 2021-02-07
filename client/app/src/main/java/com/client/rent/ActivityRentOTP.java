@@ -32,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.client.ActivityDrawer;
+import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
@@ -44,6 +45,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.halcyon.squareprogressbar.SquareProgressBar;
+
 public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListener {
 
     private static final String TAG = "ActivityRentOTP";
@@ -55,7 +58,6 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
     public static final String COST_DROP = "CostDrop";
-    //public static final String OTP_PICK = "OTPPick";
     public static final String VAN_PICK = "VanPick";
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
@@ -83,7 +85,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
         //response on hitting user-trip-cancel API
         if (id == 1) {
-            Intent home = new Intent(ActivityRentOTP.this, ActivityRentHome.class);
+            Intent home = new Intent(ActivityRentOTP.this, ActivityWelcome.class);
             startActivity(home);
             finish();
         }
@@ -104,9 +106,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                         Glide.with(this).load(photo).into(supPhoto);
                         costEst.setText("₹ " + price);
                         PriceOnly = price;
-                       /* if (timeRem.equals("")) {
-                            //ShowPopup(3);
-                        }*/
+
                         Intent intent = new Intent(this, UtilityPollingService.class);
                         intent.setAction("13");
                         startService(intent);
@@ -149,9 +149,6 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         //response on hitting user-rent-pay API
         if (id == 6) {
             String otp = response.getString("otp");
-            //String van = response.getString("vno");
-            /*SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-            sp_otp.edit().putString(OTP_PICK, otp).apply();*/
             OTP.setText(otp);
             lock.setVisibility(View.GONE);
             OTP.setVisibility(View.VISIBLE);
@@ -191,7 +188,6 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         dropLat = prefPLoc.getString(LOCATION_DROP_LAT, "");
         dropLng = prefPLoc.getString(LOCATION_DROP_LNG, "");
         String stringCost = prefPLoc.getString(COST_DROP, "");
-        /*String otpPick = prefPLoc.getString(OTP_PICK, "");*/
         String vType = prefPLoc.getString(VEHICLE_TYPE, "");
 
         supPhoto = findViewById(R.id.photo_sup);
@@ -220,7 +216,6 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         PickInfo.setOnClickListener(this);
         cancel.setOnClickListener(this);
         costEst.setText(stringCost);
-        //costEst.setText("₹ 260.00");
         costInfo.setOnClickListener(this);
         destination.setOnClickListener(this);
         origin.setOnClickListener(this);
@@ -239,15 +234,6 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         dPhone.setOnClickListener(this);
 
         myDialog = new Dialog(this);
-
-        /*if (otpPick.isEmpty()) {
-            OTP.setVisibility(View.GONE);
-            lock.setVisibility(View.VISIBLE);
-        } else {
-            OTP.setVisibility(View.VISIBLE);
-            OTP.setText(otpPick);
-            lock.setVisibility(View.GONE);
-        }*/
 
         supDetails();
 
@@ -290,9 +276,6 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
-        LinearLayout ll = myDialog.findViewById(R.id.layout_btn);
-        TextView reject = myDialog.findViewById(R.id.reject_request);
-        TextView accept = myDialog.findViewById(R.id.accept_request);
 
         if (id == 1) {
             infoText.setText(R.string.cost_calc_as_per_time);
@@ -303,13 +286,6 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         if (id == 3) {
             infoText.setText(R.string.check_condi_before_paying);
         }
-        /*if (id == 4) {
-            infoText.setText("HOLD VEHICLE FOR 1 HOUR?");
-
-            reject.setOnClickListener(this);
-            accept.setOnClickListener(this);
-        }*/
-
         if (id == 5) {
             infoText.setText(stringPick);
         }
@@ -356,19 +332,24 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             }
         }, a::onFailure);
     }
-
+    private void showProgressIndication() {
+        SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
+        squareProgressBar.setImage(R.drawable.btn_bkg);
+        squareProgressBar.setVisibility(View.VISIBLE);
+        squareProgressBar.setProgress(50.0);
+        squareProgressBar.setWidth(10);
+        squareProgressBar.setIndeterminate(true);
+        squareProgressBar.setColor("#EC7721");
+    }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.dummy) {
             rentPay();
-        } else if (id == R.id.cancel_rent_booking) {//showAlertDialog();
-            //ShowPopup(4);
+        } else if (id == R.id.cancel_rent_booking) {
             userCancelTrip();
-            Intent intent = new Intent(ActivityRentOTP.this, ActivityRideHome.class);
-            startActivity(intent);
-            finish();
+
         } else if (id == R.id.drop_hub) {
             ShowPopup(6);
         } else if (id == R.id.pick_hub) {
@@ -398,21 +379,6 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             String upiId = "rajnilakshmi@ybl";
             payUsingUpi(amount, upiId, name, note);
 
-            /*case R.id.reject_request:
-                userCancelTrip();
-                Intent intent = new Intent(ActivityRentOTP.this, ActivityRideHome.class);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.accept_request:
-                Intent hold = new Intent(ActivityRentOTP.this, ActivityHoldVehicle.class);
-                startActivity(hold);
-                finish();
-                //vehicleHold();
-                break;*/
-            /*case R.id.supervisor_phone:
-                callSuper();
-                break;*/
         } else if (id == R.id.otp_lock) {
             ShowPopup(7);
         } else if (id == R.id.rl_p) {
@@ -536,33 +502,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         return false;
     }
 
-
-    /*private void giveOtp() {
-        String auth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
-        params.put("auth", auth);
-        params.put("otp", OTP.getText().toString());
-        JSONObject parameters = new JSONObject(params);
-        ActivityRentOTP a = ActivityRentOTP.this;
-        Log.d(TAG, "Values: auth=" + auth + " otp=" + OTP.getText().toString());
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-give-otp");
-        UtilityApiRequestPost.doPOST(a, "user-give-otp", parameters, 20000, 0, response -> {
-            try {
-                a.onSuccess(response, 4);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-        }, a::onFailure);
-    }*/
     private void rentPay() {
         String auth = stringAuthCookie;
         Map<String, String> params = new HashMap();
         params.put("auth", auth);
-        //params.put("otp", OTP.getText().toString());
         JSONObject parameters = new JSONObject(params);
         ActivityRentOTP a = ActivityRentOTP.this;
-        Log.d(TAG, "Values: auth=" + auth /*+ " otp=" + OTP.getText().toString()*/);
+        Log.d(TAG, "Values: auth=" + auth );
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-pay");
         UtilityApiRequestPost.doPOST(a, "user-rent-pay", parameters, 20000, 0, response -> {
             try {

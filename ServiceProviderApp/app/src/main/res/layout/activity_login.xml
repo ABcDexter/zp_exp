@@ -60,7 +60,7 @@
             android:background="@drawable/rect_box_outline"
             android:cursorVisible="true"
             android:hint="@string/login_key"
-            android:maxLength="8"
+            android:maxLength="10"
             android:padding="5dp"
             android:textAlignment="center"
             android:textColor="@color/txtColor"

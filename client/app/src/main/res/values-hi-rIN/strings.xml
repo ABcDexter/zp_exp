@@ -317,6 +317,7 @@
     <string name="transaction_failed">सौदा विफल हुआ। कृपया पुनः प्रयास करें</string>
     <string name="no_internet">इंटरनेट की सुविधा नहीं है।  कृपया अपने कनेक्शन जाँचे और पुनः प्रयास करें</string>
     <string name="make_payment_to_continue">कृपया अगली राइड बुक करने से पहले बकाया राशि का भुगतान करें।</string>
+    <string name="make_payment_to_update">Please make payment to update number of hours.</string>
     <string name="driving_licence">आपको वाहन किराए पर देने से पहले ज़िप्पी हब में एक वैध ड्राइविंग लाइसेंस की एक कॉपी जमा करने के लिए कहा जाएगा ।</string>
     <string name="agree">मंज़ूर</string>
     <string name="disagree">नामंज़ूर </string>
@@ -411,4 +412,8 @@
     <string name="crew">CREW</string>
     <string name="customer_support">CUSTOMER SUPPORT</string>
     <string name="please_be_patient_nwe_are_searching_for_drivers_nearest_to_you">Please be patient.\nWe are searching for drivers nearest to you.</string>
+    <string name="pay_now_button">pay now button</string>
+    <string name="cancel_ride_request_button">cancel ride request button</string>
+    <string name="next_page_button">next page button</string>
+    <string name="confirm_rent_button">confirm rent button</string>
 </resources>

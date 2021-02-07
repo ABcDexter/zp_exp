@@ -48,8 +48,8 @@
                     android:layout_below="@id/txtsupern"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/ic_account_box"
-                    android:contentDescription="@string/supervisor_photo" />
+                    android:contentDescription="@string/supervisor_photo"
+                    android:src="@drawable/ic_account_box" />
 
                 <TextView
                     android:id="@+id/supervisor_name"
@@ -87,8 +87,8 @@
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@id/supervisor_phone"
-                        android:src="@drawable/phone"
-                        android:contentDescription="@string/supervisor_phone" />
+                        android:contentDescription="@string/supervisor_phone"
+                        android:src="@drawable/phone" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -124,8 +124,8 @@
                 </RelativeLayout>
 
 
-
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -159,9 +159,10 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@id/txto"
-                    android:src="@drawable/lock"
-                    android:contentDescription="@string/otp_unlock" />
+                    android:contentDescription="@string/otp_unlock"
+                    android:src="@drawable/lock" />
             </RelativeLayout>
+
             <include
                 layout="@layout/zippe_logo"
                 android:layout_width="wrap_content"
@@ -182,9 +183,9 @@
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:gravity="center|start"
+                    android:paddingStart="10dp"
                     android:text="@string/pick_point"
                     android:textAllCaps="true"
-                    android:paddingStart="10dp"
                     android:textSize="20sp" />
 
                 <TextView
@@ -231,9 +232,9 @@
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:gravity="center|start"
+                    android:paddingStart="10dp"
                     android:text="@string/drop_point"
                     android:textAllCaps="true"
-                    android:paddingStart="10dp"
                     android:textSize="20sp" />
 
                 <TextView
@@ -283,9 +284,9 @@
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:gravity="center|start"
+                    android:paddingStart="10dp"
                     android:text="@string/please_pay"
                     android:textAllCaps="true"
-                    android:paddingStart="10dp"
                     android:textSize="20sp" />
 
                 <TextView
@@ -323,6 +324,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/rect_box_outline"
                 android:drawableEnd="@drawable/ic_bhim"
                 android:gravity="center|start"
@@ -331,30 +333,33 @@
                 android:text="@string/make_payment_using_upi"
                 android:textAllCaps="true"
                 android:textSize="23sp" />
-            <!--<TextView
-                android:id="@+id/trackDriver"
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/rect_box_outline"
-                android:drawableEnd="@drawable/ic_location"
-                android:gravity="center|start"
-                android:padding="5dp"
-                android:text="track driver location"
-                android:textAllCaps="true"
-                android:textSize="23sp" />-->
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
 
-            <ImageButton
+                <ch.halcyon.squareprogressbar.SquareProgressBar
+                    android:id="@+id/sprogressbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:visibility="gone"  />
 
-                android:id="@+id/cancel_rent_booking"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/orange_button_bkg"
-                android:padding="15dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/cancel" />
-
+                <ImageButton
+                    android:id="@+id/cancel_rent_booking"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:background="@drawable/orange_button_bkg"
+                    android:padding="15dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/cancel"
+                    android:textAllCaps="true" />
+            </RelativeLayout>
             <Button
                 android:id="@+id/dummy"
                 android:layout_width="wrap_content"

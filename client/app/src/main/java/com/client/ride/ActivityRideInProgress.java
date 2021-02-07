@@ -41,6 +41,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.halcyon.squareprogressbar.SquareProgressBar;
+
 
 public class ActivityRideInProgress extends ActivityDrawer implements View.OnClickListener {
 
@@ -62,7 +64,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     ActivityRideInProgress a = ActivityRideInProgress.this;
     Map<String, String> params = new HashMap();
     Dialog imageDialog;
-    String stringAuthCookie;
+    String stringAuthCookie,tid;
     private static final String PUBLISHABLE_KEY = "shXqLCv6GJVJ9QFgdHb6VL0JzE_7X96YoAX3ZxA919DLWOA1fayXhLg_NguIvRNypeaSpLu4U6JlYiwJahN8pA";
     String deviceId;
     String locationUrl;
@@ -99,7 +101,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
                 String active = response.getString("active");
                 if (active.equals("true")) {
                     String status = response.getString("st");
-                    String tid = response.getString("tid");
+                    tid = response.getString("tid");
                     String photo = response.getString("photourl");
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
@@ -181,8 +183,6 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     private void getDeviceID() {
         HyperTrack sdkInstance = HyperTrack
                 .getInstance(PUBLISHABLE_KEY);
-
-        //deviceId.setText(sdkInstance.getDeviceID());
         Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
         deviceId = sdkInstance.getDeviceID();
     }
@@ -238,8 +238,9 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,
                                         int which) {
+                        showProgressIndication();
                         userCancelTrip();
-                        Log.d(TAG, "checkStatus invoked");
+                        Log.d(TAG, "userCancelTrip() invoked");
                     }
                 });
         dialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -253,7 +254,15 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
 
     }
-
+    private void showProgressIndication() {
+        SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
+        squareProgressBar.setImage(R.drawable.btn_bkg);
+        squareProgressBar.setVisibility(View.VISIBLE);
+        squareProgressBar.setProgress(50.0);
+        squareProgressBar.setWidth(10);
+        squareProgressBar.setIndeterminate(true);
+        squareProgressBar.setColor("#EC7721");
+    }
     public void checkStatus() {
         String auth = stringAuthCookie;
         params.put("auth", auth);
@@ -291,6 +300,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         } else if (id == R.id.end_ride) {
             alertDialog();
         } else if (id == R.id.track_your_location) {
+            Log.d(TAG, "tid="+tid);
             trackLocation();
 
         }

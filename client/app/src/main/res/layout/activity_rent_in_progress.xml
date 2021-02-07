@@ -216,21 +216,6 @@
                     android:textAllCaps="true"
                     android:textSize="20sp" />
 
-                <!-- <TextView
-                     android:id="@+id/share_ride_details"
-                     android:layout_width="match_parent"
-                     android:layout_height="50dp"
-                     android:layout_below="@+id/emergency"
-                     android:layout_marginTop="15dp"
-                     android:background="@drawable/rect_box_outline"
-                     android:drawableEnd="@drawable/ic_share"
-                     android:gravity="center|start"
-                     android:paddingStart="10dp"
-                     android:paddingEnd="12dp"
-                     android:text="share ride details"
-                     android:textAllCaps="true"
-                     android:textSize="20sp" />-->
-
                 <TextView
                     android:id="@+id/share_location"
                     android:layout_width="match_parent"

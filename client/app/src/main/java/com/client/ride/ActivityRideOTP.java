@@ -41,6 +41,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.halcyon.squareprogressbar.SquareProgressBar;
+
 
 public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListener {
     private static final String TAG = "ActivityRideOTP";
@@ -327,10 +329,8 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                showProgressIndication();
                 userCancelTrip();
-                Intent intent = new Intent(ActivityRideOTP.this, ActivityRideHome.class);
-                startActivity(intent);
-                finish();
             }
         });
 
@@ -345,7 +345,15 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         alert.show();
         alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
     }
-
+    private void showProgressIndication() {
+        SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
+        squareProgressBar.setImage(R.drawable.btn_bkg);
+        squareProgressBar.setVisibility(View.VISIBLE);
+        squareProgressBar.setProgress(50.0);
+        squareProgressBar.setWidth(10);
+        squareProgressBar.setIndeterminate(true);
+        squareProgressBar.setColor("#EC7721");
+    }
     private void userCancelTrip() {
         String stringAuth = stringAuthCookie;
         Map<String, String> params = new HashMap();

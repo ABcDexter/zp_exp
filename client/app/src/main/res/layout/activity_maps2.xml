@@ -22,10 +22,4 @@
         android:textAlignment="center"
         android:background="@color/colorTransparentBlack"
         android:id="@+id/pinch"/>
-    <!--<Button
-        android:id="@+id/btnGetDirection"
-        android:text="Get Direction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground" />-->
 </RelativeLayout>

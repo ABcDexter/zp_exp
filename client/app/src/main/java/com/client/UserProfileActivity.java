@@ -37,6 +37,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+import com.bumptech.glide.Glide;
 import com.client.ride.ActivityRideHome;
 
 import org.json.JSONException;
@@ -131,6 +132,16 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
         rlEmail = findViewById(R.id.rl_email);
         submitEmail.setOnClickListener(this);
         profileImage = findViewById(R.id.profilePic);
+
+        String imageURL = "https://api.villageapps.in:8090/media/dp_" + stringAuth + "_.jpg";
+        try {
+            Glide.with(this).load(imageURL).into(profileImage);
+        } catch (Exception e) {
+            Log.d(TAG, "imageURL=" + imageURL);
+            Log.d(TAG, "Display Picture Error:" + e.toString());
+            e.printStackTrace();
+        }
+
         profileImage.setOnClickListener(this);
 
         if (stringPhone.isEmpty())
@@ -138,7 +149,6 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
         else {
             mobiletxt.setText(stringPhone);
             Log.d(TAG, "phone no:" + stringPhone);
-
         }
 
         if (stringName.isEmpty())

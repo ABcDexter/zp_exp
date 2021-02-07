@@ -41,6 +41,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.halcyon.squareprogressbar.SquareProgressBar;
+
 public class ActivityRideRequest extends ActivityDrawer implements View.OnClickListener {
 
     private static final String TAG = "ActivityRideRequest";
@@ -387,6 +389,7 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
                 // When the user click ok button
                 // then app will close
                 moveit();
+                showProgressIndication();
                 userRequestRide();
             }
         });
@@ -417,7 +420,15 @@ public class ActivityRideRequest extends ActivityDrawer implements View.OnClickL
         Button buttonNegative = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         buttonNegative.setTextColor(ContextCompat.getColor(this, R.color.Black));
     }
-
+    private void showProgressIndication() {
+        SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
+        squareProgressBar.setImage(R.drawable.btn_bkg);
+        squareProgressBar.setVisibility(View.VISIBLE);
+        squareProgressBar.setProgress(50.0);
+        squareProgressBar.setWidth(10);
+        squareProgressBar.setIndeterminate(true);
+        squareProgressBar.setColor("#D7FB05");
+    }
     private void rideEstimate() {
         String auth = stringAuth;
         params.put("auth", auth);

@@ -54,7 +54,6 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
     Map<String, String> params = new HashMap();
     ScrollView scrollView;
     TextView txt;
-    Button dummy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +83,6 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         paynow = findViewById(R.id.pay_now);
         paynow.setOnClickListener(this);
         scrollView = findViewById(R.id.scrollView_ride_OTP);
-        dummy = findViewById(R.id.dummy);
-        dummy.setOnClickListener(this);
     }
 
     public static ActivityRideEnded getInstance() {
@@ -117,7 +114,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         //response on hitting auth-trip-get-info API
         if (id == 1) {
             String actualPrice = response.getString("price");
-            cost.setText("₹ " + actualPrice);
+            cost.setText(getString(R.string.message_rs, actualPrice));
             onlyPrice = actualPrice;
         }
         //response on hitting user-trip-get-status API
@@ -152,7 +149,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
                 e.printStackTrace();
             }
         }
-
+        //response on hitting API for payment made
         if (id == 3) {
             Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         }
@@ -171,12 +168,9 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
             String amount = onlyPrice;
             String note = "Payment for ride service";
             String name = "Zipp-E";
-            String upiId = "9084083967@ybl";
+            String upiId = "rajnilakshmi@ybl";
             payUsingUpi(amount, upiId, name, note);
 
-            /*case R.id.confirm_btn:
-                paymentMade();
-                break;*/
         } else if (id == R.id.cash) {
             ShowPopup();
         } else if (id == R.id.pay_now) {
@@ -186,8 +180,6 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
             TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
             textView.setTextColor(Color.YELLOW);
             snackbar.show();
-        } else if (id == R.id.dummy) {
-            paymentMade();
         }
     }
 
@@ -269,28 +261,26 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case UPI_PAYMENT:
-                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
-                    if (data != null) {
-                        String trxt = data.getStringExtra("response");
-                        Log.d("UPI", "onActivityResult: " + trxt);
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add(trxt);
-                        upiPaymentDataOperation(dataList);
-                    } else {
-                        Log.d("UPI", "onActivityResult: " + "Return data is null");
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add("nothing");
-                        upiPaymentDataOperation(dataList);
-                    }
+        if (requestCode == UPI_PAYMENT) {
+            if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                if (data != null) {
+                    String trxt = data.getStringExtra("response");
+                    Log.d("UPI", "onActivityResult: " + trxt);
+                    ArrayList<String> dataList = new ArrayList<>();
+                    dataList.add(trxt);
+                    upiPaymentDataOperation(dataList);
                 } else {
-                    Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                    Log.d("UPI", "onActivityResult: " + "Return data is null");
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add("nothing");
                     upiPaymentDataOperation(dataList);
                 }
-                break;
+            } else {
+                Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                ArrayList<String> dataList = new ArrayList<>();
+                dataList.add("nothing");
+                upiPaymentDataOperation(dataList);
+            }
         }
     }
 
@@ -318,11 +308,11 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
 
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
-                Toast.makeText(ActivityRideEnded.this, R.string.transaction_successful, Toast.LENGTH_LONG).show();
                 paymentMade();
+                Toast.makeText(ActivityRideEnded.this, R.string.transaction_successful, Toast.LENGTH_LONG).show();
                 Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
-                Toast.makeText(ActivityRideEnded.this, R.string.transaction_successful, Toast.LENGTH_LONG).show();
+                Toast.makeText(ActivityRideEnded.this, R.string.payment_cancelled_by_user, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(ActivityRideEnded.this, R.string.transaction_failed, Toast.LENGTH_LONG).show();
             }

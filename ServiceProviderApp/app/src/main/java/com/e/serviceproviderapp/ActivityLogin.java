@@ -104,7 +104,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
             final ProgressBar simpleProgressBar = findViewById(R.id.simpleProgressBar);
             loginKey = etLoginKey.getText().toString().trim();
 
-            if (loginKey.isEmpty() || loginKey.length() > 9) {
+            if (loginKey.isEmpty() || loginKey.length() > 11) {
                 Log.d(TAG, "Error in Login Key");
                 etLoginKey.setError("Enter valid Login Key");
                 etLoginKey.requestFocus();

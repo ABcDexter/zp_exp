@@ -1,33 +1,22 @@
 package com.client.rent;
 
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.client.R;
-import com.client.ride.FetchURL;
-import com.client.ride.TaskLoadedCallback;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-
-
-import android.os.Build;
-import android.os.Bundle;
-
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,21 +25,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.location.LocationServices;
-
-import android.location.Location;
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 
 
 public class MapsHubLocation extends AppCompatActivity implements OnMapReadyCallback,
-        LocationListener,GoogleApiClient.ConnectionCallbacks,
+        LocationListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+    private static final String TAG = "MapsHubLocation";
 
     private GoogleMap mMap;
     Location mLastLocation;
@@ -58,8 +38,9 @@ public class MapsHubLocation extends AppCompatActivity implements OnMapReadyCall
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
 
-    String lat,lng;
-    Double latPosition,lngPosition;
+    String lat, lng, name;
+    Double latPosition, lngPosition;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +54,8 @@ public class MapsHubLocation extends AppCompatActivity implements OnMapReadyCall
         Intent intent = getIntent();
         lat = intent.getStringExtra("lat");
         lng = intent.getStringExtra("lng");
-
+        name = intent.getStringExtra("name");
+        Log.d(TAG, "lat=" + lat + " lng=" + lng + " name=" + name);
 
 
     }
@@ -89,6 +71,7 @@ public class MapsHubLocation extends AppCompatActivity implements OnMapReadyCall
         }
 
     }
+
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -127,10 +110,10 @@ public class MapsHubLocation extends AppCompatActivity implements OnMapReadyCall
         //place hub location marker
         latPosition = Double.parseDouble(lat);
         lngPosition = Double.parseDouble(lng);
-        LatLng hubLatLng = new LatLng(latPosition,lngPosition);
+        LatLng hubLatLng = new LatLng(latPosition, lngPosition);
         MarkerOptions hubMarker = new MarkerOptions();
         hubMarker.position(hubLatLng);
-        hubMarker.title("HUB");
+        hubMarker.title(name);
         hubMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
         mCurrLocationMarker = mMap.addMarker(hubMarker);
 

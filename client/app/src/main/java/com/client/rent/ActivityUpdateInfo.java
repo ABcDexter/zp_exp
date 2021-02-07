@@ -4,18 +4,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
@@ -34,9 +26,10 @@ import com.google.android.gms.location.LocationServices;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import ch.halcyon.squareprogressbar.SquareProgressBar;
 
 public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickListener {
 
@@ -58,9 +51,9 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
     private static ActivityUpdateInfo instance;
     FusedLocationProviderClient mFusedLocationClient;
     Dialog imageDialog2;
-    String stringAuthCookie, NoHours, stringHrs, PriceOnly;
-    Button dummy;
+    String stringAuthCookie, stringHrs;
     Dialog myDialog;
+
     public static ActivityUpdateInfo getInstance() {
         return instance;
     }
@@ -116,7 +109,6 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         destination = findViewById(R.id.drop_hub);
         update = findViewById(R.id.update_data);
         scrollView = findViewById(R.id.scrollView_rent_progress);
-        //hours.setText(stringHrs);
         update.setOnClickListener(this);
         destination.setOnClickListener(this);
 
@@ -138,7 +130,8 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.update_data) {/*alertDialog();*/
+        if (id == R.id.update_data) {
+            showProgressIndication();
             userUpdateTrip();
         } else if (id == R.id.drop_hub) {
             Intent drop = new Intent(ActivityUpdateInfo.this, HubList.class);
@@ -148,7 +141,15 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         }
     }
 
-
+    private void showProgressIndication() {
+        SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
+        squareProgressBar.setImage(R.drawable.btn_bkg);
+        squareProgressBar.setVisibility(View.VISIBLE);
+        squareProgressBar.setProgress(50.0);
+        squareProgressBar.setWidth(10);
+        squareProgressBar.setIndeterminate(true);
+        squareProgressBar.setColor("#D7FB05");
+    }
 
     private void userUpdateTrip() {
         String hour = stringHrs;

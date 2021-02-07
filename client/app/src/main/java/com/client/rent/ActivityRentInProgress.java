@@ -31,8 +31,10 @@ import com.client.ActivityDrawer;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
+import com.client.ride.ActivityRideInProgress;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.hypertrack.sdk.HyperTrack;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,10 +61,14 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
     private static ActivityRentInProgress instance;
     FusedLocationProviderClient mFusedLocationClient;
     Dialog myDialog, colorDialog;
-
+    private static final String PUBLISHABLE_KEY = "shXqLCv6GJVJ9QFgdHb6VL0JzE_7X96YoAX3ZxA919DLWOA1fayXhLg_NguIvRNypeaSpLu4U6JlYiwJahN8pA";
+    String deviceId;
+    String locationUrl;
     String stringAuthCookie;
     ImageView supPhoto;
 
+    ActivityRentInProgress a = ActivityRentInProgress.this;
+    Map<String, String> params = new HashMap();
     public static ActivityRentInProgress getInstance() {
         return instance;
     }
@@ -70,7 +76,7 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG, "RESPONSE:" + response);
 
-        //response on hitting auth-time-remaining API
+       /* //response on hitting auth-time-remaining API
         if (id == 1) {
             String time = response.getString("time");
             remainingHours.setText(time);
@@ -107,7 +113,7 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
                 }
             }
 
-        }
+        }*/
 
         //response on hitting user-rent-get-sup API
         if (id == 2) {
@@ -185,12 +191,22 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
                             finish();
                         }
                     }
-                } /*else {
-                    Intent homePage = new Intent(ActivityRentInProgress.this, ActivityWelcome.class);
-                    homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(homePage);
-                    finish();
-                }*/
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //response on hitting user-trip-track API
+        if (id == 4) {
+            try {
+                locationUrl = response.getString("hurl");
+                String messageBody = "Track my live location here:\n" + locationUrl;
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.setData(Uri.parse("sms:"));
+                sendIntent.putExtra("sms_body", messageBody);
+                startActivity(sendIntent);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -238,19 +254,13 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         destination = findViewById(R.id.drop_hub);
         nameD = findViewById(R.id.supervisor_name);
         phone = findViewById(R.id.supervisor_phone);
-        //shareDetails = findViewById(R.id.share_ride_details);
         emergencyCall = findViewById(R.id.emergency);
         endRent = findViewById(R.id.end_rent);
         scrollView = findViewById(R.id.scrollView_rent_progress);
         rlPhone = findViewById(R.id.rl_p);
         rlPhone.setOnClickListener(this);
-        //vNum.setText(stringVan);
         nameD.setText(stringDName);
         phone.setText(stringDPhn);
-        /*nameD.setText("JHON WICK");
-        phone.setText("+917060743705");*/
-
-        //shareDetails.setOnClickListener(this);
         emergencyCall.setOnClickListener(this);
         endRent.setOnClickListener(this);
         destination.setOnClickListener(this);
@@ -258,22 +268,42 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         phone.setOnClickListener(this);
 
         checkStatus();
-        //timeRemaining();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityRentInProgress.this);
         myDialog = new Dialog(this);
         colorDialog = new Dialog(this);
 
         getDropSup();
+        getDeviceID();
+    }
+    private void getDeviceID() {
+        HyperTrack sdkInstance = HyperTrack
+                .getInstance(PUBLISHABLE_KEY);
+
+        //deviceId.setText(sdkInstance.getDeviceID());
+        Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
+        deviceId = sdkInstance.getDeviceID();
+    }
+    private void getLocationUrl() {
+        String stringAuth = stringAuthCookie;
+        params.put("auth", stringAuth);
+        params.put("devid", deviceId);
+        JSONObject param = new JSONObject(params);
+        Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-track");
+        UtilityApiRequestPost.doPOST(a, "user-trip-track", param, 20000, 0, response -> {
+            try {
+                a.onSuccess(response, 4);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, a::onFailure);
     }
 
     private void ShowPopup(int id) {
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
-
-        if (id == 1) {
-            infoText.setText(R.string.coming_soon);
-        }
 
         if (id == 2) {
             infoText.setText(R.string.time_extended);
@@ -282,7 +312,6 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
-        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
         //wmlp.x = 100;   //x position
         wmlp.y = 77;   //y position
         myDialog.show();
@@ -317,7 +346,6 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         colorDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = colorDialog.getWindow().getAttributes();
 
-        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
         //wmlp.x = 100;   //x position
         wmlp.y = 77;   //y position
         colorDialog.show();
@@ -328,17 +356,15 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();/*case R.id.share_ride_details:
-                selectAction(ActivityRentInProgress.this);
-                break;*//*case R.id.supervisor_phone:
-                callSuper();
-                break;*/
+        int id = v.getId();
         if (id == R.id.rl_p) {
+            callSuper();
+        } else if(id==R.id.supervisor_phone){
             callSuper();
         } else if (id == R.id.emergency) {
             btnSetOnEmergency();
         } else if (id == R.id.share_location) {
-            ShowPopup(1);
+            getLocationUrl();
         } else if (id == R.id.drop_hub) {
             Intent drop = new Intent(ActivityRentInProgress.this, ActivityUpdateInfo.class);
             startActivity(drop);
@@ -353,10 +379,8 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
 
     private void getDropSup() {
         String stringAuth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
         params.put("auth", stringAuth);
         JSONObject param = new JSONObject(params);
-        ActivityRentInProgress a = ActivityRentInProgress.this;
         Log.d(TAG, "Values: auth=" + stringAuth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-get-sup");
         UtilityApiRequestPost.doPOST(a, "user-rent-get-sup", param, 20000, 0, response -> {
@@ -371,10 +395,8 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
 
     public void checkStatus() {
         String auth = stringAuthCookie;
-        Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        ActivityRentInProgress a = ActivityRentInProgress.this;
         Log.d(TAG, "Values: auth=" + auth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {

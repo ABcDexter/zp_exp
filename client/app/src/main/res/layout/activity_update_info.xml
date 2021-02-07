@@ -20,8 +20,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                android:layout_above="@id/layoutZippeee">
+                android:layout_above="@id/layoutZippeee"
+                android:paddingBottom="5dp">
 
                 <TextView
                     android:id="@+id/txtP"
@@ -55,8 +55,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_centerInParent="true"
-                android:layout_marginBottom="50dp"
-                android:layout_marginTop="50dp"/>
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp" />
 
             <LinearLayout
                 android:id="@+id/txt_drop"
@@ -80,29 +80,33 @@
 
             </LinearLayout>
 
-
-           <!-- <Button
-                android:id="@+id/update_data"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/btn_bkg"
-                android:scaleType="centerInside"
-                android:text="Update"
-                android:textSize="20sp" />-->
+                android:layout_marginBottom="10dp">
 
-            <ImageButton
-                android:id="@+id/update_data"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/green_button_bkg"
-                android:padding="15dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/update" />
+                <ch.halcyon.squareprogressbar.SquareProgressBar
+                    android:id="@+id/sprogressbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/update_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:background="@drawable/green_button_bkg"
+                    android:padding="15dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/update"
+                    android:textAllCaps="true" />
+            </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
 

@@ -76,11 +76,11 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/rl_r"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_below="@id/rl_v"
-                android:layout_marginTop="20dp"
-                android:id="@+id/rl_r">
+                android:layout_marginTop="20dp">
 
                 <Button
                     android:id="@+id/no_riders"
@@ -143,19 +143,32 @@
                     android:layout_height="match_parent" />
             </RelativeLayout>
 
-
-            <ImageButton
-                android:id="@+id/letsGo_ride"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/green_button_bkg"
-                android:padding="15dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/letsgo"
-                android:textAllCaps="true" />
-        </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
 
+                <ch.halcyon.squareprogressbar.SquareProgressBar
+                    android:id="@+id/sprogressbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:visibility="gone"/>
+
+                <ImageButton
+                    android:id="@+id/letsGo_ride"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:background="@drawable/green_button_bkg"
+                    android:padding="15dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/letsgo"
+                    android:textAllCaps="true" />
+            </RelativeLayout>
+        </RelativeLayout>
     </ScrollView>
 </androidx.drawerlayout.widget.DrawerLayout>

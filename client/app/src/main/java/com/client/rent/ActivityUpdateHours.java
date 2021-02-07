@@ -31,6 +31,7 @@ import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +44,7 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
 
     private static final String TAG = "ActivityUpdateHours";
     TextView  hours;
-    ImageButton infoCost;
+    ImageButton infoCost, pay;
     ScrollView scrollView;
     PopupWindow popupWindow;
     String dropID;
@@ -126,19 +127,20 @@ String stringDropID;
         hours = findViewById(R.id.hours);
 
         scrollView = findViewById(R.id.scrollView_rent_progress);
-        //hours.setText(stringHrs);
+        pay = findViewById(R.id.pay_now);
         updateCost = findViewById(R.id.update_cost);
+        infoCost = findViewById(R.id.infoCost);
+        upi = findViewById(R.id.upiRental);
+        dummy = findViewById(R.id.dummy);
 
         hours.setOnClickListener(this);
-        infoCost = findViewById(R.id.infoCost);
         infoCost.setOnClickListener(this);
+        upi.setOnClickListener(this);
+        dummy.setOnClickListener(this);
+        pay.setOnClickListener(this);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityUpdateHours.this);
         imageDialog2 = new Dialog(this);
-        upi = findViewById(R.id.upiRental);
-        upi.setOnClickListener(this);
-        dummy = findViewById(R.id.dummy);
-        dummy.setOnClickListener(this);
         myDialog = new Dialog(this);
     }
 
@@ -170,6 +172,13 @@ String stringDropID;
             ShowPopup(1);
         } else if (id == R.id.dummy) {
             userUpdateTrip();
+        } else if (id == R.id.pay_now) {
+            Snackbar snackbar = Snackbar
+                    .make(scrollView, R.string.make_payment_to_update, Snackbar.LENGTH_INDEFINITE);
+            View sbView = snackbar.getView();
+            TextView textView = sbView.findViewById(R.id.snackbar_text);
+            textView.setTextColor(Color.YELLOW);
+            snackbar.show();
         } else if (id == R.id.upiRental) {
             String amount = PriceOnly;
             String note = "Payment for rental service";

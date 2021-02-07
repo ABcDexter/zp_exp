@@ -318,16 +318,7 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TID, tid).apply();
                     if (status.equals("AS")) {
-                        /*String srcLat = response.getString("srclat");
-                        String srcLng = response.getString("srclng");
-                        String dstLat = response.getString("dstlat");
-                        String dstLng = response.getString("dstlng");
-                        String phone = response.getString("uphone");
-                        String name = response.getString("uname");*/
-
-                        //getStatus();
                         Log.d(TAG, "stay here status = AS");
-
                     }
 
                     Intent home = new Intent(MapsReachUser.this, ActivityHome.class);
@@ -335,12 +326,9 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
 
                 } else if (active.equals("false")) {
                     Log.d(TAG, "stay here, active = false");
-                    /*Intent home = new Intent(MapsReachUser.this, ActivityHome.class);
-                    startActivity(home);*/
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }

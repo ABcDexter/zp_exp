@@ -55,7 +55,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:layout_below="@+id/i_am"
-                    android:src="@drawable/zippe_logo" />
+                    android:src="@drawable/zippe_logo"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"/>
 
                 <ImageView
                     android:id="@+id/iv_zippee_bottom"
@@ -75,7 +77,9 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/rlRent">
+                    android:layout_above="@+id/rlRent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
 
                     <ImageButton
                         android:id="@+id/btn_ride"
@@ -84,7 +88,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/btn_bkg"
+                        android:background="@drawable/blue_button_bkg"
                         android:padding="10dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/ride" />
@@ -103,7 +107,9 @@
                     android:id="@+id/rlRent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/rlDelivery">
+                    android:layout_above="@+id/rlDelivery"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
 
                     <ImageButton
                         android:id="@+id/btn_rent"
@@ -112,7 +118,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/btn_bkg"
+                        android:background="@drawable/orange_button_bkg"
                         android:padding="10dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/rent" />
@@ -131,7 +137,9 @@
                     android:id="@+id/rlDelivery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/rlShop">
+                    android:layout_above="@+id/rlShop"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
 
                     <ImageButton
                         android:id="@+id/btn_deliver"
@@ -140,7 +148,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/btn_bkg"
+                        android:background="@drawable/green_button_bkg"
                         android:padding="10dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/delivery" />
@@ -159,7 +167,9 @@
                     android:id="@+id/rlShop"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/rlServices">
+                    android:layout_above="@+id/rlServices"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
 
                     <ImageButton
                         android:id="@+id/btn_shop"
@@ -168,7 +178,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/btn_bkg"
+                        android:background="@drawable/orange_button_bkg"
                         android:padding="10dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/shop" />
@@ -188,7 +198,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="20dp">
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
 
                     <ImageButton
                         android:id="@+id/btn_connect"
@@ -197,7 +209,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/btn_bkg"
+                        android:background="@drawable/blue_button_bkg"
                         android:padding="10dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/services" />

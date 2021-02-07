@@ -46,7 +46,6 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
     final int UPI_PAYMENT = 0;
     TextView upiPayment, cost;
     String stringAuthCookie;
-    //Button done;
     ImageButton payNow, info;
     ActivityRentEnded a = ActivityRentEnded.this;
     ScrollView scrollView;
@@ -91,8 +90,6 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
         upiPayment.setOnClickListener(this);
         info = findViewById(R.id.infoCost);
         info.setOnClickListener(this);
-        /*done = findViewById(R.id.confirm_btn);
-        done.setOnClickListener(this);*/
         payNow = findViewById(R.id.pay_now);
         payNow.setOnClickListener(this);
         scrollView = findViewById(R.id.scrollView_ride_OTP);
@@ -142,27 +139,13 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
                     if (!tid.equals("-1")){
                         getInfo();
                     }
-                    //getInfo();
-                    /*Intent home = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
-                    startActivity(home);
-                    finish();*/
-
                 } else if (active.equals("true")) {
                     String status = response.getString("st");
                     if (status.equals("TR") || status.equals("FN")) {
                         String price = response.getString("price");
                         cost.setText("₹ " + price);
                         CostOnly = price;
-                        /*if (price.equals("0.00")) {
-                            *//*Intent rate = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
-                            startActivity(rate);
-                            finish();*//*
-                            getInfo();
-                        }*/
 
-                        /*Intent intent = new Intent(this, UtilityPollingService.class);
-                        intent.setAction("15");
-                        startService(intent);*/
                     }
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -171,12 +154,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
                         }
                     }, 30000);
 
-                }/* else {
-                    Intent homePage = new Intent(ActivityRentEnded.this, ActivityRateRent.class);
-                    homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(homePage);
-                    finish();
-                }*/
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
                 // Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -210,8 +188,6 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
             String upiId = "9084083967@ybl";
             payUsingUpi(amount, upiId, name, note);
 
-            /*case R.id.confirm_btn:
-                paymentMade();*/
         } else if (id == R.id.pay_now) {
             Snackbar snackbar = Snackbar
                     .make(scrollView, R.string.make_payment_to_continue, Snackbar.LENGTH_INDEFINITE);
@@ -234,8 +210,6 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
-        //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
-        //wmlp.x = 100;   //x position
         wmlp.y = 55;   //y position
         myDialog.show();
         Window window = myDialog.getWindow();

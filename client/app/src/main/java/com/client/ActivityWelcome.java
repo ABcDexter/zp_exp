@@ -682,7 +682,8 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
             startActivity(shopIntent);
         } else if (id == R.id.btn_connect) {
             //take user to https://zippe.in/en/zippe-connect/ url
-            String connectUrl = "https://zippe.in/en/zippe-connect/";
+            //String connectUrl = "https://zippe.in/en/zippe-connect/";
+            String connectUrl = "https://zippe.in/service-categories/";
             Intent connectIntent = new Intent(Intent.ACTION_VIEW);
             connectIntent.setData(Uri.parse(connectUrl));
             startActivity(connectIntent);

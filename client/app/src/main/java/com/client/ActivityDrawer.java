@@ -54,18 +54,23 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         String stringName = prefPLoc.getString(NAME_KEY, "");
 
-        int firstSpace = (stringName.contains(" ")) ? stringName.indexOf(" ") : stringName.length() - 1;
-        String name = stringName.substring(0, firstSpace);
+        try {
+            int firstSpace = (stringName.contains(" ")) ? stringName.indexOf(" ") : stringName.length() - 1;
+            String name = stringName.substring(0, firstSpace);
 
-        nameText = findViewById(R.id.nameFrmServer);
+            nameText = findViewById(R.id.nameFrmServer);
 
-        if (name.isEmpty())
-            nameText.setText("");
-        else {
-            nameText.setText(getString(R.string.hi, name));
-            Log.d("USER_NAME", "name:" + name);
+            if (name.isEmpty())
+                nameText.setText("");
+            else {
+                nameText.setText(getString(R.string.hi, name));
+                Log.d("USER_NAME", "name:" + name);
 
+            }
+        } catch (StringIndexOutOfBoundsException e) {
+            Log.d(TAG, "error" + e);
         }
+
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 

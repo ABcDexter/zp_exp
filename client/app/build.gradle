@@ -51,6 +51,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.hypertrack:hypertrack:4.9.0'
+    implementation 'ch.halcyon:squareprogressbar:1.6.4'
 
 
 

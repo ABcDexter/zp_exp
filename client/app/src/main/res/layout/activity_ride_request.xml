@@ -221,22 +221,34 @@
                     android:background="@drawable/ic_info" />
 
             </RelativeLayout>
-
-
-            <ImageButton
-                android:id="@+id/confirm_ride_book"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginBottom="-2dp"
-                android:background="@drawable/green_button_bkg"
-                android:padding="15dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/confirm"
-                android:textAllCaps="true" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
+
+                <ch.halcyon.squareprogressbar.SquareProgressBar
+                    android:id="@+id/sprogressbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:visibility="gone"/>
+
+                <ImageButton
+                    android:id="@+id/confirm_ride_book"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginStart="3dp"
+                    android:background="@drawable/green_button_bkg"
+                    android:padding="15dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/confirm"
+                    android:textAllCaps="true" />
+            </RelativeLayout>
+
+
 
 
         </RelativeLayout>

@@ -11,7 +11,9 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,7 +55,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class ActivityUserProfile extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+import ch.halcyon.squareprogressbar.SquareProgressBar;
+
+
+ public class ActivityUserProfile extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = ActivityUserProfile.class.getName();
     private Spinner spLanguage;
@@ -85,7 +90,6 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
     String job1, job2, job3;
     Map<String, String> params = new HashMap();
     ActivityUserProfile a = ActivityUserProfile.this;
-
     public void onSuccess(JSONObject response, int id) {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         //response on hitting auth-profile-photo-save API
@@ -231,6 +235,14 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
             Log.d(TAG, "Display Picture Error:" + e.toString());
             e.printStackTrace();
         }
+        SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
+        squareProgressBar.setImage(R.drawable.btn_bkg);
+        squareProgressBar.setProgress(50.0);
+        squareProgressBar.setWidth(10);
+        //squareProgressBar.setHoloColor(android.R.color.holo_purple);
+        squareProgressBar.setIndeterminate(true);
+        squareProgressBar.setColor("#D7FB05");
+
     }
 
     private void getData() {

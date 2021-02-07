@@ -84,9 +84,10 @@ public class ActivityRideCompleted extends ActivityDrawer implements View.OnClic
             }
             String auth = authCookie;
             params.put("auth", auth);
+            params.put("pmode", paymentMode);
             JSONObject parameters = new JSONObject(params);
 
-            Log.d(TAG, "Values: auth=" + auth);
+            Log.d(TAG, "Values: auth=" + auth+" pmode="+paymentMode);
             Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME driver-payment-confirm");
             UtilityApiRequestPost.doPOST(a, "driver-payment-confirm", parameters, 30000, 0, response -> {
                 try {
@@ -167,21 +168,18 @@ public class ActivityRideCompleted extends ActivityDrawer implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.radio_cash:
-                paymentMethodId = 1;
-                Log.d(TAG, "radio_cash clicked");
-                break;
-            case R.id.radio_upi:
-                paymentMethodId = 2;
-                Log.d(TAG, "radio_upi clicked");
-                break;
-            case R.id.btn_paymntAccepted:
-                if (paymentMethodId != 0)
-                    paymentAccepted(paymentMethodId);
-                else
-                    Toast.makeText(ActivityRideCompleted.this, "PLEASE SELECT PAYMENT METHOD!", Toast.LENGTH_LONG).show();
-                break;
+        int id = v.getId();
+        if (id == R.id.radio_cash) {
+            paymentMethodId = 1;
+            Log.d(TAG, "radio_cash clicked");
+        } else if (id == R.id.radio_upi) {
+            paymentMethodId = 2;
+            Log.d(TAG, "radio_upi clicked");
+        } else if (id == R.id.btn_paymntAccepted) {
+            if (paymentMethodId != 0)
+                paymentAccepted(paymentMethodId);
+            else
+                Toast.makeText(ActivityRideCompleted.this, "PLEASE SELECT PAYMENT METHOD!", Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -1,7 +1,5 @@
 package com.client.rent;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +33,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import ch.halcyon.squareprogressbar.SquareProgressBar;
 
 public class ActivityRentRequest extends ActivityDrawer implements View.OnClickListener {
     private static final String TAG = "ActivityRentRequest";
@@ -84,10 +84,6 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
                 vSpeed.setText(speed + " km/hr");
                 advPay.setText("₹ " + price);
-                /*SharedPreferences sp_cookie = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                sp_cookie.edit().putString(SPEED_DROP, speed).apply();
-                sp_cookie.edit().putString(COST_DROP, price).apply();*/
-
                 Log.d(TAG, "price:" + price + " speed:" + speed);
 
             } catch (JSONException e) {
@@ -132,13 +128,6 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                             startService(intent);
                         }
                         if (status.equals("AS")) {
-                            /*String otp = response.getString("otp");
-                            //String van = response.getString("vno");
-                            Intent as = new Intent(ActivityRentRequest.this, ActivityRentOTP.class);
-                            startActivity(as);
-                            SharedPreferences sp_otp = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-                            sp_otp.edit().putString(OTP_PICK, otp).apply();*/
-                            //sp_otp.edit().putString(VAN_PICK, van).apply();
                             Intent as = new Intent(ActivityRentRequest.this, ActivityRentOTP.class);
                             startActivity(as);
                         }
@@ -152,7 +141,6 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                //Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
         //response on hitting user-trip-cancel API
@@ -351,6 +339,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         int id = v.getId();
         if (id == R.id.confirm_rent_book) {
             moveit();
+            showProgressIndication();
             userRequestRide();
         } else if (id == R.id.infoPayment) {
             ShowPopup(2);
@@ -361,6 +350,16 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         } else if (id == R.id.infoDrop) {
             ShowPopup(5);
         }
+    }
+
+    private void showProgressIndication() {
+        SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
+        squareProgressBar.setImage(R.drawable.btn_bkg);
+        squareProgressBar.setVisibility(View.VISIBLE);
+        squareProgressBar.setProgress(50.0);
+        squareProgressBar.setWidth(10);
+        squareProgressBar.setIndeterminate(true);
+        squareProgressBar.setColor("#D7FB05");
     }
 
     private void rideEstimate() {

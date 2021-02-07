@@ -11,12 +11,6 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!--<Button
-        android:id="@+id/btnGetDirection"
-        android:text="Get Direction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground" />-->
     <LinearLayout
         android:id="@+id/layout_btn"
         android:layout_width="match_parent"

@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.halcyon.squareprogressbar.SquareProgressBar;
+
 public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnClickListener {
     TextView upiPayment, cost, payOnPickup, payOnDelivery;
     final int UPI_PAYMENT = 0;
@@ -241,12 +243,20 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
             }
         }, a::onFailure);
     }
-
+    private void showProgressIndication() {
+        SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
+        squareProgressBar.setImage(R.drawable.btn_bkg);
+        squareProgressBar.setVisibility(View.VISIBLE);
+        squareProgressBar.setProgress(50.0);
+        squareProgressBar.setWidth(10);
+        squareProgressBar.setIndeterminate(true);
+        squareProgressBar.setColor("#D7FB05");
+    }
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.confirm_btn) {
-
+            showProgressIndication();
             userDeliverySchedule();
 
         } else if (id == R.id.infoPayment) {
@@ -522,13 +532,10 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
             did = response.getString("scid");
             SharedPreferences sp_cookie = getSharedPreferences(DELIVERY_DETAILS, Context.MODE_PRIVATE);
             sp_cookie.edit().putString(DELIVERY_ID, did).apply();
-            /*Intent as = new Intent(ActivityDeliverConfirm.this, ActivityDeliverPayment.class);
-            startActivity(as);*/
-            //deliveryRetire();
             Intent home = new Intent(ActivityDeliverConfirm.this, ActivityDeliverThankYou.class);
             startActivity(home);
             finish();
-            //checkStatus();
+
         }
         //response on hitting user-delivery-get-status API
         if (id == 3) {

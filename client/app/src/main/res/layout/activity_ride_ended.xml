@@ -74,7 +74,6 @@
                         android:id="@+id/payment"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
-                        android:layout_toEndOf="@+id/txtc"
                         android:layout_weight="1"
                         android:gravity="center|start"
                         android:text=""
@@ -124,16 +123,6 @@
 
                 </LinearLayout>
 
-                <!-- <Button
-                     android:id="@+id/confirm_btn"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_gravity="center|bottom"
-                     android:layout_marginTop="50dp"
-                     android:background="@drawable/rect_box_solid"
-                     android:text="DONE"
-                     android:textSize="25sp" />-->
-
             </LinearLayout>
 
             <ImageButton
@@ -146,15 +135,9 @@
                 android:background="@drawable/orange_button_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/paynow" />
-            <Button
-                android:id="@+id/dummy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="dummy"
-                android:layout_alignParentBottom="true"
-                android:visibility="gone"/>
+                android:src="@drawable/paynow"
+                android:contentDescription="@string/pay_now_button" />
+
         </RelativeLayout>
     </ScrollView>
 

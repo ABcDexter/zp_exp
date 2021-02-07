@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.VolleyError;
 import com.client.R;
+import com.client.UtilityApiRequestPost;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -20,11 +21,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
+    private static final String TAG = "MapsActivity2";
 
     private GoogleMap mMap;
     private MarkerOptions src, dst;
-    Button getDirection;
     private Polyline currentPolyline;
     double srcLat, srcLng, dstLat, dstLng;
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
@@ -32,38 +39,27 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     public static final String SRC_LAT = "SrcLat";
     public static final String DST_LAT = "DropLat";
     public static final String DST_LNG = "DropLng";
+    String srcName, dstName;
+    String stringAuthKey, stringTID;
+    public static final String TRIP_ID = "TripID";
+    public static final String TRIP_DETAILS = "com.client.ride.TripDetails";
+    public static final String SESSION_COOKIE = "com.client.ride.Cookie";
+    public static final String AUTH_KEY = "AuthKey";
+    MapsActivity2 a = MapsActivity2.this;
+    Map<String, String> params = new HashMap();
+    String sLat, sLng, dLat, dLng, srcname, dstname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps2);
-        SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
-        String stringSrcLat = pref.getString(SRC_LAT, "");
-        String stringSrcLng = pref.getString(SRC_LNG, "");
-        String stringDstLat = pref.getString(DST_LAT, "");
-        String stringDstLng = pref.getString(DST_LNG, "");
-        srcLat = Double.parseDouble(stringSrcLat);
-        srcLng = Double.parseDouble(stringSrcLng);
-        dstLat = Double.parseDouble(stringDstLat);
-        dstLng = Double.parseDouble(stringDstLng);
 
-        /*getDirection = findViewById(R.id.btnGetDirection);
-        getDirection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new FetchURL(MapsActivity2.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
+        SharedPreferences prefTrip = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+        stringTID = prefTrip.getString(TRIP_ID, "");
 
-            }
-        });*/
-        //27.658143,85.3199503
-        //27.667491,85.3208583
-        src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title("Pick Up");
-        dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title("Destination");
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.mapNearBy);
-        mapFragment.getMapAsync(this);
-
-        new FetchURL(MapsActivity2.this).execute(getUrl(src.getPosition(), dst.getPosition(), "driving"), "driving");
+        SharedPreferences prefCookie = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
+        stringAuthKey = prefCookie.getString(AUTH_KEY, "");
+        authTripData();
 
     }
 
@@ -105,5 +101,60 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
         if (currentPolyline != null)
             currentPolyline.remove();
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+    }
+
+    protected void authTripData() {
+        String auth = stringAuthKey;
+        String tid = stringTID;
+        params.put("auth", auth);
+        params.put("tid", tid);
+
+        JSONObject parameters = new JSONObject(params);
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-delivery-data");
+        Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);
+
+        UtilityApiRequestPost.doPOST(a, "auth-trip-data", parameters, 2000, 0, response -> {
+            try {
+                a.onSuccess(response, 2);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+    }
+
+    public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
+        Log.d(TAG, "RESPONSE:" + response);
+
+        //response on hitting auth-trip-data API
+        if (id == 2) {
+
+            sLat = response.getString("srclat");
+            sLng = response.getString("srclng");
+            dLat = response.getString("dstlat");
+            dLng = response.getString("dstlng");
+            srcname = response.getString("srchub");
+            dstname = response.getString("dsthub");
+
+            MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapNearBy);
+            mapFragment.getMapAsync(this);
+
+            srcLat = Double.parseDouble(sLat);
+            srcLng = Double.parseDouble(sLng);
+            dstLat = Double.parseDouble(dLat);
+            dstLng = Double.parseDouble(dLng);
+
+            src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(srcname);
+            dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title(dstname);
+
+            new FetchURL(MapsActivity2.this).execute(getUrl(src.getPosition(), dst.getPosition(), "driving"), "driving");
+
+        }
+    }
+
+
+    public void onFailure(VolleyError error) {
+        Log.d("TAG", "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+        Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 }

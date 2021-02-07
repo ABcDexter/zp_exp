@@ -32,7 +32,7 @@ public class ActivityNearestHub extends ActivityDrawer implements View.OnClickLi
     TextView hub1, hub2, dst1, dst2;
     ImageButton loc1, loc2;
     LinearLayout ll1, ll2;
-    String Lat1, Lng1, Lat2, Lng2;
+    String Lat1, Lng1, Lat2, Lng2, Name1, Name2;
     ImageView back;
 
     @Override
@@ -52,8 +52,8 @@ public class ActivityNearestHub extends ActivityDrawer implements View.OnClickLi
         ll1 = findViewById(R.id.ll_hub1);
         ll2 = findViewById(R.id.ll_hub2);
 
-        loc1.setOnClickListener(this);
-        loc2.setOnClickListener(this);
+        ll1.setOnClickListener(this);
+        ll2.setOnClickListener(this);
         back = findViewById(R.id.close);
         back.setOnClickListener(this);
         hubsNearMe();
@@ -102,6 +102,8 @@ public class ActivityNearestHub extends ActivityDrawer implements View.OnClickLi
             Lng1 = lng1;
             Lat2 = lat2;
             Lng2 = lng2;
+            Name1 = name1;
+            Name2 = name2;
         }
 
     }
@@ -115,15 +117,17 @@ public class ActivityNearestHub extends ActivityDrawer implements View.OnClickLi
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.loc1) {
+        if (id == R.id.ll_hub1) {
             Intent map = new Intent(ActivityNearestHub.this, MapsHubLocation.class);
             map.putExtra("lat", Lat1);
             map.putExtra("lng", Lng1);
+            map.putExtra("name", Name1);
             startActivity(map);
-        } else if (id == R.id.loc2) {
+        } else if (id == R.id.ll_hub2) {
             Intent map2 = new Intent(ActivityNearestHub.this, MapsHubLocation.class);
             map2.putExtra("lat", Lat2);
             map2.putExtra("lng", Lng2);
+            map2.putExtra("name", Name2);
             startActivity(map2);
         } else if (id == R.id.close) {
             startActivity(new Intent(ActivityNearestHub.this, ActivityRentInProgress.class));

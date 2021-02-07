@@ -119,7 +119,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 etOTP.requestFocus();
                 return;
             }
-            if (loginKey.isEmpty() || loginKey.length() > 9) {
+            if (loginKey.isEmpty() || loginKey.length() > 10) {
                 Log.d(TAG, "Error in Login Key");
                 etLoginKey.setError("Enter valid Login Key");
                 etLoginKey.requestFocus();

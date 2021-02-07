@@ -160,7 +160,7 @@
                 android:text="DUMMY"
                 android:id="@+id/dummy"
                 android:layout_centerHorizontal="true"
-                android:layout_above="@id/pay_now"/>
+                android:layout_alignParentBottom="true"/>
         </RelativeLayout>
     </ScrollView>
 

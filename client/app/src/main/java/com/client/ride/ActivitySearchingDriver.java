@@ -27,13 +27,14 @@ import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.UtilityPollingService;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import ch.halcyon.squareprogressbar.SquareProgressBar;
 
 public class ActivitySearchingDriver extends ActivityDrawer implements View.OnClickListener {
 
@@ -281,10 +282,8 @@ public class ActivitySearchingDriver extends ActivityDrawer implements View.OnCl
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.cancel_ride_request) {
-            Intent home = new Intent(ActivitySearchingDriver.this, ActivityWelcome.class);
-            startActivity(home);
-            finish();
-            //alertBox(); //alert dialog box to tell the user that if he wishes to end the ride before reaching the destination, he will be charged as per the destination chosen at the time of booking.
+            showProgressIndication();
+            cancelRequest();
         } else if (id == R.id.infoCost) {
             ShowPopup(1);
         } else if (id == R.id.infoPick) {
@@ -292,6 +291,16 @@ public class ActivitySearchingDriver extends ActivityDrawer implements View.OnCl
         } else if (id == R.id.infoDrop) {
             ShowPopup(4);
         }
+    }
+
+    private void showProgressIndication() {
+        SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
+        squareProgressBar.setImage(R.drawable.btn_bkg);
+        squareProgressBar.setVisibility(View.VISIBLE);
+        squareProgressBar.setProgress(50.0);
+        squareProgressBar.setWidth(10);
+        squareProgressBar.setIndeterminate(true);
+        squareProgressBar.setColor("#EC7721");
     }
 
     @Override

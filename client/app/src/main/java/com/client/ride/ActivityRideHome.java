@@ -44,6 +44,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import ch.halcyon.squareprogressbar.SquareProgressBar;
+
 
 public class ActivityRideHome extends ActivityDrawer implements View.OnClickListener {
 
@@ -334,7 +336,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     }
 
     public void isDriverAv() {
-
+        showProgressIndication();
         String auth = stringAuth;
         params.put("auth", auth);
         params.put("srclat", srcLat);
@@ -351,6 +353,16 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 e.printStackTrace();
             }
         }, a::onFailure);
+    }
+
+    private void showProgressIndication() {
+        SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
+        squareProgressBar.setImage(R.drawable.btn_bkg);
+        squareProgressBar.setVisibility(View.VISIBLE);
+        squareProgressBar.setProgress(50.0);
+        squareProgressBar.setWidth(10);
+        squareProgressBar.setIndeterminate(true);
+        squareProgressBar.setColor("#D7FB05");
     }
 
     @Override

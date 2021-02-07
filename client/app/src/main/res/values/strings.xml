@@ -333,6 +333,7 @@ your ride with</string>
     <string name="transaction_failed">Transaction failed.Please try again</string>
     <string name="no_internet">Internet connection is not available. Please check and try again</string>
     <string name="make_payment_to_continue">Please make your payment, before booking your next ride.</string>
+    <string name="make_payment_to_update">Please make payment to update number of hours.</string>
     <string name="driving_licence">It is compulsory to submit a copy of your valid DRIVING LICENSE at the PICK UP POINT / Z-HUB.</string>
     <string name="agree">AGREE</string>
     <string name="disagree">DISAGREE</string>
@@ -430,5 +431,9 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="crew">CREW</string>
     <string name="customer_support">CUSTOMER SUPPORT</string>
     <string name="please_be_patient_nwe_are_searching_for_drivers_nearest_to_you">Please be patient.\nWe are searching for drivers nearest to you.</string>
+    <string name="pay_now_button">pay now button</string>
+    <string name="cancel_ride_request_button">cancel ride request button</string>
+    <string name="next_page_button">next page button</string>
+    <string name="confirm_rent_button">confirm rent button</string>
 
 </resources>
