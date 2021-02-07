@@ -121,7 +121,22 @@ def userRentGetSup(_dct, _user, trip):
 @checkTripStatus('ST')
 def userRentEnd(_dct, user, _trip):
     '''
+
     return nearest hub name, their distance from current location and lat,lng
+    -----------------------------------------
+    HTTP args:
+        auth : current user
+    -----------------------------------------
+    Response:
+        'close1pn' ,
+        'close1lat' ,
+        'close1lng' ,
+        'close1dst',
+        'close2pn' ,
+        'close2lat' ,
+        'close2lng' ,
+        'close2dst' ,
+
     '''
     qsPrevHubs = Place.objects.raw(
         'SELECT pl.id, pl.pn, pl.lat, pl.lng FROM place pl WHERE pl.id < (SELECT plcurr.id FROM place plcurr WHERE plcurr.id= %s) ORDER BY pl.id DESC LIMIT 2;',
