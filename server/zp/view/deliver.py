@@ -686,8 +686,7 @@ def loginAgent(_, dct):
     
     HTTP Args:
         pn: phone number of the agent without the ISD code
-        key: auth rot 13 of agent
-        
+        key: auth base 62 converted
 
     Notes:
         Rot 13 is important,
@@ -712,7 +711,6 @@ def loginAgent(_, dct):
         return HttpJSONResponse(ret)
 
 
-
 @makeView()
 @csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
@@ -726,7 +724,7 @@ def registerAgent(_, dct):
     with adminAgentRegister
 
     HTTP Args:
-        aadhaarFront, aadhaarBack - aadhar scans
+        name, phone, gdr, fcm
         licenseFront, licenseBack = driving license scans
 
     Notes:
@@ -735,15 +733,17 @@ def registerAgent(_, dct):
         Registration has to be atomic since we save files
     '''
 
-    sPhone = dct['phone']
-    sAadharFrontFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarFront'], 'front')
-    sAadharBackFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarBack'], 'back')
+
+    # sAadharFrontFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarFront'], 'front')
+    # sAadharBackFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarBack'], 'back')
 
     sLicFrontFilename = saveTmpImgFile(settings.DL_DIR, dct['licenseFront'], 'front')
     sLicBackFilename = saveTmpImgFile(settings.DL_DIR, dct['licenseBack'], 'back')
 
+    '''
     log('Agent Registration request - Aadhar images saved at %s, %s' % (sAadharFrontFilename, sAadharBackFilename))
 
+    
     # Get aadhaar as 3 groups of 4 digits at a time via google vision api
     clientDetails = doOCR(sAadharFrontFilename)
     sAadhaar = clientDetails['an']
@@ -753,22 +753,25 @@ def registerAgent(_, dct):
     if not aadhaarNumVerify(sAadhaar):
         raise ZPException(501,'Aadhaar number not valid!')
     log('Aadhaar is valid')
+    '''
+    sPhone = dct['phone']
 
     # Check if this Agent exists
-    qsAgent = Agent.objects.filter(an=sAadhaar)
+    qsAgent = Agent.objects.filter(pn=sPhone)
+
     AgentExists = len(qsAgent) != 0
     if not AgentExists:
         agent = Agent()
-        agent.an = int(sAadhaar)
+        agent.an = '91' + sPhone  # int(sAadhaar)
         agent.pn = sPhone
-        agent.name = clientDetails.get('name', '')
-        agent.gdr = clientDetails.get('gender', '')
-        agent.age = clientDetails.get('age', '')
+        agent.name = dct['name']  # clientDetails.get('name', '')
+        agent.gdr = dct['gdr']  # clientDetails.get('gender', '')
+        # agent.age =   # clientDetails.get('age', '')
         agent.mode = 'RG'
         agent.fcm = dct['fcm']
 
         # Dummy values set by admin team manually
-        agent.dl = 'UK01-AB1234'
+        agent.dl = 'UK01'
         agent.hs = 'UK'
 
         # No place set
@@ -779,14 +782,14 @@ def registerAgent(_, dct):
         agent.veh = 1
 
         # Set a random auth so that this Agent wont get authed
-        agent.auth = str(random.randint(0, 0xFFFFFFFF))
+        agent.auth = getClientAuth( '91'+ sPhone, sPhone + '-register')[:5] # str(random.randint(0, 0xFFFFFFFF))
 
         agent.save()
 
         # licenses are also stored with the aadhar in the file name but under settings.DL_DIR
-        renameTmpImgFiles(settings.AADHAAR_DIR, sAadharFrontFilename, sAadharBackFilename, sAadhaar)
-        renameTmpImgFiles(settings.DL_DIR, sLicFrontFilename, sLicBackFilename, sAadhaar)
-        log('New Agent registered: %s' % sAadhaar)
+        # renameTmpImgFiles(settings.AADHAAR_DIR, sAadharFrontFilename, sAadharBackFilename, sAadhaar)
+        renameTmpImgFiles(settings.DL_DIR, sLicFrontFilename, sLicBackFilename, agent.an)
+        log('New Agent registered: %s' % agent.an)
     else:
         # Only proceed if status is not 'RG' else throw error
         agent = qsAgent[0]
@@ -794,18 +797,19 @@ def registerAgent(_, dct):
             # Aadhaar exists, if mobile has changed, get new auth
             if agent.pn != sPhone:
                 agent.pn = sPhone
-                sAuth =  getClientAuth(agent.an, agent.pn)[:6]
-                log('Auth changed for Agent: %s' % sAadhaar)
+                sAuth =  getClientAuth(agent.an, agent.pn)[:5]
+                agent.save()
+                log('Auth changed for Agent: %s' % agent.an)
             else:
                 # Aadhaar exists, phone unchanged, just return existing auth
                 sAuth = agent.auth
-                log('Auth exists for Agent: %s' % sAadhaar)
-            return HttpJSONResponse({'auth': sAuth})
+                log('Auth exists for Agent: %s' % agent.an)
+            sAn = agent.an
         else:
             raise ZPException('Registration pending', 501)
 
     # Deterministic registration token will be checked by isAgentVerified
-    ret = {'token': getClientAuth(sAadhaar, sPhone + '-register')[:6], 'an': sAadhaar, 'pn': sPhone }
+    ret = {'an': sAn, 'pn': sPhone}
     return HttpJSONResponse(ret)
 
 

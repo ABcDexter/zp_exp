@@ -296,7 +296,7 @@ def registorServitor(_, dct):
 
         servitor = Servitor()
         servitor.an = sAn
-        servitor.auth = getClientAuth(sAn, sPhone)[:5]  # shortened the auth key of proper decoding base 64 into base 10
+        servitor.auth = getClientAuth(sAn, sPhone)[:5]  # shortened the auth key of proper decoding base 62 into base 10
         servitor.name = sName
         servitor.pn = sPhone
         servitor.bank = sBank
@@ -348,7 +348,7 @@ def loginServitor(_, dct):
     
     HTTP Args:
         pn  : phone number of the Servitor without the ISD code
-        key : rot13(auth) of Servitor
+        key : base 62 encoded auth of Servitor
 
     Response :
         status : true or false depending on whether the login was successful
