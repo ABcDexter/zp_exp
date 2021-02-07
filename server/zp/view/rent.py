@@ -19,6 +19,10 @@ from django.db.utils import IntegrityError
 from django.conf import settings
 from ..utils import encode, decode
 
+from hypertrack.rest import Client
+from hypertrack.exceptions import HyperTrackException
+
+
 ###########################################
 # Types
 Filename = str
@@ -766,7 +770,13 @@ def supRentRetire(dct, _sup):
     total = float(getTripPrice(trip)['price'])
     user = User.objects.filter(an=trip.uan)[0]
     sendTripInvoiceMail('Rent', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
-    
+
+    # STOP tracking the User
+    if trip.htid :
+        hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID, settings.HYPERTRACK_SECRET_KEY)
+        hypertrack.trips.complete(str(trip.htid))
+        # done
+
     return HttpJSONResponse({})
 
 

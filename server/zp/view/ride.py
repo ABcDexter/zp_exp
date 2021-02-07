@@ -380,7 +380,6 @@ def driverPaymentConfirm(_dct, driver, trip):
         Since state goes to PD, the trip retiring is done here
     '''
     print("Ride Payment confirm param : ", _dct)
-
     #param: {'auth': 'dauth08', 'tid': '31'}
 
     trip.st = 'PD'
@@ -389,7 +388,7 @@ def driverPaymentConfirm(_dct, driver, trip):
 
     # driver.mode = 'AV'
     # retiring is NOT done here but in the driver
-    #retireEntity(driver)
+    # retireEntity(driver)
     
     # user = User.objects.filter(an=trip.uan)[0]
     # user.tid = -1
