@@ -306,7 +306,7 @@ public class ActivityDeliverySummery extends ActivityDrawer {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(ActivityDeliverySummery.this, ActivityDeliveryTimeSlot.class));
+        startActivity(new Intent(ActivityDeliverySummery.this, ActivityDeliveryHistoryList.class));
         finish();
     }
 

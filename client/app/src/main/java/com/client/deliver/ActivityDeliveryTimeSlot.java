@@ -61,8 +61,8 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
     private static final String TAG = "ActivityDeliveryTimeSlot";
 
     public static final String REVIEW = "com.delivery.Review";//TODO find better way
-    public static final String R_STND_DELVY = "R_STND_DELVY";//TODO find better way
-    public static final String R_EXP_DELVY = "R_EXP_DELVY";//TODO find better way
+    /* public static final String R_STND_DELVY = "R_STND_DELVY";//TODO find better way
+     public static final String R_EXP_DELVY = "R_EXP_DELVY";//TODO find better way*/
     public static final String PREFS_ADDRESS = "com.client.ride.Address";
     public static final String PICK_LAT = "com.client.delivery.PickLatitude";
     public static final String PICK_LNG = "com.client.delivery.PickLongitude";
@@ -76,20 +76,21 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
     public static final String PICK_DAY = "PickDay";
     public static final String PICK_HOUR = "PickHour";
     public static final String PICK_MINUTE = "PickMinute";
-    public static final String EXPRESS = "Express";
+    //public static final String EXPRESS = "Express";
+    public static final String DEL_TYPE = "DeliveyType";// 1 means express delivery, 2 means standard delivery
+
     SharedPreferences prefAuth;
     ImageButton next;
-    String EXPress;
-    String express = "00";
+    //String EXPress;
+    String delType = "00";// 00 means no delivery set, 1 means express delivery, 2 means standard delivery
     Dialog myDialog;
-    TextView /*expTime*/ stndTime, addDetails, expTomorrow, stndtomorrow;
+    TextView stndTime, addDetails, stndtomorrow;
     String timeSlot = "0";
     Vibrator vibrator;
     Switch stndDay, expDay;
     boolean isBefore = false;
     Calendar datetime = Calendar.getInstance();
-    String addDrop, dropLat, dropLng, dropLand, dropPin, dropMobile,
-            conType, conSize;
+    String addDrop, dropLat, dropLng, dropLand, dropPin, dropMobile, conType, conSize;
     public static final String DROP_LAT = "com.client.delivery.PickLatitude";
     public static final String DROP_LNG = "com.client.delivery.DropLongitude";
     public static final String ADDRESS_DROP = "com.client.ride.AddressDrop";
@@ -108,8 +109,8 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
     int min = 0;
     String format = "AM";
     String StringMinute, StringHours;
-    int exp_date = 1;
-    TextView reject_rq, accept_rq, dialog_txt;
+    int stnd_day = 1;
+    TextView dialog_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +132,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         dropMobile = pref.getString(DROP_MOBILE, "");
         conType = pref.getString(CONTENT_TYPE, "");
         conSize = pref.getString(CONTENT_DIM, "");
-        EXPress = pref.getString(EXPRESS, "");
+        //EXPress = pref.getString(EXPRESS, "");
         pickLand = pref.getString(PICK_LANDMARK, "");
         pickPin = pref.getString(PICK_PIN, "");
         pickMobile = pref.getString(PICK_MOBILE, "");
@@ -145,23 +146,25 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         stndTime = findViewById(R.id.standard_time);
 
         expressDelv = findViewById(R.id.chk_express);
-        expressDelv.setOnCheckedChangeListener(this);
         standardDelv = findViewById(R.id.chk_standard);
+        expressDelv.setOnCheckedChangeListener(this);
         standardDelv.setOnCheckedChangeListener(this);
+
         next = findViewById(R.id.next_deliver);
         addDetails = findViewById(R.id.add_details);
         addDetails.setOnClickListener(this);
-        //timeSlot.setOnClickListener(this);
         next.setOnClickListener(this);
-        expressDelv.setOnClickListener(this);
-        standardDelv.setOnClickListener(this);
+        //timeSlot.setOnClickListener(this);
+       /* expressDelv.setOnClickListener(this);
+        standardDelv.setOnClickListener(this);*/
         timeDialog = new Dialog(this);
         deliveryDialog = new Dialog(this);
         standardDialog = new Dialog(this);
         additionalDetails = new Dialog(this);
+        myDialog = new Dialog(this);
+
         Intent intent = getIntent();
         String slot = intent.getStringExtra("SLOT");
-        myDialog = new Dialog(this);
         /*if (!slot.isEmpty()) {
             standardDelv.setText(slot);
         }*/
@@ -250,13 +253,17 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 TomorrowDate();
             }
             timeDialog.dismiss();
-        }
-        else*/
+        }*/
+        /*else if (id == R.id.cancel_exp) {
+            delType = "0";
+            timeDialog.dismiss();
+        }*/
+
         if (id == R.id.confirm_standard) {
             int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); //Current hour
             Log.d(TAG, "time=" + currentHour);
-            Log.d(TAG, "exp_date=" + exp_date);
-            if (exp_date == 1) {
+            Log.d(TAG, "exp_date=" + stnd_day);
+            if (stnd_day == 1) {
                 TodayDate();
                 switch (timeSlot) {
                     case "0":
@@ -323,63 +330,210 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                         break;
                 }
             }
-            if (exp_date == 2) {
+            if (stnd_day == 2) {
                 Toast.makeText(ActivityDeliveryTimeSlot.this, R.string.delivery_sch_tommorrow, Toast.LENGTH_LONG).show();
                 TomorrowDate();
                 standardDialog.dismiss();
                 saveStandardTime(timeSlot);
             }
 
-        } else if (id == R.id.cancel_exp) {
-            express = "0";
-            timeDialog.dismiss();
-        } else if (id == R.id.next_deliver) {//TodayDate();
-            //saveData();
-            //deliveryEstimate();
-            if (/*expTime.getText().toString().equals("") && stndTime.getText().toString().equals("")*/ express.equals("00")) {
+        } else if (id == R.id.cancel_standard) {
+            standardDialog.dismiss();
+            SharedPreferences preferences = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.remove(PICK_HOUR);
+            editor.remove(PICK_MINUTE);
+            editor.remove(DEL_TYPE);
+            editor.apply();
+
+        } else if (id == R.id.confirm_details) {
+            LinearLayout ll = findViewById(R.id.ll_add_details);
+            additionalDetails.dismiss();
+            ll.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+        } else if (id == R.id.add_details) {
+            DetailsCheckbox();
+        } else if (id == R.id.next_deliver) {
+            if (delType.equals("00")) {
                 // Log.d(TAG, "expTime=" + expTime.getText().toString() + "stndTime=" + stndTime.getText().toString());
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                 } else {
                     vibrator.vibrate(1000);
                 }
-                Log.d(TAG, "express=" + express);
+                Log.d(TAG, "express=" + delType);
                 Toast.makeText(a, R.string.make_selection, Toast.LENGTH_SHORT).show();
             } else {
-                if (express.equals("1")) {
-                    //expTime.setText(hour + ":" + StringMinute);
+                if (delType.equals("1")) {
                     SharedPreferences sharedPreferences = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    //editor.putString(PICK_HOUR, Integer.toString(hour));
                     editor.putString(PICK_HOUR, StringHours);
                     editor.putString(PICK_MINUTE, StringMinute);
-                    editor.putString(EXPRESS, "1");
+                    editor.putString(DEL_TYPE, "1");// 1 means express delivery
                     editor.apply();
                     Log.d(TAG, "hour" + StringHours + " min=" + StringMinute);
-                    SharedPreferences review = getSharedPreferences(REVIEW, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor reditor = review.edit();
-                    reditor.putString(R_EXP_DELVY, "express");
-                    reditor.apply();
-                    expressDelv.getText();
-                    if (exp_date == 1) {
+
+                    //expressDelv.getText();
+                    if (stnd_day == 1) {
                         TodayDate();
                     }
-                    if (exp_date == 2) {
+                    if (stnd_day == 2) {
                         TomorrowDate();
                     }
                 }
                 Intent next = new Intent(ActivityDeliveryTimeSlot.this, ActivityDeliveryReview.class);
                 startActivity(next);
             }
-        } else if (id == R.id.add_details) {
-            DetailsCheckbox();
-        } else if (id == R.id.confirm_details) {
-            LinearLayout ll = findViewById(R.id.ll_add_details);
-            additionalDetails.dismiss();
-            ll.setBackgroundResource(R.drawable.rect_box_outline_color_change);
-        } else if (id == R.id.cancel_standard) {
-            standardDialog.dismiss();
         }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        int id = buttonView.getId();
+        if (id == R.id.chk_express) {
+            if (expressDelv.isChecked()) {
+                standardDelv.setChecked(false);
+                //PopupTime();
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                String str = sdf.format(new Date());
+                Log.d(TAG, "SimpleDateFormat=" + str);
+                String[] splitArray = str.split(":");
+                String HH = splitArray[0];
+                String MM = splitArray[1];
+                Log.d(TAG, "HH=" + HH + " MM=" + MM);
+                int intHH = Integer.parseInt(HH);
+                Log.d(TAG, "intHH=" + intHH);
+
+                if (/*HH.equals("7")|| HH.equals("20")*/intHH < 8 || intHH > 19) {
+                    expDelAlert();
+                    delType = "00";//no delivery type set
+                } else {
+                    delType = "1";//delivery type is express
+                    StringHours = HH;
+                    StringMinute = MM;
+                    ShowPopup();
+                }
+                stndTime.setText("");
+            }
+
+        }
+        if (id == R.id.chk_standard) {
+            if (standardDelv.isChecked()) {
+                expressDelv.setChecked(false);
+                StandardTimeCheckbox();
+                delType = "2";// delivery type is standard
+            }
+        }
+        if (id == R.id.slot1) {
+            if (slot1.isChecked()) {
+                slot2.setChecked(false);
+                slot3.setChecked(false);
+                slot4.setChecked(false);
+                slot5.setChecked(false);
+                slot6.setChecked(false);
+                //StandardTimeCheckbox();
+                delType = "2";
+                timeSlot = "8";
+                stndTime.setText("8:00 - 10:00 am");
+            }
+        }
+        if (id == R.id.slot2) {
+            if (slot2.isChecked()) {
+                slot1.setChecked(false);
+                slot3.setChecked(false);
+                slot4.setChecked(false);
+                slot5.setChecked(false);
+                slot6.setChecked(false);
+                //StandardTimeCheckbox();
+                delType = "2";
+                timeSlot = "10";
+                stndTime.setText("10:00 - 12:00 pm");
+            }
+        }
+        if (id == R.id.slot3) {
+            if (slot3.isChecked()) {
+                slot1.setChecked(false);
+                slot2.setChecked(false);
+                slot4.setChecked(false);
+                slot5.setChecked(false);
+                slot6.setChecked(false);
+                //StandardTimeCheckbox();
+                delType = "2";
+                timeSlot = "12";
+                stndTime.setText("12:00 - 2:00 pm");
+            }
+        }
+        if (id == R.id.slot4) {
+            if (slot4.isChecked()) {
+                slot1.setChecked(false);
+                slot2.setChecked(false);
+                slot3.setChecked(false);
+                slot5.setChecked(false);
+                slot6.setChecked(false);
+                //StandardTimeCheckbox();
+                delType = "2";
+                timeSlot = "14";
+                stndTime.setText("2:00 - 4:00 pm");
+            }
+        }
+        if (id == R.id.slot5) {
+            if (slot5.isChecked()) {
+                slot1.setChecked(false);
+                slot2.setChecked(false);
+                slot3.setChecked(false);
+                slot4.setChecked(false);
+                slot6.setChecked(false);
+                //StandardTimeCheckbox();
+                delType = "2";
+                timeSlot = "16";
+                stndTime.setText("4:00 - 6:00 pm");
+            }
+        }
+        if (id == R.id.slot6) {
+            if (slot6.isChecked()) {
+                slot1.setChecked(false);
+                slot2.setChecked(false);
+                slot3.setChecked(false);
+                slot4.setChecked(false);
+                slot5.setChecked(false);
+                //StandardTimeCheckbox();
+                delType = "2";
+                timeSlot = "18";
+                stndTime.setText("6:00 - 8:00 pm");
+            }
+        }
+        if (id == R.id.beware) {
+            if (beware.isChecked()) {
+                details = "beware of dogs";
+            }
+        }
+        if (id == R.id.stnd_day_switch) {
+            if (stndDay.isChecked()) //tomorrow is selected
+            {
+                stndtomorrow.setTextColor(ContextCompat.getColor(ActivityDeliveryTimeSlot.this, R.color.colorPrimaryDark));
+                //TomorrowDate();
+                slot1.setVisibility(View.VISIBLE);
+                slot2.setVisibility(View.VISIBLE);
+                slot3.setVisibility(View.VISIBLE);
+                slot4.setVisibility(View.VISIBLE);
+                slot5.setVisibility(View.VISIBLE);
+                slot6.setVisibility(View.VISIBLE);
+                stnd_day = 2;
+            } else {
+                stndtomorrow.setTextColor(Color.WHITE);
+                stnd_day = 1;
+            }
+        }
+        /*if (id == R.id.exp_day_switch) {
+            if (expDay.isChecked()) {
+                expTomorrow.setTextColor(ContextCompat.getColor(ActivityDeliveryTimeSlot.this, R.color.colorPrimaryDark));
+                //TomorrowDate();
+                exp_date = 2;
+            } else {
+                expTomorrow.setTextColor(Color.WHITE);
+                //TodayDate();
+                exp_date = 1;
+            }
+        }*/
     }
 
     private void saveStandardTime(String tmSlot) {
@@ -389,14 +543,15 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         editor.putString(PICK_MINUTE, "00");
         /*editor.putString(HOUR, tmSlot);
         editor.putString(MINUTE, "00");*/
-        editor.putString(EXPRESS, "0");
+        //editor.putString(EXPRESS, "0");
+        editor.putString(DEL_TYPE, "2"); // 2 means standard delivery
         editor.apply();
         Log.d(TAG, "hour" + tmSlot + " min=" + "00");
 
-        SharedPreferences review = getSharedPreferences(REVIEW, Context.MODE_PRIVATE);
+        /*SharedPreferences review = getSharedPreferences(REVIEW, Context.MODE_PRIVATE);
         SharedPreferences.Editor reditor = review.edit();
         reditor.putString(R_STND_DELVY, "standard");
-        reditor.apply();
+        reditor.apply();*/
     }
 
 
@@ -450,7 +605,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
             slot6.setVisibility(View.VISIBLE);
         }
         stndDay.setChecked(false);
-        exp_date = 1;
+        stnd_day = 1; // delivery to be scheduled for today
         stndDay.setOnCheckedChangeListener(this);
         confirm.setOnClickListener(this);
         cancel.setOnClickListener(this);
@@ -596,157 +751,6 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
         myDialog.setCanceledOnTouchOutside(true);
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        int id = buttonView.getId();
-        if (id == R.id.chk_express) {
-            if (expressDelv.isChecked()) {
-                standardDelv.setChecked(false);
-                //PopupTime();
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                String str = sdf.format(new Date());
-                Log.d(TAG, "sdf=" + str);
-                String[] splitArray = str.split(":");
-                String HH = splitArray[0];
-                String MM = splitArray[1];
-                Log.d(TAG, "HH=" + HH + " MM=" + MM);
-                int intHH = Integer.parseInt(HH);
-                Log.d(TAG, "intHH=" + intHH);
-
-                if (/*HH.equals("7")|| HH.equals("20")*/intHH < 8 || intHH > 19) {
-                    expDelAlert();
-                    express = "00";
-                } else {
-                    express = "1";
-                    StringHours = HH;
-                    StringMinute = MM;
-                    ShowPopup();
-                }
-                stndTime.setText("");
-            }
-
-        }
-        if (id == R.id.chk_standard) {
-            if (standardDelv.isChecked()) {
-                expressDelv.setChecked(false);
-                StandardTimeCheckbox();
-                express = "0";
-                //expTime.setText("");
-            }
-        }
-        if (id == R.id.slot1) {
-            if (slot1.isChecked()) {
-                slot2.setChecked(false);
-                slot3.setChecked(false);
-                slot4.setChecked(false);
-                slot5.setChecked(false);
-                slot6.setChecked(false);
-                //StandardTimeCheckbox();
-                express = "0";
-                timeSlot = "8";
-                stndTime.setText("8:00 - 10:00 am");
-            }
-        }
-        if (id == R.id.slot2) {
-            if (slot2.isChecked()) {
-                slot1.setChecked(false);
-                slot3.setChecked(false);
-                slot4.setChecked(false);
-                slot5.setChecked(false);
-                slot6.setChecked(false);
-                //StandardTimeCheckbox();
-                express = "0";
-                timeSlot = "10";
-                stndTime.setText("10:00 - 12:00 pm");
-            }
-        }
-        if (id == R.id.slot3) {
-            if (slot3.isChecked()) {
-                slot1.setChecked(false);
-                slot2.setChecked(false);
-                slot4.setChecked(false);
-                slot5.setChecked(false);
-                slot6.setChecked(false);
-                //StandardTimeCheckbox();
-                express = "0";
-                timeSlot = "12";
-                stndTime.setText("12:00 - 2:00 pm");
-            }
-        }
-        if (id == R.id.slot4) {
-            if (slot4.isChecked()) {
-                slot1.setChecked(false);
-                slot2.setChecked(false);
-                slot3.setChecked(false);
-                slot5.setChecked(false);
-                slot6.setChecked(false);
-                //StandardTimeCheckbox();
-                express = "0";
-                timeSlot = "14";
-                stndTime.setText("2:00 - 4:00 pm");
-            }
-        }
-        if (id == R.id.slot5) {
-            if (slot5.isChecked()) {
-                slot1.setChecked(false);
-                slot2.setChecked(false);
-                slot3.setChecked(false);
-                slot4.setChecked(false);
-                slot6.setChecked(false);
-                //StandardTimeCheckbox();
-                express = "0";
-                timeSlot = "16";
-                stndTime.setText("4:00 - 6:00 pm");
-            }
-        }
-        if (id == R.id.slot6) {
-            if (slot6.isChecked()) {
-                slot1.setChecked(false);
-                slot2.setChecked(false);
-                slot3.setChecked(false);
-                slot4.setChecked(false);
-                slot5.setChecked(false);
-                //StandardTimeCheckbox();
-                express = "0";
-                timeSlot = "18";
-                stndTime.setText("6:00 - 8:00 pm");
-            }
-        }
-        if (id == R.id.beware) {
-            if (beware.isChecked()) {
-                details = "beware of dogs";
-            }
-        }
-        if (id == R.id.stnd_day_switch) {
-            if (stndDay.isChecked()) //tomorrow is selected
-            {
-                stndtomorrow.setTextColor(ContextCompat.getColor(ActivityDeliveryTimeSlot.this, R.color.colorPrimaryDark));
-                //TomorrowDate();
-                slot1.setVisibility(View.VISIBLE);
-                slot2.setVisibility(View.VISIBLE);
-                slot3.setVisibility(View.VISIBLE);
-                slot4.setVisibility(View.VISIBLE);
-                slot5.setVisibility(View.VISIBLE);
-                slot6.setVisibility(View.VISIBLE);
-                exp_date = 2;
-            } else {
-                stndtomorrow.setTextColor(Color.WHITE);
-                exp_date = 1;
-            }
-        }
-        /*if (id == R.id.exp_day_switch) {
-            if (expDay.isChecked()) {
-                expTomorrow.setTextColor(ContextCompat.getColor(ActivityDeliveryTimeSlot.this, R.color.colorPrimaryDark));
-                //TomorrowDate();
-                exp_date = 2;
-            } else {
-                expTomorrow.setTextColor(Color.WHITE);
-                //TodayDate();
-                exp_date = 1;
-            }
-        }*/
     }
 
 

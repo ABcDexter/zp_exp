@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,11 +16,13 @@ public class ActivityWelcome extends AppCompatActivity {
 
     ImageView zippe_iv, zippe_iv_below;
     SharedPreferences cookie;
-    String strAuth, strToken;
+    String strAuth, strAN;
+    public static final String TAG = "ActivityWelcome";
     public static final String AUTH_COOKIE = "com.agent.cookie";
     public static final String AUTH_KEY = "Auth";
-    public static final String PICTURE_UPLOAD_STATUS = "com.driver.pictureUploadStatus";
-    public static final String VERIFICATION_TOKEN = "Token";
+    public static final String AADHAR = "Aadhar";
+
+    public static boolean isAppRunning;
 
     //When an Activity first call or launched then onCreate(Bundle savedInstanceState) method is responsible to create the activity.
     @Override
@@ -29,22 +32,22 @@ public class ActivityWelcome extends AppCompatActivity {
 
         cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, "");
+        strAN = cookie.getString(AADHAR, "");
         String auth = strAuth;
-        SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
-        strToken = sharedPreferences.getString(VERIFICATION_TOKEN, "");
-        String token = strToken;
-
+        String an = strAN;
+        Log.d(TAG, "auth=" + auth);
+        Log.d(TAG, "an=" + an);
         //checking if the user is registered or not.
-        if (auth.equals("")) {
-            /*if (!token.equals("")){
-                Intent verifyUser = new Intent(ActivityWelcome.this, ActivityVerifyDLDetails.class);
-                startActivity(verifyUser);
-                finish();
-            }else {*/
-                Intent registerUser = new Intent(ActivityWelcome.this, ActivityLogin.class);
-                startActivity(registerUser);
-                finish();
-            /*}*/
+        if (an.equals("")) {
+            Log.d(TAG, "an=" + an);
+            Intent registerUser = new Intent(ActivityWelcome.this, ActivityRegistration.class);
+            startActivity(registerUser);
+            finish();
+        } else if (auth.equals("")) {
+            Log.d(TAG, "auth=" + auth);
+            Intent loginUser = new Intent(ActivityWelcome.this, ActivityLogin.class);
+            startActivity(loginUser);
+            finish();
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -75,4 +78,12 @@ public class ActivityWelcome extends AppCompatActivity {
         objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
     }
 
+    /**
+     * when app is killed then this is called
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isAppRunning = false;
+    }
 }

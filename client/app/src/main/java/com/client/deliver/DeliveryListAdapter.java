@@ -38,10 +38,10 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
     public void onBindViewHolder(DeliveryListAdapter.ViewHolder holder, int position) {
 
         DeliveryListData listData = delivery_list_data.get(position);
-        holder.txtID.setText(listData.getDeliveryIType());
+        holder.txtID.setText(listData.getDeliveryID());
         holder.txtStatus.setText(listData.getDeliveryStatus());
         holder.txtPrice.setText(listData.getDeliveryPrice());
-        holder.txtIType.setText(listData.getDeliveryID());
+        holder.txtIType.setText(listData.getDeliveryIType());
         holder.delText2.setText(R.string.price);
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
@@ -64,8 +64,8 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-       final private TextView txtID, txtStatus, txtPrice, txtIType, delText2;
-       final private LinearLayout layout;
+        final private TextView txtID, txtStatus, txtPrice, txtIType, delText2;
+        final private LinearLayout layout;
 
         public ViewHolder(View itemView) {
             super(itemView);

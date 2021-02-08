@@ -24,8 +24,6 @@ import com.client.ActivityDrawer;
 import com.client.R;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Calendar;
-
 public class ActivityDeliveryReview extends ActivityDrawer implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     int agree = 0;
@@ -38,8 +36,8 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
     public static final String R_C_WARM = "CWARM";
     public static final String R_C_PERISHABLE = "CPERISHABLE";
     public static final String R_C_NONE = "CNONE";
-    public static final String R_EXP_DELVY = "R_EXP_DELVY";//TODO find better way
-    public static final String R_STND_DELVY = "R_STND_DELVY";//TODO find better way
+    /*public static final String R_EXP_DELVY = "R_EXP_DELVY";//TODO find better way
+    public static final String R_STND_DELVY = "R_STND_DELVY";//TODO find better way*/
 
     public static final String PREFS_ADDRESS = "com.client.ride.Address";
     public static final String ADDRESS_PICK = "com.client.ride.AddressPick";
@@ -55,9 +53,10 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
     public static final String PICK_DAY = "PickDay";
     public static final String PICK_HOUR = "PickHour";
     public static final String PICK_MINUTE = "PickMinute";
-    public static final String EXPRESS = "Express";
+    //public static final String EXPRESS = "Express";
     public static final String HOUR = "Hour";
     public static final String MINUTE = "Minute";
+    public static final String DEL_TYPE = "DeliveyType";// 1 means express delivery, 2 means standard delivery
 
     EditText pName, pNum, dName, dNum;
     TextView pAddress, dAddress, content, size, care, deliveryType, time, date;
@@ -65,8 +64,10 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
     ImageView next;
     Vibrator vibrator;
     ScrollView scrollView;
-    String exp;
-    String lat, lng, stringAuth, stringAN, pickLat, pickLng, pickLand, pickPin, pickMobile;
+    String strDelType;
+
+    String stringAuth, stringAN, pickLat, pickLng, pickLand, pickPin, pickMobile, stndHour,
+            stndMin, expHour, expMin, expYear, expMonth, strExpDay, srcName, dstName;
 
     private static final String TAG = "ActivityDeliveryReview";
 
@@ -78,15 +79,9 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
     public static final String AN_KEY = "AadharKey";
 
     SharedPreferences prefAuth;
-    String EXPress;
-    String express = "0";
-    EditText detailsPick;
-    TextView expTime, stndTime, addDetails, expTomorrow, stndtomorrow;
-    String timeSlot = "0";
-    Switch stndDay, expDay;
-    boolean isBefore = false;
-    Calendar datetime = Calendar.getInstance();
-    String addDrop, dropLat, dropLng, dropLand, dropPin, dropMobile,
+    //String EXPress;
+    Switch expDay;
+    String srcAddress, addDrop, dropLat, dropLng, dropLand, dropPin, dropMobile,
             conType, conSize;
     public static final String DROP_LAT = "com.client.delivery.PickLatitude";
     public static final String DROP_LNG = "com.client.delivery.DropLongitude";
@@ -107,36 +102,33 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         //retrieving locally stored data
-        SharedPreferences prefDetails = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
-        String srcAddress = prefDetails.getString(ADDRESS_PICK, "");
-        String srcName = prefDetails.getString(PICK_NAME, "");
-        String srcNum = prefDetails.getString(PICK_MOBILE, "");
-        String dstName = prefDetails.getString(DROP_NAME, "");
-        String dstNum = prefDetails.getString(DROP_MOBILE, "");
-        String dstAddress = prefDetails.getString(ADDRESS_DROP, "");
-        String stndHour = prefDetails.getString(HOUR, "");
-        String stndMin = prefDetails.getString(MINUTE, "");
-        String expHour = prefDetails.getString(PICK_HOUR, "");
-        String expMin = prefDetails.getString(PICK_MINUTE, "");
-        String expYear = prefDetails.getString(PICK_YEAR, "");
-        String expMonth = prefDetails.getString(PICK_MONTH, "");
-        String expDay = prefDetails.getString(PICK_DAY, "");
-        exp = prefDetails.getString(EXPRESS, "");
+
         SharedPreferences pref = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
+        srcAddress = pref.getString(ADDRESS_PICK, "");
         addDrop = pref.getString(ADDRESS_DROP, "");
+        srcName = pref.getString(PICK_NAME, "");
         dropLat = pref.getString(DROP_LAT, "");
         dropLng = pref.getString(DROP_LNG, "");
         pickLat = pref.getString(PICK_LAT, "");
         pickLng = pref.getString(PICK_LNG, "");
         dropLand = pref.getString(DROP_LANDMARK, "");
         dropPin = pref.getString(DROP_PIN, "");
+        dstName = pref.getString(DROP_NAME, "");
         dropMobile = pref.getString(DROP_MOBILE, "");
         conType = pref.getString(CONTENT_TYPE, "");
         conSize = pref.getString(CONTENT_DIM, "");
-        EXPress = pref.getString(EXPRESS, "");
+        //EXPress = pref.getString(EXPRESS, "");
         pickLand = pref.getString(PICK_LANDMARK, "");
         pickPin = pref.getString(PICK_PIN, "");
         pickMobile = pref.getString(PICK_MOBILE, "");
+        stndHour = pref.getString(HOUR, "");
+        stndMin = pref.getString(MINUTE, "");
+        expHour = pref.getString(PICK_HOUR, "");
+        expMin = pref.getString(PICK_MINUTE, "");
+        expYear = pref.getString(PICK_YEAR, "");
+        expMonth = pref.getString(PICK_MONTH, "");
+        strExpDay = pref.getString(PICK_DAY, "");
+        strDelType = pref.getString(DEL_TYPE, "");
 
 
         prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
@@ -153,23 +145,23 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
         String pe = review.getString(R_C_PERISHABLE, "");
         String none = review.getString(R_C_NONE, "");
         String warm = review.getString(R_C_WARM, "");
-        String expressDelv = review.getString(R_EXP_DELVY, "");
-        String stndDelv = review.getString(R_STND_DELVY, "");
+        /*String expressDelv = review.getString(R_EXP_DELVY, "");
+        String stndDelv = review.getString(R_STND_DELVY, "");*/
         Log.d("DeliverReview", "expHour=" + expHour);
         //initializing views
         scrollView = findViewById(R.id.scrollViewReview);
         pName = findViewById(R.id.pick_name);
         pName.setText(srcName);
         pNum = findViewById(R.id.pick_mobile);
-        pNum.setText(srcNum);
+        pNum.setText(pickMobile);
         dName = findViewById(R.id.drop_name);
         dName.setText(dstName);
         dNum = findViewById(R.id.drop_mobile);
-        dNum.setText(dstNum);
+        dNum.setText(dropMobile);
         pAddress = findViewById(R.id.pick_address);
         pAddress.setText(srcAddress);
         dAddress = findViewById(R.id.drop_address);
-        dAddress.setText(dstAddress);
+        dAddress.setText(addDrop);
         content = findViewById(R.id.package_content);
         content.setText(type);
         size = findViewById(R.id.package_size);
@@ -177,10 +169,16 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
         care = findViewById(R.id.package_care);
         care.setText(fr + " " + li + " " + cold + " " + pe + " " + none + " " + warm + " ");
         deliveryType = findViewById(R.id.delv_type);
-        if (!expressDelv.equals("")) {
-            deliveryType.setText(expressDelv);
-        } else if (!stndDelv.equals("")) {
-            deliveryType.setText(stndDelv);
+        switch (strDelType) {
+            case "":
+                deliveryType.setText("");
+                break;
+            case "1":
+                deliveryType.setText(R.string.express);
+                break;
+            case "2":
+                deliveryType.setText(R.string.standard);
+                break;
         }
         time = findViewById(R.id.delv_time);
         if (!stndHour.equals("")) {
@@ -190,7 +188,7 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
             time.setText(expHour + ":" + expMin);
         }
         date = findViewById(R.id.delv_date);
-        date.setText(expDay + "/" + expMonth + "/" + expYear);
+        date.setText(strExpDay + "/" + expMonth + "/" + expYear);
 
         disclaimer = findViewById(R.id.chk_disclaimer);
         disclaimer.setOnCheckedChangeListener(this);
@@ -213,8 +211,8 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
                 textView1.setTextColor(Color.YELLOW);
                 snackbar1.show();
             } else {
-                    Intent confirm = new Intent(ActivityDeliveryReview.this, ActivityDeliverConfirm.class);
-                    startActivity(confirm);
+                Intent confirm = new Intent(ActivityDeliveryReview.this, ActivityDeliverConfirm.class);
+                startActivity(confirm);
             }
         }
     }

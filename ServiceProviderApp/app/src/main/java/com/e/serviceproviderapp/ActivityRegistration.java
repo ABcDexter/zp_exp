@@ -58,7 +58,7 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
 
     public static final String AUTH_COOKIE = "serviceproviderapp.cookie";
     public static final String AUTH_KEY = "Auth";
-    public static final String MOBILE = "Aadhar";
+    public static final String MOBILE = "Mobile";
     public static final String NAME = "Aadhar";
 
     EditText etName, etMobile, etOTP;

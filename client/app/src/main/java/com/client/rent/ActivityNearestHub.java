@@ -95,8 +95,10 @@ public class ActivityNearestHub extends ActivityDrawer implements View.OnClickLi
 
             hub1.setText(name1);
             hub2.setText(name2);
-            dst1.setText(distance1 + " km");
-            dst2.setText(distance2 + " km");
+            dst1.setText(getString(R.string.message_km, distance1));
+            dst2.setText(getString(R.string.message_km, distance2));
+            //dst1.setText(distance1 + " km");
+            //dst2.setText(distance2 + " km");
 
             Lat1 = lat1;
             Lng1 = lng1;

@@ -209,13 +209,13 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
 
     boolean doubleBackToExitPressedOnce = false;
 
-    /*@Override
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(ActivityDrawer.this, ActivityWelcome.class));
         finish();
-    }*/
-    @Override
+    }
+    /*@Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
@@ -232,7 +232,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
                 doubleBackToExitPressedOnce = false;
             }
         }, 2000);
-    }
+    }*/
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

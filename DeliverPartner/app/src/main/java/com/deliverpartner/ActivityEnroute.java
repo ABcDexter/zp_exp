@@ -83,6 +83,7 @@ public class ActivityEnroute extends AppCompatActivity implements View.OnClickLi
         btnUPI = findViewById(R.id.upi);
 
         yes.setOnClickListener(this);
+        senderPhn.setOnClickListener(this);
         btnCash.setOnClickListener(this);
         btnUPI.setOnClickListener(this);
         no.setOnClickListener(this);

@@ -123,7 +123,7 @@ import ch.halcyon.squareprogressbar.SquareProgressBar;
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
-        simpleProgressBar.setVisibility(View.GONE);
+        //simpleProgressBar.setVisibility(View.GONE);
     }
 
     @Override

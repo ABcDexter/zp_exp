@@ -52,9 +52,11 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
     Locale myLocale;
     String currentLanguage = "en", currentLang;
     NavigationView nv;
-    TextView mobiletxt;
+    TextView mobiletxt, nameTxt;
     public static final String AUTH_COOKIE = "com.agent.cookie";
     public static final String AUTH_KEY = "Auth";
+    public static final String NAME = "Name";
+    public static final String MOBILE = "Mobile";
 
     private ImageView imgProfilePic;
     private TextView upload;
@@ -66,14 +68,11 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.INTERNET};
-    String stringAuth;
+    String stringAuth, stringName, stringMobile;
 
     public void onSuccess(JSONObject response) {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         //response on hitting auth-profile-photo-save API
-        /*Intent home = new Intent(ActivityUserProfile.this, ActivityWelcome.class);
-        startActivity(home);
-        finish();*/
         simpleProgressBar.setVisibility(View.GONE);
     }
 
@@ -81,7 +80,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
-        simpleProgressBar.setVisibility(View.GONE);
+        //simpleProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -93,6 +92,12 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
         setContentView(R.layout.activity_user_profile);
+
+        SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
+        stringAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
+        stringName = cookie.getString(NAME, ""); // retrieve auth value stored locally and assign it to String auth
+        stringMobile = cookie.getString(MOBILE, ""); // retrieve auth value stored locally and assign it to String auth
+
         SwitchCompat switchCompat = findViewById(R.id.switchCompat);
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
             switchCompat.setChecked(true);
@@ -116,19 +121,28 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
                 }
             }
         });
+
+        nv = findViewById(R.id.nv);
+        spLanguage = findViewById(R.id.spinner);
+        upload = findViewById(R.id.upload_file_txt);
+        imgProfilePic = findViewById(R.id.profile_picture);
+        imgProfilePic.setOnClickListener(this);
         mobiletxt = findViewById(R.id.mobile);
-        SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
-        stringAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
+        nameTxt = findViewById(R.id.user_name);
 
-        Log.d("AUTH", "Auth Key from server: " + stringAuth);
-        if (stringAuth.isEmpty())
-            mobiletxt.setText("XXXXXXXXXX");
+        if (stringMobile.isEmpty())
+            mobiletxt.setText("");
         else {
-            mobiletxt.setText(stringAuth);
-
-            String original = "manchester united (with nice players)";
-            String newString = original.replace(" (with nice players)", "");
+            mobiletxt.setText(stringMobile);
+            Log.d(TAG, "phone no:" + stringMobile);
         }
+        if (stringName.isEmpty())
+            nameTxt.setText("");
+        else {
+            nameTxt.setText(stringName);
+            Log.d(TAG, "name:" + stringName);
+        }
+
 
         currentLanguage = getIntent().getStringExtra(currentLang);
         List<String> list = new ArrayList<>();
@@ -136,11 +150,6 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         list.add("Select");
         list.add("English");
         list.add("Hindi");
-
-        nv = findViewById(R.id.nv);
-
-        spLanguage = findViewById(R.id.spinner);
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spLanguage.setAdapter(adapter);
@@ -164,16 +173,14 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
             }
         });
 
-        upload = findViewById(R.id.upload_file_txt);
-        imgProfilePic = findViewById(R.id.profile_picture);
-        imgProfilePic.setOnClickListener(this);
 
-        String imageURL = "https://api.villageapps.in:8090/media/dp_"+stringAuth+"_.jpg";
+
+        String imageURL = "https://api.villageapps.in:8090/media/dp_" + stringAuth + "_.jpg";
 
         try {
             Glide.with(this).load(imageURL).into(imgProfilePic);
         } catch (Exception e) {
-            Log.d(TAG,"imageURL="+ imageURL);
+            Log.d(TAG, "imageURL=" + imageURL);
             Log.d(TAG, "Display Picture Error:" + e.toString());
             e.printStackTrace();
         }
@@ -197,10 +204,8 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.profile_picture:
-                selectImage(ActivityUserProfile.this, 1);
-                break;
+        if (v.getId() == R.id.profile_picture) {
+            selectImage(ActivityUserProfile.this);
         }
     }
 
@@ -215,7 +220,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         return true;
     }
 
-    private void selectImage(Context context, int fromRID) {
+    private void selectImage(Context context) {
         if (!hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
@@ -224,31 +229,17 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
             builder.setItems(options, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int item) {
-                    if (fromRID == 1) {
-                        if (options[item].equals("Take Photo")) {
-                            Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(takePicture, 1);
 
-                        } else if (options[item].equals("Choose from Gallery")) {
-                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            startActivityForResult(pickPhoto, 2);
+                    if (options[item].equals("Take Photo")) {
+                        Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(takePicture, 1);
 
-                        } else if (options[item].equals("Cancel")) {
-                            dialog.dismiss();
-                        }
-                    }
-                    if (fromRID == 2) {
-                        if (options[item].equals("Take Photo")) {
-                            Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(takePicture, 3);
+                    } else if (options[item].equals("Choose from Gallery")) {
+                        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(pickPhoto, 2);
 
-                        } else if (options[item].equals("Choose from Gallery")) {
-                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            startActivityForResult(pickPhoto, 4);//one can be replaced with any action code
-
-                        } else if (options[item].equals("Cancel")) {
-                            dialog.dismiss();
-                        }
+                    } else if (options[item].equals("Cancel")) {
+                        dialog.dismiss();
                     }
                 }
             });
@@ -278,20 +269,17 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         });
     }
 
-    public void convertAndUpload(int identify) {
+    public void convertAndUpload() {
+        imgProfilePic.buildDrawingCache();
+        bitmap = imgProfilePic.getDrawingCache();
+        //converting image to base64 string
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        profilePic = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        Log.d(TAG, "CONVERT profile picture to Base64" + profilePic);
+        Log.d(TAG, "Control moved to nextActivity()");
 
-        if (identify == 1 || identify == 2) {
-
-            imgProfilePic.buildDrawingCache();
-            bitmap = imgProfilePic.getDrawingCache();
-            //converting image to base64 string
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] imageBytes = baos.toByteArray();
-            profilePic = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            Log.d(TAG, "CONVERT aadhar front converted to Base64" + profilePic);
-            Log.d(TAG, "Control moved to nextActivity()");
-        }
         nextActivity(profilePic);
     }
 
@@ -306,7 +294,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         imgProfilePic.setImageBitmap(selectedImage);
-                        convertAndUpload(1);
+                        convertAndUpload();
                     }
                     break;
                 case 2:
@@ -322,7 +310,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
                                 String picturePath = cursor.getString(columnIndex);
                                 imgProfilePic.setImageBitmap(BitmapFactory.decodeFile(picturePath));
                                 cursor.close();
-                                convertAndUpload(2);
+                                convertAndUpload();
                             }
                         }
                     }

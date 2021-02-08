@@ -399,6 +399,7 @@
     <string name="rent_summary">Rent Summary</string>
     <string name="message_min">%1$s mins</string>
     <string name="message_rs">₹ %1$s </string>
+    <string name="message_km">%1$s km</string>
     <string name="add_email">Add Email</string>
     <string name="something_wrong">Something went wrong. Please try again later.</string>
     <string name="notifications_admin_channel_name">101</string>

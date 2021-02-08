@@ -53,7 +53,6 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     public static final String MY_LNG = "MYSrcLng";
     public static final String AUTH_COOKIE = "com.agent.cookie";
     public static final String AUTH_KEY = "Auth";
-    public static final String PICTURE_UPLOAD_STATUS = "com.agent.pictureUploadStatus";
     public static final String AADHAR = "Aadhar";
     public static final String DRIVER_STATUS = "DriverStatus";
     public static final String STATUS = "Status";
@@ -95,9 +94,8 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
 
         SharedPreferences cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, ""); // retrieve auth value stored locally and assign it to String auth
+        aadhar = cookie.getString(AADHAR, "");// retrieve aadhaar value stored locally and assign it to String aadhar
         auth = strAuth;
-        SharedPreferences sharedPreferences = getSharedPreferences(PICTURE_UPLOAD_STATUS, Context.MODE_PRIVATE);
-        aadhar = sharedPreferences.getString(AADHAR, "");// retrieve aadhaar value stored locally and assign it to String aadhar
 
         SharedPreferences pref = getSharedPreferences(DRIVER_STATUS, Context.MODE_PRIVATE);
         String stringStatus = pref.getString(STATUS, "");
