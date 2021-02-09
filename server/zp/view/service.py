@@ -164,9 +164,8 @@ def authBookingSync(dct, entity):
                            'country_code_shipping,payment_method_title,cart_discount_amount,order_subtotal_amount,'
                            'shipping_method_title,order_shipping_amount,order_refund_amount,order_total_amount,'
                            'order_total_tax_amount,sku,item_qty,item_name,quantity,item_cost,coupon_code,discount_amount,'
-                           'discount_amount_tax, order_number,rtime, status) '
-                           'VALUES (%s, NOW(), NULL,%s,%s,NULL,%s,%s,%s,%s,%s,%s,%s,NULL,NULL,NULL,NULL,NULL,NULL,NULL,%s,0,10,NULL,0,0,10,0,NULL,1,%s,1,10,NULL,NULL,NULL, %s, NOW(),%s)'
-                           % ("Processing", "Anubhav", "Balodhi", "Nauki", "Nainital", "UK", "263136", "IN", "abc.de.gen.x@gmail.com", 752607249,"Pay with UPI QR Code", "Doctor", 5007, "PROC"));
+                           'discount_amount_tax, order_number,rtime, status) VALUES (%s, NOW(), NULL,%s,%s,NULL,%s,%s,%s,%s,%s,%s,%s,NULL,NULL,NULL,NULL,NULL,NULL,NULL,%s,0,10,NULL,0,0,10,0,NULL,1,%s,1,10,NULL,NULL,NULL, %s, NOW(),%s);'
+                           % ("Processing", "Anubhav", "Balodhi", "Nauki", "Nainital", "UK", "263136", "IN", "abc.de.gen.x@gmail.com", 752607249,"Pay with UPI QR Code", "Doctor", 5007, "PROC"))
         except IntegrityError:
             print('Order with ID : %s didn\'t get updated' % i)
         status = 'true'
