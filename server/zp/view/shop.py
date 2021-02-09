@@ -144,7 +144,7 @@ def authProductBatchUpdate(dct, entity):
         
         for key, val in ith.items():
             if key == 'stock_qnt':
-                rec['stock_quantity'] = int(rec['stock_quantity']) + int(val)
+                rec.stock_quantity = int(rec.stock_quantity) + int(val)
             else:
                 setattr(rec, key, val)
 
