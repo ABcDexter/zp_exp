@@ -137,12 +137,54 @@ def authBookingSync(dct, entity):
                     consumer_secret="cs_63badebe75887e2f94142f9484d06f257194e2c3", version="wc/v3")
         ret = wcapi.get("orders/?page=" + str(m) + "&per_page=" + str(n))
         print(ret.status_code)
-        resp = []
+        ans = []
         for i in ret.json():
             print(i['id'])
-            js = {'id': i['id']}
-            resp.append(js)
-        return resp
+
+            orig = "'" + str(i['line_items']).replace('\'', '\"')[1:-1] + "'"
+
+            rep = orig.replace("None", "\"None\"").replace("False", "\"False\"").replace("True", "\"True\"")
+
+            from ast import literal_eval
+            a = literal_eval(rep)
+            y = json.loads(a)
+
+            zz = str(y['meta_data']).replace('\'', '\"')[1:-1]
+
+            arrOrder = json.loads("[" + zz + "]")
+            z = arrOrder[0]
+
+            x = i
+            resp = {}
+            if 'start' in z['value']:
+                resp = {
+                    # "servitor": arrOrder,
+                    "bid": x['id'],
+                    "job": x['line_items'][0]['name'],
+
+                    "start": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
+                    "end": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
+
+                    "date": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S'))[:10],
+                    "time": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S'))[11:-3],
+                    "hours": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S') -
+                                 datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')).split(":")[
+                        0],
+                    "area": i['billing']['address_2'] + " , " + i['billing']['city'],
+
+                    "earn": "500",
+                    # "billing": i['billing'],
+                    "customer_name": i['billing']['first_name'] + " " + i['billing']['last_name'],
+                    "customer_phone": i['billing']['phone'],
+                    "customer_note": i['customer_note'],
+                    "customer_address": i['billing']['address_1'] + " , " + i['billing']['address_2'] + " , " +
+                                        i['billing']['city'] + " , " + i['billing']['state'] + " , " +
+                                        i['billing']['postcode']
+
+                }
+
+            ans.append(resp)
+        return ans
 
     ret = []
     for i in range(1, 3):
