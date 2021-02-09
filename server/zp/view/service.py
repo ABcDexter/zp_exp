@@ -144,7 +144,7 @@ def authBookingSync(dct, entity):
         return resp
 
     ret = {}
-    for i in range(1, 31):
+    for i in range(1, 3):
         resp = pros(str(i), str(20))
         ret.update(resp)
         # time.sleep()
@@ -165,7 +165,7 @@ def authBookingSync(dct, entity):
                            'shipping_method_title,order_shipping_amount,order_refund_amount,order_total_amount,'
                            'order_total_tax_amount,sku,item_qty,item_name,quantity,item_cost,coupon_code,discount_amount,'
                            'discount_amount_tax, order_number,rtime, status) VALUES (%s, NOW(), NULL,%s,%s,NULL,%s,%s,%s,%s,%s,%s,%s,NULL,NULL,NULL,NULL,NULL,NULL,NULL,%s,0,10,NULL,0,0,10,0,NULL,1,%s,1,10,NULL,NULL,NULL, %s, NOW(),%s);'
-                           % ("Processing", "Anubhav", "Balodhi", "Nauki", "Nainital", "UK", "263136", "IN", "abc.de.gen.x@gmail.com", 752607249,"Pay with UPI QR Code", "Doctor", 5007, "PROC"))
+                           % ("Processing", "Anubhav", "Balodhi", "Nauki", "Nainital", "UK", "263136", "IN", "abc.de.gen.x@gmail.com", "752607249","Pay with UPI QR Code", "Doctor", "5007", "PROC"))
         except IntegrityError:
             print('Order with ID : %s didn\'t get updated' % i)
         status = 'true'
