@@ -139,7 +139,7 @@ def authBookingSync(dct, entity):
         print(ret.status_code)
         resp = {}
         for i in ret.json():
-            print(i['id'], i['name'], i['sku'])
+            print(i['id'])
             resp[i['id']] = i['id']
         return resp
 
