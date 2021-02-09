@@ -119,6 +119,63 @@ def authBookingGet(_dct, _entity):
     return HttpJSONResponse({"booking":ordersResp})
 
 
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def authBookingSync(dct, entity):
+    '''
+    updated and syncs the mysql DB id with that from woocommerce
+
+    HTTP params:
+        auth
+    '''
+
+    def pros(m, n):
+        wcapi = API(url="https://zippe.in", consumer_key="ck_97e691622c4bd5e13fb7b18cbb266c8277257372",
+                    consumer_secret="cs_63badebe75887e2f94142f9484d06f257194e2c3", version="wc/v3")
+        ret = wcapi.get("orders/?page=" + str(m) + "&per_page=" + str(n))
+        print(ret.status_code)
+        resp = {}
+        for i in ret.json():
+            print(i['id'], i['name'], i['sku'])
+            resp[i['id']] = i['id']
+        return resp
+
+    ret = {}
+    for i in range(1, 31):
+        resp = pros(str(i), str(20))
+        ret.update(resp)
+        # time.sleep()
+
+    # print(ret)
+    status = 'false'
+    from django.db import connection
+    cursor = connection.cursor()
+    for i in ret:
+        try:
+            # qsNextHubs = Product.objects.raw('update product set id = %s where sku = %s;', [ret[i], i])
+            #cursor.execute('update product set id = %s where sku = %s;', [ret[i], i])
+            cursor.execute('''INSERT INTO booking(order_status,order_date,customer_note,first_name_billing,'
+                           'last_Name_billing,company_billing,address_1_2_billing,city_billing,state_code_billing,'
+                           'postcode_billing,country_code_billing,email_billing,phone_billing,first_name_shipping,'
+                           'last_name_shipping,address_1_2_shipping,city_shipping,state_code_shipping,postcode_shipping,'
+                           'country_code_shipping,payment_method_title,cart_discount_amount,order_subtotal_amount,'
+                           'shipping_method_title,order_shipping_amount,order_refund_amount,order_total_amount,'
+                           'order_total_tax_amount,sku,item_qty,item_name,quantity,item_cost,coupon_code,discount_amount,'
+                           'discount_amount_tax, order_number,rtime, status) '
+                           'VALUES ('Processing', NOW(), NULL,'ANUBHAV','BALODHI',NULL,'Pandey Gaon','Nainital','UK',
+                           '263136','IN','abc.de.gen.x@gmail.com',752607249,NULL,NULL,NULL,NULL,NULL,NULL,NULL,
+                           'Pay with UPI QR Code',0,10,NULL,0,0,10,0,NULL,1,'Doctor',1,10,NULL,NULL,NULL, 5007, NOW(),
+                            'PROC');''');
+        except IntegrityError:
+            print('Order with ID : %s didn\'t get updated' % i)
+        status = 'true'
+
+    return HttpJSONResponse({'status': status})
+
+
 # ============================================================================
 # Servitor views
 # ============================================================================
