@@ -137,16 +137,17 @@ def authBookingSync(dct, entity):
                     consumer_secret="cs_63badebe75887e2f94142f9484d06f257194e2c3", version="wc/v3")
         ret = wcapi.get("orders/?page=" + str(m) + "&per_page=" + str(n))
         print(ret.status_code)
-        resp = {}
+        resp = []
         for i in ret.json():
             print(i['id'])
-            resp[i['id']] = i['id']
+            js = {'id': i['id']}
+            resp.append(js)
         return resp
 
-    ret = {}
+    ret = []
     for i in range(1, 3):
         resp = pros(str(i), str(20))
-        ret.update(resp)
+        ret += resp
         # time.sleep()
 
     # print(ret)
@@ -156,10 +157,11 @@ def authBookingSync(dct, entity):
     for i in ret:
         try:
             # qsNextHubs = Product.objects.raw('update product set id = %s where sku = %s;', [ret[i], i])
-            #cursor.execute('update product set id = %s where sku = %s;', [ret[i], i])
-
+            # cursor.execute('update product set id = %s where sku = %s;', [ret[i], i])
+            print(i)
             command = 'INSERT INTO booking(order_status,order_date,customer_note,first_name_billing,last_Name_billing,company_billing,address_1_2_billing,city_billing,state_code_billing,postcode_billing,country_code_billing,email_billing,phone_billing,first_name_shipping,last_name_shipping,address_1_2_shipping,city_shipping,state_code_shipping,postcode_shipping,country_code_shipping,payment_method_title,cart_discount_amount,order_subtotal_amount,shipping_method_title,order_shipping_amount,order_refund_amount,order_total_amount,order_total_tax_amount,sku,item_qty,item_name,quantity,item_cost,coupon_code,discount_amount,discount_amount_tax, order_number,rtime, status) VALUES ("%s", NOW(), NULL,"%s","%s",NULL,"%s","%s","%s","%s","%s","%s",%s,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"%s",0,10,NULL,0,0,10,0,NULL,1,"%s",1,10,NULL,NULL,NULL,%s, NOW(),"%s");' % ("Processing", "Anubhav", "Balodhi", "Nauki", "Nainital", "UK", "263136", "IN", "abc.de.gen.x@gmail.com", "752607249", "Pay with UPI QR Code", "Doctor", "5007", "PROC")
-            print(command)
+            # print(command)
+            print("################")
             cursor.execute(command)
         except IntegrityError:
             print('Order with ID : %s didn\'t get updated' % i)
