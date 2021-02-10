@@ -137,53 +137,32 @@ def authBookingSync(dct, entity):
                     consumer_secret="cs_63badebe75887e2f94142f9484d06f257194e2c3", version="wc/v3")
         ret = wcapi.get("orders/?page=" + str(m) + "&per_page=" + str(n))
         print(ret.status_code)
+        jobs = ["Nurse", "Doctor", "Chartered Accountant", "Accountant","Lawyer","Surveyor","Civil Engineer","Architect","Designer","Photographer","Teacher / Home Tutor","Fitness Trainer","Yoga Trainer","Dietician","Motor Training","Chef","Cook","Maid","Driver","Gardener","Errand Person","Deep Cleaning","House Keeping","Sweeper","Security Guard","Dry Cleaning","Laundry","Delivery","Tailor","Inspection Visit","Appliance Repair","Computer Repair Technician","Electrician","Plumber","Carpenter","Painter","Mason", "Masons Helper","Aluminium Fabricator","Iron Fabricator","Caterer","Mechanic","Coach","Towing Service"]
+
         ans = []
         for i in ret.json():
-            print(i['id'])
-
-            orig = "'" + str(i['line_items']).replace('\'', '\"')[1:-1] + "'"
-
-            rep = orig.replace("None", "\"None\"").replace("False", "\"False\"").replace("True", "\"True\"")
-
-            from ast import literal_eval
-            a = literal_eval(rep)
-            y = json.loads(a)
-
-            zz = str(y['meta_data']).replace('\'', '\"')[1:-1]
-
-            arrOrder = json.loads("[" + zz + "]")
-            z = arrOrder[0]
-
             x = i
-            resp = {}
-            if 'start' in z['value']:
-                resp = {
-                    # "servitor": arrOrder,
-                    "bid": x['id'],
-                    "job": x['line_items'][0]['name'],
+            if i['line_items'][0]['name'] in jobs:
+                print(i['id'], i['line_items'][0]['name'], i['value'])
+                resp = {"order_number": i['id'],
+                        "order_status": i['status'],
+                        "order_date": datetime.strptime(i['line_items'][0]['meta_data'][0]['value']['start']['date'][:], "%Y-%m-%d %H:%M:%S.%f"),
+                        "customer_note": i['customer_note'],
 
-                    "start": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
-                    "end": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S')),
-
-                    "date": str(datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S'))[:10],
-                    "time": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S'))[11:-3],
-                    "hours": str(datetime.strptime(z['value']['end']['date'][:-7], '%Y-%m-%d %H:%M:%S') -
-                                 datetime.strptime(z['value']['start']['date'][:-7], '%Y-%m-%d %H:%M:%S')).split(":")[
-                        0],
-                    "area": i['billing']['address_2'] + " , " + i['billing']['city'],
-
-                    "earn": "500",
-                    # "billing": i['billing'],
-                    "customer_name": i['billing']['first_name'] + " " + i['billing']['last_name'],
-                    "customer_phone": i['billing']['phone'],
-                    "customer_note": i['customer_note'],
-                    "customer_address": i['billing']['address_1'] + " , " + i['billing']['address_2'] + " , " +
-                                        i['billing']['city'] + " , " + i['billing']['state'] + " , " +
-                                        i['billing']['postcode']
-
-                }
+                        "first_name_billing" : i['billing']['first_name'],
+                        "last_name_billing" : i['billing']['last_name'],
+                        # "company_Billing" : i['billing']['company'],  # CAN BE NULL
+                        "address_1_2_billing" : i['billing']['address_1'] + " , " + i['billing']['address_2'] ,
+                        "city_billing" : i['billing']['city'],
+                        "state_code_billing": i['billing']['state'],
+                        "postcode_billing": i['billing']['postcode'],
+                        "country_code_billing": i['billing']['country'],
+                        "email_billing" : i['billing']['email'],
+                        "phone_billing": i['billing']['phone'],
+                    }
 
             ans.append(resp)
+        print("ans :", ans)
         return ans
 
     ret = []
