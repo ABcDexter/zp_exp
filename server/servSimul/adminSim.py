@@ -64,9 +64,9 @@ class Admin(Entity):
 
                 synced = self.callAPI('auth-booking-sync', {'auth': '1048576'})
                 if not self.logIfErr(synced):
-                    self.log('Synced ', synced)
+                    self.log('Synced ' + str(synced))
                 else:
-                    self.log('FAILED to sync ', synced)
+                    self.log('FAILED to sync ' + str(synced))
 
                 # self.log('Assigning Servitors to Bookings')
                 '''

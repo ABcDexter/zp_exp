@@ -53,7 +53,7 @@ class Entity:
     #SERVER_URL = os.environ.get('ZP_URL', 'http://127.0.0.1:9999/')           # localhost
     SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
 
-    def callAPI(self, sAPI, dct={}, auth=None):
+    def callAPI(self, sAPI, dct={}, auth='1048576'):
         # print(sAPI, dct)
         if sAPI.startswith('admin'):
             dct['auth'] = Entity.ADMIN_AUTH
