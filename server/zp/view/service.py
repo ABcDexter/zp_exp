@@ -159,10 +159,16 @@ def authBookingSync(dct, entity):
                         "country_code_billing": i['billing']['country'],
                         "email_billing" : i['billing']['email'],
                         "phone_billing": i['billing']['phone'],
-                    }
+
+                        "order_total_amount": i['line_items'][0]['total'],
+
+                        "item_Name": 1,
+                        "item_Name": i['line_items'][0]['name']
+
+                }
 
             ans.append(resp)
-        print("ans :", ans)
+        # print("ans :", ans)
         return ans
 
     ret = []
@@ -179,8 +185,9 @@ def authBookingSync(dct, entity):
         try:
             # qsNextHubs = Product.objects.raw('update product set id = %s where sku = %s;', [ret[i], i])
             # cursor.execute('update product set id = %s where sku = %s;', [ret[i], i])
-            print(i)
-            command = 'INSERT INTO booking(order_status,order_date,customer_note,first_name_billing,last_Name_billing,company_billing,address_1_2_billing,city_billing,state_code_billing,postcode_billing,country_code_billing,email_billing,phone_billing,first_name_shipping,last_name_shipping,address_1_2_shipping,city_shipping,state_code_shipping,postcode_shipping,country_code_shipping,payment_method_title,cart_discount_amount,order_subtotal_amount,shipping_method_title,order_shipping_amount,order_refund_amount,order_total_amount,order_total_tax_amount,sku,item_qty,item_name,quantity,item_cost,coupon_code,discount_amount,discount_amount_tax, order_number,rtime, status) VALUES ("%s", NOW(), NULL,"%s","%s",NULL,"%s","%s","%s","%s","%s","%s",%s,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"%s",0,10,NULL,0,0,10,0,NULL,1,"%s",1,10,NULL,NULL,NULL,%s, NOW(),"%s");' % ("Processing", "Anubhav", "Balodhi", "Nauki", "Nainital", "UK", "263136", "IN", "abc.de.gen.x@gmail.com", "752607249", "Pay with UPI QR Code", "Doctor", "5007", "PROC")
+            #print(i)
+            command = 'INSERT INTO booking(order_status,order_date,customer_note,first_name_billing,last_Name_billing,company_billing,address_1_2_billing,city_billing,state_code_billing,postcode_billing,country_code_billing,email_billing,phone_billing,first_name_shipping,last_name_shipping,address_1_2_shipping,city_shipping,state_code_shipping,postcode_shipping,country_code_shipping,payment_method_title,cart_discount_amount,order_subtotal_amount,shipping_method_title,order_shipping_amount,order_refund_amount,order_total_amount,order_total_tax_amount,sku,item_qty,item_name,quantity,item_cost,coupon_code,discount_amount,discount_amount_tax, order_number,rtime, status) VALUES ("%s", NOW(), NULL,"%s","%s",NULL,"%s","%s","%s","%s","%s","%s",%s,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"%s",0,10,NULL,0,0,10,0,NULL,1,"%s",1,10,NULL,NULL,NULL,%s, NOW(),"%s");' \
+                      % (i['order_status'], i['first_name_billing'], i['last_name_billing'], i['address_1_2_billing'], i['city_billing'], i['state_code_billing'], i['postcode_billing'], i['country_code_billing'], i['email_billing'], i['phone_billing'], "Pay with UPI QR Code", i['item_Name'], i['order_number'], "PROC")
             # print(command)
             print("################")
             cursor.execute(command)
