@@ -542,6 +542,9 @@ def servitorBookingAccept(dct, serv):
     booking.atime = datetime.now(timezone.utc)
     booking.save()
 
+    serv.coid = booking.order_number
+    serv.save()
+
     return HttpJSONResponse({})
 
 @makeView()
