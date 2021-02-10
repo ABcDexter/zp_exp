@@ -219,7 +219,7 @@ def servitorBookingCheck(_dct, servitor):
         count
 
     '''
-    qsBooking = Booking.objects.filter(item_name__in=[servitor.job1, servitor.job2,servitor.job3])
+    qsBooking = Booking.objects.filter(item_name__in=[servitor.job1, servitor.job2,servitor.job3], status='PROC')
     return HttpJSONResponse({'count': str(len(qsBooking))})
 
 
