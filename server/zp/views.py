@@ -970,6 +970,7 @@ def adminRefresh(dct):
     1) Handle trip request and trip start timeouts
     2) Update the location data for the ride share web page
     3) Update any data in the team dashboard
+    4) Handle delivery request and timeouts
     -----------------------------------------
     HTTP args :
         auth : auth key of the ADMIN
