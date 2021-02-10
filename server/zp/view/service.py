@@ -162,7 +162,7 @@ def authBookingSync(dct, entity):
 
                         "order_total_amount": i['line_items'][0]['total'],
 
-                        "item_Name": 1,
+                        "item_qty": 1,
                         "item_Name": i['line_items'][0]['name']
 
                 }
