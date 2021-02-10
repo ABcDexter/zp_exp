@@ -304,7 +304,7 @@ def servitorBookingGet(_dct, servitor):
 
             if str(ith['item_name']).upper().lower() in jobs:
                 order = {'bid': ith['order_number'], 'job': ith['item_name'],
-                         'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:-9], 'earn': 500}
+                         'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'].hour) + ":" + str(ith['order_date'].minute), 'earn': 500}
 
                 ordersRelevant.append(order)
     return HttpJSONResponse({"booking": ordersRelevant,
@@ -592,8 +592,8 @@ def servitorBookingData(dct, servitor):
                 'bid': booking.order_number,
                 'job': booking.item_name,
                 'date': str(booking.order_date)[:10],
-                'time': str(booking.order_date)[11:-9],
-                'hours': '2',
+                'time': str(booking.order_date.hour) + ":" + str(booking.order_date.minute),
+                'hours': str(2),
                 'area': str(booking.address_1_2_billing),
                 'earn': 500,
                 'customer_note': str(booking.customer_note),
@@ -727,7 +727,7 @@ def servitorJobsAccepted(_dct, serv):
                           'bid': currBooking.order_number,
                           'job': currBooking.item_name,
                           'date': str(currBooking.order_date)[:10],
-                          'time': str(currBooking.order_date)[11:-9],
+                          'time': str(currBooking.order_date.hour) + ":" + str(currBooking.order_date.minute),
                           'hours': '2',
                           'area': str(currBooking.address_1_2_billing),
                           'earn': 500
@@ -748,7 +748,7 @@ def servitorJobsAccepted(_dct, serv):
                 'bid': i.order_number,
                 'job': i.item_name,
                 'date': str(i.order_date)[:10],
-                'time': str(i.order_date)[11:-9],
+                'time': str(i.order_date.hour) + ":" + str(i.order_date.minute),
                 'hours': '2',
                 'area': str(i.address_1_2_billing),
                 'earn': 500
@@ -797,7 +797,7 @@ def servitorJobsCompleted(_dct, serv):
                           'bid': i.order_number,
                           'job': i.item_name,
                           'date': str(i.order_date)[:10],
-                          'time': str(i.order_date)[11:-9],
+                          'time': str(i.order_date.hour) + ":" + str(i.order_date.minute),
                           'hours': '2',
                           'earn': 500
             }
