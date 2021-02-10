@@ -521,6 +521,31 @@ def servitorOrderGet(_dct, servitor):
 
 @makeView()
 @csrf_exempt
+@handleException(IndexError, 'Booking not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def servitorBookingAccept(dct, serv):
+    '''
+    Servitor calls this to accept the Booking
+    HTTP Args:
+        auth
+        bid
+    '''
+    qsBooking = Booking.objects.filter(order_number=dct['bid'])
+    booking = qsBooking[0]
+
+    booking.servan = serv.an
+    booking.status = 'ACC'
+    booking.order_status = 'ACC'
+    booking.atime = datetime.now(timezone.utc)
+    booking.save()
+
+    return HttpJSONResponse({})
+
+@makeView()
+@csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
