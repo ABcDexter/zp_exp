@@ -294,7 +294,7 @@ def servitorBookingGet(_dct, servitor):
     
     # print(ordersResp)
     '''
-    qsBooking = Booking.objects.all().values('order_number', 'item_name', 'order_date', 'order_date')
+    qsBooking = Booking.objects.all().filter(status='PROC').values('order_number', 'item_name', 'order_date', 'order_date')
     # qsOrder = Booking.objects.filter( item_name__in=[servitor.job1, servitor.job2,servitor.job3])
 
     ordersRelevant = []
@@ -624,7 +624,7 @@ def servitorBookingStart(dct, _serv):
     qsBooking = Booking.objects.filter(order_number=dct['bid'])
     booking = qsBooking[0]
 
-    if str(dct['otp']) == '1243':
+    if str(dct['otp']) == '1243' or str(dct['otp']) == str(getOTP(booking.uan, booking.servan, booking.rtime)):
         print(dct['otp'], str(getOTP(booking.uan, booking.servan, booking.rtime)))
         booking.order_status = 'START'
         booking.status = 'START'
