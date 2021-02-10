@@ -143,7 +143,7 @@ def authBookingSync(dct, entity):
         for i in ret.json():
             x = i
             if i['line_items'][0]['name'] in jobs:
-                print(i['id'], i['line_items'][0]['name'], i['value'])
+                print(i['id'], i['line_items'][0]['name'])
                 resp = {"order_number": i['id'],
                         "order_status": i['status'],
                         "order_date": datetime.strptime(i['line_items'][0]['meta_data'][0]['value']['start']['date'][:], "%Y-%m-%d %H:%M:%S.%f"),
