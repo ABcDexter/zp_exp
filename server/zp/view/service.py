@@ -300,8 +300,9 @@ def servitorBookingGet(_dct, servitor):
     if len(qsBooking):
         for ith in qsBooking:
             order = {}
-            if str(ith['item_name']).upper().lower() in [servitor.job1.upper().lower(), servitor.job2.upper().lower(),
-                                                         servitor.job3.upper().lower()]:
+            jobs = [str(servitor.job1).upper().lower(), str(servitor.job2).upper().lower(), str(servitor.job3).upper().lower()]
+
+            if str(ith['item_name']).upper().lower() in jobs:
                 order = {'bid': ith['order_number'], 'job': ith['item_name'],
                          'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:-9], 'earn': 500}
 
@@ -585,9 +586,8 @@ def servitorBookingData(dct, servitor):
     booking = Booking.objects.filter(order_number=dct['bid'])[0]
 
     resp = {}
-
-    if booking.item_name.upper().lower() in [servitor.job1.upper().lower(), servitor.job2.upper().lower(),
-                                             servitor.job3.upper().lower()]:
+    jobs = [str(servitor.job1).upper().lower(), str(servitor.job2).upper().lower(), str(servitor.job3).upper().lower()]
+    if booking.item_name.upper().lower() in jobs:
         resp = {
                 'bid': booking.order_number,
                 'job': booking.item_name,
