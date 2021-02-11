@@ -628,13 +628,24 @@ def servitorBookingData(dct, servitor):
     booking = Booking.objects.filter(order_number=dct['bid'])[0]
 
     resp = {}
+
     jobs = [str(servitor.job1).upper().lower(), str(servitor.job2).upper().lower(), str(servitor.job3).upper().lower()]
     if booking.item_name.upper().lower() in jobs:
+
+        date = booking.order_date
+        if date.hour < 13:
+            ampm = 'A.M.'
+            hour = str(date.hour + 5)
+
+        else:
+            ampm = 'P.M.'
+            hour = str(date.hour - 12)
+
         resp = {
                 'bid': booking.order_number,
                 'job': booking.item_name,
-                'date': str(booking.order_date)[:10],
-                'time': str(booking.order_date.hour) + ":" + str(booking.order_date.minute),
+                'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
+                'time': str(hour) + " : " + str(booking.order_date.minute) + " " + ampm ,
                 'hours': str(2),
                 'area': str(booking.address_1_2_billing),
                 'earn': 500,
