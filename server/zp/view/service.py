@@ -309,12 +309,13 @@ def servitorBookingGet(_dct, servitor):
 
                 resp = dateAndTime(date)
                 hour = resp['hour']
+                minute = resp['minute']
                 ampm = resp['ampm']
 
                 order = {'bid': ith['order_number'],
                          'job': ith['item_name'],
                          'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
-                         'time': str(hour) + " : " + str(date.minute) + " " + ampm,
+                         'time': str(hour) + " : " + minute + " " + ampm,
                          'earn': 500}
 
                 ordersRelevant.append(order)
@@ -633,13 +634,14 @@ def servitorBookingData(dct, servitor):
 
         resp = dateAndTime(date)
         hour = resp['hour']
+        minute = resp['minute']
         ampm = resp['ampm']
 
         resp = {
                 'bid': booking.order_number,
                 'job': booking.item_name,
                 'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
-                'time': str(hour) + " : " + str(booking.order_date.minute) + " " + ampm ,
+                'time': str(hour) + " : " + str(minute) + " " + ampm ,
                 'hours': str(2),
                 'area': str(booking.address_1_2_billing),
                 'earn': 500,
@@ -774,13 +776,14 @@ def servitorJobsAccepted(_dct, serv):
 
         resp = dateAndTime(date)
         hour = resp['hour']
+        minute = resp['minute']
         ampm = resp['ampm']
 
         currentBooking = {
               'bid': currBooking.order_number,
               'job': currBooking.item_name,
               'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
-              'time': str(hour) + " : " + str(currBooking.order_date.minute) + " " + ampm,
+              'time': str(hour) + " : " + str(minute) + " " + ampm,
               'hours': '2',
               'area': str(currBooking.address_1_2_billing),
               'earn': 500
@@ -799,13 +802,14 @@ def servitorJobsAccepted(_dct, serv):
 
             resp = dateAndTime(date)
             hour = resp['hour']
+            minute = resp['minute']
             ampm = resp['ampm']
 
             data = {
                 'bid': i.order_number,
                 'job': i.item_name,
                 'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
-                'time': str(hour) + " : " + str(currBooking.order_date.minute) + " " + ampm,
+                'time': str(hour) + " : " + str(minute) + " " + ampm,
                 'hours': '2',
                 'area': str(i.address_1_2_billing),
                 'earn': 500
@@ -854,13 +858,14 @@ def servitorJobsCompleted(_dct, serv):
 
             resp = dateAndTime(date)
             hour = resp['hour']
+            minute = resp['minute']
             ampm = resp['ampm']
 
             data = {
                           'bid': i.order_number,
                           'job': i.item_name,
                           'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
-                          'time': str(hour) + " : " + str(i.order_date.minute) + " " + ampm,
+                          'time': str(hour) + " : " + str(minute) + " " + ampm,
                           'hours': '2',
                           'earn': 500
             }

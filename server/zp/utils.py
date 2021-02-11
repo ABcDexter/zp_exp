@@ -1610,16 +1610,14 @@ def dateAndTime(date: datetime)-> dict:
     - 'ampm' : AM or PM of the day
 
     """
+    format = '%Y-%m-%d %H:%M %p'
+    time = datetime.strftime((date), format)
 
-    if date.hour < 12:
-        ampm = 'A.M.'
-        hour = str(date.hour + 5)
+    hour = str(time[11:13])
+    minute = str(time[14:16])
+    ampm = str(time[17:])
 
-    else:
-        ampm = 'P.M.'
-        hour = str(date.hour - 12) if date.hour > 13 else date.hour
-
-    resp = {'hour': hour, 'ampm': ampm}
+    resp = {'hour': hour, 'minute': minute, 'ampm': ampm}
 
     return resp
 
