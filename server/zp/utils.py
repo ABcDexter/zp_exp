@@ -1621,5 +1621,5 @@ def dateAndTime(date: datetime)-> dict:
 
     resp = {'hour': hour, 'ampm': ampm}
 
-    return str(resp)
+    return resp
 
