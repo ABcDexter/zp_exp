@@ -776,14 +776,23 @@ def servitorJobsAccepted(_dct, serv):
 
     if len(currBookings):
         currBooking = currBookings[0]
+        date = currBooking.order_date
+        if date.hour < 13:
+            ampm = 'A.M.'
+            hour = str(date.hour + 5)
+
+        else:
+            ampm = 'P.M.'
+            hour = str(date.hour - 12)
+
         currentBooking = {
-                          'bid': currBooking.order_number,
-                          'job': currBooking.item_name,
-                          'date': str(currBooking.order_date)[:10],
-                          'time': str(currBooking.order_date.hour) + ":" + str(currBooking.order_date.minute),
-                          'hours': '2',
-                          'area': str(currBooking.address_1_2_billing),
-                          'earn': 500
+              'bid': currBooking.order_number,
+              'job': currBooking.item_name,
+              'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
+              'time': str(hour) + " : " + str(currBooking.order_date.minute) + " " + ampm,
+              'hours': '2',
+              'area': str(currBooking.address_1_2_billing),
+              'earn': 500
         }
         status = True
 
@@ -794,14 +803,22 @@ def servitorJobsAccepted(_dct, serv):
     today = datetime.now(timezone.utc)
 
     for i in qsBooking:
+        date = i.order_date
+        if date > today:
 
-        if i.order_date > today:
+            if date.hour < 13:
+                ampm = 'A.M.'
+                hour = str(date.hour + 5)
+
+            else:
+                ampm = 'P.M.'
+                hour = str(date.hour - 12)
 
             data = {
                 'bid': i.order_number,
                 'job': i.item_name,
-                'date': str(i.order_date)[:10],
-                'time': str(i.order_date.hour) + ":" + str(i.order_date.minute),
+                'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
+                'time': str(hour) + " : " + str(currBooking.order_date.minute) + " " + ampm,
                 'hours': '2',
                 'area': str(i.address_1_2_billing),
                 'earn': 500
