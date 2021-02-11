@@ -1610,7 +1610,7 @@ def dateAndTime(date: datetime)-> dict:
     - 'ampm' : AM or PM of the day
 
     """
-    format = '%Y-%m-%d %H:%M %p'
+    format = '%Y-%m-%d %I:%M %p'
     time = datetime.strftime((date), format)
 
     hour = str(time[11:13])
