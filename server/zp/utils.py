@@ -1593,3 +1593,33 @@ def decode(string, alphabet=settings.BASE62):
 
     return str(num)
 
+
+#############################
+# DATE AND TIME
+
+def dateAndTime(date: datetime)-> dict:
+    """
+    parses the date into hours and minute to proper format
+
+    Arguments:
+    - `date`: The datetime object
+
+    Response:
+    dict containing:
+    - 'hour' : hour of the day
+    - 'ampm' : AM or PM of the day
+
+    """
+
+    if date.hour < 12:
+        ampm = 'A.M.'
+        hour = str(date.hour + 5)
+
+    else:
+        ampm = 'P.M.'
+        hour = str(date.hour - 12) if date.hour > 13 else date.hour
+
+    resp = {'hour': hour, 'ampm': ampm}
+
+    return str(resp)
+
