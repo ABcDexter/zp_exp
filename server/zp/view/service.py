@@ -304,9 +304,23 @@ def servitorBookingGet(_dct, servitor):
             order = {}
             jobs = [str(servitor.job1).upper().lower(), str(servitor.job2).upper().lower(), str(servitor.job3).upper().lower()]
 
+            date = datetime.strptime(ith['line_items'][0]['meta_data'][0]['value']['start']['date'],
+                                     "%Y-%m-%d %H:%M:%S.%f"),
+
             if str(ith['item_name']).upper().lower() in jobs:
-                order = {'bid': ith['order_number'], 'job': ith['item_name'],
-                         'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'].hour) + ":" + str(ith['order_date'].minute), 'earn': 500}
+                if ith['order_date'].hour < 13:
+                    ampm = 'A.M.'
+                    hour = str(date.hour + 5)
+
+                else:
+                    ampm = 'P.M.'
+                    hour = str(date.hour - 12)
+
+                order = {'bid': ith['order_number'],
+                         'job': ith['item_name'],
+                         'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
+                         'time': str(hour) + " : " + str(date.minute) + " " + ampm,
+                         'earn': 500}
 
                 ordersRelevant.append(order)
     return HttpJSONResponse({"booking": ordersRelevant,
