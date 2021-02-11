@@ -306,7 +306,7 @@ def servitorBookingGet(_dct, servitor):
 
             date = ith['order_date']
             if str(ith['item_name']).upper().lower() in jobs:
-                if date.hour < 13:
+                if date.hour < 12:
                     ampm = 'A.M.'
                     hour = str(date.hour + 5)
 
@@ -633,7 +633,7 @@ def servitorBookingData(dct, servitor):
     if booking.item_name.upper().lower() in jobs:
 
         date = booking.order_date
-        if date.hour < 13:
+        if date.hour < 12:
             ampm = 'A.M.'
             hour = str(date.hour + 5)
 
@@ -777,7 +777,7 @@ def servitorJobsAccepted(_dct, serv):
     if len(currBookings):
         currBooking = currBookings[0]
         date = currBooking.order_date
-        if date.hour < 13:
+        if date.hour < 12:
             ampm = 'A.M.'
             hour = str(date.hour + 5)
 
@@ -806,7 +806,7 @@ def servitorJobsAccepted(_dct, serv):
         date = i.order_date
         if date > today:
 
-            if date.hour < 13:
+            if date.hour < 12:
                 ampm = 'A.M.'
                 hour = str(date.hour + 5)
 
@@ -863,11 +863,20 @@ def servitorJobsCompleted(_dct, serv):
         today = datetime.now(timezone.utc)
 
         for i in qsBooking:
+            date = i.order_date
+            if date.hour < 12:
+                ampm = 'A.M.'
+                hour = str(date.hour + 5)
+
+            else:
+                ampm = 'P.M.'
+                hour = str(date.hour - 12)
+
             data = {
                           'bid': i.order_number,
                           'job': i.item_name,
-                          'date': str(i.order_date)[:10],
-                          'time': str(i.order_date.hour) + ":" + str(i.order_date.minute),
+                          'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
+                          'time': str(hour) + " : " + str(i.order_date.minute) + " " + ampm,
                           'hours': '2',
                           'earn': 500
             }
