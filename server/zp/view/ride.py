@@ -25,6 +25,7 @@ import json
 from hypertrack.rest import Client
 from hypertrack.exceptions import HyperTrackException
 
+from ..utils import encode, decode
 
 ###########################################
 # Types
@@ -798,4 +799,59 @@ def authRideHistory(dct, entity):
         ret.update({'trips': trips})
 
     return HttpJSONResponse(ret)
-    
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@transaction.atomic
+@extractParams
+def loginUser(_, dct):
+    '''
+    User login
+    makes the User login with phone number and the login key provided by us
+
+    HTTP Args:
+        pn: phone number of the User without the ISD code
+        key: user auth with base 62 encoding
+        fcm
+
+    Notes:
+        Rot 13 OR base62 encoding  is important
+
+    Response:
+            'status': true or false
+            'auth': auth key
+            'an': a num
+            'pn': phone number
+            'name': name of user
+
+
+
+
+    '''
+
+    log('User login request. Dct : %s ' % (str(dct)))
+
+    sPhone = str(dct['pn'])
+
+    # from codecs import encode
+    # sAuth = encode(str(dct['key']), 'rot13')
+
+    sAuth = encode(str(dct['key']), settings.BASE62)
+
+    print("user auth Key : ", sAuth, "phone :", dct['pn'])
+
+    qsUser = User.objects.filter(auth=sAuth, pn=sPhone)
+    bUserExists = len(qsUser) != 0
+    if not bUserExists:
+        log('User not registered with phone : %s' % (dct['pn']))
+        return HttpJSONResponse({'status': False})
+    else:
+        log('Auth exists for user : %s' % (dct['pn']))
+        user = qsUser[0]
+        user.fcm = dct['fcm']
+        user.save()
+
+        ret = {'status': True, 'auth': user.auth, 'an': user.an, 'pn': user.pn, 'name': user.name}
+        return HttpJSONResponse(ret)
