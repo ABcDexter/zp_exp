@@ -441,7 +441,8 @@
                 android:background="@drawable/orange_button_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/next" />
+                android:src="@drawable/next"
+                android:contentDescription="TODO" />
         </LinearLayout>
 
     </ScrollView>

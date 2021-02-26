@@ -21,8 +21,8 @@ import com.client.ride.ActivityRideHome;
 import java.util.List;
 
 public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.ViewHolder> {
-    private List<HubListData> hub_list_data;
-    private Context context;
+    private final List<HubListData> hub_list_data;
+    private final Context context;
     private final int intentValue;
     public static final String PREFS_LOCATIONS = "com.client.ride.Locations";
     public static final String LOCATION_PICK = "PickLocation";
@@ -142,8 +142,11 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView txtName, txtLat, txtLng, txtID;
-        private LinearLayout layout;
+        private final TextView txtName;
+        private final TextView txtLat;
+        private final TextView txtLng;
+        private final TextView txtID;
+        private final LinearLayout layout;
 
         public ViewHolder(View itemView) {
             super(itemView);

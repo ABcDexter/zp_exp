@@ -2,10 +2,10 @@ package com.client;
 
 public class HubListData {
 
-    private String hubName;
-    private String latitude;
-    private String longitude;
-    private String idPlace;
+    private final String hubName;
+    private final String latitude;
+    private final String longitude;
+    private final String idPlace;
 
     public String getHubName() {
         return hubName;

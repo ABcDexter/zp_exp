@@ -155,10 +155,14 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         auth = stringAuth;
         //checking if auth is stored locally or not
         if (auth.equals("")) {
+            Intent registerUser = new Intent(ActivityWelcome.this, ActivityLoginKey.class);
+            startActivity(registerUser);
+            finish();
+        }/*if (auth.equals("")) {
             Intent registerUser = new Intent(ActivityWelcome.this, ActivityRegistration.class);
             startActivity(registerUser);
             finish();
-        }
+        }*/
         sharedPreferences1 = getPreferences(Context.MODE_PRIVATE);
         sharedEditor1 = sharedPreferences1.edit();
         //checking if app is being run for the 1st time or not
@@ -429,7 +433,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
     /**
      * Returns lat lng of the device
      */
-    private LocationCallback mLocationCallback = new LocationCallback() {
+    private final LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             Log.d(TAG, "inside LocationResult() call");

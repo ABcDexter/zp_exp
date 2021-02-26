@@ -22,7 +22,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_above="@+id/layoutZippeee"
-                android:src="@drawable/scooty_left" />
+                android:src="@drawable/scooty_left"
+                android:contentDescription="TODO" />
 
             <include
                 android:id="@+id/layoutZippeee"
@@ -37,7 +38,8 @@
                 android:layout_height="40dp"
                 android:layout_below="@+id/layoutZippeee"
                 android:src="@drawable/scooty_right"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                android:contentDescription="TODO" />
 
             <LinearLayout
                 android:id="@+id/rl_cost"
@@ -181,7 +183,8 @@
                 android:layout_below="@id/rl_pick"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/ic_arrow_downward" />
+                android:src="@drawable/ic_arrow_downward"
+                android:contentDescription="TODO" />
 
 
             <RelativeLayout

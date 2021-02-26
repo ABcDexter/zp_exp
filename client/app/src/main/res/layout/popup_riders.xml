@@ -50,7 +50,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="20dp"
-            android:src="@drawable/person" />
+            android:src="@drawable/person"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -80,7 +81,8 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
             android:layout_toStartOf="@id/img3"
-            android:src="@drawable/person_child" />
+            android:src="@drawable/person_child"
+            android:contentDescription="TODO" />
 
         <ImageView
             android:id="@+id/img3"
@@ -89,7 +91,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="20dp"
-            android:src="@drawable/two_person" />
+            android:src="@drawable/two_person"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -128,7 +131,8 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="5dp"
             android:layout_toStartOf="@id/img5"
-            android:src="@drawable/person_child" />
+            android:src="@drawable/person_child"
+            android:contentDescription="TODO" />
         <ImageView
             android:id="@+id/img5"
             android:layout_width="35dp"
@@ -136,7 +140,8 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="5dp"
             android:layout_toStartOf="@id/img6"
-            android:src="@drawable/person_woman" />
+            android:src="@drawable/person_woman"
+            android:contentDescription="TODO" />
         <ImageView
             android:id="@+id/img6"
             android:layout_width="40dp"
@@ -144,7 +149,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="20dp"
-            android:src="@drawable/two_person" />
+            android:src="@drawable/two_person"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
 

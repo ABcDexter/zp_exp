@@ -1,33 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".rent.ActivityNearestHub"
     android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp">
+    android:layout_marginEnd="10dp"
+    tools:context=".rent.ActivityNearestHub">
 
     <ImageView
+        android:id="@+id/close"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/ic_close"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
-        android:id="@+id/close"/>
+        android:contentDescription="TODO"
+        android:src="@drawable/ic_close" />
 
     <TextView
+        android:id="@+id/txt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/please_go_to_the_nearest_drop_point_to_end_your_rental"
-        android:id="@+id/txt"
-        android:paddingStart="4dp"
-        android:textAllCaps="true"
-        android:textSize="20sp"
-        android:textAlignment="center"
         android:layout_above="@id/layoutZippeee"
-        android:layout_marginBottom="50dp"/>
+        android:layout_marginBottom="50dp"
+        android:paddingStart="4dp"
+        android:text="@string/please_go_to_the_nearest_drop_point_to_end_your_rental"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textSize="20sp" />
+
     <include
         android:id="@+id/layoutZippeee"
         layout="@layout/zippe_logo"
@@ -40,11 +41,11 @@
         android:id="@+id/ll_hub1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_below="@id/layoutZippeee"
         android:layout_marginTop="50dp"
         android:background="@drawable/rect_box_outline"
         android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_below="@id/layoutZippeee">
+        android:weightSum="2">
 
         <TextView
             android:id="@+id/hub1"
@@ -81,11 +82,11 @@
         android:id="@+id/ll_hub2"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_below="@id/ll_hub1"
         android:layout_marginTop="20dp"
         android:background="@drawable/rect_box_outline"
         android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_below="@id/ll_hub1">
+        android:weightSum="2">
 
         <TextView
             android:id="@+id/hub2"

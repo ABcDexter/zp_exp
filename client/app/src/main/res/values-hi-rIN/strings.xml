@@ -833,4 +833,5 @@
     <string name="service_history">सर्विस हिस्टरी</string>
     <string name="shop_by_category">श्रेणी के अनुसार खरीदारी</string>
     <string name="book_new_services">नई सेवा बुक करें</string>
+    <string name="enter_login_key">Enter Login Key</string>
 </resources>

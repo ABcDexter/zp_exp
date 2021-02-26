@@ -12,7 +12,8 @@
         android:layout_gravity="start"
         android:layout_marginStart="10dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/ic_arrow_back" />
+        android:src="@drawable/ic_arrow_back"
+        android:contentDescription="TODO" />
 
     <TextView
         android:id="@+id/nameFrmServer"
@@ -31,5 +32,6 @@
         android:layout_gravity="end"
         android:layout_marginEnd="10dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/ic_dehaze" />
+        android:src="@drawable/ic_dehaze"
+        android:contentDescription="TODO" />
 </androidx.appcompat.widget.Toolbar>

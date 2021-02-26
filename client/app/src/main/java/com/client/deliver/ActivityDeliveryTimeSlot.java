@@ -50,7 +50,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
     private static int currentPage = 0;
     private static int NUM_PAGES = 0;
     private static final Integer[] IMAGES = {R.drawable.delivery_man};
-    private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
+    private final ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
 
     CheckBox expressDelv, standardDelv, beware, knock, ring, allDay;
     CheckBox slot1, slot2, slot3, slot4, slot5, slot6;

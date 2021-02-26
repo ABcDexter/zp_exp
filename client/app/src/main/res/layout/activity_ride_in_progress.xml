@@ -184,7 +184,8 @@
                     android:padding="15dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/end_ride"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"
+                    android:contentDescription="TODO" />
             </RelativeLayout>
         </RelativeLayout>
 

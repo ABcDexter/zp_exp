@@ -16,7 +16,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -34,7 +33,7 @@
 
     <application
         android:name=".UtilityInitApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher_zippe_"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_zippe__round"
@@ -91,7 +90,6 @@
         <activity android:name=".rent.ActivityRentOTP" />
         <activity android:name=".rent.ActivityRentRequest" />
         <activity android:name=".rent.ActivityRentHome" />
-        <activity android:name=".ActivityTrackYourProgress" />
         <activity android:name=".ride.ActivityRideRequest" />
         <activity android:name=".ActivityRateZippe" />
         <activity android:name=".ride.ActivityRideEnded" />
@@ -107,7 +105,7 @@
             android:value="fcm_default_channel" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/zippe_logo" />
+            android:resource="@drawable/zippe_logo__" />
 
         <activity android:name=".UserProfileActivity" />
         <activity android:name=".ActivityWelcome">
@@ -132,13 +130,15 @@
         <activity android:name=".rent.ActivityRentHistory" />
         <activity android:name=".rent.ActivityRentSummery" />
         <activity android:name=".ride.ActivityRideSummery" />
+        <activity android:name=".ActivityLoginKey" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
         <service android:name=".UtilityPollingService" />
-        <service android:name=".Services.MyFirebaseMessagingService">
+        <service android:name=".Services.MyFirebaseMessagingService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

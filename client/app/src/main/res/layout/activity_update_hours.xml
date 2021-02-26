@@ -153,7 +153,8 @@
                 android:background="@drawable/orange_button_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/paynow" />
+                android:src="@drawable/paynow"
+                android:contentDescription="TODO" />
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -156,7 +156,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="10dp"
                         android:layout_marginTop="20dp"
-                        android:src="@drawable/ic_arrow_up" />
+                        android:src="@drawable/ic_arrow_up"
+                        android:contentDescription="TODO" />
                 </RelativeLayout>
 
 
@@ -171,7 +172,8 @@
                 android:background="@drawable/orange_button_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/next" />
+                android:src="@drawable/next"
+                android:contentDescription="TODO" />
         </LinearLayout>
 
     </ScrollView>

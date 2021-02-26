@@ -243,7 +243,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
 
-            Intent intent = new Intent(ActivityDrawer.this, ActivityRegistration.class);
+            Intent intent = new Intent(ActivityDrawer.this, ActivityLoginKey.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         } else if (id == R.id.nav_profile) {

@@ -221,7 +221,8 @@
                     android:background="@drawable/green_button_bkg"
                     android:padding="15dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/confirm" />
+                    android:src="@drawable/confirm"
+                    android:contentDescription="TODO" />
             </LinearLayout>
 
             <ImageButton
@@ -233,7 +234,8 @@
                 android:padding="15dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/next"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:contentDescription="TODO" />
 
         </LinearLayout>
 

@@ -16,7 +16,8 @@
                 android:src="@drawable/delivery_man"
                 android:scaleType="fitCenter"
                 android:layout_width="150dp"
-                android:layout_height="150dp" />
+                android:layout_height="150dp"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:id="@+id/txt"
