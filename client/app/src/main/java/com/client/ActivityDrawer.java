@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -20,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.client.Service.ActivityServiceHistoryList;
+import com.client.Shop.ActivityShopHistoryList;
 import com.client.deliver.ActivityDeliveryHistoryList;
 import com.client.rent.ActivityRentHistory;
 import com.client.ride.ActivityRideHistory;
@@ -262,6 +265,24 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
             Intent deliveryOrders = new Intent(ActivityDrawer.this, ActivityDeliveryHistoryList.class);
             deliveryOrders.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(deliveryOrders);
+        }else if (id == R.id.nav_shop_history) {
+            //take user to https://zippe.in/en/my-account/orders/ url
+            String connectUrl = "https://zippe.in/en/my-account/orders/";
+            Intent connectIntent = new Intent(Intent.ACTION_VIEW);
+            connectIntent.setData(Uri.parse(connectUrl));
+            startActivity(connectIntent);
+            /*Intent shopHistory = new Intent(ActivityDrawer.this, ActivityShopHistoryList.class);
+            shopHistory.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(shopHistory);*/
+        }else if (id == R.id.nav_service_history) {
+            //take user to https://zippe.in/en/my-account/orders/ url
+            String connectUrl = "https://zippe.in/en/my-account/orders/";
+            Intent connectIntent = new Intent(Intent.ACTION_VIEW);
+            connectIntent.setData(Uri.parse(connectUrl));
+            startActivity(connectIntent);
+            /*Intent serviceHistory = new Intent(ActivityDrawer.this, ActivityServiceHistoryList.class);
+            serviceHistory.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(serviceHistory);*/
         } else {
             return true;
         }

@@ -3,7 +3,7 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
-    android:background="#1EB4D4">
+    android:background="@drawable/blue_button_bkg">
 
     <ImageView
         android:id="@+id/toolbar_back"
@@ -19,9 +19,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="name"
+        android:text="name sergdfghbjn"
         android:textAllCaps="true"
-        android:textSize="23sp" />
+        android:textSize="23sp"
+        android:textStyle="bold"/>
 
     <ImageView
         android:id="@+id/toolbar_menu"

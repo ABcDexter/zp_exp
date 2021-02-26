@@ -5,4 +5,4 @@
     android:layout_gravity=""
     android:layout_marginTop="20dp"
     android:contentDescription="ZIPP-E LOGO"
-    android:src="@drawable/zippe_logo" />
+    android:src="@drawable/zippe_logo__" />

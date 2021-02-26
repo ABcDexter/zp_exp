@@ -114,7 +114,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
             simpleProgressBar.setVisibility(View.VISIBLE);
             Map<String, String> params = new HashMap();
             params.put("key", loginKey);
-            params.put("pn", "1234567890" );
+            params.put("pn", mob );
 
             JSONObject parameters = new JSONObject(params);
             ActivityLogin a = ActivityLogin.this;

@@ -9,10 +9,10 @@
     <string name="spices_masala_herbs">Spices / Masala / Herbs</string>
     <string name="flour_grains_pulses">Flour / Grains / Pulses</string>
     <string name="oil_ghee">Oil &amp; Ghee</string>
-    <string name="sugar_sweetners">Sugar &amp; Sweetners</string>
+    <string name="sugar_sweetners">Sugar &amp; Sweeteners</string>
     <string name="dairy">Dairy</string>
     <string name="snacks">Snacks</string>
-    <string name="confectionary_dessert">Confectionary &amp; dessert</string>
+    <string name="confectionary_dessert">Confectionery &amp; dessert</string>
     <string name="breakfast_essentials_cereals">Breakfast Essentials &amp; Cereals</string>
     <string name="beverages">Beverages</string>
     <string name="premixes">Premixes &amp; Health/Energy drinks</string>
@@ -49,7 +49,7 @@
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">Hello Square World!</string>
-    <string name="looking_for_updates">Looking for updates...</string>
+    <string name="looking_for_updates">Looking for updates…</string>
     <string name="products_updated">All Products Updated</string>
     <string name="search_hint">SEARCH</string>
 

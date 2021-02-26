@@ -29,6 +29,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+import com.client.Service.ActivityServicesHome;
+import com.client.Shop.ActivityShopHome;
 import com.client.deliver.ActivityPackageDetails;
 import com.client.rent.ActivityRateRent;
 import com.client.rent.ActivityRentEnded;
@@ -676,17 +678,22 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
             startActivity(deliverIntent);
         } else if (id == R.id.btn_shop) {
             //take user to https://zippe.in/en/shop-by-category/ url
-            String shopUrl = "https://zippe.in/en/shop-by-category/";
+           /* String shopUrl = "https://zippe.in/en/shop-by-category/";
             Intent shopIntent = new Intent(Intent.ACTION_VIEW);
             shopIntent.setData(Uri.parse(shopUrl));
-            startActivity(shopIntent);
+            startActivity(shopIntent);*/
+            Intent shop = new Intent(ActivityWelcome.this, ActivityShopHome.class);
+            startActivity(shop);
+
         } else if (id == R.id.btn_connect) {
             //take user to https://zippe.in/en/zippe-connect/ url
             //String connectUrl = "https://zippe.in/en/zippe-connect/";
-            String connectUrl = "https://zippe.in/service-categories/";
+           /* String connectUrl = "https://zippe.in/service-categories/";
             Intent connectIntent = new Intent(Intent.ACTION_VIEW);
             connectIntent.setData(Uri.parse(connectUrl));
-            startActivity(connectIntent);
+            startActivity(connectIntent);*/
+            Intent service = new Intent(ActivityWelcome.this, ActivityServicesHome.class);
+            startActivity(service);
         } else if (id == R.id.textHelp) {
             //this displays the instructions for fist time users.
             Log.d(TAG, "counter = " + counter);

@@ -1,4 +1,4 @@
- package com.e.purchasedeptapp;
+package com.e.purchasedeptapp;
 
 import android.content.Context;
 import android.content.Intent;
@@ -75,49 +75,57 @@ public class ActivityFindProductUpdate extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-
+                        /*for (int i = 0; i == array.length(); i++) {
+                            looking.setText(R.string.products_updated);
+                            progressBar.setVisibility(View.GONE);
+                            textView.setVisibility(View.GONE);
+                        }*/
                         for (int i = 0; i < array.length(); i++) {
-                            if (i == array.length()) {
-                                /*looking.setText(R.string.products_updated);
+                            Log.d(TAG, "value of i=" + i);
+                            /*if (i == array.length()) {
+                             *//*looking.setText(R.string.products_updated);
                                 progressBar.setVisibility(View.GONE);
-                                textView.setVisibility(View.GONE);*/
-                            } else {
-                                try {
-                                    JSONObject ob = array.getJSONObject(i);
-                                    // Inserting Contacts
-                                    Log.d("Insert: ", "Inserting .." + i);
-                                    db.addProduct(new ProductFromServer(ob.getString("id"),
-                                            ob.getString("name"), ob.getString("categories"),
-                                            ob.getString("stock_quantity"), ob.getString("cost_price"),
-                                            ob.getString("regular_price"), ob.getString("weight")));
+                                textView.setVisibility(View.GONE);*//*
+                            } else {*/
+                            try {
+                                JSONObject ob = array.getJSONObject(i);
+                                // Inserting Contacts
+                                Log.d("Insert: ", "Inserting .." + i);
+                                db.addProduct(new ProductFromServer(ob.getString("id"),
+                                        ob.getString("name"), ob.getString("categories"),
+                                        ob.getString("stock_quantity"), ob.getString("cost_price"),
+                                        ob.getString("regular_price"), ob.getString("weight")));
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            progressStatus += 1;
+                            // Update the progress bar and display the
+                            //current value in the text view
+                            handler.post(new Runnable() {
+                                public void run() {
+                                    progressBar.setProgress(progressStatus);
+                                    textView.setText(progressStatus + "/" + array.length());
                                 }
-
-                                progressStatus += 1;
-                                // Update the progress bar and display the
-                                //current value in the text view
-                                handler.post(new Runnable() {
-                                    public void run() {
-                                        progressBar.setProgress(progressStatus);
-                                        textView.setText(progressStatus + "/" + array.length());
-                                    }
-                                });
+                            });
                                 /*if (progressStatus == array.length()){
                                     looking.setText(R.string.products_updated);
                                     progressBar.setVisibility(View.GONE);
                                     textView.setVisibility(View.GONE);
                                 }  */
-                                try {
-                                    // Sleep for 200 milliseconds.
-                                    Thread.sleep(200);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+                            try {
+                                // Sleep for 200 milliseconds.
+                                Thread.sleep(200);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
                         }
+                        /*looking.setText(R.string.products_updated);
+                        progressBar.setVisibility(View.GONE);
+                        textView.setVisibility(View.GONE);*/
                     }
+                    /*}*/
                 }).start();
 
                 /*List<ProductFromServer> contacts = db.getAllContacts();

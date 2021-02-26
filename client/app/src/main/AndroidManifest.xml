@@ -35,13 +35,19 @@
     <application
         android:name=".UtilityInitApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_zippe_"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_zippe__round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ride.ActivitySearchingDriver"></activity>
-        <activity android:name=".IntroActivity"></activity>
+        <activity android:name=".Service.ActivityServiceSummery"/>
+        <activity android:name=".Shop.ActivityShopSummery" />
+        <activity android:name=".Shop.ActivityShopHistoryList" />
+        <activity android:name=".Service.ActivityServiceHistoryList" />
+        <activity android:name=".Service.ActivityServicesHome" />
+        <activity android:name=".Shop.ActivityShopHome" />
+        <activity android:name=".ride.ActivitySearchingDriver" />
+        <activity android:name=".IntroActivity" />
         <activity android:name=".AadharCardUpload" />
         <activity android:name=".deliver.ActivityDeliverySummery" />
         <activity android:name=".rent.ActivityUpdateHours" />

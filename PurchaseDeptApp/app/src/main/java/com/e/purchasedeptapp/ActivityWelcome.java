@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,15 +26,13 @@ public class ActivityWelcome extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-
         cookie = getSharedPreferences(AUTH_COOKIE, Context.MODE_PRIVATE);
         strAuth = cookie.getString(AUTH_KEY, "");
 
         String auth = strAuth;
-
+        Log.d("ActivityWelcome","auth="+auth);
         //checking if the user is registered or not.
         if (auth.isEmpty()) {
-
                 Intent registerUser = new Intent(ActivityWelcome.this, ActivityLogin.class);
                 startActivity(registerUser);
                 finish();

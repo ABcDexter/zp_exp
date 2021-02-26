@@ -9,15 +9,12 @@
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_account_circle"
-        android:title= "@string/profile" />
+        android:title="@string/profile" />
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home_black"
         android:title="@string/home" />
-    <item
-        android:id="@+id/nav_delivery_orders"
-        android:icon="@drawable/ic_time"
-        android:title="@string/delivery_orders" />
+
     <item
         android:id="@+id/nav_ride_history"
         android:icon="@drawable/ic_time"
@@ -26,7 +23,18 @@
         android:id="@+id/nav_rent_history"
         android:icon="@drawable/ic_time"
         android:title="@string/rent_history" />
-
+    <item
+        android:id="@+id/nav_delivery_orders"
+        android:icon="@drawable/ic_time"
+        android:title="@string/delivery_orders" />
+    <item
+        android:id="@+id/nav_shop_history"
+        android:icon="@drawable/ic_time"
+        android:title="@string/shop_history" />
+    <item
+        android:id="@+id/nav_service_history"
+        android:icon="@drawable/ic_time"
+        android:title="@string/service_history" />
     <item
         android:id="@+id/nav_customer_support"
         android:icon="@drawable/ic_insert_comment"

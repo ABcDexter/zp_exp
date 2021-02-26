@@ -89,7 +89,8 @@
             android:cursorVisible="true"
             android:hint="@string/login_key"
             android:padding="5dp"
-            android:maxLength="8"
+            android:maxLength="9"
+            android:inputType="number"
             android:textAlignment="center"
             android:textColor="@color/txtColor"
             android:textSize="23sp"/>

@@ -418,7 +418,7 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="notifications_admin_channel_name">101</string>
     <string name="notifications_admin_channel_description">Game Notifications</string>
     <string name="to_ride_click">TO BOOK A RIDE PLEASE CLICK HERE.</string>
-    <string name="to_rent_click">TO BOOK A VEHICLE ON PER HOUR BASES, PLEASE CLICK HERE.</string>
+    <string name="to_rent_click">TO BOOK A VEHICLE ON PER HOUR BASIS, PLEASE CLICK HERE.</string>
     <string name="to_deliver_click">TO BOOK A DELIVERY SERVICE, PLEASE CLICK HERE.</string>
     <string name="to_shop_click">TO DO ONLINE SHOPPING, PLEASE CLICK HERE.</string>
     <string name="to_service_click">TO BOOK A SERVICE, PLEASE CLICK HERE.</string>
@@ -430,4 +430,8 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="cancel_ride_request_button">cancel ride request button</string>
     <string name="next_page_button">next page button</string>
     <string name="confirm_rent_button">confirm rent button</string>
+    <string name="shop_history">Shop History</string>
+    <string name="service_history">Service History</string>
+    <string name="shop_by_category">Shop by category</string>
+    <string name="book_new_services">book new services</string>
 </resources>

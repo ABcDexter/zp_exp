@@ -1,4 +1,7 @@
-package com.client.rent;
+package com.client.Service;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,14 +15,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
-import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
 import com.client.deliver.ActivityDeliveryTimeSlot;
+import com.client.rent.ActivityRentSummery;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,13 +28,13 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivityRentSummery extends ActivityDrawer {
-    private static final String TAG = "ActivityRideSummery";
+public class ActivityServiceSummery extends ActivityDrawer {
+    private static final String TAG = "ActivityServiceSummery.class";
     String stringAuthKey, stringSCID;
     TextView dialog_txt;
     SwipeRefreshLayout swipeRefresh;
     ScrollView scrollView;
-    ActivityRentSummery a = ActivityRentSummery.this;
+    ActivityServiceSummery a = ActivityServiceSummery.this;
     Map<String, String> params = new HashMap();
     public static final String AUTH_KEY = "AuthKey";
     TextView rideRate, ridePrice, rideTax, rideTotal, rideVehicle, rideTime, rideDate, txtSummery;
@@ -197,10 +198,9 @@ public class ActivityRentSummery extends ActivityDrawer {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(ActivityRentSummery.this, ActivityRentHistory.class));
+        startActivity(new Intent(ActivityServiceSummery.this, ActivityServiceHistoryList.class));
         finish();
     }
-
 
     private void ShowPopup(int id, String info) {
 

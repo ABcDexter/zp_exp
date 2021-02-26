@@ -1,4 +1,4 @@
-package com.client.rent;
+package com.client.Shop;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,10 +16,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
 import com.client.ActivityDrawer;
-import com.client.ActivityWelcome;
 import com.client.R;
 import com.client.UtilityApiRequestPost;
-import com.client.deliver.ActivityDeliveryTimeSlot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,13 +25,13 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivityRentSummery extends ActivityDrawer {
-    private static final String TAG = "ActivityRideSummery";
+public class ActivityShopSummery extends ActivityDrawer {
+    private static final String TAG = "ActivityShopSummery.class";
     String stringAuthKey, stringSCID;
     TextView dialog_txt;
     SwipeRefreshLayout swipeRefresh;
     ScrollView scrollView;
-    ActivityRentSummery a = ActivityRentSummery.this;
+    ActivityShopSummery a = ActivityShopSummery.this;
     Map<String, String> params = new HashMap();
     public static final String AUTH_KEY = "AuthKey";
     TextView rideRate, ridePrice, rideTax, rideTotal, rideVehicle, rideTime, rideDate, txtSummery;
@@ -112,10 +110,10 @@ public class ActivityRentSummery extends ActivityDrawer {
             time = response.getString("time");
             date = response.getString("sdate");
 
-            rideRate.setText(getString(R.string.message_rs,rate));
-            ridePrice.setText(getString(R.string.message_rs,price));
-            rideTax.setText(getString(R.string.message_rs,tax));
-            rideTotal.setText(getString(R.string.message_rs,total));
+            rideRate.setText(getString(R.string.message_rs, rate));
+            ridePrice.setText(getString(R.string.message_rs, price));
+            rideTax.setText(getString(R.string.message_rs, tax));
+            rideTotal.setText(getString(R.string.message_rs, total));
             rideVehicle.setText(vtype);
             rideTime.setText(getString(R.string.message_min, time));
             //rideTime.setText(time + R.string.mins);
@@ -197,10 +195,9 @@ public class ActivityRentSummery extends ActivityDrawer {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(ActivityRentSummery.this, ActivityRentHistory.class));
+        startActivity(new Intent(ActivityShopSummery.this, ActivityShopHistoryList.class));
         finish();
     }
-
 
     private void ShowPopup(int id, String info) {
 
