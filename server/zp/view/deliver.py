@@ -29,7 +29,7 @@ from django.http import HttpResponse
 from hypertrack.rest import Client
 from hypertrack.exceptions import HyperTrackException
 
-
+from ..utils import encode, decode
 ###########################################
 # Types
 Filename = str
@@ -563,6 +563,7 @@ def adminAgentAssign(dct):
     auth = choosenAgent.auth
     return HttpJSONResponse({'babua': auth, 'did': delId})
 
+
 @makeView()
 @csrf_exempt
 @handleException(IndexError, 'Agent not found', 404)
@@ -627,6 +628,47 @@ def adminAgentReached(dct):
             
     return HttpJSONResponse({'babua': auth, 'did': delId})
 
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Agent not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@handleException(IntegrityError, 'Transaction error', 500)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def adminRetireToUsers(dct):
+    '''
+    Checks for deliveries in TO state.
+
+    HTTP args:
+        *: Any other fields that need to be updated/corrected (except state)
+
+    Note: This is the latest code which does raw sql
+    '''
+    # Get the deliveries and look for RQ ones
+
+    qsUser = User.objects.exclude(did__in=['', '-1'])  # find out the users which have their did not as '' or '-1'
+
+    # do one user at a time, but do all the users
+    for user in qsUser:
+        qsDeli = Delivery.objects.filter(id=user.did, st__in=['TO', 'DN']) if len(user.did) < 9 else Delivery.objects.filter(scid=user.did, st__in=['TO', 'DN'])
+
+        if len(qsDeli):
+
+            # end the trip
+            deli = qsDeli[0]
+            print("Retired delivery id " + str(deli.id) + " for user " + str(user.an))
+
+            deli.etime = datetime.now(timezone.utc)
+            deli.save()
+
+            # retire the user
+            user.did = ''
+            user.save()
+
+    return HttpJSONResponse({})
+
 # ============================================================================
 # Agent views
 # ============================================================================
@@ -644,17 +686,20 @@ def loginAgent(_, dct):
     
     HTTP Args:
         pn: phone number of the agent without the ISD code
-        key: auth rot 13 of agent
-        
+        key: auth base 62 converted
 
     Notes:
-        Rot 13 is important
+        Rot 13 is important,
+        Date 5th/Feb/2020 using base 62 conversion instead of rot13 cipher
     '''
 
     sPhone = str(dct['pn'])
-    from codecs import encode
-    sAuth = encode(str(dct['key']), 'rot13')
-    
+    # from codecs import encode
+    # sAuth = encode(str(dct['key']), 'rot13')
+
+    sAuth = encode(str(dct['key']), settings.BASE62)
+    print("delivery auth Key : ", sAuth, "phone :", dct['pn'])
+
     qsAgent = Agent.objects.filter(auth=sAuth, pn=sPhone)
     bAgentExists = len(qsAgent) != 0
     if not bAgentExists:
@@ -664,7 +709,6 @@ def loginAgent(_, dct):
         log('Auth exists for: %s' % (dct['pn']))
         ret = {'status': True, 'auth':qsAgent[0].auth, 'an':qsAgent[0].an}    
         return HttpJSONResponse(ret)
-
 
 
 @makeView()
@@ -680,7 +724,9 @@ def registerAgent(_, dct):
     with adminAgentRegister
 
     HTTP Args:
-        aadhaarFront, aadhaarBack - aadhar scans
+        name,
+        phone,
+        gdr, fcm
         licenseFront, licenseBack = driving license scans
 
     Notes:
@@ -689,15 +735,17 @@ def registerAgent(_, dct):
         Registration has to be atomic since we save files
     '''
 
-    sPhone = dct['phone']
-    sAadharFrontFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarFront'], 'front')
-    sAadharBackFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarBack'], 'back')
+
+    # sAadharFrontFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarFront'], 'front')
+    # sAadharBackFilename = saveTmpImgFile(settings.AADHAAR_DIR, dct['aadhaarBack'], 'back')
 
     sLicFrontFilename = saveTmpImgFile(settings.DL_DIR, dct['licenseFront'], 'front')
     sLicBackFilename = saveTmpImgFile(settings.DL_DIR, dct['licenseBack'], 'back')
 
+    '''
     log('Agent Registration request - Aadhar images saved at %s, %s' % (sAadharFrontFilename, sAadharBackFilename))
 
+    
     # Get aadhaar as 3 groups of 4 digits at a time via google vision api
     clientDetails = doOCR(sAadharFrontFilename)
     sAadhaar = clientDetails['an']
@@ -707,22 +755,25 @@ def registerAgent(_, dct):
     if not aadhaarNumVerify(sAadhaar):
         raise ZPException(501,'Aadhaar number not valid!')
     log('Aadhaar is valid')
+    '''
+    sPhone = dct['phone']
 
     # Check if this Agent exists
-    qsAgent = Agent.objects.filter(an=sAadhaar)
+    qsAgent = Agent.objects.filter(pn=sPhone)
+
     AgentExists = len(qsAgent) != 0
     if not AgentExists:
         agent = Agent()
-        agent.an = int(sAadhaar)
+        agent.an = '91' + sPhone  # int(sAadhaar)
         agent.pn = sPhone
-        agent.name = clientDetails.get('name', '')
-        agent.gdr = clientDetails.get('gender', '')
-        agent.age = clientDetails.get('age', '')
+        agent.name = dct['name']  # clientDetails.get('name', '')
+        agent.gdr = dct['gdr']  # clientDetails.get('gender', '')
+        # agent.age =   # clientDetails.get('age', '')
         agent.mode = 'RG'
         agent.fcm = dct['fcm']
 
         # Dummy values set by admin team manually
-        agent.dl = 'UK01-AB1234'
+        agent.dl = 'UK01'
         agent.hs = 'UK'
 
         # No place set
@@ -733,14 +784,17 @@ def registerAgent(_, dct):
         agent.veh = 1
 
         # Set a random auth so that this Agent wont get authed
-        agent.auth = str(random.randint(0, 0xFFFFFFFF))
+        agent.auth = getClientAuth( '91'+ sPhone, sPhone + '-register')[:5] # str(random.randint(0, 0xFFFFFFFF))
 
         agent.save()
-
+        
+        sAn = agent.an
+        sName = agent.name
+        
         # licenses are also stored with the aadhar in the file name but under settings.DL_DIR
-        renameTmpImgFiles(settings.AADHAAR_DIR, sAadharFrontFilename, sAadharBackFilename, sAadhaar)
-        renameTmpImgFiles(settings.DL_DIR, sLicFrontFilename, sLicBackFilename, sAadhaar)
-        log('New Agent registered: %s' % sAadhaar)
+        # renameTmpImgFiles(settings.AADHAAR_DIR, sAadharFrontFilename, sAadharBackFilename, sAadhaar)
+        renameTmpImgFiles(settings.DL_DIR, sLicFrontFilename, sLicBackFilename, agent.an)
+        log('New Agent registered: %s' % agent.an)
     else:
         # Only proceed if status is not 'RG' else throw error
         agent = qsAgent[0]
@@ -748,18 +802,22 @@ def registerAgent(_, dct):
             # Aadhaar exists, if mobile has changed, get new auth
             if agent.pn != sPhone:
                 agent.pn = sPhone
-                sAuth =  getClientAuth(agent.an, agent.pn)[:6]
-                log('Auth changed for Agent: %s' % sAadhaar)
+                sAuth =  getClientAuth(agent.an, agent.pn)[:5]
+                agent.save()
+                log('Auth changed for Agent: %s' % agent.an)
             else:
                 # Aadhaar exists, phone unchanged, just return existing auth
                 sAuth = agent.auth
-                log('Auth exists for Agent: %s' % sAadhaar)
-            return HttpJSONResponse({'auth': sAuth})
+                log('Auth exists for Agent: %s' % agent.an)
+                
+            sAn = agent.an
+            sName = agent.name
+
         else:
             raise ZPException('Registration pending', 501)
 
     # Deterministic registration token will be checked by isAgentVerified
-    ret = {'token': getClientAuth(sAadhaar, sPhone + '-register')[:6], 'an': sAadhaar, 'pn': sPhone }
+    ret = {'an': sAn, 'pn': sPhone, 'name': sName}
     return HttpJSONResponse(ret)
 
 
@@ -999,7 +1057,7 @@ def agentDeliveryAccept(dct, agent):
                                     "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
         }
         }
-        dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA62EzsG0:APA91bHjXoGXeXC3au266Ec8vhDH0t5SiCGgIH_85UfJpDTbINuBUa05v5SPaz5l41k9zgV2WDA6h5LK37u9yMvIY5AI1fynV2HJn2JS3XICUYRUwoXaBzUfmVKsrWot8aupGi0PM7dn'}
+        dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA9ac2AKM:APA91bH7N4ocS711aAjNHEYvKo6TZxQ702CWSMqrBBILgAb2hPnZzo2byOb_IHUgHaFCG3xZyKUHH6p8VsUBsXwpfsXKwhxiqtgUSjWGkweKvAcb5p_08ud-U7e3PUIdaC6Sz-TGhHZB'}
         jsonData = json.dumps(params).encode()
         sUrl = 'https://fcm.googleapis.com/fcm/send'
         req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)

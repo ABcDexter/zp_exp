@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from entity import *
 
 '''
-Script simulates a drivers behaviour
+Script simulates a admins behaviour
 Run multiple instances of this to simulate multiple
 '''
 
@@ -26,19 +26,15 @@ class Admin(Entity):
 
     def run(self, fDelay):
 
-        # update routes table
-        # self.log('Updating routes')
-        # dctRet = self.callAPI('admin-route-update', {'gmaps_key': 'AIzaSyCmGlXzWf-xk_6PjLtebyXr1pyQ8Lc3_RI'})
-        #self.logIfErr(dctRet)
         self.log('Admin active')
 
         while True:
             dctRet = self.callAPI('admin-refresh')
             self.logIfErr(dctRet)
             if not self.logIfErr(dctRet) and prob(0.5):
-            # Fix failed vehicles and drivers very lazily with 50% probability
-                self.log('Fixing delivery failures')
-
+                # update with 50% probability
+                self.log('Fixing bookings')
+                '''
                 failedList = self.callAPI('admin-handle-failed-trip')
                 if len(failedList):
                     self.log('Unlocking %d drivers' % len(failedList))
@@ -60,11 +56,20 @@ class Admin(Entity):
                         if not self.logIfErr(dctRetUser):
                             self.log('Freed user with auth : %s' % failed['uauth'] )
                         time.sleep(fDelay)
+                '''
 
             if not self.logIfErr(dctRet) and prob(0.99999):
 
-                self.log('Assigning Agents to RQ deliveries')
+                self.log('Syncing booking table from wordpress')
 
+                synced = self.callAPI('auth-booking-sync', {'auth': '1048576'})
+                if not self.logIfErr(synced):
+                    self.log('Synced ' + str(synced))
+                else:
+                    self.log('FAILED to sync ' + str(synced))
+
+                # self.log('Assigning Servitors to Bookings')
+                '''
                 resp = self.callAPI('admin-agent-assign')
                 if not self.logIfErr(resp):
                     did = resp['did']
@@ -83,10 +88,9 @@ class Admin(Entity):
 
                 self.log('Retiring Users with TO did')
                 resp = self.callAPI('admin-retire-to-users')
-
                 if not self.logIfErr(resp):
                     print("## DONE ##")
-
+                '''
             pass
 
             # Sleep for specified time

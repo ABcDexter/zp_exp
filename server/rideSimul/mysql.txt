@@ -244,4 +244,6 @@ select * from route;
 
 
 ####
+insert into servitor(an,pn,auth,pid,dl,name,gdr,age,hs, job1, mark, wage, ps) values(6000, 6000000000, 'ser00', 2,'UK-...','Mr. Singh', 'm', 22, 'uk', 'IT', 0.0, 60, 'Bhimtal');
+
 INSERT INTO booking(order_status,order_date,customer_note,first_name_billing,last_Name_billing,company_billing,address_1_2_billing,city_billing,state_code_billing,postcode_billing,country_code_billing,email_billing,phone_billing,first_name_shipping,last_name_shipping,address_1_2_shipping,city_shipping,state_code_shipping,postcode_shipping,country_code_shipping,payment_method_title,cart_discount_amount,order_subtotal_amount,shipping_method_title,order_shipping_amount,order_refund_amount,order_total_amount,order_total_tax_amount,sku,item_qty,item_name,quantity,item_cost,coupon_code,discount_amount,discount_amount_tax, order_number,rtime, status) VALUES ('Processing', NOW() + INTERVAL 1 DAY ,NULL,'ANUBHAV','BALODHI',NULL,'Pandey Gaon','Nainital','UK','263136','IN','abc.de.gen.x@gmail.com',752607249,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Pay with UPI QR Code',0,10,NULL,0,0,10,0,NULL,1,'Doctor',1,10,NULL,NULL,NULL, 5006, NOW(), 'PROC');

@@ -27,6 +27,9 @@ from woocommerce import API
 from ast import literal_eval
 from ..models import Job, Booking
 
+from ..utils import encode, decode, dateAndTime
+from ..models import Rate
+
 ###########################################
 # Types
 Filename = str
@@ -116,6 +119,87 @@ def authBookingGet(_dct, _entity):
     return HttpJSONResponse({"booking":ordersResp})
 
 
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@checkAuth()
+def authBookingSync(dct, entity):
+    '''
+    updated and syncs the mysql DB id with that from woocommerce
+
+    HTTP params:
+        auth
+    '''
+
+    def pros(m, n):
+        wcapi = API(url="https://zippe.in", consumer_key="ck_97e691622c4bd5e13fb7b18cbb266c8277257372",
+                    consumer_secret="cs_63badebe75887e2f94142f9484d06f257194e2c3", version="wc/v3")
+        ret = wcapi.get("orders/?page=" + str(m) + "&per_page=" + str(n))
+        print(ret.status_code)
+        jobs = ["Nurse", "Doctor", "Chartered Accountant", "Accountant","Lawyer","Surveyor","Civil Engineer","Architect","Designer","Photographer","Teacher / Home Tutor","Fitness Trainer","Yoga Trainer","Dietician","Motor Training","Chef","Cook","Maid","Driver","Gardener","Errand Person","Deep Cleaning","House Keeping","Sweeper","Security Guard","Dry Cleaning","Laundry","Delivery","Tailor","Inspection Visit","Appliance Repair","Computer Repair Technician","Electrician","Plumber","Carpenter","Painter","Mason", "Masons Helper","Aluminium Fabricator","Iron Fabricator","Caterer","Mechanic","Coach","Towing Service"]
+
+        ans = []
+        for i in ret.json():
+            x = i
+            if i['line_items'][0]['name'] in jobs:
+                print(i['id'], i['line_items'][0]['name'])
+                resp = {"order_number": i['id'],
+                        "order_status": i['status'],
+                        "order_date": datetime.strptime(i['line_items'][0]['meta_data'][0]['value']['start']['date'][:], "%Y-%m-%d %H:%M:%S.%f"),
+                        "customer_note": i['customer_note'],
+
+                        "first_name_billing" : i['billing']['first_name'],
+                        "last_name_billing" : i['billing']['last_name'],
+                        # "company_Billing" : i['billing']['company'],  # CAN BE NULL
+                        "address_1_2_billing" : i['billing']['address_1'] + " , " + i['billing']['address_2'] ,
+                        "city_billing" : i['billing']['city'],
+                        "state_code_billing": i['billing']['state'],
+                        "postcode_billing": i['billing']['postcode'],
+                        "country_code_billing": i['billing']['country'],
+                        "email_billing" : i['billing']['email'],
+                        "phone_billing": i['billing']['phone'],
+
+                        "order_total_amount": i['line_items'][0]['total'],
+
+                        "item_qty": 1,
+                        "item_Name": i['line_items'][0]['name']
+
+                }
+
+            ans.append(resp)
+        # print("ans :", ans)
+        return ans
+
+    ret = []
+    for i in range(1, 3):
+        resp = pros(str(i), str(20))
+        ret += resp
+        # time.sleep()
+
+    # print(ret)
+    status = 'false'
+    from django.db import connection
+    cursor = connection.cursor()
+    for i in ret:
+        try:
+            # qsNextHubs = Product.objects.raw('update product set id = %s where sku = %s;', [ret[i], i])
+            # cursor.execute('update product set id = %s where sku = %s;', [ret[i], i])
+            uan = '91' + str(i['phone_billing'])
+            #print(i)
+            command = 'INSERT INTO booking(order_status,order_date,customer_note,first_name_billing,last_Name_billing,company_billing,address_1_2_billing,city_billing,state_code_billing,postcode_billing,country_code_billing,email_billing,phone_billing,first_name_shipping,last_name_shipping,address_1_2_shipping,city_shipping,state_code_shipping,postcode_shipping,country_code_shipping,payment_method_title,cart_discount_amount,order_subtotal_amount,shipping_method_title,order_shipping_amount,order_refund_amount,order_total_amount,order_total_tax_amount,sku,item_qty,item_name,quantity,item_cost,coupon_code,discount_amount,discount_amount_tax, order_number,rtime, status, uan) ' \
+                      'VALUES ("%s", "%s", NULL,"%s","%s",NULL,"%s","%s","%s","%s","%s","%s",%s,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"%s",0,10,NULL,0,0,10,0,NULL,1,"%s",1,10,NULL,NULL,NULL,%s, NOW(),"%s", %s);' \
+                      % (i['order_status'], i['order_date'], i['first_name_billing'], i['last_name_billing'], i['address_1_2_billing'], i['city_billing'], i['state_code_billing'], i['postcode_billing'], i['country_code_billing'], i['email_billing'], i['phone_billing'], "Pay with UPI QR Code", i['item_Name'], i['order_number'], "PROC", uan)
+            # print(command)
+            print("################")
+            cursor.execute(command)
+        except IntegrityError:
+            print('Order with ID : %s didn\'t get updated' % i['order_number'])
+        status = 'true'
+
+    return HttpJSONResponse({'status': status})
+
+
 # ============================================================================
 # Servitor views
 # ============================================================================
@@ -136,7 +220,7 @@ def servitorBookingCheck(_dct, servitor):
         count
 
     '''
-    qsBooking = Booking.objects.filter(item_name__in=[servitor.job1, servitor.job2,servitor.job3])
+    qsBooking = Booking.objects.filter(item_name__in=[servitor.job1, servitor.job2,servitor.job3], status='PROC')
     return HttpJSONResponse({'count': str(len(qsBooking))})
 
 
@@ -211,17 +295,28 @@ def servitorBookingGet(_dct, servitor):
     
     # print(ordersResp)
     '''
-    qsBooking = Booking.objects.all().values('order_number', 'item_name', 'order_date', 'order_date')
+    qsBooking = Booking.objects.all().filter(status='PROC').values('order_number', 'item_name', 'order_date', 'order_date')
     # qsOrder = Booking.objects.filter( item_name__in=[servitor.job1, servitor.job2,servitor.job3])
 
     ordersRelevant = []
     if len(qsBooking):
         for ith in qsBooking:
             order = {}
-            if str(ith['item_name']).upper().lower() in [servitor.job1.upper().lower(), servitor.job2.upper().lower(),
-                                                         servitor.job3.upper().lower()]:
-                order = {'bid': ith['order_number'], 'job': ith['item_name'],
-                         'date': str(ith['order_date'])[:10], 'time': str(ith['order_date'])[11:-9], 'earn': 500}
+            jobs = [str(servitor.job1).upper().lower(), str(servitor.job2).upper().lower(), str(servitor.job3).upper().lower()]
+
+            date = ith['order_date']
+            if str(ith['item_name']).upper().lower() in jobs:
+
+                resp = dateAndTime(date)
+                hour = resp['hour']
+                minute = resp['minute']
+                ampm = resp['ampm']
+
+                order = {'bid': ith['order_number'],
+                         'job': ith['item_name'],
+                         'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
+                         'time': str(hour) + " : " + minute + " " + ampm,
+                         'earn': 500}
 
                 ordersRelevant.append(order)
     return HttpJSONResponse({"booking": ordersRelevant,
@@ -293,7 +388,7 @@ def registorServitor(_, dct):
 
         servitor = Servitor()
         servitor.an = sAn
-        servitor.auth = getClientAuth(sAn, sPhone)[:5]  # shortened the auth key of proper decoding base 64 into base 10
+        servitor.auth = getClientAuth(sAn, sPhone)[:5]  # shortened the auth key of proper decoding base 62 into base 10
         servitor.name = sName
         servitor.pn = sPhone
         servitor.bank = sBank
@@ -345,7 +440,7 @@ def loginServitor(_, dct):
     
     HTTP Args:
         pn  : phone number of the Servitor without the ISD code
-        key : rot13(auth) of Servitor
+        key : base 62 encoded auth of Servitor
 
     Response :
         status : true or false depending on whether the login was successful
@@ -363,8 +458,8 @@ def loginServitor(_, dct):
     # from codecs import encode
     # sAuth = encode(str(dct['key']), 'rot13')  # rot13 of the auth  #NOT safe enough
 
-    sAuth = settings.encode(str(dct['key']), settings.BASE62)
-
+    sAuth = encode(str(dct['key']), settings.BASE62)
+    # print("serv auth Key : ", sAuth, "phone :", sPhone)
     qsServitor = Servitor.objects.filter(auth=sAuth, pn=sPhone)
     bServitorExists = len(qsServitor) != 0
     if not bServitorExists:
@@ -437,6 +532,34 @@ def servitorOrderGet(_dct, servitor):
 
 @makeView()
 @csrf_exempt
+@handleException(IndexError, 'Booking not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def servitorBookingAccept(dct, serv):
+    '''
+    Servitor calls this to accept the Booking
+    HTTP Args:
+        auth
+        bid
+    '''
+    qsBooking = Booking.objects.filter(order_number=dct['bid'])
+    booking = qsBooking[0]
+
+    booking.servan = serv.an
+    booking.status = 'ACC'
+    booking.order_status = 'ACC'
+    booking.atime = datetime.now(timezone.utc)
+    booking.save()
+
+    serv.coid = booking.order_number
+    serv.save()
+
+    return HttpJSONResponse({})
+
+@makeView()
+@csrf_exempt
 @handleException(KeyError, 'Invalid parameters', 501)
 @extractParams
 @checkAuth()
@@ -504,14 +627,22 @@ def servitorBookingData(dct, servitor):
 
     resp = {}
 
-    if booking.item_name.upper().lower() in [servitor.job1.upper().lower(), servitor.job2.upper().lower(),
-                                             servitor.job3.upper().lower()]:
+    jobs = [str(servitor.job1).upper().lower(), str(servitor.job2).upper().lower(), str(servitor.job3).upper().lower()]
+    if booking.item_name.upper().lower() in jobs:
+
+        date = booking.order_date
+
+        resp = dateAndTime(date)
+        hour = resp['hour']
+        minute = resp['minute']
+        ampm = resp['ampm']
+
         resp = {
                 'bid': booking.order_number,
                 'job': booking.item_name,
-                'date': str(booking.order_date)[:10],
-                'time': str(booking.order_date)[11:-9],
-                'hours': '2',
+                'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
+                'time': str(hour) + " : " + str(minute) + " " + ampm ,
+                'hours': str(2),
                 'area': str(booking.address_1_2_billing),
                 'earn': 500,
                 'customer_note': str(booking.customer_note),
@@ -541,7 +672,7 @@ def servitorBookingStart(dct, _serv):
     qsBooking = Booking.objects.filter(order_number=dct['bid'])
     booking = qsBooking[0]
 
-    if str(dct['otp']) == '1243':
+    if str(dct['otp']) == '1243' or str(dct['otp']) == str(getOTP(booking.uan, booking.servan, booking.rtime)):
         print(dct['otp'], str(getOTP(booking.uan, booking.servan, booking.rtime)))
         booking.order_status = 'START'
         booking.status = 'START'
@@ -585,7 +716,7 @@ def servitorBookingCancel(dct, _serv):
 @extractParams
 @transaction.atomic
 @checkAuth()
-def servitorBookingEnd(dct, _serv):
+def servitorBookingEnd(dct, serv):
     '''
     Servitor calls this to end the Booking in a normal manner
     HTTP Args:
@@ -599,6 +730,23 @@ def servitorBookingEnd(dct, _serv):
     booking.order_status = 'DONE'
     booking.etime = datetime.now(timezone.utc)
     booking.save()
+
+    user = User.objects.filter(an=booking.uan)[0]
+
+    params = {"to": str(user.fcm), "notification": {
+        "title": "ZIPPE kar lo...",
+        "body": "Your Service has been marked as completed by the service provider. Please give a rating.",
+        "imageUrl": "https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+        "gameUrl": "https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+    }
+              }
+    dctHdrs = {'Content-Type': 'application/json',
+               'Authorization': 'key=AAAA9ac2AKM:APA91bH7N4ocS711aAjNHEYvKo6TZxQ702CWSMqrBBILgAb2hPnZzo2byOb_IHUgHaFCG3xZyKUHH6p8VsUBsXwpfsXKwhxiqtgUSjWGkweKvAcb5p_08ud-U7e3PUIdaC6Sz-TGhHZB'}
+    jsonData = json.dumps(params).encode()
+    sUrl = 'https://fcm.googleapis.com/fcm/send'
+    req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+    jsonResp = urllib.request.urlopen(req, timeout=30).read()
+    ret = json.loads(jsonResp)
 
     return HttpJSONResponse({})
 
@@ -624,14 +772,21 @@ def servitorJobsAccepted(_dct, serv):
 
     if len(currBookings):
         currBooking = currBookings[0]
+        date = currBooking.order_date
+
+        resp = dateAndTime(date)
+        hour = resp['hour']
+        minute = resp['minute']
+        ampm = resp['ampm']
+
         currentBooking = {
-                          'bid': currBooking.order_number,
-                          'job': currBooking.item_name,
-                          'date': str(currBooking.order_date)[:10],
-                          'time': str(currBooking.order_date)[11:-9],
-                          'hours': '2',
-                          'area': str(currBooking.address_1_2_billing),
-                          'earn': 500
+              'bid': currBooking.order_number,
+              'job': currBooking.item_name,
+              'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
+              'time': str(hour) + " : " + str(minute) + " " + ampm,
+              'hours': '2',
+              'area': str(currBooking.address_1_2_billing),
+              'earn': 500
         }
         status = True
 
@@ -642,14 +797,19 @@ def servitorJobsAccepted(_dct, serv):
     today = datetime.now(timezone.utc)
 
     for i in qsBooking:
+        date = i.order_date
+        if date > today:
 
-        if i.order_date > today:
+            resp = dateAndTime(date)
+            hour = resp['hour']
+            minute = resp['minute']
+            ampm = resp['ampm']
 
             data = {
                 'bid': i.order_number,
                 'job': i.item_name,
-                'date': str(i.order_date)[:10],
-                'time': str(i.order_date)[11:-9],
+                'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
+                'time': str(hour) + " : " + str(minute) + " " + ampm,
                 'hours': '2',
                 'area': str(i.address_1_2_billing),
                 'earn': 500
@@ -694,11 +854,18 @@ def servitorJobsCompleted(_dct, serv):
         today = datetime.now(timezone.utc)
 
         for i in qsBooking:
+            date = i.order_date
+
+            resp = dateAndTime(date)
+            hour = resp['hour']
+            minute = resp['minute']
+            ampm = resp['ampm']
+
             data = {
                           'bid': i.order_number,
                           'job': i.item_name,
-                          'date': str(i.order_date)[:10],
-                          'time': str(i.order_date)[11:-9],
+                          'date': str(date.day) + " / " + str(date.month) + " / " + str(date.year),
+                          'time': str(hour) + " : " + str(minute) + " " + ampm,
                           'hours': '2',
                           'earn': 500
             }
@@ -706,3 +873,78 @@ def servitorJobsCompleted(_dct, serv):
                 pastBookings.append(data)
 
     return HttpJSONResponse({'past': pastBookings})
+
+
+# ============================================================================
+# User views
+# ============================================================================
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Booking not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def userBookingRate(dct, user):
+    '''
+    User calls this to rate the booking which has been completed
+    HTTP Args:
+        auth,
+        bid = order number or the booking id
+        rate= rating 0 or 1
+        rev = detailed review about the servitor
+
+    '''
+    qsBooking = Booking.objects.filter(order_number=dct['on'])
+    booking = qsBooking[0]
+
+    booking.status = 'RATE'
+    booking.order_status = 'RATE'
+    booking.etime = datetime.now(timezone.utc)
+    booking.save()
+
+    servitor = Servitor.objects.filter(an=booking.servan)[0]
+    numBook = Booking.objects.filter(servan=servitor.an).count()
+    servitor.mark = (servitor.mark + int(dct['rate'])) / (numBook + 1)
+    servitor.save()
+
+    rate = Rate()
+    rate.id = 'book' + str(booking.order_number)
+    rate.type = 'SERV'
+    rate.rev = dct['rev']
+    rate.money = float(500)
+    rate.dan = servitor.an
+    if 'attitude' in dct['rev'].lower():
+        rate.rating = 'attitude'
+    elif 'quality' in dct['rev'].lower():
+        rate.rating = 'quality'
+    else:
+        rate.rating = dct['rev']
+    rate.save()
+
+    return HttpJSONResponse({})
+
+
+
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Booking not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+def userBookingGetStatus(dct, user):
+    '''
+    User calls this to get the status of the booking
+    HTTP Args:
+        auth,
+        bid : booking id of the user
+    '''
+    booking = Booking.objects.filter(order_number=dct['bid'])[0]
+    resp ={}
+    if booking.status == 'ACC':
+        resp['otp'] = getOTP(booking.uan, booking.servan, booking.rtime)
+
+    return HttpJSONResponse(resp)

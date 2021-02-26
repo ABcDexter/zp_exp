@@ -379,12 +379,16 @@ def driverPaymentConfirm(_dct, driver, trip):
     Note:
         Since state goes to PD, the trip retiring is done here
     '''
+    print("Ride Payment confirm param : ", _dct)
+    #param: {'auth': 'dauth08', 'tid': '31'}
+
     trip.st = 'PD'
+    trip.pmode = str(int(_dct['pmode']) - 1)
     trip.save()
 
     # driver.mode = 'AV'
     # retiring is NOT done here but in the driver
-    #retireEntity(driver)
+    # retireEntity(driver)
     
     # user = User.objects.filter(an=trip.uan)[0]
     # user.tid = -1
@@ -557,7 +561,7 @@ def userIsDriverAv(dct, user):
 
             #if nTime or nDist:
             if nDist < 50_000:  # 10 kms
-                print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
+                # print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
                 drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
     print("drivers found in 10km radius : ", len(drivers))
     ret.update({'count': len(drivers)}) # {'drivers': drivers})

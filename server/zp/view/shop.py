@@ -140,13 +140,19 @@ def authProductBatchUpdate(dct, entity):
     
     for ith in data['update']:
         qsProduct = Product.objects.filter(id=ith['id'])
-        rec =  Product() if len(qsProduct) == 0 else qsProduct[0]
+        rec = Product() if len(qsProduct) == 0 else qsProduct[0]
         
         for key, val in ith.items():
-            setattr(rec, key, val)
+            if key == 'stock_qnt':
+                rec.stock_quantity = int(rec.stock_quantity) + int(val)
+            else:
+                setattr(rec, key, val)
+
         rec.save()
         #print(rec)
+
     print('local DB batch updated')
+
     #WooCommerce update
     wcapi = API(
         url="https://zippe.in",
@@ -157,8 +163,10 @@ def authProductBatchUpdate(dct, entity):
     
     # data = dct
     URI = 'products/batch'
-    print(print(wcapi.post(URI, data).json()))
-    print('WooCommerce DB batch updated')
+    if print(wcapi.post(URI, data).json()) is None:
+        print('WooCommerce DB NOT updated')
+    else:
+        print('WooCommerce DB batch updated')
     return HttpJSONResponse({})
 
 

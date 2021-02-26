@@ -16,6 +16,13 @@ from ..utils import getTripPrice, getRentPrice
 from ..utils import handleException, extractParams, checkAuth, checkTripStatus, retireEntity
 from django.db.utils import IntegrityError
 
+from django.conf import settings
+from ..utils import encode, decode
+
+from hypertrack.rest import Client
+from hypertrack.exceptions import HyperTrackException
+
+
 ###########################################
 # Types
 Filename = str
@@ -114,7 +121,22 @@ def userRentGetSup(_dct, _user, trip):
 @checkTripStatus('ST')
 def userRentEnd(_dct, user, _trip):
     '''
+
     return nearest hub name, their distance from current location and lat,lng
+    -----------------------------------------
+    HTTP args:
+        auth : current user
+    -----------------------------------------
+    Response:
+        'close1pn' ,
+        'close1lat' ,
+        'close1lng' ,
+        'close1dst',
+        'close2pn' ,
+        'close2lat' ,
+        'close2lng' ,
+        'close2dst' ,
+
     '''
     qsPrevHubs = Place.objects.raw(
         'SELECT pl.id, pl.pn, pl.lat, pl.lng FROM place pl WHERE pl.id < (SELECT plcurr.id FROM place plcurr WHERE plcurr.id= %s) ORDER BY pl.id DESC LIMIT 2;',
@@ -429,10 +451,13 @@ def supRentLogin(_, dct):
     Makes the supervisor login 
     HTTPS args:
         pn : phone number,
-        sa : super auth
+        sa : super login key, base 62 encoded
     '''
-    sup = Supervisor.objects.filter(pn=dct['pn'], auth=dct['sa'])[0]
-    ret = {'auth': sup.auth, 'name':sup.name, 'redirect':True,"redirect_url": "dashboard.html"} #index.html"}
+    sAuth = encode(str(dct['sa']), settings.BASE62)
+    print("super auth Key : ", sAuth, "phone :", dct['pn'])
+
+    sup = Supervisor.objects.filter(pn=dct['pn'], auth=sAuth)[0]
+    ret = {'auth': sup.auth, 'name': sup.name, 'redirect': True, "redirect_url": "dashboard.html"}
     return HttpJSONResponse(ret)
 
 
@@ -760,7 +785,13 @@ def supRentRetire(dct, _sup):
     total = float(getTripPrice(trip)['price'])
     user = User.objects.filter(an=trip.uan)[0]
     sendTripInvoiceMail('Rent', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
-    
+
+    # STOP tracking the User
+    if trip.htid :
+        hypertrack = Client(settings.HYPERTRACK_ACCOUNT_ID, settings.HYPERTRACK_SECRET_KEY)
+        hypertrack.trips.complete(str(trip.htid))
+        # done
+
     return HttpJSONResponse({})
 
 
