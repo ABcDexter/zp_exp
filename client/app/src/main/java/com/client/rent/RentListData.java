@@ -1,7 +1,10 @@
 package com.client.rent;
 
 public class RentListData {
-    private String rentID, rentStatus, rentDate, rentVtype;
+    private final String rentID;
+    private final String rentStatus;
+    private final String rentDate;
+    private final String rentVtype;
 
     public RentListData(String rentID, String rentStatus, String rentDate, String rentVtype) {
         this.rentID = rentID;

@@ -440,5 +440,6 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="service_history">Service History</string>
     <string name="shop_by_category">Shop by category</string>
     <string name="book_new_services">book new services</string>
+    <string name="enter_login_key">Enter Login Key</string>
 
 </resources>

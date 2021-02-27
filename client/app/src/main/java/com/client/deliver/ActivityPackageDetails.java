@@ -46,7 +46,7 @@ public class ActivityPackageDetails extends ActivityDrawer implements View.OnCli
     private static int currentPage = 0;
     private static int NUM_PAGES = 0;
     private static final Integer[] IMAGES = {R.drawable.delivery_man};
-    private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
+    private final ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
     String ContentType = "";
     String ContentSize = "";
     String ctype = "", csize="";//TODO find better way

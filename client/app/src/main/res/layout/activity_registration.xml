@@ -146,7 +146,8 @@
             android:scaleType="centerInside"
             android:src="@drawable/login"
             android:text="@string/next"
-            android:textAllCaps="true" />
+            android:textAllCaps="true"
+            android:contentDescription="TODO" />
 
         <ProgressBar
             android:id="@+id/simpleProgressBar"

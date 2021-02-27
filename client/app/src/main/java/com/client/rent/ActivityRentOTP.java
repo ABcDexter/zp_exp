@@ -460,9 +460,9 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             if (str == null) str = "discard";
             String status = "";
             String approvalRefNo = "";
-            String response[] = str.split("&");
+            String[] response = str.split("&");
             for (int i = 0; i < response.length; i++) {
-                String equalStr[] = response[i].split("=");
+                String[] equalStr = response[i].split("=");
                 if (equalStr.length >= 2) {
                     if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
                         status = equalStr[1].toLowerCase();
@@ -493,11 +493,9 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager != null) {
             NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnected()
+            return netInfo != null && netInfo.isConnected()
                     && netInfo.isConnectedOrConnecting()
-                    && netInfo.isAvailable()) {
-                return true;
-            }
+                    && netInfo.isAvailable();
         }
         return false;
     }

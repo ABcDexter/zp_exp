@@ -25,7 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:background="@color/colorAccent"
-                android:src="@drawable/ic_account_circle" />
+                android:src="@drawable/ic_account_circle"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -138,7 +139,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_arrow_drop_down" />
+                android:src="@drawable/ic_arrow_drop_down"
+                android:contentDescription="TODO" />
 
         </RelativeLayout>
 
@@ -238,6 +240,7 @@
             android:background="@drawable/green_button_bkg"
             android:padding="15dp"
             android:scaleType="centerInside"
-            android:src="@drawable/update" />
+            android:src="@drawable/update"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 </ScrollView>

@@ -266,7 +266,8 @@
                         android:layout_alignEnd="@id/pod"
                         android:layout_marginTop="30dp"
                         android:layout_marginEnd="40dp"
-                        android:src="@drawable/ic_bhim" />
+                        android:src="@drawable/ic_bhim"
+                        android:contentDescription="TODO" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -295,7 +296,8 @@
                     android:padding="15dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/confirm"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"
+                    android:contentDescription="TODO" />
             </RelativeLayout>
 
             <Button

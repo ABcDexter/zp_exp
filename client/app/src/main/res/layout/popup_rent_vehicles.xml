@@ -58,7 +58,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="60dp"
-            android:src="@drawable/cycle" />
+            android:src="@drawable/cycle"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -87,7 +88,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="60dp"
-            android:src="@drawable/scooty_left" />
+            android:src="@drawable/scooty_left"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -116,7 +118,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="60dp"
-            android:src="@drawable/bike_right" />
+            android:src="@drawable/bike_right"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
 

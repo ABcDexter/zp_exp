@@ -12,7 +12,8 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
-        android:id="@+id/close_hub"/>
+        android:id="@+id/close_hub"
+        android:contentDescription="TODO" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

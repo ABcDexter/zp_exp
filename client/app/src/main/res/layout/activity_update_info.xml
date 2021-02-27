@@ -105,7 +105,8 @@
                     android:padding="15dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/update"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"
+                    android:contentDescription="TODO" />
             </RelativeLayout>
         </RelativeLayout>
     </ScrollView>

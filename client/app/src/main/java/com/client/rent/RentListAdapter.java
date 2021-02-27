@@ -17,8 +17,8 @@ import com.client.ride.RideListData;
 import java.util.List;
 
 public class RentListAdapter extends RecyclerView.Adapter<RentListAdapter.ViewHolder> {
-    private List<RideListData> rent_list_data;
-    private Context context;
+    private final List<RideListData> rent_list_data;
+    private final Context context;
 
     public RentListAdapter(List<RideListData> rent_list_data, Context context) {
         this.rent_list_data = rent_list_data;
@@ -82,8 +82,17 @@ public class RentListAdapter extends RecyclerView.Adapter<RentListAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView rentID, rentStatus,  rentVType, rentDate, rentTxt,rentTxt2, srcTxt, dstTxt;
-        private LinearLayout llSrc, llDst,layout;
+        private final TextView rentID;
+        private final TextView rentStatus;
+        private final TextView rentVType;
+        private final TextView rentDate;
+        private final TextView rentTxt;
+        private final TextView rentTxt2;
+        private final TextView srcTxt;
+        private final TextView dstTxt;
+        private final LinearLayout llSrc;
+        private final LinearLayout llDst;
+        private final LinearLayout layout;
 
         public ViewHolder(View itemView) {
             super(itemView);

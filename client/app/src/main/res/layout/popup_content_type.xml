@@ -60,7 +60,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="30dp"
-            android:src="@drawable/books" />
+            android:src="@drawable/books"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
     <View
@@ -93,7 +94,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="30dp"
-            android:src="@drawable/books" />
+            android:src="@drawable/books"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
     <View
@@ -127,7 +129,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="30dp"
-            android:src="@drawable/food" />
+            android:src="@drawable/food"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
     <View
@@ -161,7 +164,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="30dp"
-            android:src="@drawable/household" />
+            android:src="@drawable/household"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
     <View
@@ -195,7 +199,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="30dp"
-            android:src="@drawable/electronics" />
+            android:src="@drawable/electronics"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
     <View
@@ -229,7 +234,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="30dp"
-            android:src="@drawable/cloths" />
+            android:src="@drawable/cloths"
+            android:contentDescription="TODO" />
     </RelativeLayout>
 
     <View
@@ -268,7 +274,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="30dp"
-                android:src="@drawable/other" />
+                android:src="@drawable/other"
+                android:contentDescription="TODO" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -304,7 +311,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="30dp"
-                android:src="@drawable/check_colored" />
+                android:src="@drawable/check_colored"
+                android:contentDescription="TODO" />
         </RelativeLayout>
     </RelativeLayout>
 

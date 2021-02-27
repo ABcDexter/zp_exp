@@ -358,7 +358,8 @@
                     android:padding="15dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/cancel"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"
+                    android:contentDescription="TODO" />
             </RelativeLayout>
             <Button
                 android:id="@+id/dummy"

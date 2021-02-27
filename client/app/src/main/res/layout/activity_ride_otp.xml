@@ -74,7 +74,8 @@
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@id/driver_phone"
-                        android:src="@drawable/phone" />
+                        android:src="@drawable/phone"
+                        android:contentDescription="TODO" />
                 </RelativeLayout>
 
 
@@ -372,7 +373,8 @@
                     android:padding="15dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/cancel"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"
+                    android:contentDescription="TODO" />
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

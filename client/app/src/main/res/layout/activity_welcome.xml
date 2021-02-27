@@ -33,14 +33,16 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="80dp"
                     android:layout_marginBottom="80dp"
-                    android:src="@drawable/iam" />
+                    android:src="@drawable/iam"
+                    android:contentDescription="TODO" />
 
                 <ImageView
                     android:id="@+id/iv_zippee"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_above="@id/zippe_logo"
-                    android:src="@drawable/zbee_right" />
+                    android:src="@drawable/zbee_right"
+                    android:contentDescription="TODO" />
 
                 <ImageView
                     android:id="@+id/scooty_up"
@@ -48,7 +50,8 @@
                     android:layout_height="50dp"
                     android:layout_above="@id/zippe_logo"
                     android:src="@drawable/scooty_left"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:contentDescription="TODO" />
 
                 <include
                     android:id="@+id/zippe_logo"
@@ -71,14 +74,16 @@
                     android:layout_height="50dp"
                     android:layout_below="@id/zippe_logo"
                     android:src="@drawable/zbee_left"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:contentDescription="TODO" />
 
                 <ImageView
                     android:id="@+id/scooty_down"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_below="@id/zippe_logo"
-                    android:src="@drawable/scooty_right" />
+                    android:src="@drawable/scooty_right"
+                    android:contentDescription="TODO" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -97,7 +102,8 @@
                         android:background="@drawable/blue_button_bkg"
                         android:padding="10dp"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ride" />
+                        android:src="@drawable/ride"
+                        android:contentDescription="TODO" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/infoRideBtn"
@@ -127,7 +133,8 @@
                         android:background="@drawable/orange_button_bkg"
                         android:padding="10dp"
                         android:scaleType="centerInside"
-                        android:src="@drawable/rent" />
+                        android:src="@drawable/rent"
+                        android:contentDescription="TODO" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/infoRentBtn"
@@ -157,7 +164,8 @@
                         android:background="@drawable/green_button_bkg"
                         android:padding="10dp"
                         android:scaleType="centerInside"
-                        android:src="@drawable/delivery" />
+                        android:src="@drawable/delivery"
+                        android:contentDescription="TODO" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/infoDeliveyBtn"
@@ -187,7 +195,8 @@
                         android:background="@drawable/orange_button_bkg"
                         android:padding="10dp"
                         android:scaleType="centerInside"
-                        android:src="@drawable/shop" />
+                        android:src="@drawable/shop"
+                        android:contentDescription="TODO" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/infoShopBtn"
@@ -218,7 +227,8 @@
                         android:background="@drawable/blue_button_bkg"
                         android:padding="10dp"
                         android:scaleType="centerInside"
-                        android:src="@drawable/services" />
+                        android:src="@drawable/services"
+                        android:contentDescription="TODO" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/infoServiceBtn"
@@ -257,7 +267,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_arrow_downward" />
+                        android:src="@drawable/ic_arrow_downward"
+                        android:contentDescription="TODO" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -281,7 +292,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_arrow_downward" />
+                        android:src="@drawable/ic_arrow_downward"
+                        android:contentDescription="TODO" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -305,7 +317,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_arrow_downward" />
+                        android:src="@drawable/ic_arrow_downward"
+                        android:contentDescription="TODO" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -329,7 +342,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_arrow_downward" />
+                        android:src="@drawable/ic_arrow_downward"
+                        android:contentDescription="TODO" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -353,7 +367,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_arrow_downward" />
+                        android:src="@drawable/ic_arrow_downward"
+                        android:contentDescription="TODO" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -370,7 +385,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:layout_marginEnd="45dp"
-                        android:src="@drawable/ic_diagonal_arrow" />
+                        android:src="@drawable/ic_diagonal_arrow"
+                        android:contentDescription="TODO" />
 
                     <TextView
                         android:layout_width="wrap_content"

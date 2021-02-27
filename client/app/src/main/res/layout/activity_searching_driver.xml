@@ -22,7 +22,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_above="@+id/layoutZippeee"
-                android:src="@drawable/zbee_right" />
+                android:src="@drawable/zbee_right"
+                android:contentDescription="TODO" />
 
             <include
                 android:id="@+id/layoutZippeee"
@@ -37,7 +38,8 @@
                 android:layout_height="40dp"
                 android:layout_below="@+id/layoutZippeee"
                 android:src="@drawable/zbee_left"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                android:contentDescription="TODO" />
 
             <ImageView
                 android:id="@+id/scooty_down"
@@ -45,7 +47,8 @@
                 android:layout_height="50dp"
                 android:layout_below="@id/layoutZippeee"
                 android:src="@drawable/scooty_right"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:contentDescription="TODO" />
 
             <LinearLayout
                 android:id="@+id/rl_cost"

@@ -1,10 +1,10 @@
 package com.client.deliver;
 
 public class DeliveryListData {
-    private String deliveryID;
-    private String deliveryPrice;
-    private String deliveryStatus;
-    private String deliveryIType;
+    private final String deliveryID;
+    private final String deliveryPrice;
+    private final String deliveryStatus;
+    private final String deliveryIType;
 
 
     public String getDeliveryID() {

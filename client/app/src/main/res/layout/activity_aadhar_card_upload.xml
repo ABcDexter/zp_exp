@@ -31,7 +31,8 @@
             android:layout_height="40dp"
             android:layout_below="@id/containerAadhar"
             android:layout_marginTop="20dp"
-            android:background="@drawable/line" />
+            android:background="@drawable/line"
+            android:contentDescription="TODO" />
 
         <RelativeLayout
             android:id="@+id/containerAadhar"
@@ -45,7 +46,8 @@
                 android:layout_width="350dp"
                 android:layout_height="250dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/aadhar_container" />
+                android:background="@drawable/aadhar_container"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -72,7 +74,8 @@
                 android:layout_height="250dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/aadhar_container" />
+                android:background="@drawable/aadhar_container"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -99,7 +102,8 @@
             android:scaleType="centerInside"
             android:src="@drawable/next"
             android:text="@string/next"
-            android:textAllCaps="true" />
+            android:textAllCaps="true"
+            android:contentDescription="TODO" />
 
         <ProgressBar
             android:id="@+id/simpleProgressBar"

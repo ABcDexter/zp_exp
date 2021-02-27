@@ -1,7 +1,12 @@
 package com.client.ride;
 
 public class RideListData {
-    private String rideID, rideStatus, rideDate, rideVtype, rideSrc, rideDst;
+    private final String rideID;
+    private final String rideStatus;
+    private final String rideDate;
+    private final String rideVtype;
+    private final String rideSrc;
+    private final String rideDst;
 
     public String getRideVtype() {
         return rideVtype;

@@ -39,7 +39,8 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/happy"
                 android:layout_above="@id/zippe_logo"
-                android:layout_centerHorizontal="true"/>
+                android:layout_centerHorizontal="true"
+                android:contentDescription="TODO" />
 
             <include
                 layout="@layout/zippe_logo"
@@ -60,7 +61,8 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/unhappy"
                 android:layout_below="@+id/zippe_logo"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:contentDescription="TODO" />
 
            <!-- <TextView
                 android:id="@+id/payment"

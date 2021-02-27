@@ -17,8 +17,8 @@ import com.client.R;
 import java.util.List;
 
 public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapter.ViewHolder> {
-    private List<DeliveryListData> delivery_list_data;
-    private Context context;
+    private final List<DeliveryListData> delivery_list_data;
+    private final Context context;
     private int intentValue;
 
     public DeliveryListAdapter(List<DeliveryListData> delivery_list_data, Context context) {

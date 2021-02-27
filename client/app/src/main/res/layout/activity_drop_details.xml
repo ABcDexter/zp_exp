@@ -61,7 +61,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_arrow_drop_down" />
+                    android:src="@drawable/ic_arrow_drop_down"
+                    android:contentDescription="TODO" />
             </RelativeLayout>
             <include
                 android:id="@+id/layoutZippeee"
@@ -123,7 +124,8 @@
                 android:background="@drawable/orange_button_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/next" />
+                android:src="@drawable/next"
+                android:contentDescription="TODO" />
         </LinearLayout>
 
     </ScrollView>

@@ -72,7 +72,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_arrow_up" />
+                    android:src="@drawable/ic_arrow_up"
+                    android:contentDescription="TODO" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -97,7 +98,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_arrow_up" />
+                    android:src="@drawable/ic_arrow_up"
+                    android:contentDescription="TODO" />
             </RelativeLayout>
 
             <include
@@ -167,7 +169,8 @@
                     android:padding="15dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/letsgo"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"
+                    android:contentDescription="TODO" />
             </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
