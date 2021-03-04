@@ -76,7 +76,7 @@
                         android:layout_height="50dp"
                         android:layout_weight="1"
                         android:gravity="center|start"
-                        android:text=""
+                        android:text="₹ 60"
                         android:textAlignment="center"
                         android:textAllCaps="true"
                         android:textSize="23sp" />

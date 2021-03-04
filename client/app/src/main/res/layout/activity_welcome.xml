@@ -31,7 +31,7 @@
                     android:layout_width="170dp"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="80dp"
+                    android:layout_marginTop="120dp"
                     android:layout_marginBottom="80dp"
                     android:src="@drawable/iam"
                     android:contentDescription="TODO" />
@@ -90,7 +90,8 @@
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/rlRent"
                     android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp">
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp">
 
                     <ImageButton
                         android:id="@+id/btn_ride"
@@ -121,7 +122,8 @@
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/rlDelivery"
                     android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp">
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp">
 
                     <ImageButton
                         android:id="@+id/btn_rent"
@@ -150,9 +152,10 @@
                     android:id="@+id/rlDelivery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/rlShop"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp">
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="50dp">
 
                     <ImageButton
                         android:id="@+id/btn_deliver"
@@ -177,7 +180,7 @@
                         android:background="@drawable/ic_info" />
                 </RelativeLayout>
 
-                <RelativeLayout
+                <!--<RelativeLayout
                     android:id="@+id/rlShop"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -238,7 +241,8 @@
                         android:layout_marginTop="7dp"
                         android:layout_marginEnd="20dp"
                         android:background="@drawable/ic_info" />
-                </RelativeLayout>
+                </RelativeLayout>-->
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -252,7 +256,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/llRent"
-                    android:layout_marginBottom="10dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -300,8 +303,8 @@
                     android:id="@+id/llDelivery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@id/llShop"
-                    android:layout_marginBottom="10dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="90dp"
                     android:orientation="vertical"
                     android:visibility="invisible">
 
@@ -321,7 +324,7 @@
                         android:contentDescription="TODO" />
                 </LinearLayout>
 
-                <LinearLayout
+                <!--<LinearLayout
                     android:id="@+id/llShop"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -369,7 +372,7 @@
                         android:layout_gravity="center"
                         android:src="@drawable/ic_arrow_downward"
                         android:contentDescription="TODO" />
-                </LinearLayout>
+                </LinearLayout>-->
 
                 <LinearLayout
                     android:id="@+id/llInfo"

@@ -27,14 +27,14 @@
         android:id="@+id/nav_delivery_orders"
         android:icon="@drawable/ic_time"
         android:title="@string/delivery_orders" />
-    <item
+    <!--<item
         android:id="@+id/nav_shop_history"
         android:icon="@drawable/ic_time"
         android:title="@string/shop_history" />
     <item
         android:id="@+id/nav_service_history"
         android:icon="@drawable/ic_time"
-        android:title="@string/service_history" />
+        android:title="@string/service_history" />-->
     <item
         android:id="@+id/nav_customer_support"
         android:icon="@drawable/ic_insert_comment"

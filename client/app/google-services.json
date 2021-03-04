@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "1055072321699",
     "project_id": "zippe-client-c4208",
-    "firebase_url": "https://console.firebase.google.com/project/zippe-driver-app/overview",
+    "firebase_url": "https://console.firebase.google.com/project/zippe-client-c4208/settings/general/android:com.zpclient",
     "storage_bucket": "zippe-client-c4208.appspot.com"
   },
   "client": [
@@ -20,6 +20,43 @@
           "android_info": {
             "package_name": "com.client",
             "certificate_hash": "d4cfbc8b3939c12527d91f01f68e73ae8ff91f15"
+          }
+        },
+        {
+          "client_id": "1055072321699-6mo1r8fc5ajm73hegbhqeh3rio5rksg4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR2f5RBCJAP4YsJojRrt4zBCwQEIlXPT8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1055072321699-6mo1r8fc5ajm73hegbhqeh3rio5rksg4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055072321699:android:758c892284db323253bf16",
+        "android_client_info": {
+          "package_name": "com.zpclient"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1055072321699-6qptlkc1q6q1gr3f2vj56ebmpsc64hr8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zpclient",
+            "certificate_hash": "7de0a5d5a51b1126f44f470dfbd7e7d1ca70533f"
           }
         },
         {
