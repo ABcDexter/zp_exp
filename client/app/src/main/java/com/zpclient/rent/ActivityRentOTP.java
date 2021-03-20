@@ -386,13 +386,16 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
 
     public void callSuper() {
         String phoneSuper = dPhone.getText().toString().trim();
-        Intent intent = new Intent(Intent.ACTION_CALL);
+        /*Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + phoneSuper));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        startActivity(intent);
+        startActivity(intent);*/
+        Uri call = Uri.parse("tel:" + phoneSuper);
+        Intent surf = new Intent(Intent.ACTION_DIAL, call);
+        startActivity(surf);
     }
 
     void payUsingUpi(String amount, String upiId, String name, String note) {

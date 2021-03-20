@@ -91,7 +91,8 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
 
     public static final String PREFS_ADDRESS = "com.client.ride.Address";
     public static final String SESSION_COOKIE = "com.client.ride.Cookie";
-    public static final String EXPRESS = "Express";
+    //public static final String EXPRESS = "Express";
+    public static final String DEL_TYPE = "DeliveyType";// 1 means express delivery, 0 means standard delivery
 
     public static final String REVIEW = "com.delivery.Review";//TODO find better way
     public static final String R_C_TYPE = "CTYPE";
@@ -172,7 +173,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         pMonth = pref.getString(PICK_MONTH, "");
         pDay = pref.getString(PICK_DAY, "");
         detailsPick = pref.getString(ADD_INFO_PICK_POINT, "");
-        express = pref.getString(EXPRESS, "");
+        express = pref.getString(DEL_TYPE, "");
 
         if (express.equals("0")) {
             String[] splitArray = pHour.split(":");

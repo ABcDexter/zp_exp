@@ -410,24 +410,31 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
 
     public void btnSetOnEmergency() {
         String number = "7060743705";
-        Intent intent = new Intent(Intent.ACTION_CALL);
+        /*Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + number));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         startActivity(intent);
+        String number = "7777777777";*/
+        Uri call = Uri.parse("tel:" + number);
+        Intent surf = new Intent(Intent.ACTION_DIAL, call);
+        startActivity(surf);
     }
 
     public void callSuper() {
-        String phoneSuper = phone.getText().toString().trim();
-        Intent intent = new Intent(Intent.ACTION_CALL);
+        /*Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + phoneSuper));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        startActivity(intent);
+        startActivity(intent);*/
+        String phoneSuper = phone.getText().toString().trim();
+        Uri call = Uri.parse("tel:" + phoneSuper);
+        Intent surf = new Intent(Intent.ACTION_DIAL, call);
+        startActivity(surf);
     }
 
 }

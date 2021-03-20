@@ -394,13 +394,16 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
 
     public void callDriverPhn() {
         String phoneDriver = dPhone.getText().toString().trim();
-        Intent intent = new Intent(Intent.ACTION_CALL);
+        /*Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + phoneDriver));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        startActivity(intent);
+        startActivity(intent);*/
+        Uri call = Uri.parse("tel:" + phoneDriver);
+        Intent surf = new Intent(Intent.ACTION_DIAL, call);
+        startActivity(surf);
     }
 
    /* private void giveOtp() {

@@ -77,12 +77,12 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
     public static final String PICK_HOUR = "PickHour";
     public static final String PICK_MINUTE = "PickMinute";
     //public static final String EXPRESS = "Express";
-    public static final String DEL_TYPE = "DeliveyType";// 1 means express delivery, 2 means standard delivery
+    public static final String DEL_TYPE = "DeliveyType";// 1 means express delivery, 0 means standard delivery
 
     SharedPreferences prefAuth;
     ImageButton next;
     //String EXPress;
-    String delType = "00";// 00 means no delivery set, 1 means express delivery, 2 means standard delivery
+    String delType = "00";// 00 means no delivery set, 1 means express delivery, 0 means standard delivery
     Dialog myDialog;
     TextView stndTime, addDetails, stndtomorrow;
     String timeSlot = "0";
@@ -420,7 +420,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
             if (standardDelv.isChecked()) {
                 expressDelv.setChecked(false);
                 StandardTimeCheckbox();
-                delType = "2";// delivery type is standard
+                delType = "0";// delivery type is standard
             }
         }
         if (id == R.id.slot1) {
@@ -431,7 +431,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 slot5.setChecked(false);
                 slot6.setChecked(false);
                 //StandardTimeCheckbox();
-                delType = "2";
+                delType = "0";
                 timeSlot = "8";
                 stndTime.setText("8:00 - 10:00 am");
             }
@@ -444,7 +444,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 slot5.setChecked(false);
                 slot6.setChecked(false);
                 //StandardTimeCheckbox();
-                delType = "2";
+                delType = "0";
                 timeSlot = "10";
                 stndTime.setText("10:00 - 12:00 pm");
             }
@@ -457,7 +457,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 slot5.setChecked(false);
                 slot6.setChecked(false);
                 //StandardTimeCheckbox();
-                delType = "2";
+                delType = "0";
                 timeSlot = "12";
                 stndTime.setText("12:00 - 2:00 pm");
             }
@@ -470,7 +470,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 slot5.setChecked(false);
                 slot6.setChecked(false);
                 //StandardTimeCheckbox();
-                delType = "2";
+                delType = "0";
                 timeSlot = "14";
                 stndTime.setText("2:00 - 4:00 pm");
             }
@@ -483,7 +483,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 slot4.setChecked(false);
                 slot6.setChecked(false);
                 //StandardTimeCheckbox();
-                delType = "2";
+                delType = "0";
                 timeSlot = "16";
                 stndTime.setText("4:00 - 6:00 pm");
             }
@@ -496,7 +496,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 slot4.setChecked(false);
                 slot5.setChecked(false);
                 //StandardTimeCheckbox();
-                delType = "2";
+                delType = "0";
                 timeSlot = "18";
                 stndTime.setText("6:00 - 8:00 pm");
             }
@@ -544,7 +544,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         /*editor.putString(HOUR, tmSlot);
         editor.putString(MINUTE, "00");*/
         //editor.putString(EXPRESS, "0");
-        editor.putString(DEL_TYPE, "2"); // 2 means standard delivery
+        editor.putString(DEL_TYPE, "0"); // 2 means standard delivery
         editor.apply();
         Log.d(TAG, "hour" + tmSlot + " min=" + "00");
 

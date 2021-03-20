@@ -78,8 +78,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.CALL_PHONE};
+            android.Manifest.permission.ACCESS_FINE_LOCATION};
 
     ActivityWelcome a = ActivityWelcome.this;
     Map<String, String> params = new HashMap();
