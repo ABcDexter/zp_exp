@@ -56,7 +56,7 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
     //public static final String EXPRESS = "Express";
     public static final String HOUR = "Hour";
     public static final String MINUTE = "Minute";
-    public static final String DEL_TYPE = "DeliveyType";// 1 means express delivery, 2 means standard delivery
+    public static final String DEL_TYPE = "DeliveyType";// 1 means express delivery, 0 means standard delivery
 
     EditText pName, pNum, dName, dNum;
     TextView pAddress, dAddress, content, size, care, deliveryType, time, date;
@@ -176,7 +176,7 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
             case "1":
                 deliveryType.setText(R.string.express);
                 break;
-            case "2":
+            case "0":
                 deliveryType.setText(R.string.standard);
                 break;
         }
