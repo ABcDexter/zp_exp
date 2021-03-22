@@ -203,7 +203,8 @@ def driverRideCheck(_dct, driver):
     # Get the first requested trip from drivers place id
     qsTrip = Trip.objects.filter(st='RQ').order_by('-rtime') #10 km radius
     #TODO give closest ride first
-    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'srclat': qsTrip[0].srclat, 'srclng': qsTrip[0].srclng }
+
+    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'srclat': qsTrip[0].srclat, 'srclng': qsTrip[0].srclng}
     return HttpJSONResponse(ret)
 
 
