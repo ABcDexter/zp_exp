@@ -432,7 +432,6 @@ def driverRideRetire(dct, driver, trip):
     # PD : driver already retired from driverPaymentConfirm #NOT anymore 9/11/2020
     FL : admin already retired from adminHandleFailedTrip()
 
-    TODO: move this common code to a function
     '''
     #if trip.st == 'PD':
     total = float(getTripPrice(trip)['price'])
@@ -542,6 +541,7 @@ def userIsDriverAv(dct, user):
     drivers = []
     print('drivers are here ' ,len(qsDrivers))
     # TODO make this view API optimal and Integrate with PUSH notification of FCM
+    # today 24/3/2021
     for driver in qsDrivers:
         #print(driver)
         vehicles = list(Vehicle.objects.filter(vtype=dct['vtype']).values('an','vtype'))
@@ -566,6 +566,22 @@ def userIsDriverAv(dct, user):
                 # print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
                 drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
     print("drivers found in 10km radius : ", len(drivers))
+
+    if len(drivers) > 0 :
+        params = {"to": str(user.fcm), "notification": {
+            "title": "ZIPPE kar lo...",
+            "body": "You have a driver nearby. Click to confirm your ride",
+            "imageUrl": "https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+            "gameUrl": "https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+        }
+                  }
+        dctHdrs = {'Content-Type': 'application/json',
+                   'Authorization': 'key=AAAA9ac2AKM:APA91bH7N4ocS711aAjNHEYvKo6TZxQ702CWSMqrBBILgAb2hPnZzo2byOb_IHUgHaFCG3xZyKUHH6p8VsUBsXwpfsXKwhxiqtgUSjWGkweKvAcb5p_08ud-U7e3PUIdaC6Sz-TGhHZB'}
+        jsonData = json.dumps(params).encode()
+        sUrl = 'https://fcm.googleapis.com/fcm/send'
+        req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+        jsonResp = urllib.request.urlopen(req, timeout=30).read()
+
     ret.update({'count': len(drivers)}) # {'drivers': drivers})
     return HttpJSONResponse(ret)
 
