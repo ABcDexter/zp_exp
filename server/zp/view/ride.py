@@ -433,10 +433,10 @@ def driverRideRetire(dct, driver, trip):
     FL : admin already retired from adminHandleFailedTrip()
 
     '''
-    #if trip.st == 'PD':
-    total = float(getTripPrice(trip)['price'])
-    user = User.objects.filter(an=trip.uan)[0]
-    sendTripInvoiceMail('Rent', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
+    if trip.st not in ['CN']:
+        total = float(getTripPrice(trip)['price'])
+        user = User.objects.filter(an=trip.uan)[0]
+        sendTripInvoiceMail('Rent', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
     
     # made the driver AV and reset the tid to -1
     driver.mode = 'AV'
@@ -540,7 +540,7 @@ def userIsDriverAv(dct, user):
     ret = {}
     drivers = []
     print('drivers are here ' ,len(qsDrivers))
-    # TODO make this view API optimal and Integrate with PUSH notification of FCM
+    # TODO make this view API optimal
     # today 24/3/2021
     for driver in qsDrivers:
         #print(driver)
@@ -610,6 +610,7 @@ def userRideEstimate(dct, _user, _trip):
     '''
     print("Ride Estimate param : ", dct)
     ret = getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)
+    #TODO if distance > 50 kms, return empty
     # ret['price'] = float(ret['price'])*0.9 if _user.hs == 'UK' else ret['price']  # 10 % off for natives
     # ret['price'] = float(ret['price'])*0.75 if _user.gdr == 'F' else ret['price']  # 25 % off for Females
 
