@@ -81,12 +81,12 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
             android:background="@drawable/orange_button_bkg"
+            android:contentDescription="TODO"
             android:padding="15dp"
             android:scaleType="centerInside"
             android:src="@drawable/login"
             android:text="@string/next"
-            android:textAllCaps="true"
-            android:contentDescription="TODO" />
+            android:textAllCaps="true" />
 
         <ProgressBar
             android:id="@+id/simpleProgressBar"
@@ -99,27 +99,51 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/login"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp">
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/tnc"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:buttonTint="@color/txtColor"
                 android:text="@string/i_agree_to_terms_amp_conditions"
                 android:textAllCaps="true"
                 android:textColor="@color/txtColor"
-                android:textSize="12sp" />
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/txt_policies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_toEndOf="@+id/tnc"
+                android:text="@string/privacy_policies"
+                android:textSize="16sp"
+                android:layout_marginStart="5dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tnc"
+                android:layout_centerVertical="true"
+                android:text="@string/and_i_agree_to_the"
+                android:textSize="16sp"
+                android:layout_marginStart="30dp"/>
 
             <TextView
                 android:id="@+id/txt_tnc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_policies"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/tnc"
+                android:layout_toEndOf="@id/txt_"
                 android:text="@string/terms_amp_conditions"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="6dp"/>
         </RelativeLayout>
 
     </RelativeLayout>

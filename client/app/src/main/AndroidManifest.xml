@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.zpclient"
-    android:versionCode="1"
-    android:versionName="1.0.0">
+    package="com.clientzp"
+    android:versionCode="2"
+    android:versionName="1.0.1">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -36,33 +36,33 @@
         android:required="false" />
 
     <application
-        android:name="com.zpclient.UtilityInitApplication"
+        android:name="com.clientzp.UtilityInitApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_zippe_"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_zippe__round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.zpclient.Service.ActivityServiceSummery"/>
-        <activity android:name="com.zpclient.Shop.ActivityShopSummery" />
-        <activity android:name="com.zpclient.Shop.ActivityShopHistoryList" />
-        <activity android:name="com.zpclient.Service.ActivityServiceHistoryList" />
-        <activity android:name="com.zpclient.Service.ActivityServicesHome" />
-        <activity android:name="com.zpclient.Shop.ActivityShopHome" />
-        <activity android:name="com.zpclient.ride.ActivitySearchingDriver" />
-        <activity android:name="com.zpclient.IntroActivity" />
-        <activity android:name="com.zpclient.AadharCardUpload" />
-        <activity android:name="com.zpclient.deliver.ActivityDeliverySummery" />
-        <activity android:name="com.zpclient.rent.ActivityUpdateHours" />
-        <activity android:name="com.zpclient.deliver.ActivitySlidingFullPage" />
+        <activity android:name="com.clientzp.Service.ActivityServiceSummery"/>
+        <activity android:name="com.clientzp.Shop.ActivityShopSummery" />
+        <activity android:name="com.clientzp.Shop.ActivityShopHistoryList" />
+        <activity android:name="com.clientzp.Service.ActivityServiceHistoryList" />
+        <activity android:name="com.clientzp.Service.ActivityServicesHome" />
+        <activity android:name="com.clientzp.Shop.ActivityShopHome" />
+        <activity android:name="com.clientzp.ride.ActivitySearchingDriver" />
+        <activity android:name="com.clientzp.IntroActivity" />
+        <activity android:name="com.clientzp.AadharCardUpload" />
+        <activity android:name="com.clientzp.deliver.ActivityDeliverySummery" />
+        <activity android:name="com.clientzp.rent.ActivityUpdateHours" />
+        <activity android:name="com.clientzp.deliver.ActivitySlidingFullPage" />
         <activity
-            android:name="com.zpclient.deliver.ActivityDeliveryReview"
+            android:name="com.clientzp.deliver.ActivityDeliveryReview"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name="com.zpclient.deliver.ActivityDeliveryTimeSlot" />
+        <activity android:name="com.clientzp.deliver.ActivityDeliveryTimeSlot" />
         <activity
-            android:name="com.zpclient.deliver.ActivityPackageDetails"
+            android:name="com.clientzp.deliver.ActivityPackageDetails"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name="com.zpclient.deliver.ActivityDeliveryHistoryList" />
+        <activity android:name="com.clientzp.deliver.ActivityDeliveryHistoryList" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -75,31 +75,31 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name="com.zpclient.ActivitySearching" />
-        <activity android:name="com.zpclient.ride.ActivityRideHistory" />
-        <activity android:name="com.zpclient.rent.ActivityNearestHub" />
-        <activity android:name="com.zpclient.rent.ActivityUpdateInfo" />
-        <activity android:name="com.zpclient.deliver.ActivityDeliverThankYou" />
+        <activity android:name="com.clientzp.ActivitySearching" />
+        <activity android:name="com.clientzp.ride.ActivityRideHistory" />
+        <activity android:name="com.clientzp.rent.ActivityNearestHub" />
+        <activity android:name="com.clientzp.rent.ActivityUpdateInfo" />
+        <activity android:name="com.clientzp.deliver.ActivityDeliverThankYou" />
         <activity
-            android:name="com.zpclient.deliver.ActivityDeliverConfirm"
+            android:name="com.clientzp.deliver.ActivityDeliverConfirm"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.zpclient.ride.MapsActivity2"
+            android:name="com.clientzp.ride.MapsActivity2"
             android:label="@string/title_activity_maps2" />
         <activity
-            android:name="com.zpclient.deliver.ActivityFillDropAddress"
+            android:name="com.clientzp.deliver.ActivityFillDropAddress"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name="com.zpclient.rent.ActivityRentEnded" />
-        <activity android:name="com.zpclient.rent.ActivityRentInProgress" />
-        <activity android:name="com.zpclient.rent.ActivityRentOTP" />
-        <activity android:name="com.zpclient.rent.ActivityRentRequest" />
-        <activity android:name="com.zpclient.rent.ActivityRentHome" />
-        <activity android:name="com.zpclient.ride.ActivityRideRequest" />
-        <activity android:name="com.zpclient.ActivityRateZippe" />
-        <activity android:name="com.zpclient.ride.ActivityRideEnded" />
-        <activity android:name="com.zpclient.ride.ActivityRideInProgress" />
-        <activity android:name="com.zpclient.ride.ActivityRideOTP" />
-        <activity android:name="com.zpclient.HubList" />
+        <activity android:name="com.clientzp.rent.ActivityRentEnded" />
+        <activity android:name="com.clientzp.rent.ActivityRentInProgress" />
+        <activity android:name="com.clientzp.rent.ActivityRentOTP" />
+        <activity android:name="com.clientzp.rent.ActivityRentRequest" />
+        <activity android:name="com.clientzp.rent.ActivityRentHome" />
+        <activity android:name="com.clientzp.ride.ActivityRideRequest" />
+        <activity android:name="com.clientzp.ActivityRateZippe" />
+        <activity android:name="com.clientzp.ride.ActivityRideEnded" />
+        <activity android:name="com.clientzp.ride.ActivityRideInProgress" />
+        <activity android:name="com.clientzp.ride.ActivityRideOTP" />
+        <activity android:name="com.clientzp.HubList" />
 
         <meta-data
             android:name="preloaded_fonts"
@@ -111,8 +111,8 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/zippe_logo__" />
 
-        <activity android:name="com.zpclient.UserProfileActivity" />
-        <activity android:name="com.zpclient.ActivityWelcome">
+        <activity android:name="com.clientzp.UserProfileActivity" />
+        <activity android:name="com.clientzp.ActivityWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -120,28 +120,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.zpclient.ActivityRegistration"
+            android:name="com.clientzp.ActivityRegistration"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name="com.zpclient.ActivityDrawer" />
+        <activity android:name="com.clientzp.ActivityDrawer" />
         <activity
-            android:name="com.zpclient.ride.ActivityRideHome"
+            android:name="com.clientzp.ride.ActivityRideHome"
             android:launchMode="singleTop" />
-        <activity android:name="com.zpclient.rent.ActivityRateRent" />
-        <activity android:name="com.zpclient.rent.MapsHubLocation" />
+        <activity android:name="com.clientzp.rent.ActivityRateRent" />
+        <activity android:name="com.clientzp.rent.MapsHubLocation" />
         <activity
-            android:name="com.zpclient.deliver.ActivityFillPickDetails"
+            android:name="com.clientzp.deliver.ActivityFillPickDetails"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name="com.zpclient.rent.ActivityRentHistory" />
-        <activity android:name="com.zpclient.rent.ActivityRentSummery" />
-        <activity android:name="com.zpclient.ride.ActivityRideSummery" />
-        <activity android:name="com.zpclient.ActivityLoginKey" />
+        <activity android:name="com.clientzp.rent.ActivityRentHistory" />
+        <activity android:name="com.clientzp.rent.ActivityRentSummery" />
+        <activity android:name="com.clientzp.ride.ActivityRideSummery" />
+        <activity android:name="com.clientzp.ActivityLoginKey" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <service android:name="com.zpclient.UtilityPollingService" />
-        <service android:name="com.zpclient.Services.MyFirebaseMessagingService"
+        <service android:name="com.clientzp.UtilityPollingService" />
+        <service android:name="com.clientzp.Services.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

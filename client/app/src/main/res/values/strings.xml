@@ -136,7 +136,7 @@
     <string name="upload_aadhar_front">upload aadhar front</string>
     <string name="upload_aadhar_back">upload aadhar back</string>
     <string name="next">NEXT</string>
-    <string name="i_agree_to_terms_amp_conditions"><![CDATA[I AGREE TO]]></string>
+    <string name="i_agree_to_terms_amp_conditions"><![CDATA[I HAVE READ THE ]]></string>
     <string name="pinch_to_zoom">Pinch to zoom</string>
     <string name="please_go_to_the_nearest_drop_point_to_end_your_rental">please go to the nearest drop point to end your rental</string>
     <string name="km">km</string>
@@ -307,10 +307,10 @@
     <string name="searching_for_ride">SEARCHING FOR YOUR RIDE…</string>
     <string name="google_part1">This is an approximate cost as per\u0020</string>
     <string name="google_part2">Google Maps (distance and time taken)</string>
-    <string name="google_part3">. May change depending on ride time.</string>
+    <string name="google_part3">. This may change depending on ride time.</string>
     <string name="google_time_part1">Approximate time as per\u0020 </string>
     <string name="google_time_part2">Google Maps</string>
-    <string name="google_time_part3">. May change depending on traffic.</string>
+    <string name="google_time_part3">. This may change depending on traffic.</string>
     <string name="end_ride_before_destination">You will be charged as per your chosen destination even if you end your ride earlier.
 Are you sure you want to continue ?</string>
     <string name="cancel_ride">CANCEL RIDE Because :</string>
@@ -351,7 +351,7 @@ your ride with</string>
         All drivers are booked.
 Please try again after some time.</string>
     <string name="rate_your_ride">rate your ride</string>
-    <string name="i_am_not_satisfied_because">I am not satisfied with</string>
+    <string name="i_am_not_satisfied_because">I am not satisfied with…</string>
     <string name="submit">Submit</string>
     <string name="you_have_selected_nrent">LET\'S RENT YOU A ZIPP-E</string>
     <string name="delivery_sch_tommorrow">Your Delivery will be scheduled for tomorrow</string>
@@ -376,7 +376,7 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="drop_point_land">Please enter a famous landmark near the drop address.</string>
     <string name="drop_point_name">Please enter the full name of the person to whom the package is to be delivered.</string>
     <string name="drop_point_mobile">Please enter the mobile number of the person to whom the package is to be delivered.</string>
-    <string name="terms_amp_conditions"><![CDATA[" TERMS & CONDITIONS"]]></string>
+    <string name="terms_amp_conditions"><![CDATA[ TERMS & CONDITIONS]]></string>
     <string name="driver_photo" translatable="false">Photo of Driver</string>
     <string name="driver_phone" translatable="false">Driver Phone Number</string>
     <string name="end_ride" translatable="false">End Ride</string>
@@ -441,5 +441,7 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="shop_by_category">Shop by category</string>
     <string name="book_new_services">book new services</string>
     <string name="enter_login_key">Enter Login Key</string>
+    <string name="privacy_policies"><![CDATA[ PRIVACY POLICIES]]></string>
+    <string name="and_i_agree_to_the">AND I AGREE TO THE </string>
 
 </resources>
