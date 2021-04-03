@@ -530,7 +530,7 @@ def userIsDriverAv(dct, user):
         vtype: for drivers of that particualr vehicle
 
     '''
-
+    print(' user Is Driver AV : ', dct)
     srcCoOrds = ['%s,%s' % (dct['srclat'], dct['srclng'])]
 
     #getcontext().prec = 50

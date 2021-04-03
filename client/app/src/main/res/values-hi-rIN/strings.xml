@@ -243,12 +243,7 @@
 
     <string name="next">आगे</string>
 
-
-    -
-    <string name="i_agree_to_terms_amp_conditions">
-
--<![CDATA[मैं नियमों और शर्तों से सहमत हूँ]]>
-</string>
+    <string name="i_agree_to_terms_amp_conditions"><![CDATA[ममैंने ]]></string>
 
     <string name="pinch_to_zoom">उँगलियों से पिंच करके ज़ूम (बड़ा) करें </string>
 
@@ -716,12 +711,7 @@
 
     <string name="drop_point_mobile">कृपया उस व्यक्ति का मोबाइल नम्बर बतायें, जिस को जिससे पार्सल देना है</string>
 
-
-    -
-    <string name="terms_amp_conditions">
-
--<![CDATA[" नियम एवं शर्तें"]]>
-</string>
+    <string name="terms_amp_conditions"><![CDATA[ ननियमों और शर्तों से सहमत हूँ।]]></string>
 
     <string name="upload_aadhar_card">आधार कार्ड अपलोड करें</string>
 
@@ -834,4 +824,6 @@
     <string name="shop_by_category">श्रेणी के अनुसार खरीदारी</string>
     <string name="book_new_services">नई सेवा बुक करें</string>
     <string name="enter_login_key">Enter Login Key</string>
+    <string name="privacy_policies"><![CDATA[  प्राइवेसी पॉलिसीज़]]></string>
+    <string name="and_i_agree_to_the">को पढ़ लिया है और मैं </string>
 </resources>
