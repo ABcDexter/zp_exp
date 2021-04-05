@@ -175,7 +175,7 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
 
 
 
-        String imageURL = "https://api.villageapps.in:8090/media/dp_" + stringAuth + "_.jpg";
+        String imageURL = "https://api.zippe.in:8090/media/dp_" + stringAuth + "_.jpg";
 
         try {
             Glide.with(this).load(imageURL).into(imgProfilePic);

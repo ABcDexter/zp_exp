@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Driver</string>
+    <string name="app_name">ZIPP-E Driver</string>
 
     <string-array name="gender_array">
         <item>Your Gender</item>

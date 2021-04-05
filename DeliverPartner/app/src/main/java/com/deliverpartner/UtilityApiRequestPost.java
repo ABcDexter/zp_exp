@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 public class UtilityApiRequestPost {
 
-    private static String BASE_URL = "https://api.villageapps.in:8090/";
+    private static String BASE_URL = "https://api.zippe.in:8090/";
     //private static String BASE_URL = "https://2fc53c51f89a.ngrok.io/";
 
     //static void doPost(String URL, JSONObject parameters)
