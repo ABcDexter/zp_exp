@@ -44,7 +44,7 @@ class Entity:
 
     ADMIN_AUTH = '437468756c68752066687461676e'
     #SERVER_URL = os.environ.get('ZP_URL', 'http://127.0.0.1:9999/')           # localhost
-    SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
+    SERVER_URL = os.environ.get('ZP_URL', 'https://api.zippe.in:8090/')  # server
 
     def callAPI(self, sAPI, dct={}, auth=None):
         # print(sAPI, dct)

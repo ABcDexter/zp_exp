@@ -1433,7 +1433,7 @@ def sendTripInvoiceMail(tripType, userEmail, userName, tripId, tripDate, tripTim
     from email.mime.multipart import MIMEMultipart
 
     SENDER_SERVER = "localhost"
-    FROM = "zippe@villageapps.in"
+    FROM = "zippe@zippe.in"
     TO = str(userEmail)
 
     message = MIMEMultipart("alternative")
@@ -1501,7 +1501,7 @@ def sendDeliveryInvoiceMail(deliveryType, userEmail, userName, deliveryId, deliv
     from email.mime.multipart import MIMEMultipart
 
     SENDER_SERVER = "localhost"
-    FROM = "zippe@villageapps.in"
+    FROM = "zippe@zippe.in"
     TO = str(userEmail)
 
     message = MIMEMultipart("alternative")

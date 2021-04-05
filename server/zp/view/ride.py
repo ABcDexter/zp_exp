@@ -177,7 +177,7 @@ def driverRideGetStatus(_dct, driver):
         ret['st'] = trip.st
         ret['tid'] = trip.id
         uAuth = User.objects.filter(an=trip.uan)[0].auth
-        ret['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
+        ret['photourl'] = "https://api.zippe.in:8090/media/dp_" + uAuth + "_.jpg"
 
 
     return HttpJSONResponse(ret)

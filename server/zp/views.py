@@ -423,7 +423,7 @@ def userTripGetStatus(_dct, user):
         if trip.st not in ['RQ', 'TO']:
             # send photo of the current driver or supervisor
             dAuth = Driver.objects.filter(an=trip.dan)[0].auth if trip.rtype == '0' else Supervisor.objects.filter(an=trip.dan)[0].auth
-            ret['photourl'] = "https://api.villageapps.in:8090/media/dp_" + dAuth + "_.jpg"
+            ret['photourl'] = "https://api.zippe.in:8090/media/dp_" + dAuth + "_.jpg"
 
     # else the trip is not active
     else:
@@ -532,7 +532,7 @@ def userRideGetDriver(_dct, _entity, trip):
     Note : static images don't work with Product On in settings
     '''
     driver = Driver.objects.filter(an=trip.dan)[0]
-    ret = {'pn': driver.pn, 'an': driver.an, 'name': driver.name, 'photourl' : "https://api.villageapps.in:8090/media/dp_" + driver.auth + "_.jpg"}
+    ret = {'pn': driver.pn, 'an': driver.an, 'name': driver.name, 'photourl' : "https://api.zippe.in:8090/media/dp_" + driver.auth + "_.jpg"}
     return HttpJSONResponse(ret)
 
 

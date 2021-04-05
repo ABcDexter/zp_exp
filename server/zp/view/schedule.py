@@ -34,7 +34,7 @@ count = 0
 sched = BackgroundScheduler()  # daemon=True)
 sched.start()
 
-SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
+SERVER_URL = os.environ.get('ZP_URL', 'https://api.zippe.in:8090/')  # server
 
 ###########################
 # Helper functions for scheduling
