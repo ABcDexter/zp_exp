@@ -66,9 +66,12 @@ def loginDriver(_, dct):
     log('Driver login request. Dct : %s ' % (str(dct)))
 
     sPhone = str(dct['pn'])
-    from codecs import encode
-    sAuth = encode(str(dct['key']), 'rot13')
+    # from codecs import encode
+    # sAuth = encode(str(dct['key']), 'rot13')
+    sAuth = encode(str(dct['key']), settings.BASE62)
+
     log('Driver login key request. Dct : %s ' % (str(sAuth)))
+
     qsDriver = Driver.objects.filter(auth=sAuth, pn=sPhone)
     bDriverExists = len(qsDriver) != 0
     if not bDriverExists:
