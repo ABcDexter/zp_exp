@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Driver</string>
+    <string name="app_name">ZIPP-E Driver</string>
     <string name="title_activity_maps">Map</string>
     <string name="Open">OPEN</string>
     <string name="Close">CLOSE</string>

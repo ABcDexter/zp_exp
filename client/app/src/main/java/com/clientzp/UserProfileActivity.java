@@ -133,7 +133,7 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
         submitEmail.setOnClickListener(this);
         profileImage = findViewById(R.id.profilePic);
 
-        String imageURL = "https://api.villageapps.in:8090/media/dp_" + stringAuth + "_.jpg";
+        String imageURL = "https://api.zippe.in:8090/media/dp_" + stringAuth + "_.jpg";
         try {
             Glide.with(this).load(imageURL).into(profileImage);
         } catch (Exception e) {

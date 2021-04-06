@@ -227,7 +227,7 @@ import ch.halcyon.squareprogressbar.SquareProgressBar;
         imageDialog = new Dialog(this);
         myDialog2 = new Dialog(this);
         getData();
-        String imageURL = "https://api.villageapps.in:8090/media/dp_" + strAuth + "_.jpg";
+        String imageURL = "https://api.zippe.in:8090/media/dp_" + strAuth + "_.jpg";
         try {
             Glide.with(this).load(imageURL).into(imgProfilePic);
         } catch (Exception e) {
