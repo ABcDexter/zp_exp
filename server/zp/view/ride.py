@@ -66,9 +66,12 @@ def loginDriver(_, dct):
     log('Driver login request. Dct : %s ' % (str(dct)))
 
     sPhone = str(dct['pn'])
-    from codecs import encode
-    sAuth = encode(str(dct['key']), 'rot13')
+    # from codecs import encode
+    # sAuth = encode(str(dct['key']), 'rot13')
+    sAuth = encode(str(dct['key']), settings.BASE62)
+
     log('Driver login key request. Dct : %s ' % (str(sAuth)))
+
     qsDriver = Driver.objects.filter(auth=sAuth, pn=sPhone)
     bDriverExists = len(qsDriver) != 0
     if not bDriverExists:
@@ -177,7 +180,7 @@ def driverRideGetStatus(_dct, driver):
         ret['st'] = trip.st
         ret['tid'] = trip.id
         uAuth = User.objects.filter(an=trip.uan)[0].auth
-        ret['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
+        ret['photourl'] = "https://api.zippe.in:8090/media/dp_" + uAuth + "_.jpg"
 
 
     return HttpJSONResponse(ret)
@@ -203,7 +206,8 @@ def driverRideCheck(_dct, driver):
     # Get the first requested trip from drivers place id
     qsTrip = Trip.objects.filter(st='RQ').order_by('-rtime') #10 km radius
     #TODO give closest ride first
-    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'srclat': qsTrip[0].srclat, 'srclng': qsTrip[0].srclng }
+
+    ret = {} if len(qsTrip) == 0 else {'tid': qsTrip[0].id, 'srclat': qsTrip[0].srclat, 'srclng': qsTrip[0].srclng}
     return HttpJSONResponse(ret)
 
 
@@ -431,12 +435,11 @@ def driverRideRetire(dct, driver, trip):
     # PD : driver already retired from driverPaymentConfirm #NOT anymore 9/11/2020
     FL : admin already retired from adminHandleFailedTrip()
 
-    TODO: move this common code to a function
     '''
-    #if trip.st == 'PD':
-    total = float(getTripPrice(trip)['price'])
-    user = User.objects.filter(an=trip.uan)[0]
-    sendTripInvoiceMail('Rent', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
+    if trip.st not in ['CN']:
+        total = float(getTripPrice(trip)['price'])
+        user = User.objects.filter(an=trip.uan)[0]
+        sendTripInvoiceMail('Rent', user.email, user.name, trip.id, datetime.strptime(str(trip.stime)[:21], '%Y-%m-%d %H:%M:%S.%f').date().strftime("%d/%m/%Y"), (trip.etime - trip.stime).seconds//60, str(round(float('%.2f' %  float(total*0.9)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' %  float(total*0.05)),2)), str(round(float('%.2f' % total),0))+'0')
     
     # made the driver AV and reset the tid to -1
     driver.mode = 'AV'
@@ -530,7 +533,7 @@ def userIsDriverAv(dct, user):
         vtype: for drivers of that particualr vehicle
 
     '''
-
+    print(' user Is Driver AV : ', dct)
     srcCoOrds = ['%s,%s' % (dct['srclat'], dct['srclng'])]
 
     #getcontext().prec = 50
@@ -540,7 +543,8 @@ def userIsDriverAv(dct, user):
     ret = {}
     drivers = []
     print('drivers are here ' ,len(qsDrivers))
-    # TODO make this view API optimal and Integrate with PUSH notification of FCM
+    # TODO make this view API optimal
+    # today 24/3/2021
     for driver in qsDrivers:
         #print(driver)
         vehicles = list(Vehicle.objects.filter(vtype=dct['vtype']).values('an','vtype'))
@@ -565,6 +569,22 @@ def userIsDriverAv(dct, user):
                 # print({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime, 'van':driver['van']})
                 drivers.append({'an': driver['an'], 'name': driver['name'], 'dist': nDist, 'time': nTime})
     print("drivers found in 10km radius : ", len(drivers))
+
+    if len(drivers) > 0 :
+        params = {"to": str(user.fcm), "notification": {
+            "title": "ZIPPE kar lo...",
+            "body": "You have a driver nearby. Click to confirm your ride",
+            "imageUrl": "https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+            "gameUrl": "https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+        }
+                  }
+        dctHdrs = {'Content-Type': 'application/json',
+                   'Authorization': 'key=AAAA9ac2AKM:APA91bH7N4ocS711aAjNHEYvKo6TZxQ702CWSMqrBBILgAb2hPnZzo2byOb_IHUgHaFCG3xZyKUHH6p8VsUBsXwpfsXKwhxiqtgUSjWGkweKvAcb5p_08ud-U7e3PUIdaC6Sz-TGhHZB'}
+        jsonData = json.dumps(params).encode()
+        sUrl = 'https://fcm.googleapis.com/fcm/send'
+        req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+        jsonResp = urllib.request.urlopen(req, timeout=30).read()
+
     ret.update({'count': len(drivers)}) # {'drivers': drivers})
     return HttpJSONResponse(ret)
 
@@ -593,6 +613,7 @@ def userRideEstimate(dct, _user, _trip):
     '''
     print("Ride Estimate param : ", dct)
     ret = getRidePrice(dct['srclat'], dct['srclng'], dct['dstlat'], dct['dstlng'], dct['vtype'], dct['pmode'], 0)
+    #TODO if distance > 50 kms, return empty
     # ret['price'] = float(ret['price'])*0.9 if _user.hs == 'UK' else ret['price']  # 10 % off for natives
     # ret['price'] = float(ret['price'])*0.75 if _user.gdr == 'F' else ret['price']  # 25 % off for Females
 

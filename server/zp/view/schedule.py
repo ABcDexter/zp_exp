@@ -34,7 +34,7 @@ count = 0
 sched = BackgroundScheduler()  # daemon=True)
 sched.start()
 
-SERVER_URL = os.environ.get('ZP_URL', 'https://api.villageapps.in:8090/')  # server
+SERVER_URL = os.environ.get('ZP_URL', 'https://api.zippe.in:8090/')  # server
 
 ###########################
 # Helper functions for scheduling
@@ -198,7 +198,7 @@ def userDeliverySchedule(dct, user):
         26. pe,
         #  (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable)
         27. tip
-        28. express 0 or 1
+        28. express 1 or 2 for standard
         29-33. picktime:
                     date, month, year,
                     hour, minute.
@@ -280,13 +280,12 @@ def userDeliverySchedule(dct, user):
     time.sleep(5)
     return HttpJSONResponse({})
     """
-
     
     print("##", len(dct), "Delivery scheduling request param : ",  dct)
 
     # if user already has a delivery request, don't entertain this one
     
-    if user.did not in  ['', '-1']:
+    if user.did not in ['', '-1']:
         raise ZPException(403, 'Already pending delivery')
     
     delivery = Delivery()

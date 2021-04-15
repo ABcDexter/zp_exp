@@ -1197,7 +1197,7 @@ srcLAT :  29.833350218793097  LNG :  79.62610177977851
 [01/13/21 11:39:07] [PID: 1] [TID: -1] [TS: ] Requesting trip to 4: POLICE STATION
 dstLAT :  29.348567  dstLNG :  79.54465
 [01/13/21 11:39:08] [PID: 1] [TID: -1] [TS: ] Trip estimate: {"price": "568.00", "time": 227, "dist": 117.41, "speed": 31.03, "tid": 284}, 
-[01/13/21 11:39:13] [PID: 1] [TID: 284] [TS: AS] Trip confirmed: {"pn": "9871481549", "an": 1008, "name": "Ranbir", "photourl": "https://api.villageapps.in:8090/media/dp_dauth8_.jpg", "otp": 7760}, : OTP shared with driver
+[01/13/21 11:39:13] [PID: 1] [TID: 284] [TS: AS] Trip confirmed: {"pn": "9871481549", "an": 1008, "name": "Ranbir", "photourl": "https://api.zippe.in:8090/media/dp_dauth8_.jpg", "otp": 7760}, : OTP shared with driver
 [01/13/21 11:39:17] [PID: 1] [TID: 284] [TS: ST] Trip progress 20%
 [01/13/21 11:39:22] [PID: 1] [TID: 284] [TS: ST] Trip progress 60%
 [01/13/21 11:39:26] [PID: 1] [TID: 284] [TS: ST] Trip progress 90%

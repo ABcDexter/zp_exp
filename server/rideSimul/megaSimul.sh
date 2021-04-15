@@ -9,7 +9,7 @@ echo "${args[@]}"
 printf '%s\n' "${args[@]}"
 len=${#args[@]}
 #url='http://127.0.0.1:9999/' # python3 manage.py runserver 9999 #Local server
-url='https://api.villageapps.in:8090/'
+url='https://api.zippe.in:8090/'
 log_file=${args[0]}          # log file
 user_count=${args[1]}        # Number of User for DB
 driver_count=${args[2]}      # Number of Driver for DB

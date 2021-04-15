@@ -106,10 +106,10 @@ def userRentGetSup(_dct, _user, trip):
     '''
     if trip.st == 'AS':
         sup = Supervisor.objects.filter(pid=trip.srcid)[0]
-        ret = {'pn': sup.pn, 'name': sup.name, "photourl": "https://api.villageapps.in:8090/media/dp_" + str(sup.auth) + "_.jpg" }
+        ret = {'pn': sup.pn, 'name': sup.name, "photourl": "https://api.zippe.in:8090/media/dp_" + str(sup.auth) + "_.jpg" }
     else:
         sup = Supervisor.objects.filter(pid=trip.dstid)[0]
-        ret = {'pn': sup.pn, 'name': sup.name, "photourl": "https://api.villageapps.in:8090/media/dp_" + str(sup.auth) + "_.jpg"}
+        ret = {'pn': sup.pn, 'name': sup.name, "photourl": "https://api.zippe.in:8090/media/dp_" + str(sup.auth) + "_.jpg"}
     return HttpJSONResponse(ret)
 
 
@@ -534,7 +534,7 @@ def supRentCheck(dct, sup):
         else:
             vals['price'] = getRentPrice(trip.hrs)['price']
         uAuth = User.objects.filter(an=trip.uan)[0].auth
-        vals['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
+        vals['photourl'] = "https://api.zippe.in:8090/media/dp_" + uAuth + "_.jpg"
 
         vals['van'] = trip.van
         rentals.append(vals)
@@ -913,7 +913,7 @@ def admRentCheck(_, dct):
         else:
             vals['price'] = getRentPrice(trip.hrs)['price']
         uAuth = User.objects.filter(an=trip.uan)[0].auth
-        vals['photourl'] = "https://api.villageapps.in:8090/media/dp_" + uAuth + "_.jpg"
+        vals['photourl'] = "https://api.zippe.in:8090/media/dp_" + uAuth + "_.jpg"
 
         vals['van'] = trip.van
         rentals.append(vals)

@@ -209,7 +209,7 @@ def userDeliveryEstimate(dct, user):
         itype,
         idim = L, XL, XXL
         #fr, br, li, kc, kw, pe, (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable),
-        express = 0 or 1
+        express = 1 or 2
         pmode
     '''
     print("Delivery Estimate param : ", dct)
@@ -260,7 +260,7 @@ def userDeliveryRequest(dct, user):
         26. pe,
         # 27. no (Fragile, Breakable, Liquid, Keep cold, Keep Warm, Perishable)
         28. tip
-        29. express 0 or 1
+        29. express 1 or 2
         30. picktime:
                     date, month, year,
                     hour, minute.
