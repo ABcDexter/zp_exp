@@ -58,8 +58,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
             Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.CALL_PHONE};
+            Manifest.permission.ACCESS_FINE_LOCATION};
 
     ActivityHome a = ActivityHome.this;
     Map<String, String> params = new HashMap();

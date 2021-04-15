@@ -2,23 +2,22 @@
   "project_info": {
     "project_number": "980170623977",
     "project_id": "delivery-agent-843ff",
-    "firebase_url": "https://console.firebase.google.com/project/delivery-agent-843ff/overview",
     "storage_bucket": "delivery-agent-843ff.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:980170623977:android:21f3109926cfcac061d978",
+        "mobilesdk_app_id": "1:980170623977:android:81440d37dc97232961d978",
         "android_client_info": {
-          "package_name": "com.deliverpartner"
+          "package_name": "com.zpdeliveryagent"
         }
       },
       "oauth_client": [
         {
-          "client_id": "980170623977-ree9one3m6nao24q8j7ekel86l777vj3.apps.googleusercontent.com",
+          "client_id": "980170623977-e8h8pi844a70cua1587gn6q6jv6kummu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.deliverpartner",
+            "package_name": "com.zpdeliveryagent",
             "certificate_hash": "d4cfbc8b3939c12527d91f01f68e73ae8ff91f15"
           }
         },

@@ -236,13 +236,17 @@ public class ActivityOTP extends AppCompatActivity implements View.OnClickListen
 
     public void callClientPhn() {
         String phoneDriver = phn.getText().toString().trim();
-        Intent intent = new Intent(Intent.ACTION_CALL);
+        /*Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + phoneDriver));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        startActivity(intent);
+        startActivity(intent);*/
+
+        Uri call = Uri.parse("tel:" + phoneDriver);
+        Intent surf = new Intent(Intent.ACTION_DIAL, call);
+        startActivity(surf);
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {

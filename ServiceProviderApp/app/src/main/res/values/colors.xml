@@ -13,7 +13,7 @@
     <color name="colorAccent">#1EB4D4</color>
     <color name="colorRipple">#11A194</color>
     <color name="colorWindowBackground">#F2F5FC</color>
-    <color name="txtColor">#DFDDDD</color>
+    <color name="txtColor">#FAF7F7</color>
     <color name="navItemText">#FFFFFF</color>
     <color name="colorSpinnerBck">#E4272626</color>
 </resources>
