@@ -76,8 +76,7 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.CALL_PHONE};
+            android.Manifest.permission.ACCESS_FINE_LOCATION};
 
     TextView notify;
     String strAuth;

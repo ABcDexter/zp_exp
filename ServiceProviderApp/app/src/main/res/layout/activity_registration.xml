@@ -30,7 +30,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:background="@drawable/aadhar_container"
-                    android:src="@drawable/ic_account_circle" />
+                    android:src="@drawable/ic_account_circle"
+                    android:contentDescription="@string/click_choose_picture" />
 
                 <TextView
                     android:id="@+id/txt_profile_picture"
@@ -190,7 +191,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/aadhar_container" />
+                    android:background="@drawable/aadhar_container"
+                    android:contentDescription="@string/upload_aadhar_front" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -216,7 +218,8 @@
                     android:layout_height="250dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/aadhar_container" />
+                    android:background="@drawable/aadhar_container"
+                    android:contentDescription="@string/upload_aadhar_back" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -243,7 +246,7 @@
                     android:text="@string/i_agree_to_terms_amp_conditions"
                     android:textAllCaps="true"
                     android:textColor="@color/txtColor"
-                    android:textSize="12sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/txt_tnc"
@@ -252,8 +255,9 @@
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@+id/tnc"
                     android:text="@string/terms_amp_conditions"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="5dp"/>
             </RelativeLayout>
 
             <ImageButton
@@ -265,7 +269,8 @@
                 android:padding="15dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/login"
-                android:textAllCaps="true" />
+                android:textAllCaps="true"
+                android:contentDescription="@string/login" />
 
 
         </LinearLayout>

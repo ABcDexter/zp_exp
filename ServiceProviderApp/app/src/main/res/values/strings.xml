@@ -161,6 +161,8 @@
     <string name="j_area">\"The client is located in %1$s"</string>
     <string name="j_completed">Completed Jobs</string>
     <string name="j_summary">JOB SUMMARY</string>
+    <string name="profile_picture_container">profile picture container</string>
+    <string name="login">login</string>
 
 
 </resources>

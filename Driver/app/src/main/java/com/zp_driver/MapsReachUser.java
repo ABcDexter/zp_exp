@@ -69,8 +69,7 @@ public class MapsReachUser extends AppCompatActivity implements OnMapReadyCallba
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.CALL_PHONE};
+            android.Manifest.permission.ACCESS_FINE_LOCATION};
     FusedLocationProviderClient mFusedLocationClient;
     String lat, lng;
     TextView yes, no;

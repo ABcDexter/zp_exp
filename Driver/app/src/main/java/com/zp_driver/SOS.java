@@ -52,13 +52,16 @@ public class SOS extends AppCompatActivity {
 
     public void btnSetOnEmergency(View view) {
         String number = "7060743705";
-        Intent intent = new Intent(Intent.ACTION_CALL);
+        /*Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + number));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        startActivity(intent);
+        startActivity(intent);*/
+        Uri call = Uri.parse("tel:" + number);
+        Intent surf = new Intent(Intent.ACTION_DIAL, call);
+        startActivity(surf);
     }
 
 }

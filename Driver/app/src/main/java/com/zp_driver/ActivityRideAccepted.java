@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
     public static final String DSTLAT = "TripDstLat";
     public static final String DSTLNG = "TripDstLng";
     TextView phone, name;
+    RelativeLayout rlPhone;
     EditText OTP;
     ImageView clientPhoto;
     Button startRide, cancleRideBtn, viewMap;
@@ -55,8 +57,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.CALL_PHONE};
+            android.Manifest.permission.ACCESS_FINE_LOCATION};
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
@@ -173,6 +174,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
         //initializing variables
 
         phone = findViewById(R.id.userPhone);
+        rlPhone = findViewById(R.id.rl_p);
         clientPhoto = findViewById(R.id.photo_client);
         name = findViewById(R.id.userName);
         viewMap = findViewById(R.id.viewMap);
@@ -187,6 +189,7 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
         origin.setText(picLoc);*/
 
         phone.setOnClickListener(this);
+        rlPhone.setOnClickListener(this);
         cancleRideBtn.setOnClickListener(this);
         startRide.setOnClickListener(this);
         viewMap.setOnClickListener(this);
@@ -269,8 +272,8 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
             driverRideCancel();// method to cancel ride by hit driver-cancel-ride API
         } else if (id == R.id.reject_request) {
             myDialog.dismiss();
-        } else if (id == R.id.userPhone) {//method to call the user
-            if (hasPermissions(this, PERMISSIONS)) {
+        } else if (id == R.id.rl_p) {//method to call the user
+            /*if (hasPermissions(this, PERMISSIONS)) {
                 ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
             } else {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -279,7 +282,11 @@ public class ActivityRideAccepted extends ActivityDrawer implements View.OnClick
                     return;
                 }
                 startActivity(callIntent);
-            }
+            }*/
+            String phoneClient = phone.getText().toString().trim();
+            Uri call = Uri.parse("tel:" + phoneClient);
+            Intent surf = new Intent(Intent.ACTION_DIAL, call);
+            startActivity(surf);
         } else if (id == R.id.viewMap) {//Toast.makeText(this, "Map Opens Here", Toast.LENGTH_SHORT).show();
             Intent map = new Intent(ActivityRideAccepted.this, MapUserLocation.class);
             startActivity(map);
