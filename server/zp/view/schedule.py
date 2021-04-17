@@ -107,7 +107,7 @@ def callAPI(sAPI, dct={}, auth=None):
 @checkAuth()
 def userRentSchedule(dct, user):
     '''
-    User calls this to schedule a rental
+    User calls this to schedule a rental in future date
 
     HTTP args:
         auth
