@@ -238,6 +238,7 @@ class Trip(models.Model):
     -----------------------------------------
     """
     STATUSES = [
+        ('SC', 'scheduled'),  # scheduled for future RQ
         ('RQ', 'requested'),  # requested from the user via app
         ('AS', 'assigned'),   # accepted by the driver, waiting for the user to either come to driver or CN
         ('ST', 'started'),  # started by the driver
