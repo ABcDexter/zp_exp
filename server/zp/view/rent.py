@@ -22,6 +22,7 @@ from ..utils import encode, decode
 from hypertrack.rest import Client
 from hypertrack.exceptions import HyperTrackException
 
+import json, urllib
 
 ###########################################
 # Types
@@ -851,6 +852,27 @@ def adminVehicleAssign(dct):
         vehicle.tid = trip.id
         vehicle.save()
         vid = vehicle.an
+
+        user = User.objects.filter(an=trip.uan)[0]
+        ret = {'name': user.name, 'phone': user.pn}
+        user.tid = trip.id
+        user.save()
+
+        print("Accepting trip : ", ret)
+        params = {"to": str(user.fcm) , "notification":{
+                                    "title":"ZIPPE kar lo...",
+                                    "body":"ZIPPE assigned you a vehicle.",
+                                    "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+                                    "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+        }
+        }
+        dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA9ac2AKM:APA91bH7N4ocS711aAjNHEYvKo6TZxQ702CWSMqrBBILgAb2hPnZzo2byOb_IHUgHaFCG3xZyKUHH6p8VsUBsXwpfsXKwhxiqtgUSjWGkweKvAcb5p_08ud-U7e3PUIdaC6Sz-TGhHZB'}
+        jsonData = json.dumps(params).encode()
+        sUrl = 'https://fcm.googleapis.com/fcm/send'
+        req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+        jsonResp = urllib.request.urlopen(req, timeout=30).read()
+        # ret = json.loads(jsonResp)
+
     else:
         raise ZPException(400, 'Trip already assigned')
 
