@@ -137,9 +137,9 @@ def userRentSchedule(dct, user):
     minute = int(dct['min'])
 
     if minute < 30:
-        dinaank = datetime(year, month, date, hour - 6, (minute + 35) % 60, 00)
+        dinaank = datetime(year, month, date, hour - 6, (minute + 25) % 60, 00)
     else:
-        dinaank = datetime(year, month, date, hour - 5, (minute - 25) % 60, 00)
+        dinaank = datetime(year, month, date, hour - 5, (minute - 35) % 60, 00)
 
     print(dinaank)
     global sched

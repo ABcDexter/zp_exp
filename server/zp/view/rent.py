@@ -861,7 +861,7 @@ def adminVehicleAssign(dct):
         print("Accepting trip : ", ret)
         params = {"to": str(user.fcm) , "notification":{
                                     "title":"ZIPPE kar lo...",
-                                    "body":"ZIPPE assigned you a vehicle.",
+                                    "body":"We've assigned you a vehicle. Click here to see RENT",
                                     "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
                                     "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
         }
