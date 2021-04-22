@@ -399,7 +399,7 @@ def userRentHistory(dct, user):
                     sDate = 'NOTSTARTED'
                     
                 if i['st'] in ['FN', 'TR' 'PD']:
-                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip                
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
                     price = float(getRentPrice(i['hrs'])['price'])
                     
                     if i['etime'] is None:
