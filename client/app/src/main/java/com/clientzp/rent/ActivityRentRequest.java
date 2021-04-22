@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,8 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.clientzp.ActivityDrawer;
+import com.clientzp.ActivityRateZippe;
+import com.clientzp.ActivityWelcome;
 import com.clientzp.R;
 import com.clientzp.UtilityApiRequestPost;
 import com.clientzp.UtilityPollingService;
@@ -56,6 +59,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     public static final String NO_HOURS = "NoHours";
     public static final String RENT_RIDE = "RentRide";
     public static final String PAYMENT_MODE = "PaymentMode";
+    public static final String SCH_DATE = "ScheduleDate";
+    public static final String SCH_HRS = "ScheduleHrs";
+    public static final String SCH_MIN = "ScheduleMins";
+    public static final String SCH_MONTH = "ScheduleMonth";
+    public static final String SCH_YEAR = "ScheduleYear";
 
     ImageButton next, speedInfo, paymentInfo, PickInfo, DropInfo;
     TextView vSpeed, advPay, pickPlaceInfo, dropPlaceInfo;
@@ -65,7 +73,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     SharedPreferences prefAuth;
     ActivityRentRequest a = ActivityRentRequest.this;
     Dialog myDialog;
-    String rideInfo, vTypeInfo, pModeInfo, dropInfo, pickInfo, speedDrop, costDrop, hrs;
+    String rideInfo, vTypeInfo, pModeInfo, dropInfo, pickInfo, speedDrop, costDrop, hrs, schDate, schMonth, schYr, schHours, schMins;
     Map<String, String> params = new HashMap();
     Animation animMoveL2R, animMoveR2L;
 
@@ -90,11 +98,12 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                 e.printStackTrace();
             }
         }
-        //response on hitting user-trip-request API
+        //response on hitting user-rent-schedule API
         if (id == 2) {
-            String tid = response.getString("tid");
+            Log.d(TAG, "RESPONSE on hitting user-rent-schedule API:" + response);
+            /*String tid = response.getString("tid");
             SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
-            sp_cookie.edit().putString(TRIP_ID, tid).apply();
+            sp_cookie.edit().putString(TRIP_ID, tid).apply();*/
             checkStatus();
         }
         //response on hitting user-trip-get-status API
@@ -133,10 +142,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                         }
                     }
                 } else {
-                    Intent homePage = new Intent(ActivityRentRequest.this, ActivityRentHome.class);
+                    ShowPopup(4);
+                    /*Intent homePage = new Intent(ActivityRentRequest.this, ActivityRentHome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
-                    finish();
+                    finish();*/
                 }
 
             } catch (JSONException e) {
@@ -182,6 +192,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         hrs = prefPLoc.getString(NO_HOURS, "");
         // speedDrop = prefPLoc.getString(SPEED_DROP, "");
         costDrop = prefPLoc.getString(COST_DROP, "");
+        schDate = prefPLoc.getString(SCH_DATE, "");
+        schMonth = prefPLoc.getString(SCH_MONTH, "");
+        schYr = prefPLoc.getString(SCH_YEAR, "");
+        schHours = prefPLoc.getString(SCH_HRS, "");
+        schMins = prefPLoc.getString(SCH_MIN, "");
 
         vSpeed = findViewById(R.id.vehicle_speed);
         advPay = findViewById(R.id.adv_payment);
@@ -297,6 +312,33 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
             //wmlp.x = 100;   //x position
             wmlp.y = 76;   //y position
         }
+        if (id == 4) {
+            infoText.setText(R.string.schedule_rent_popup);
+            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
+
+            //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
+            //wmlp.x = 100;   //x position
+            wmlp.y = 76;   //y position
+
+            myDialog.show();
+            Window window = myDialog.getWindow();
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            myDialog.setCanceledOnTouchOutside(false);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    myDialog.dismiss();
+                    Intent homePage = new Intent(ActivityRentRequest.this, ActivityRentHome.class);
+                    homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(homePage);
+                    finish();
+                }
+            }, 8000);
+
+
+        }
         if (id == 5) {
             infoText.setText(stringDrop);
             myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -395,13 +437,20 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         params.put("rtype", rideInfo);
         params.put("vtype", vTypeInfo);
         params.put("pmode", pModeInfo);
+        params.put("date", schDate);
+        params.put("month", schMonth);
+        params.put("year", schYr);
+        params.put("hour", schHours);
+        params.put("min", schMins);
 
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth + " srcid = " + pickInfo + " dstid = " + dropInfo + " hrs" + hrs +
-                " rtype = " + rideInfo + " vtype = " + vTypeInfo + " pmode = " + pModeInfo);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-rent-request");
+        Log.d(TAG, "Values: auth=" + auth + " srcid = " + pickInfo + " dstid = " + dropInfo + " hrs = " + hrs +
+                " rtype = " + rideInfo + " vtype = " + vTypeInfo + " pmode = " + pModeInfo +
+                " date = " + schDate + " month = " + schMonth + " year = " + schYr +
+                " hour = " + schHours + " min = " + schMins);
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-rent-schedule");
 
-        UtilityApiRequestPost.doPOST(a, "user-rent-request", parameters, 2000, 0, response -> {
+        UtilityApiRequestPost.doPOST(a, "user-rent-schedule", parameters, 2000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
             } catch (JSONException e) {

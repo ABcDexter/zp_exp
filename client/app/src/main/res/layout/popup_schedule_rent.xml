@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="21dp"
+    android:layout_marginEnd="21dp"
+    android:background="@drawable/rect_blue"
+    android:padding="10dp">
+
+    <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+        android:id="@+id/single_day_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:picker_curved="true"
+        app:picker_curvedMaxAngle="45"
+        app:picker_cyclic="true"
+        app:picker_dayCount="6"
+        app:picker_itemSpacing="6dp"
+        app:picker_mustBeOnFuture="true"
+        app:picker_selectedTextColor="@color/txtColor"
+        app:picker_selectorColor="@android:color/transparent"
+        app:picker_stepSizeHours="1"
+        app:picker_visibleItemCount="6" />
+
+    <TextView
+        android:id="@+id/txt_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/single_day_picker"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="OK"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+</RelativeLayout>

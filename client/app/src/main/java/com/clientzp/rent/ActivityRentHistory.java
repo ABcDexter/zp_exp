@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,20 +38,32 @@ public class ActivityRentHistory extends AppCompatActivity {
     private List<RideListData> list_data;
     private RentListAdapter adapter;
     String stringAuth;
+    TextView txt;
 
     public void onSuccess(JSONObject response) {
         String responseS = response.toString();
+        Log.d(TAG, "RESPONSE:" + responseS);
         try {
             JSONObject jsonObject = new JSONObject(responseS);
             JSONArray array = jsonObject.getJSONArray("trips");
             for (int i = 0; i < array.length(); i++) {
                 JSONObject ob = array.getJSONObject(i);
                 RideListData ld = new RideListData(ob.getString("tid"), ob.getString("st"),
-                        ob.getString("sdate"),ob.getString("vtype"), ob.getString("srcname"), ob.getString("dstname"));
+                        ob.getString("sdate"), ob.getString("vtype"), ob.getString("srcname"), ob.getString("dstname"));
                 list_data.add(ld);
             }
             rv.setAdapter(adapter);
         } catch (JSONException e) {
+            txt.setVisibility(View.VISIBLE);
+            txt.setText(R.string.try_zippe);
+            txt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(ActivityRentHistory.this, ActivityRentHome.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
             e.printStackTrace();
         }
     }
@@ -72,6 +86,7 @@ public class ActivityRentHistory extends AppCompatActivity {
         //loading list view item with this function
 
         rv = findViewById(R.id.recycler_view);
+        txt = findViewById(R.id.tryRent);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(this));
         list_data = new ArrayList<>();
