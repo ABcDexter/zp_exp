@@ -142,13 +142,12 @@ def userRentSchedule(dct, user):
         dinaank = datetime(year, month, date, hour - 5, (minute + 25) % 60, 00)
 
     print(dinaank)
-
-    abhi = datetime.now(timezone.utc)
-
+    abhi = datetime.now() # timezone.utc)
+    #abhi.replace(tzinfo=None)
     diff = dinaank - abhi
 
-    print (diff, diff.seconds)
-        
+    print (abhi, dinaank, diff, diff.seconds)
+
     global sched
     sched.pause()
     sched.add_job(callAPI, 'date', run_date=dinaank,
