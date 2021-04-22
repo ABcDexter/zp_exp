@@ -1577,6 +1577,8 @@ def authTripData(dct, _entity):
             except StopIteration:
                 idxMul = 12
 
+            rate = idxPrice[idxMul]
+
     else:
             #ride
             if dctTrip['stime'] is None:
