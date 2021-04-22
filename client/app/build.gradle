@@ -62,6 +62,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.hypertrack:hypertrack:4.9.0'
     implementation 'ch.halcyon:squareprogressbar:1.6.4'
+    implementation 'com.github.florent37:singledateandtimepicker:2.2.7'
 
 
 

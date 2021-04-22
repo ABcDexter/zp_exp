@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+import com.clientzp.rent.ActivityRentOTP;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -495,6 +496,12 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                     }
 
                     if (rtype.equals("1")) {
+                        if (status.equals("RQ")) {
+                            //Intent rq = new Intent(ActivityWelcome.this, ActivityRideRequest.class);
+                            Intent rq = new Intent(ActivityWelcome.this, ActivityRentOTP.class);
+                            //rq.putExtra("st", "RQ");
+                            startActivity(rq);
+                        }
                         if (status.equals("FN") || status.equals("TR")) {
                             String price = response.getString("price");
                             if (price.equals("0.00")) {

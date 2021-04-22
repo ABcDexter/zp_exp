@@ -61,7 +61,7 @@ public class ActivityRentSummery extends ActivityDrawer {
         rideDate = findViewById(R.id.ride_date);
         txtSummery = findViewById(R.id.txtSummery);
         txtSummery.setText(R.string.rent_summary);
-        userDeliverySummery();
+        authTripData();
 
         swipeRefresh = findViewById(R.id.swipeRefresh);
 
@@ -75,7 +75,7 @@ public class ActivityRentSummery extends ActivityDrawer {
         });
     }
 
-    protected void userDeliverySummery() {
+    protected void authTripData() {
         String auth = stringAuthKey;
         String scid = stringSCID;
         params.put("auth", auth);
@@ -141,7 +141,7 @@ public class ActivityRentSummery extends ActivityDrawer {
         }
 
         //response on hitting user-delivery-get-info API
-        if (id == 1) {
+        /*if (id == 1) {
             try {
 
                 String st = response.getString("st");
@@ -157,7 +157,7 @@ public class ActivityRentSummery extends ActivityDrawer {
                 }
                 if (st.equals("ST")) {
                     ShowPopup(1, "");
-                    /*trackDelivery.setVisibility(View.VISIBLE);*/
+                    *//*trackDelivery.setVisibility(View.VISIBLE);*//*
                 }
                 if (st.equals("RC")) {
                     String otp = response.getString("otp");
@@ -182,7 +182,7 @@ public class ActivityRentSummery extends ActivityDrawer {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
     }
 
@@ -200,7 +200,7 @@ public class ActivityRentSummery extends ActivityDrawer {
     }
 
 
-    private void ShowPopup(int id, String info) {
+    /*private void ShowPopup(int id, String info) {
 
         //myDialog.setContentView(R.layout.popup_new_request);
         dialog_txt = findViewById(R.id.txtInfo);
@@ -245,6 +245,6 @@ public class ActivityRentSummery extends ActivityDrawer {
             Log.d(TAG, "RC OTP = " + info);
         }
 
-    }
+    }*/
 
 }

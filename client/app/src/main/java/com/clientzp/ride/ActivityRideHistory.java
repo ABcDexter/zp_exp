@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +17,8 @@ import com.android.volley.VolleyError;
 import com.clientzp.ActivityWelcome;
 import com.clientzp.R;
 import com.clientzp.UtilityApiRequestPost;
+import com.clientzp.rent.ActivityRentHistory;
+import com.clientzp.rent.ActivityRentHome;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +39,7 @@ public class ActivityRideHistory extends AppCompatActivity {
     private List<RideListData> list_data;
     private RideListAdapter adapter;
     String stringAuth;
+    TextView txt;
 
     public void onSuccess(JSONObject response) {
         String responseS = response.toString();
@@ -49,6 +54,17 @@ public class ActivityRideHistory extends AppCompatActivity {
             }
             rv.setAdapter(adapter);
         } catch (JSONException e) {
+            txt.setVisibility(View.VISIBLE);
+            txt.setText(R.string.try_zippe_ride);
+            txt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(ActivityRideHistory.this, ActivityRideHome.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
             e.printStackTrace();
         }
     }
@@ -72,6 +88,7 @@ public class ActivityRideHistory extends AppCompatActivity {
         //loading list view item with this function
 
         rv = findViewById(R.id.recycler_view);
+        txt = findViewById(R.id.tryRent);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(this));
         list_data = new ArrayList<>();

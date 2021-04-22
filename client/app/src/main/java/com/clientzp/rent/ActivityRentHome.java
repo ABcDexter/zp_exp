@@ -36,12 +36,16 @@ import com.clientzp.HubList;
 import com.clientzp.R;
 import com.clientzp.UtilityApiRequestPost;
 import com.clientzp.UtilityPollingService;
+import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,8 +55,8 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     private static final String TAG = "ActivityRentHome";
     Button vehicle, hours;
     ImageButton confirmRentButton;
-    TextView reject_rq, accept_rq, dialog_txt, pick, drop, scheduleRent;
-    Dialog myDialog, imageDialog, imageDialog2;
+    TextView reject_rq, accept_rq, dialog_txt, pick, drop, scheduleRent, txtOk;
+    Dialog myDialog, imageDialog, imageDialog2, schDialog;
 
     public static final String AUTH_KEY = "AuthKey";
     public static final String AN_KEY = "AadharKey";
@@ -65,6 +69,11 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     public static final String LOCATION_DROP = "DropLocation";
     public static final String RENT_RIDE = "RentRide";
     public static final String PAYMENT_MODE = "PaymentMode";
+    public static final String SCH_DATE = "ScheduleDate";
+    public static final String SCH_HRS = "ScheduleHrs";
+    public static final String SCH_MIN = "ScheduleMins";
+    public static final String SCH_MONTH = "ScheduleMonth";
+    public static final String SCH_YEAR = "ScheduleYear";
     public static final String VEHICLE_TYPE = "VehicleType";
     public static final String NO_HOURS = "NoHours";
     public static final String TRIP_ID = "TripID";
@@ -167,7 +176,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                 e.printStackTrace();
             }
         }
-
+//response on hitting auth-vehicle-get-avail API
         if (id == 2) {
             Log.d(TAG + "jsArrayRequest", "RESPONSE:" + response.toString());
             prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
@@ -334,15 +343,14 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         }
 
         myDialog = new Dialog(this);
+        schDialog = new Dialog(this);
         //getAvailableVehicle();
 
         imageDialog = new Dialog(this);
         imageDialog2 = new Dialog(this);
 
         sendLocation();
-
         checkStatus();
-
     }
 
     public void sendLocation() {
@@ -385,7 +393,9 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             public void onClick(DialogInterface dialog, int which) {
                 showProgressIndication();
                 storeData();
-                getAvailableVehicle();
+                //getAvailableVehicle();
+                Intent rideIntent = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
+                startActivity(rideIntent);
                 dialog.cancel();
             }
         });
@@ -451,23 +461,42 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             //dialog_txt.setText("Rides are available.");
 
         }
-        if (id == 3) {
-            dialog_txt.setText(R.string.coming_soon);
-
-            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
-
-            //wmlp.gravity = Gravity.TOP | Gravity.LEFT;
-            //wmlp.x = 100;   //x position
-            wmlp.y = 77;   //y position
-            myDialog.show();
-            Window window = myDialog.getWindow();
-            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-            myDialog.setCanceledOnTouchOutside(true);
-        }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
         myDialog.setCanceledOnTouchOutside(true);
+    }
+
+    private void ScheduleRental() {
+
+        schDialog.setContentView(R.layout.popup_schedule_rent);
+
+        SingleDateAndTimePicker singleDateAndTimePicker = schDialog.findViewById(R.id.single_day_picker);
+        txtOk = schDialog.findViewById(R.id.txt_select);
+        txtOk.setOnClickListener(this);
+
+        singleDateAndTimePicker.setIsAmPm(true);
+        singleDateAndTimePicker.setMustBeOnFuture(true);
+
+        SingleDateAndTimePicker.OnDateChangedListener changeListener = new SingleDateAndTimePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(String displayed, Date date) {
+                display(displayed);
+            }
+        };
+        singleDateAndTimePicker.addOnDateChangedListener(changeListener);
+
+        schDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        schDialog.show();
+        Window window = schDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        schDialog.setCanceledOnTouchOutside(false);
+    }
+
+    String schSelection = "";
+
+    private void display(String toDisplay) {
+        //Toast.makeText(this, toDisplay, Toast.LENGTH_SHORT).show();
+        schSelection = toDisplay;
     }
 
     public void getAvailableVehicle() {
@@ -495,8 +524,8 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             ImagePopup2();
         } else if (id == R.id.confirm_rent) {
             Log.d(TAG, "confirm_rent button clicked!");
-            if (/*RentRide == null ||*/ VehicleType.equals("") || NoHours.equals("") || pick.getText().equals("PICK UP POINT / Z-HUB")
-                    || drop.getText().equals("DROP POINT / Z-HUB")/*|| PaymentMode == null*/) {
+            if (VehicleType.equals("") || NoHours.equals("") || pick.getText().equals("PICK UP POINT / Z-HUB")
+                    || drop.getText().equals("DROP POINT / Z-HUB") || schSelection.equals("") /*|| PaymentMode == null*/) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                 } else {
@@ -507,8 +536,9 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
 
                 Log.d(TAG, "empty field: vehicle:" + VehicleType + " " + "rent ride: " +
                         RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
-                        PaymentMode);
+                        PaymentMode + "date and time: " + schSelection);
             } else {
+
                 dlAlert();//method to alert user to provide valid driving licence at the hub before picking up the vehicle
 
                 Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
@@ -526,7 +556,13 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             getAvailableVehicle();
             myDialog.dismiss();
         } else if (id == R.id.schedule_rent) {
-            ShowPopup(3);
+            ScheduleRental();
+
+        } else if (id == R.id.txt_select) {
+            schDialog.dismiss();
+            scheduleRent.setText(schSelection);
+            scheduleRent.setBackgroundResource(R.drawable.rect_box_outline_color_change);
+            scheduleRent.setTextColor(Color.parseColor("#ffffff"));
         } else if (id == R.id.txt_pick_hub) {
             Intent pick = new Intent(ActivityRentHome.this, HubList.class);
             pick.putExtra("Request", "pick_rent");
@@ -660,16 +696,81 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     }
 
     private void storeData() {
+        String hrs_text = "", mins_text ="", yr_text = "",schMonth = "";
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        yr_text = String.valueOf(year);
+        String date_text = schSelection.substring(4, 6);
+        String month_text = schSelection.substring(7, 10);
+        String time_text = schSelection.substring(11);
+
+        SimpleDateFormat h_mm_a = new SimpleDateFormat("h:mm a");
+        SimpleDateFormat hh_mm_ss = new SimpleDateFormat("HH:mm:ss");
+        try {
+            Date d1 = h_mm_a.parse(time_text);
+            assert d1 != null;
+            System.out.println(hh_mm_ss.format(d1));
+            hrs_text = hh_mm_ss.format(d1).substring(0, 2);
+            Log.d(TAG, "hrs_text = " + hrs_text);
+            mins_text = hh_mm_ss.format(d1).substring(3, 5);
+            Log.d(TAG, "mins_text = " + mins_text);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (month_text.equals("Jan")) {
+            schMonth = "1";
+        }
+        if (month_text.equals("Feb")) {
+            schMonth = "2";
+        }
+        if (month_text.equals("Mar")) {
+            schMonth = "3";
+        }
+        if (month_text.equals("Apr")) {
+            schMonth = "4";
+        }
+        if (month_text.equals("May")) {
+            schMonth = "5";
+        }
+        if (month_text.equals("Jun")) {
+            schMonth = "6";
+        }
+        if (month_text.equals("Jul")) {
+            schMonth = "7";
+        }
+        if (month_text.equals("Aug")) {
+            schMonth = "8";
+        }
+        if (month_text.equals("Sep")) {
+            schMonth = "9";
+        }
+        if (month_text.equals("Oct")) {
+            schMonth = "10";
+        }
+        if (month_text.equals("Nov")) {
+            schMonth = "11";
+        }
+        if (month_text.equals("Dec")) {
+            schMonth = "12";
+        }
+
         SharedPreferences pref = this.getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString(RENT_RIDE, "1");
         editor.putString(PAYMENT_MODE, "1");
         editor.putString(NO_HOURS, NoHours);
         editor.putString(VEHICLE_TYPE, VehicleType);
+        editor.putString(SCH_DATE, date_text);
+        editor.putString(SCH_MONTH, schMonth);
+        editor.putString(SCH_YEAR, yr_text);
+        editor.putString(SCH_HRS, hrs_text);
+        editor.putString(SCH_MIN, mins_text);
         editor.apply();
         Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
                 RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
-                PaymentMode + "srcid:" + pickID + "dstid:" + dropID);
+                PaymentMode + "srcid:" + pickID + "dstid:" + dropID + "date_text:" +
+                date_text+ "schMonth:" + schMonth+ "yr_text:" + yr_text+ "hrs_text:" +
+                hrs_text+ "mins_text:" + mins_text);
     }
 
     private void ImagePopup() {
@@ -701,9 +802,6 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         imageDialog.setCanceledOnTouchOutside(true);
     }
-
-    SpannableStringBuilder spannableStringBuilder;
-    String txt_3;
 
     private void ImagePopup2() {
 
