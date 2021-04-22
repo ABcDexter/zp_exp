@@ -384,22 +384,22 @@ def userRentHistory(dct, user):
                 hs = user.hs
 
                 #print("Trip state : ", str(i['st']))
-                if i['st'] in ['SC', 'RQ','ST', 'FN', 'TR', 'PD']:
-                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
-                    if i['rtime'] is None :
-                        sDate = 'notSTARTED'
-                    else:
-                        strSTime = str(i['rtime'])[:19]
-                        sDate = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
-                    
-                    price = float(getRentPrice(i['hrs'])['price'])
-
+                #if i['st'] in ['SC', 'RQ','ST', 'FN', 'TR', 'PD']:
+                vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
+                if i['rtime'] is None :
+                    sDate = 'notSTARTED'
                 else:
-                    price = float(getRentPrice(i['hrs'])['price'])
-                    sDate = 'NOTSTARTED'
+                    strSTime = str(i['rtime'])[:19]
+                    sDate = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+
+                price = float(getRentPrice(i['hrs'])['price'])
+
+                #else:
+                #    price = float(getRentPrice(i['hrs'])['price'])
+                #    sDate = 'NOTSTARTED'
                     
                 if i['st'] in ['FN', 'TR' 'PD']:
-                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype  #select vtype of the vehicle of this trip
                     price = float(getRentPrice(i['hrs'])['price'])
                     
                     if i['etime'] is None:
