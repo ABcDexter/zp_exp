@@ -453,7 +453,7 @@ def userRentalRQ(dct, _user):
     Returns:
         empty json on success
     '''
-    trip = Trip.objects.filter(id=dct['tid'])
+    trip = Trip.objects.filter(id=dct['tid'])[0]
     trip.st = 'RQ'  # now the delivery is in RQ
     trip.rtime = datetime.now(timezone.utc)
     trip.save()

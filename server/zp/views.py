@@ -542,7 +542,7 @@ def userRideGetDriver(_dct, _entity, trip):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkTripStatus(['RQ', 'AS', 'ST'])
+@checkTripStatus(['SC','RQ', 'AS', 'ST'])
 def userTripCancel(_dct, user, trip):
     '''
     Cancel the ride for a user if requested, assigned or started
