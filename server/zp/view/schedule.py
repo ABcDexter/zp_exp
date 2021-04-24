@@ -136,10 +136,9 @@ def userRentSchedule(dct, user):
     hour = int(dct['hour'])
     minute = int(dct['min'])
 
-    if minute < 30:
-        dinaank = datetime(year, month, date, hour - 6, (minute + 25) % 60, 00)
-    else:
-        dinaank = datetime(year, month, date, hour - 5, (minute + 25) % 60, 00)
+    date = datetime(year, month, date, hour, minute, 00) #actual req date
+
+    dinaank =  date - datetime.timedelta(minutes=340)  # 5*60 +30 for UTC then 10 minutes ago
 
     print(dinaank)
     abhi = datetime.now()
