@@ -467,7 +467,7 @@ def userRentalRQ(dct, _user):
 @transaction.atomic
 @checkAuth()
 #@checkTripStatus(['SC','RQ', 'AS', 'ST'])
-def userRentCancel(_dct, user, trip):
+def userRentCancel(dct, _user):
     '''
     Cancel the rent for a user if 'SC'
     -----------------------------------------
