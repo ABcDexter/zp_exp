@@ -435,6 +435,30 @@ def userRentHistory(dct, user):
     return HttpJSONResponse(ret)
 
 
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Delivery not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkTripStatus(['SC'])
+def userRentalRQ(dct, _user):
+    '''
+    Put the rental Trip into the RQ queue
+
+    HTTP args:
+        auth, tid
+
+    Returns:
+        empty json on success
+    '''
+    trip = Trip.objects.filter(id=dct['tid'])
+    trip.st = 'RQ'  # now the delivery is in RQ
+    trip.rtime = datetime.now(timezone.utc)
+    trip.save()
+    return HttpJSONResponse({})
+
 
 # ============================================================================
 # Supervisor views
@@ -815,7 +839,7 @@ def adminVehicleAssign(dct):
     HTTP args:
 
     Note:
-        assigns one of the free vehciles, ideally the vehicles should have enough charge for the trip.
+        assigns one of the free vehicles, ideally the vehicle should have enough charge for the trip.
     '''
     # Get the deliveries and look for RQ ones
     qsTrip = Trip.objects.filter(st__in=['RQ'], rtype=1) # get the trip
@@ -853,6 +877,7 @@ def adminVehicleAssign(dct):
         vehicle.save()
         vid = vehicle.an
 
+        # fix the trip of that particular user
         user = User.objects.filter(an=trip.uan)[0]
         ret = {'name': user.name, 'phone': user.pn}
         user.tid = trip.id

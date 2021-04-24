@@ -121,7 +121,7 @@ def userRentSchedule(dct, user):
 
         5 more things
         date, month, year,
-        hour, minute.
+        hour, minute
     '''
     print("Rental scheduling Request param : ", dct)
 
@@ -142,17 +142,53 @@ def userRentSchedule(dct, user):
         dinaank = datetime(year, month, date, hour - 5, (minute + 25) % 60, 00)
 
     print(dinaank)
-    abhi = datetime.now() # timezone.utc)
+    abhi = datetime.now()
     #abhi.replace(tzinfo=None)
     diff = dinaank - abhi
 
-    print (abhi, dinaank, diff, diff.seconds)
+    # print (abhi, dinaank, diff, diff.seconds)
+    # why was this added? maybe to see whether the rental is requested for current time or not and schedule accordingly.
+    placeSrc = Place.objects.filter(id=dct['srcid'])[0]
+    placeDst = Place.objects.filter(id=dct['dstid'])[0]
+
+    trip = Trip()
+    trip.st = 'SC'
+    trip.uan = user.an
+    trip.srcid = placeSrc.id
+    trip.dstid = placeDst.id
+
+    iHrs = int(dct['hrs'])
+    trip.hrs = iHrs
+
+    trip.rtype = dct['rtype']
+    trip.pmode = dct['pmode']
+    trip.rvtype = dct['vtype']
+    trip.rtime = datetime.now(timezone.utc)
+
+    # add source details
+    trip.srclat = placeSrc.lat
+    trip.srclng = placeSrc.lng
+    trip.srcname = placeSrc.pn
+
+    # add destination details
+    trip.dstlat = placeDst.lat
+    trip.dstlng = placeDst.lng
+    trip.dstname = placeDst.pn
+
+    trip.save()
+
+    progress = Progress()
+    progress.tid = trip.id
+    progress.pct = 0
+    progress.save()
+
+    # user.tid = trip.id
+    # user.save()
 
     global sched
     sched.pause()
     sched.add_job(callAPI, 'date', run_date=dinaank,
-                  args=['user-rent-request', {'srcid': dct['srcid'], 'dstid': dct['dstid'], 'rtype': '1',
-                                              'vtype': dct['vtype'], 'hrs': dct['hrs'], 'pmode': dct['pmode']},
+                  args=['user-rental-rq', {'tid': trip.id},
                         user.auth])
     print(sched)
     print(sched.get_jobs())  # _jobstores.ne #job.next_run_time)
