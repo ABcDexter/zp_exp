@@ -460,6 +460,33 @@ def userRentalRQ(dct, _user):
     return HttpJSONResponse({})
 
 
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkTripStatus(['SC','RQ', 'AS', 'ST'])
+def userRentCancel(_dct, user, trip):
+    '''
+    Cancel the rent for a user if 'SC'
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+        tid : trip id
+    -----------------------------------------
+    Response:
+        {}
+    '''
+    # Set the status of the trip to CN or TR based on current state
+    trip = Trip.objects.filter(id=dct['tid'])[0]
+    trip.st = 'CN'
+    trip.etime = datetime.now(timezone.utc)
+    trip.save()
+
+    return HttpJSONResponse({})
+
+
 # ============================================================================
 # Supervisor views
 # ============================================================================
