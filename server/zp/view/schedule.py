@@ -138,7 +138,7 @@ def userRentSchedule(dct, user):
 
     date = datetime(year, month, date, hour, minute, 00) #actual req date
 
-    dinaank =  date - datetime.timedelta(minutes=340)  # 5*60 +30 for UTC then 10 minutes ago
+    dinaank = date - timedelta(minutes=340)  # 5*60 +30 for UTC then 10 minutes ago
 
     print(dinaank)
     abhi = datetime.now()
