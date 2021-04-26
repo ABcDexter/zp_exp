@@ -385,6 +385,8 @@ def userRentHistory(dct, user):
 
                 #print("Trip state : ", str(i['st']))
                 #if i['st'] in ['SC', 'RQ','ST', 'FN', 'TR', 'PD']:
+                print(i['van'])
+
                 if i['van'] is None:
                     vtype = 'NA'
                 else :
