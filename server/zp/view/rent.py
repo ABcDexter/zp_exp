@@ -385,7 +385,11 @@ def userRentHistory(dct, user):
 
                 #print("Trip state : ", str(i['st']))
                 #if i['st'] in ['SC', 'RQ','ST', 'FN', 'TR', 'PD']:
-                vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
+                if i['van'] is None:
+                    vtype = 'NA'
+                else :
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
+
                 if i['rtime'] is None :
                     sDate = 'notSTARTED'
                 else:
