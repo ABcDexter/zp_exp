@@ -387,7 +387,7 @@ def userRentHistory(dct, user):
                 #if i['st'] in ['SC', 'RQ','ST', 'FN', 'TR', 'PD']:
                 print(i['van'])
 
-                if i['van'] in ['-1', None]:
+                if i['van'] in [-1, None]:
                     vtype = 'NA'
                 else :
                     vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
