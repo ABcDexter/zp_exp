@@ -804,7 +804,7 @@ def authRideHistory(dct, entity):
                 sTime = 'notSTARTED'
             else:
                 # strip the stime and find the date
-                strSTime = str(i['stime'])[:19]
+                strSTime = str(i['rtime'])[:19] #rtime matters more
                 sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date().strftime('%d-%m-%Y')
                     
                     
