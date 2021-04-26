@@ -385,7 +385,7 @@ def userRentHistory(dct, user):
 
                 #print("Trip state : ", str(i['st']))
                 #if i['st'] in ['SC', 'RQ','ST', 'FN', 'TR', 'PD']:
-                print(i['van'])
+                #print(i['van'])
 
                 if i['van'] in [-1, None]:
                     vtype = 'NA'
@@ -396,7 +396,7 @@ def userRentHistory(dct, user):
                     sDate = 'notSTARTED'
                 else:
                     strSTime = str(i['rtime'])[:19]
-                    sDate = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+                    sDate = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date().strftime('%d-%m-%Y')
 
                 price = float(getRentPrice(i['hrs'])['price'])
 
