@@ -1607,7 +1607,8 @@ def authTripData(dct, _entity):
     print(time, rate, rate*time)
     price = rate*time  # 2 chars
     tax = price*0.05   # tax of 5%
-    total = price + tax
+    cost = price - tax
+    total = cost + tax
     print(tax, total)
     dctRet = {
             'id': str(dctTrip['id']),
@@ -1630,9 +1631,9 @@ def authTripData(dct, _entity):
             
             'time': str(time),
             'rate': str(rate),
-            'price': str(round(float('%.2f' % price),0))+'0',
-            'tax':  str(round(float('%.2f' % tax),0))+'0',
-            'total': str(round(float('%.2f' % total),0))+'0',
+            'price': str(round(float('%.2f' % cost), 0))+'0',
+            'tax':  str(round(float('%.2f' % tax), 0))+'0',
+            'total': str(round(float('%.2f' % total), 0))+'0',
             
              }
     
