@@ -1555,7 +1555,7 @@ def authTripData(dct, _entity):
     #    dctRet.update({str(key): str(val)})
     
     strRTime = str(dctTrip['rtime'])[:19]
-    rDate = datetime.strptime(strRTime, '%Y-%m-%d %H:%M:%S').date()
+    rDate = datetime.strptime(strRTime, '%Y-%m-%d %H:%M:%S').date().strftime('%d-%m-%Y')
     sTime = 'None'
 
     srchub = dctTrip['srcname'] #Place.objects.filter(id=dctTrip['srcid'])[0].pn
