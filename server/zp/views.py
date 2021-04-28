@@ -1611,7 +1611,7 @@ def authTripData(dct, _entity):
     cost = price - tax
     total = cost + tax
     print(tax, total)
-    sc = 1 is dctTrip['st'] == 'SC' else 0
+    sc = 1 if dctTrip['st'] == 'SC' else 0
     dctRet = {
             'cancel' : sc,
             'id': str(dctTrip['id']),
