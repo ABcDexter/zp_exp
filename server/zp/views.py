@@ -1544,6 +1544,7 @@ def authTripData(dct, _entity):
       # date
       # pickup point #can be dine
       # pickup time (stime) #sdate and rdate are same
+      # cancel 0 or 1 whether SC state is there
     -----------------------------------------
 
     '''
@@ -1610,7 +1611,9 @@ def authTripData(dct, _entity):
     cost = price - tax
     total = cost + tax
     print(tax, total)
+    sc = 1 is dctTrip['st'] == 'SC' else 0
     dctRet = {
+            'cancel' : sc,
             'id': str(dctTrip['id']),
             'st':str(dctTrip['st']),
             #'uan': str(dctTrip['uan']),
