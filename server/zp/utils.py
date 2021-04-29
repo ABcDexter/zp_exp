@@ -805,7 +805,9 @@ def getRentPrice(iTimeHrs=1, iTimeActualMins=0):
 
     idxNext = [0, 60, 120, 180, 240, 300, 300, 420, 480, 540, 600, 660, 720]
     #             780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440]  # for next hours charges
-    lstUpdatedPrice = [0, 60.00, 48.00, 36.00, 36.00, 30.00, 24.00, 18.00, 12.00, 6.00, 30.00, 30.00, 30.00, 30.00]  # finalPrice
+    lstUpdatedPrice = [0, 60.00, 48.00, 36.00, 36.00, 30.00, 24.00, 18.00, 12.00, 6.00, 30.00, 30.00, 30.00, 30.00]
+
+    # finalPrice
 
     try:
         idxMul = next(x[0] for x in enumerate(idxNext) if x[1] >= iTimeActualMins)  # Find the correct value from idx

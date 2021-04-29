@@ -22,6 +22,7 @@ from ..utils import encode, decode
 from hypertrack.rest import Client
 from hypertrack.exceptions import HyperTrackException
 
+import json, urllib
 
 ###########################################
 # Types
@@ -383,22 +384,28 @@ def userRentHistory(dct, user):
                 hs = user.hs
 
                 #print("Trip state : ", str(i['st']))
-                if i['st'] in ['ST', 'FN', 'TR', 'PD']:
-                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
-                    if i['stime'] is None : 
-                        sDate = 'notSTARTED'
-                    else:
-                        strSTime = str(i['stime'])[:19]
-                        sDate = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
-                    
-                    price = float(getRentPrice(i['hrs'])['price'])
+                #if i['st'] in ['SC', 'RQ','ST', 'FN', 'TR', 'PD']:
+                #print(i['van'])
 
+                if i['van'] in [-1, None]:
+                    vtype = 'NA'
+                else :
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip
+
+                if i['rtime'] is None :
+                    sDate = 'notSTARTED'
                 else:
-                    price = float(getRentPrice(i['hrs'])['price'])
-                    sDate = 'NOTSTARTED'
+                    strSTime = str(i['rtime'])[:19]
+                    sDate = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date().strftime('%d-%m-%Y')
+
+                price = float(getRentPrice(i['hrs'])['price'])
+
+                #else:
+                #    price = float(getRentPrice(i['hrs'])['price'])
+                #    sDate = 'NOTSTARTED'
                     
                 if i['st'] in ['FN', 'TR' 'PD']:
-                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype #select vtype of the vehicle of this trip                
+                    vtype = Vehicle.objects.filter(an=i['van'])[0].vtype  #select vtype of the vehicle of this trip
                     price = float(getRentPrice(i['hrs'])['price'])
                     
                     if i['etime'] is None:
@@ -433,6 +440,57 @@ def userRentHistory(dct, user):
 
     return HttpJSONResponse(ret)
 
+
+@makeView()
+@csrf_exempt
+@handleException(IndexError, 'Delivery not found', 404)
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkTripStatus(['SC'])
+def userRentalRQ(dct, _user):
+    '''
+    Put the rental Trip into the RQ queue
+
+    HTTP args:
+        auth, tid
+
+    Returns:
+        empty json on success
+    '''
+    trip = Trip.objects.filter(id=dct['tid'])[0]
+    trip.st = 'RQ'  # now the delivery is in RQ
+    trip.rtime = datetime.now(timezone.utc)
+    trip.save()
+    return HttpJSONResponse({})
+
+
+@makeView()
+@csrf_exempt
+@handleException(KeyError, 'Invalid parameters', 501)
+@extractParams
+@transaction.atomic
+@checkAuth()
+#@checkTripStatus(['SC','RQ', 'AS', 'ST'])
+def userRentCancel(dct, _user):
+    '''
+    Cancel the rent for a user if 'SC'
+    -----------------------------------------
+    HTTP args :
+        auth : auth key
+        tid : trip id
+    -----------------------------------------
+    Response:
+        {}
+    '''
+    # Set the status of the trip to CN or TR based on current state
+    trip = Trip.objects.filter(id=dct['tid'])[0]
+    trip.st = 'CN'
+    trip.etime = datetime.now(timezone.utc)
+    trip.save()
+
+    return HttpJSONResponse({})
 
 
 # ============================================================================
@@ -814,7 +872,7 @@ def adminVehicleAssign(dct):
     HTTP args:
 
     Note:
-        assigns one of the free vehciles, ideally the vehicles should have enough charge for the trip.
+        assigns one of the free vehicles, ideally the vehicle should have enough charge for the trip.
     '''
     # Get the deliveries and look for RQ ones
     qsTrip = Trip.objects.filter(st__in=['RQ'], rtype=1) # get the trip
@@ -851,6 +909,28 @@ def adminVehicleAssign(dct):
         vehicle.tid = trip.id
         vehicle.save()
         vid = vehicle.an
+
+        # fix the trip of that particular user
+        user = User.objects.filter(an=trip.uan)[0]
+        ret = {'name': user.name, 'phone': user.pn}
+        user.tid = trip.id
+        user.save()
+
+        print("Accepting trip : ", ret)
+        params = {"to": str(user.fcm) , "notification":{
+                                    "title":"ZIPPE kar lo...",
+                                    "body":"We've assigned you a vehicle. Click here to see RENT",
+                                    "imageUrl":"https://cdn1.iconfinder.com/data/icons/christmas-and-new-year-23/64/Christmas_cap_of_santa-512.png",
+                                    "gameUrl":"https://i1.wp.com/zippe.in/wp-content/uploads/2020/10/seasonal-surprises.png"
+        }
+        }
+        dctHdrs = {'Content-Type': 'application/json', 'Authorization':'key=AAAA9ac2AKM:APA91bH7N4ocS711aAjNHEYvKo6TZxQ702CWSMqrBBILgAb2hPnZzo2byOb_IHUgHaFCG3xZyKUHH6p8VsUBsXwpfsXKwhxiqtgUSjWGkweKvAcb5p_08ud-U7e3PUIdaC6Sz-TGhHZB'}
+        jsonData = json.dumps(params).encode()
+        sUrl = 'https://fcm.googleapis.com/fcm/send'
+        req = urllib.request.Request(sUrl, headers=dctHdrs, data=jsonData)
+        jsonResp = urllib.request.urlopen(req, timeout=30).read()
+        # ret = json.loads(jsonResp)
+
     else:
         raise ZPException(400, 'Trip already assigned')
 
