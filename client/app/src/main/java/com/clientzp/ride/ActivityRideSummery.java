@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +36,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCallback, TaskLoadedCallback{
+public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCallback/*, TaskLoadedCallback*/ {
     private static final String TAG = "ActivityRideSummery";
     String stringAuthKey, stringTID;
     TextView dialog_txt;
@@ -50,6 +50,8 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
     private Polyline currentPolyline;
     double srcLat, srcLng, dstLat, dstLng;
     TextView rideRate, ridePrice, rideTax, rideTotal, rideVehicle, rideTime, rideDate;
+    ImageButton cancelBtn;
+    String rate, price, tax, total, vtype, time, date, sLat, sLng, dLat, dLng, srcname, dstname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,7 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
         stringAuthKey = prefCookie.getString(AUTH_KEY, "");
         Intent intent = getIntent();
         stringTID = intent.getStringExtra("TID");
-        Log.d(TAG, "TID" + stringTID);
+        //Log.d(TAG, "TID" + stringTID);
         //initializing views
         scrollView = findViewById(R.id.scrollViewReview);
         rideRate = findViewById(R.id.ride_rate);
@@ -73,8 +75,9 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
         rideVehicle = findViewById(R.id.ride_vehicle);
         rideTime = findViewById(R.id.ride_time);
         rideDate = findViewById(R.id.ride_date);
+        cancelBtn = findViewById(R.id.btnCancel);
 
-        userDeliverySummery();
+        authTripData();
         swipeRefresh = findViewById(R.id.swipeRefresh);
         //getInfo();
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -86,15 +89,15 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
         });
     }
 
-    protected void userDeliverySummery() {
+    protected void authTripData() {
         String auth = stringAuthKey;
         String tid = stringTID;
         params.put("auth", auth);
         params.put("tid", tid);
 
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-delivery-data");
-        Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);
+        /*Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-delivery-data");
+        Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);*/
 
         UtilityApiRequestPost.doPOST(a, "auth-trip-data", parameters, 2000, 0, response -> {
             try {
@@ -105,10 +108,9 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
         }, a::onFailure);
     }
 
-    String rate, price, tax, total, vtype, time, date, sLat, sLng, dLat, dLng, srcname, dstname;
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
-        Log.d(TAG, "RESPONSE:" + response);
+        //Log.d(TAG, "RESPONSE:" + response);
 
         //response on hitting auth-trip-data API
         if (id == 2) {
@@ -164,12 +166,12 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
             src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(srcname);
             dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title(dstname);
 
-            new FetchURL(ActivityRideSummery.this).execute(getUrl(src.getPosition(), dst.getPosition(), "driving"), "driving");
+            //new FetchURL(ActivityRideSummery.this).execute(getUrl(src.getPosition(), dst.getPosition(), "driving"), "driving");
 
         }
 
         //response on hitting user-delivery-get-info API
-        if (id == 1) {
+       /* if (id == 1) {
             try {
 
                 String st = response.getString("st");
@@ -185,7 +187,7 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
                 }
                 if (st.equals("ST")) {
                     ShowPopup(1, "");
-                    /*trackDelivery.setVisibility(View.VISIBLE);*/
+                    *//*trackDelivery.setVisibility(View.VISIBLE);*//*
                 }
                 if (st.equals("RC")) {
                     String otp = response.getString("otp");
@@ -210,13 +212,13 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
     }
 
     public void onFailure(VolleyError error) {
-        Log.d("TAG", "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d("TAG", "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -246,7 +248,7 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
     }
 */
 
-    private void ShowPopup(int id, String info) {
+   /* private void ShowPopup(int id, String info) {
 
         //myDialog.setContentView(R.layout.popup_new_request);
         dialog_txt = findViewById(R.id.txtInfo);
@@ -262,7 +264,7 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
         if (id == 2) {
             //dialog_txt.setText(R.string.your_delivery_agent_will_arrive_shortly + info);
             dialog_txt.setText(String.format("OTP : %s", info));
-            Log.d(TAG, "AS OTP = " + info);
+            //Log.d(TAG, "AS OTP = " + info);
         }
         //FL
         if (id == 3) {
@@ -288,15 +290,15 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
         if (id == 8) {
             //dialog_txt.setText(R.string.agent_has_arrived + INFO);
             dialog_txt.setText(String.format("OTP : %s", info));
-            Log.d(TAG, "RC OTP = " + info);
+            //Log.d(TAG, "RC OTP = " + info);
         }
 
-    }
+    }*/
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Log.d(TAG, "Added Markers");
+        //Log.d(TAG, "Added Markers");
         mMap.addMarker(src).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mMap.addMarker(dst).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
@@ -308,6 +310,8 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
                 .build();
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 5000, null);
+
+
     }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
@@ -327,10 +331,10 @@ public class ActivityRideSummery extends ActivityDrawer implements OnMapReadyCal
     }
 
 
-    @Override
+   /* @Override
     public void onTaskDone(Object... values) {
         if (currentPolyline != null)
             currentPolyline.remove();
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
-    }
+    }*/
 }

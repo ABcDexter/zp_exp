@@ -1,24 +1,21 @@
 package com.clientzp.deliver;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.clientzp.ActivityWelcome;
 import com.clientzp.R;
 import com.clientzp.UtilityApiRequestPost;
-import com.clientzp.ride.ActivityRideHistory;
-import com.clientzp.ride.ActivityRideHome;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class ActivityDeliveryHistoryList extends AppCompatActivity {
     private static final String TAG = "ActivityDeliveryHistoryList.class";
@@ -69,7 +65,7 @@ public class ActivityDeliveryHistoryList extends AppCompatActivity {
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, Objects.requireNonNull(error.getMessage()));
+        //Log.d(TAG, Objects.requireNonNull(error.getMessage()));
 
         Toast.makeText(this, R.string.check_internet, Toast.LENGTH_LONG).show();
 
@@ -83,7 +79,7 @@ public class ActivityDeliveryHistoryList extends AppCompatActivity {
         SharedPreferences prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuth = prefAuth.getString(AUTH_KEY, "");
 
-        Log.d(TAG, "control in ActivityDeliveryHistoryList");
+        //Log.d(TAG, "control in ActivityDeliveryHistoryList");
         //loading list view item with this function
 
         rv = findViewById(R.id.recycler_view);
@@ -104,12 +100,13 @@ public class ActivityDeliveryHistoryList extends AppCompatActivity {
 
         JSONObject parameters = new JSONObject(params);
         ActivityDeliveryHistoryList a = ActivityDeliveryHistoryList.this;
-        Log.d(TAG, "auth = " + auth);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost auth-delivery-history");
+        /*Log.d(TAG, "auth = " + auth);
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost auth-delivery-history");*/
         UtilityApiRequestPost.doPOST(a, "auth-delivery-history", parameters, 30000, 0,
                 a::onSuccess, a::onFailure);
 
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

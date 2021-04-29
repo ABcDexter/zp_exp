@@ -67,7 +67,7 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
     String newToken;
 
     public void onSuccess(JSONObject response) throws JSONException {
-        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
 //response on hitting register-user-no-aadhaar API
         String auth = response.getString("auth");
         String name = response.getString("name");
@@ -87,8 +87,8 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
         simpleProgressBar.setVisibility(View.GONE);
     }
@@ -220,7 +220,7 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
 
             String code = otpEdit.getText().toString().trim();
             if (code.isEmpty() || code.length() < 6) {
-                Log.d(TAG, "Error in OTP");
+                //Log.d(TAG, "Error in OTP");
                 otpEdit.setError("Enter valid code");
                 otpEdit.requestFocus();
                 return;
@@ -239,9 +239,9 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
                 params.put("fcm", newToken);
                 JSONObject parameters = new JSONObject(params);
                 ActivityRegistration a = ActivityRegistration.this;
-                Log.d(TAG, "Values: name=" + strUserName + " mobile=" + strUserMobile +
+                /*Log.d(TAG, "Values: name=" + strUserName + " mobile=" + strUserMobile +
                         " home state=" + strUserState + " gender=" + strUserGender + " fcm token=" + newToken);
-                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME register-user-no-aadhaar");
+                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME register-user-no-aadhaar");*/
                 UtilityApiRequestPost.doPOST(a, "register-user-no-aadhaar", parameters, 30000, 0, response -> {
                     try {
                         a.onSuccess(response);
@@ -258,7 +258,7 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
         if (mobile.isEmpty() || mobile.length() < 10) {
             mobileEdit.setError("ENTER A VALID NUMBER");
             mobileEdit.requestFocus();
-            Log.d(TAG, "Error in Mobile Number");
+            //Log.d(TAG, "Error in Mobile Number");
             return;
         }
         sendVerificationCode(mobile);
@@ -271,7 +271,7 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
                 TimeUnit.SECONDS,
                 TaskExecutors.MAIN_THREAD,
                 mCallbacks);
-        Log.d(TAG, "OTP test received from Firebase to mobile number" + mobile + "in method sendVerificationCode");
+        //Log.d(TAG, "OTP test received from Firebase to mobile number" + mobile + "in method sendVerificationCode");
     }
 
     //the callback to detect the verification status
@@ -280,9 +280,9 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
             //Getting the code sent by SMS
             String code = phoneAuthCredential.getSmsCode();
-            Log.d(TAG, "OTP not detected automatically");
+            //Log.d(TAG, "OTP not detected automatically");
             if (code != null) {
-                Log.d(TAG, "OTP detected automatically");
+                //Log.d(TAG, "OTP detected automatically");
                 otpEdit.setText(code);
                 //verifying the code
                 verifyVerificationCode(code);
@@ -310,12 +310,12 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
             //creating the credential
             //PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
             //signing the user
-            Log.d(TAG, "signing in the user in method verifyVerificationCode");
+            //Log.d(TAG, "signing in the user in method verifyVerificationCode");
         } catch (Exception e) {
             Snackbar snackbar = Snackbar
                     .make(scrollView, "Verification Code is wrong", Snackbar.LENGTH_LONG);
             snackbar.show();
-            Log.d(TAG, "Error" + e);
+            //Log.d(TAG, "Error" + e);
         }
     }
 }

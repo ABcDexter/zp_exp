@@ -12,8 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -84,12 +82,11 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     private static ActivityRentHome instance;
     Vibrator vibrator;
 
-    String RentRide, PaymentMode;
     String NoHours = "";
     String VehicleType = "";
     String lat, lng;
     String stringAuth, stringBuss, bussFlag, stringAN;
-    String Rent, pMode, pickID, dropID, pickPoint, dropPoint;
+    String pMode, pickID, dropID, pickPoint, dropPoint;
     String imgBtnConfirm = "";
     Map<String, String> params = new HashMap();
     ActivityRentHome a = ActivityRentHome.this;
@@ -146,7 +143,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
 
                     }
                 } else {
-                    Log.d(TAG, "active=" + active);
+                    //Log.d(TAG, "active=" + active);
                     try {
                         String tid = response.getString("tid");
                         if (!tid.equals("-1")) {
@@ -156,7 +153,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                             tripInfo(tid);
                         }*/
                     } catch (Exception e) {
-                        Log.d(TAG, " tid does not exist");
+                        //Log.d(TAG, " tid does not exist");
                         e.printStackTrace();
                         //getAvailableVehicle();
                     }
@@ -178,7 +175,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         }
 //response on hitting auth-vehicle-get-avail API
         if (id == 2) {
-            Log.d(TAG + "jsArrayRequest", "RESPONSE:" + response.toString());
+            //Log.d(TAG + "jsArrayRequest", "RESPONSE:" + response.toString());
             prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
             stringBuss = prefBuss.getString(BUSS, "");
             String responseS = response.toString();
@@ -187,9 +184,9 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             if (array.length() == 0) {
                 confirmRentButton.setEnabled(false);//the user cannot go to the next activity if vehicle not available at the hub
                 imgBtnConfirm = "false";
-                Log.d(TAG, "confirmRentButton.setEnabled(false)");
+                //Log.d(TAG, "confirmRentButton.setEnabled(false)");
                 if (stringBuss.equals("BussMeNot")) {
-                    Log.d(TAG, "user not interested in notifications");
+                    //Log.d(TAG, "user not interested in notifications");
                     SharedPreferences prefBuzz = getApplicationContext().getSharedPreferences(BUSS_FLAG, MODE_PRIVATE);
                     SharedPreferences.Editor editor1 = prefBuzz.edit();
                     editor1.remove(BUSS_FLAG);
@@ -207,11 +204,11 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                 SharedPreferences.Editor editor = pref.edit();
                 editor.remove(BUSS);
                 editor.apply();
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject vehicle = array.getJSONObject(i);
-                    String an = vehicle.getString("an");
+                /*for (int i = 0; i < array.length(); i++) {
+                    //JSONObject vehicle = array.getJSONObject(i);
+                    //String an = vehicle.getString("an");
 
-                }
+                }*/
                 Intent rideIntent = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
                 startActivity(rideIntent);
 
@@ -269,8 +266,8 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -314,32 +311,32 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
         pMode = pref.getString(PAYMENT_MODE, "");
 
-        if (imgBtnConfirm.equals("false")) {
+        /*if (imgBtnConfirm.equals("false")) {
             Log.d(TAG, "confirmRentButton.setEnabled(false)");
         } else {
             Log.d(TAG, "confirmRentButton.setEnabled(true)");
-        }
+        }*/
         if (stringPick.isEmpty()) {
             pick.setText(R.string.pick_up_point_z_hub);
             pick.setBackgroundResource(R.drawable.rect_box_outline);
-            Log.d(TAG, "Pick Location  is " + stringPick);
+            //Log.d(TAG, "Pick Location  is " + stringPick);
         } else {
             pick.setText(stringPick);
             pickPoint = pick.getText().toString();
             pick.setBackgroundResource(R.drawable.rect_box_outline_color_change);
             pickID = stringPickID;
-            Log.d(TAG, "Pick Location  is " + stringPick + " ID is " + stringPickID);
+            //Log.d(TAG, "Pick Location  is " + stringPick + " ID is " + stringPickID);
         }
         if (stringDrop.isEmpty()) {
             drop.setText(R.string.drop_point_z_hub);
             drop.setBackgroundResource(R.drawable.rect_box_outline);
-            Log.d(TAG, "Drop Location  is " + stringDrop);
+            //Log.d(TAG, "Drop Location  is " + stringDrop);
         } else {
             drop.setText(stringDrop);
             dropPoint = drop.getText().toString();
             drop.setBackgroundResource(R.drawable.rect_box_outline_color_change);
             dropID = stringDropID;
-            Log.d(TAG, "Drop Location  is " + stringDrop + " ID is " + stringDropID);
+            //Log.d(TAG, "Drop Location  is " + stringDrop + " ID is " + stringDropID);
         }
 
         myDialog = new Dialog(this);
@@ -354,15 +351,15 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     }
 
     public void sendLocation() {
-        Log.d(TAG, "inside sendLocation()");
+        //Log.d(TAG, "inside sendLocation()");
         params.put("an", stringAN);
         params.put("auth", stringAuth);
         params.put("lat", lat);
         params.put("lng", lng);
         JSONObject parameters = new JSONObject(params);
 
-        Log.d(TAG, "auth = " + stringAuth + " lat =" + lat + " lng = " + lng + " an=" + stringAN);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST auth-location-update");
+        /*Log.d(TAG, "auth = " + stringAuth + " lat =" + lat + " lng = " + lng + " an=" + stringAN);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST auth-location-update");*/
         UtilityApiRequestPost.doPOST(a, "auth-location-update", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response, 0);
@@ -388,31 +385,24 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         // Set the positive button with ok name
         // OnClickListener method is use of
         // DialogInterface interface.
-        builder.setPositiveButton(R.string.agree, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showProgressIndication();
-                storeData();
-                //getAvailableVehicle();
-                Intent rideIntent = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
-                startActivity(rideIntent);
-                dialog.cancel();
-            }
+        builder.setPositiveButton(R.string.agree, (dialog, which) -> {
+            showProgressIndication();
+            storeData();
+            //getAvailableVehicle();
+            Intent rideIntent = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
+            startActivity(rideIntent);
+            dialog.cancel();
         });
 
         // Set the Negative button with No name
         // OnClickListener method is use
         // of DialogInterface interface.
-        builder.setNegativeButton(R.string.disagree, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // If user click cancel
-                // then user goes to the previous window
-                Intent back = new Intent(ActivityRentHome.this, ActivityWelcome.class);
-                startActivity(back);
-                finish();
-            }
+        builder.setNegativeButton(R.string.disagree, (dialog, which) -> {
+            // If user click cancel
+            // then user goes to the previous window
+            Intent back = new Intent(ActivityRentHome.this, ActivityWelcome.class);
+            startActivity(back);
+            finish();
         });
 
         // Create the Alert dialog
@@ -477,12 +467,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         singleDateAndTimePicker.setIsAmPm(true);
         singleDateAndTimePicker.setMustBeOnFuture(true);
 
-        SingleDateAndTimePicker.OnDateChangedListener changeListener = new SingleDateAndTimePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(String displayed, Date date) {
-                display(displayed);
-            }
-        };
+        SingleDateAndTimePicker.OnDateChangedListener changeListener = (displayed, date) -> display(displayed);
         singleDateAndTimePicker.addOnDateChangedListener(changeListener);
 
         schDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -504,8 +489,8 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
 
-        Log.d(TAG, "Values: auth=" + params);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-vehicle-get-avail");
+        /*Log.d(TAG, "Values: auth=" + params);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-vehicle-get-avail");*/
         UtilityApiRequestPost.doPOST(a, "auth-vehicle-get-avail", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -523,7 +508,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         } else if (id == R.id.no_hours) {
             ImagePopup2();
         } else if (id == R.id.confirm_rent) {
-            Log.d(TAG, "confirm_rent button clicked!");
+            //Log.d(TAG, "confirm_rent button clicked!");
             if (VehicleType.equals("") || NoHours.equals("") || pick.getText().equals("PICK UP POINT / Z-HUB")
                     || drop.getText().equals("DROP POINT / Z-HUB") || schSelection.equals("") /*|| PaymentMode == null*/) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -534,21 +519,21 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                 Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
                 snackbar.show();
 
-                Log.d(TAG, "empty field: vehicle:" + VehicleType + " " + "rent ride: " +
+                /*Log.d(TAG, "empty field: vehicle:" + VehicleType + " " + "rent ride: " +
                         RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
-                        PaymentMode + "date and time: " + schSelection);
+                        PaymentMode + "date and time: " + schSelection);*/
             } else {
 
                 dlAlert();//method to alert user to provide valid driving licence at the hub before picking up the vehicle
 
-                Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
+                /*Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
                         RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
-                        PaymentMode + "srcid:" + pickID + "dstid:" + dropID);
+                        PaymentMode + "srcid:" + pickID + "dstid:" + dropID);*/
             }
         } else if (id == R.id.reject_request) {
             bussFlag = "BussMeNot";
             prefBuss.edit().putString(BUSS, bussFlag).apply();
-            Log.d(TAG, "User not interested in a buss");
+            //Log.d(TAG, "User not interested in a buss");
             myDialog.dismiss();
         } else if (id == R.id.accept_request) {
             bussFlag = "BussMe";
@@ -566,12 +551,12 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         } else if (id == R.id.txt_pick_hub) {
             Intent pick = new Intent(ActivityRentHome.this, HubList.class);
             pick.putExtra("Request", "pick_rent");
-            Log.d(TAG, "control moved to HUBLIST activity with key pick_rent");
+            //Log.d(TAG, "control moved to HUBLIST activity with key pick_rent");
             startActivity(pick);
         } else if (id == R.id.txt_drop_point) {
             Intent drop = new Intent(ActivityRentHome.this, HubList.class);
             drop.putExtra("Request", "destination_rental");
-            Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
+            //Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
             startActivity(drop);
         } else if (id == R.id.txt2) {
             NoHours = "2";
@@ -647,11 +632,11 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     }
 
     public void checkStatus() {
-        String auth = stringAuth;
+        //String auth = stringAuth;
         params.put("auth", stringAuth);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
+        /*Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
@@ -667,8 +652,8 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         params.put("auth", stringAuth);
         params.put("tid", tripID);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + stringAuth + " tid=" + tripID);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");
+        /*Log.d(TAG, "Values: auth=" + stringAuth + " tid=" + tripID);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");*/
         UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
@@ -683,8 +668,8 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
 
         params.put("auth", stringAuth);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + stringAuth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-retire");
+        /*Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-retire");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-retire", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 4);
@@ -696,7 +681,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     }
 
     private void storeData() {
-        String hrs_text = "", mins_text ="", yr_text = "",schMonth = "";
+        String hrs_text = "", mins_text = "", yr_text = "", schMonth = "";
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         yr_text = String.valueOf(year);
@@ -711,9 +696,9 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             assert d1 != null;
             System.out.println(hh_mm_ss.format(d1));
             hrs_text = hh_mm_ss.format(d1).substring(0, 2);
-            Log.d(TAG, "hrs_text = " + hrs_text);
+            //Log.d(TAG, "hrs_text = " + hrs_text);
             mins_text = hh_mm_ss.format(d1).substring(3, 5);
-            Log.d(TAG, "mins_text = " + mins_text);
+            //Log.d(TAG, "mins_text = " + mins_text);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -766,11 +751,11 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
         editor.putString(SCH_HRS, hrs_text);
         editor.putString(SCH_MIN, mins_text);
         editor.apply();
-        Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
+        /*Log.d(TAG, "vehicle:" + VehicleType + " " + "rent ride: " +
                 RentRide + " " + "No of riders: " + NoHours + " " + "payment Mode: " +
                 PaymentMode + "srcid:" + pickID + "dstid:" + dropID + "date_text:" +
                 date_text+ "schMonth:" + schMonth+ "yr_text:" + yr_text+ "hrs_text:" +
-                hrs_text+ "mins_text:" + mins_text);
+                hrs_text+ "mins_text:" + mins_text);*/
     }
 
     private void ImagePopup() {

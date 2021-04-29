@@ -10,7 +10,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -96,8 +95,8 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         params.put("tid", tid);
         JSONObject parameters = new JSONObject(params);
 
-        Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");
+        /*Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");*/
         UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
@@ -108,7 +107,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
-        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
 
         //response on hitting auth-trip-get-info API
         if (id == 1) {
@@ -150,13 +149,13 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         }
         //response on hitting API for payment made
         if (id == 3) {
-            Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+            //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         }
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -206,8 +205,8 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         params.put("auth", auth);
         params.put("price", cost.getText().toString());
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth + " price=" + cost.getText().toString());
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-ride-get-status");
+        /*Log.d(TAG, "Values: auth=" + auth + " price=" + cost.getText().toString());
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-ride-get-status");*/
         UtilityApiRequestPost.doPOST(a, "user-give-otp", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
@@ -223,8 +222,8 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
         String auth = stringAuthCookie;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-ride-get-status");
+        /*Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-ride-get-status");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -264,18 +263,18 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
             if ((RESULT_OK == resultCode) || (resultCode == 11)) {
                 if (data != null) {
                     String trxt = data.getStringExtra("response");
-                    Log.d("UPI", "onActivityResult: " + trxt);
+                    //Log.d("UPI", "onActivityResult: " + trxt);
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add(trxt);
                     upiPaymentDataOperation(dataList);
                 } else {
-                    Log.d("UPI", "onActivityResult: " + "Return data is null");
+                    //Log.d("UPI", "onActivityResult: " + "Return data is null");
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add("nothing");
                     upiPaymentDataOperation(dataList);
                 }
             } else {
-                Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                //Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
                 ArrayList<String> dataList = new ArrayList<>();
                 dataList.add("nothing");
                 upiPaymentDataOperation(dataList);
@@ -286,7 +285,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
     private void upiPaymentDataOperation(ArrayList<String> data) {
         if (isConnectionAvailable(this)) {
             String str = data.get(0);
-            Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
+            //Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
             String paymentCancel = "";
             if (str == null) str = "discard";
             String status = "";
@@ -309,7 +308,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
                 //Code to handle successful transaction here.
                 paymentMade();
                 Toast.makeText(ActivityRideEnded.this, R.string.transaction_successful, Toast.LENGTH_LONG).show();
-                Log.d("UPI", "responseStr: " + approvalRefNo);
+                //Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(ActivityRideEnded.this, R.string.payment_cancelled_by_user, Toast.LENGTH_LONG).show();
             } else {

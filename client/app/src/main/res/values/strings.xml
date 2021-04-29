@@ -102,7 +102,7 @@
     <string name="time_slot">Time Slot</string>
     <string name="delivery_type">Delivery Type</string>
     <string name="ride_price">Price</string>
-    <string name="ride_rate">Rate</string>
+    <string name="ride_rate">Rate / Min</string>
     <string name="pick_up_time">Pick Up Time</string>
     <string name="ride_tax">Tax</string>
     <string name="trip">Trip</string>
@@ -413,6 +413,7 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="message_min">%1$s mins</string>
     <string name="message_rs">₹ %1$s </string>
     <string name="message_km">%1$s km</string>
+    <string name="message_km_hr">%1$s km/hr</string>
     <string name="add_email">Add Email</string>
     <string name="notifications_admin_channel_name">101</string>
     <string name="notifications_admin_channel_description">Game Notifications</string>
@@ -447,5 +448,6 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="try_zippe">You haven\'t tried ZIPP-E Rent yet. Click here to try</string>
     <string name="try_zippe_ride">You haven\'t tried ZIPP-E Ride yet. Click here to try</string>
     <string name="try_zippe_delivery">You haven\'t tried ZIPP-E Delivery yet. Click here to try</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

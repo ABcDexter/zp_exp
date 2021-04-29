@@ -1,18 +1,17 @@
 package com.clientzp.Service;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
 import com.clientzp.ActivityDrawer;
@@ -49,7 +48,7 @@ public class ActivityServiceSummery extends ActivityDrawer {
         stringAuthKey = prefCookie.getString(AUTH_KEY, "");
         Intent intent = getIntent();
         stringSCID = intent.getStringExtra("TID");
-        Log.d(TAG, "TID" + stringSCID);
+        //Log.d(TAG, "TID" + stringSCID);
         //initializing views
         scrollView = findViewById(R.id.scrollViewReview);
         rideRate = findViewById(R.id.ride_rate);
@@ -82,8 +81,8 @@ public class ActivityServiceSummery extends ActivityDrawer {
         params.put("tid", scid);
 
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-trip-data");
-        Log.d(TAG, "Values: auth=" + auth + " scid=" + scid);
+        /*Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-trip-data");
+        Log.d(TAG, "Values: auth=" + auth + " scid=" + scid);*/
 
         UtilityApiRequestPost.doPOST(a, "auth-trip-data", parameters, 2000, 0, response -> {
             try {
@@ -97,7 +96,7 @@ public class ActivityServiceSummery extends ActivityDrawer {
     String rate, price, tax, total, vtype, time, date;
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
-        Log.d(TAG, "RESPONSE:" + response);
+        //Log.d(TAG, "RESPONSE:" + response);
 
         //response on hitting auth-trip-data API
         if (id == 2) {
@@ -110,10 +109,10 @@ public class ActivityServiceSummery extends ActivityDrawer {
             time = response.getString("time");
             date = response.getString("sdate");
 
-            rideRate.setText(getString(R.string.message_rs,rate));
-            ridePrice.setText(getString(R.string.message_rs,price));
-            rideTax.setText(getString(R.string.message_rs,tax));
-            rideTotal.setText(getString(R.string.message_rs,total));
+            rideRate.setText(getString(R.string.message_rs, rate));
+            ridePrice.setText(getString(R.string.message_rs, price));
+            rideTax.setText(getString(R.string.message_rs, tax));
+            rideTotal.setText(getString(R.string.message_rs, total));
             rideVehicle.setText(vtype);
             rideTime.setText(getString(R.string.message_min, time));
             //rideTime.setText(time + R.string.mins);
@@ -187,8 +186,8 @@ public class ActivityServiceSummery extends ActivityDrawer {
     }
 
     public void onFailure(VolleyError error) {
-        Log.d("TAG", "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d("TAG", "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -215,7 +214,7 @@ public class ActivityServiceSummery extends ActivityDrawer {
         if (id == 2) {
             //dialog_txt.setText(R.string.your_delivery_agent_will_arrive_shortly + info);
             dialog_txt.setText(String.format("OTP : %s", info));
-            Log.d(TAG, "AS OTP = " + info);
+            //Log.d(TAG, "AS OTP = " + info);
         }
         //FL
         if (id == 3) {
@@ -241,7 +240,7 @@ public class ActivityServiceSummery extends ActivityDrawer {
         if (id == 8) {
             //dialog_txt.setText(R.string.agent_has_arrived + INFO);
             dialog_txt.setText(String.format("OTP : %s", info));
-            Log.d(TAG, "RC OTP = " + info);
+            //Log.d(TAG, "RC OTP = " + info);
         }
 
     }

@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -51,7 +50,6 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
     public static final String PREFS_LOCATIONS = "com.clientzp.ride.Locations";
     public static final String LOCATION_PICK = "PickLocation";
     public static final String LOCATION_DROP = "DropLocation";
-    public static final String VAN_PICK = "VanPick";
     public static final String OTP_PICK = "OTPPick";
 
     @Override
@@ -129,8 +127,8 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
         params.put("rev", rev);
         JSONObject parameters = new JSONObject(params);
         ActivityRateRent a = ActivityRateRent.this;
-        Log.d(TAG, "Values: auth=" + auth+ " rate="+i+" rev="+rev);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-rate");
+        /*Log.d(TAG, "Values: auth=" + auth+ " rate="+i+" rev="+rev);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-rate");*/
         UtilityApiRequestPost.doPOST(a, "auth-trip-rate", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
@@ -140,14 +138,15 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
             }
         }, a::onFailure);
     }
+
     public void retireTrip() {
         String auth = stringAuthCookie;
         Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         ActivityRateRent a = ActivityRateRent.this;
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-retire");
+        /*Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-retire");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-retire", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -159,7 +158,7 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
-        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
 
         //response on hitting auth-trip-get-info API
         if (id == 1) {
@@ -185,22 +184,19 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
             retireTrip();
 
         }
-        if (id==2){
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    myDialog.dismiss();
-                    Intent finishIntent = new Intent(ActivityRateRent.this, ActivityWelcome.class);
-                    startActivity(finishIntent);
-                    finish();
-                }
+        if (id == 2) {
+            new Handler().postDelayed(() -> {
+                myDialog.dismiss();
+                Intent finishIntent = new Intent(ActivityRateRent.this, ActivityWelcome.class);
+                startActivity(finishIntent);
+                finish();
             }, 5000);
         }
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -218,41 +214,33 @@ public class ActivityRateRent extends ActivityDrawer implements View.OnClickList
         chk2.setText(R.string.veh_condi);
         chk3.setText(R.string.veh_clean);
         chk4.setText(R.string.any_other);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkDialog.dismiss();
-            }
-        });
+        cancel.setOnClickListener(v -> checkDialog.dismiss());
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ShowPopup1();
-                String str1="",str2="",str3="",str4="";
-                checkDialog.dismiss();
-                if (chk1.isChecked()) {
-                    str1 = "Attitude of contact person";
-                }else if (!chk1.isChecked()){
-                    str1="";
-                }
-                if (chk2.isChecked()){
-                    str2 = "Vehicle condition";
-                }else if (!chk2.isChecked()){
-                    str2="";
-                }
-                if (chk3.isChecked()){
-                    str3 = "Vehicle cleanliness";
-                }else if (!chk3.isChecked()){
-                    str3="";
-                }
-                if (chk4.isChecked()){
-                    str4 = specify.getText().toString();
-                }else if (!chk4.isChecked()){
-                    str4="";
-                }
-                rateTrip(str1+str2+str3+str4, "0");
+        submit.setOnClickListener(v -> {
+            ShowPopup1();
+            String str1 = "", str2 = "", str3 = "", str4 = "";
+            checkDialog.dismiss();
+            if (chk1.isChecked()) {
+                str1 = "Attitude of contact person";
+            } else if (!chk1.isChecked()) {
+                str1 = "";
             }
+            if (chk2.isChecked()) {
+                str2 = "Vehicle condition";
+            } else if (!chk2.isChecked()) {
+                str2 = "";
+            }
+            if (chk3.isChecked()) {
+                str3 = "Vehicle cleanliness";
+            } else if (!chk3.isChecked()) {
+                str3 = "";
+            }
+            if (chk4.isChecked()) {
+                str4 = specify.getText().toString();
+            } else if (!chk4.isChecked()) {
+                str4 = "";
+            }
+            rateTrip(str1 + str2 + str3 + str4, "0");
         });
 
         checkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

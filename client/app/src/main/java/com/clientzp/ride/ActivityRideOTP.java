@@ -11,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -71,12 +70,12 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
     Map<String, String> params = new HashMap();
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
-        Log.d(TAG, "RESPONSE:" + response);
+        //Log.d(TAG, "RESPONSE:" + response);
 
         //response on hitting user-give-otp API
        /* if (id == 5) {
             //TODO remove later
-            Log.d(TAG, "RESPONSE:" + response);
+            //Log.d(TAG, "RESPONSE:" + response);
         }*/
         //response on hitting user-ride-get-driver API
         if (id == 1) {
@@ -142,8 +141,8 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -170,7 +169,6 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         String stringCost = prefPLoc.getString(COST_DROP, "");
         String stringTime = prefPLoc.getString(TIME_DROP, "");
         //String str_otp = prefPLoc.getString(OTP_PICK, "");
-        //String str_van = prefPLoc.getString(VAN_PICK, "");
         //String str_min = prefPLoc.getString(DRIVER_MINS, "");
         driverPhoto = findViewById(R.id.photo_driver);
         costEst = findViewById(R.id.cost_estimate_otp);
@@ -239,8 +237,8 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         String stringAuth = stringAuthCookie;
         params.put("auth", stringAuth);
         JSONObject param = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + stringAuth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-ride-get-driver");
+        /*Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-ride-get-driver");*/
         UtilityApiRequestPost.doPOST(a, "user-ride-get-driver", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
@@ -341,6 +339,7 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         alert.show();
         alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
     }
+
     private void showProgressIndication() {
         SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
         squareProgressBar.setImage(R.drawable.btn_bkg);
@@ -350,13 +349,14 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         squareProgressBar.setIndeterminate(true);
         squareProgressBar.setColor("#EC7721");
     }
+
     private void userCancelTrip() {
         String stringAuth = stringAuthCookie;
         Map<String, String> params = new HashMap();
         params.put("auth", stringAuth);
         JSONObject param = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + stringAuth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");
+        /*Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-cancel", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -425,8 +425,8 @@ public class ActivityRideOTP extends ActivityDrawer implements View.OnClickListe
         Map<String, String> params = new HashMap();
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
+        /*Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);

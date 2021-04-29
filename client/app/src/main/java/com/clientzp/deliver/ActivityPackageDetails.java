@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -48,7 +47,7 @@ public class ActivityPackageDetails extends ActivityDrawer implements View.OnCli
     private final ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
     String ContentType = "";
     String ContentSize = "";
-    String ctype = "", csize="";//TODO find better way
+    String ctype = "", csize = "";//TODO find better way
     Dialog careDialog, contentDialog, sizeDialog;
     EditText specify;
     RelativeLayout rlSpecify;
@@ -90,7 +89,7 @@ public class ActivityPackageDetails extends ActivityDrawer implements View.OnCli
         assert layoutInflater != null;
         View activityView = layoutInflater.inflate(R.layout.activity_package_details, null, false);
         frameLayout.addView(activityView);
-        init();
+        //init();
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         scrollView = findViewById(R.id.scrollPackageDelivery);
         packageDetails = findViewById(R.id.content_type);
@@ -110,7 +109,7 @@ public class ActivityPackageDetails extends ActivityDrawer implements View.OnCli
 
     }
 
-    private void init() {
+    /*private void init() {
         for (int i = 0; i < IMAGES.length; i++)
             ImagesArray.add(IMAGES[i]);
 
@@ -169,7 +168,7 @@ public class ActivityPackageDetails extends ActivityDrawer implements View.OnCli
             }
         });
 
-    }
+    }*/
 
     @Override
     public void onClick(View v) {
@@ -277,7 +276,7 @@ public class ActivityPackageDetails extends ActivityDrawer implements View.OnCli
                 } else {
                     vibrator.vibrate(1000);
                 }
-                Log.d("PackageDetails", " ContentType=" + ContentType + " ContentSize=" + ContentSize);
+                //Log.d("PackageDetails", " ContentType=" + ContentType + " ContentSize=" + ContentSize);
                 Snackbar snackbar = Snackbar.make(scrollView, "All Fields Mandatory ", Snackbar.LENGTH_LONG);
                 View sbView = snackbar.getView();
                 TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
@@ -289,10 +288,10 @@ public class ActivityPackageDetails extends ActivityDrawer implements View.OnCli
                 Intent confirmIntent = new Intent(ActivityPackageDetails.this, ActivityFillPickDetails.class);
                 startActivity(confirmIntent);
             }
-        } else if (id == R.id.slidingImage) {
+        } /*else if (id == R.id.slidingImage) {
             Intent full = new Intent(ActivityPackageDetails.this, ActivitySlidingFullPage.class);
             startActivity(full);
-        }
+        }*/
     }
 
     private void retriveData() {
@@ -307,8 +306,8 @@ public class ActivityPackageDetails extends ActivityDrawer implements View.OnCli
         String type = review.getString(R_C_TYPE, "");
         String dim = review.getString(R_C_SIZE, "");
 
-        Log.d("ActivityPackageDetails storeCareData()", " Fr" + fr + " Li" +
-                li + " Kw" + kw + " Pr" + pe + " Kc" + kc + " none" + no);
+        /*Log.d("ActivityPackageDetails storeCareData()", " Fr" + fr + " Li" +
+                li + " Kw" + kw + " Pr" + pe + " Kc" + kc + " none" + no);*/
 
         if (fr.equals("1") || li.equals("1") || kw.equals("1") || pe.equals("1") || kc.equals("1")) {
             packageCare.setText(R.string.click_to_view);
@@ -340,8 +339,8 @@ public class ActivityPackageDetails extends ActivityDrawer implements View.OnCli
         editor.putString(NONE, None);
         editor.apply();
 
-        Log.d("ActivityPackageDetails storeCareData()", " Fr" + Fr + " Li" +
-                Li + " Kw" + Kw + " Pr" + Pr + " Kc" + Kc + " none" + None);
+        /*Log.d("ActivityPackageDetails storeCareData()", " Fr" + Fr + " Li" +
+                Li + " Kw" + Kw + " Pr" + Pr + " Kc" + Kc + " none" + None);*/
 
         if (Fr.equals("1") || Li.equals("1") || Kw.equals("1") || Kc.equals("1") || Pr.equals("1")) {
 
@@ -367,8 +366,8 @@ public class ActivityPackageDetails extends ActivityDrawer implements View.OnCli
         editor.putString(CONTENT_DIM, ContentSize);
         editor.apply();
 
-        Log.d("ActivityPackageDetails", " Fr" + Fr + " Li" + Li + " Kw" + Kw + " Pr" + Pr + " Kc"
-                + Kc + " none" + None + " CONTENT_TYPE" + ContentType + " CONTENT_DIM" + ContentSize);
+        /*Log.d("ActivityPackageDetails", " Fr" + Fr + " Li" + Li + " Kw" + Kw + " Pr" + Pr + " Kc"
+                + Kc + " none" + None + " CONTENT_TYPE" + ContentType + " CONTENT_DIM" + ContentSize);*/
     }
 
     private void PopupCare() {

@@ -64,14 +64,11 @@ public class RentListAdapter extends RecyclerView.Adapter<RentListAdapter.ViewHo
                 holder.rentVType.setText(vtype);
                 break;
         }
-        holder.layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String valueTid = listData.getRideID();
-                Intent details = new Intent(context, ActivityRentSummery.class);
-                details.putExtra("TID", valueTid);
-                context.startActivity(details);
-            }
+        holder.layout.setOnClickListener(v -> {
+            String valueTid = listData.getRideID();
+            Intent details = new Intent(context, ActivityRentSummery.class);
+            details.putExtra("TID", valueTid);
+            context.startActivity(details);
         });
     }
 
@@ -90,15 +87,13 @@ public class RentListAdapter extends RecyclerView.Adapter<RentListAdapter.ViewHo
         private final TextView rentTxt2;
         private final TextView srcTxt;
         private final TextView dstTxt;
-        private final LinearLayout llSrc;
-        private final LinearLayout llDst;
         private final LinearLayout layout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             layout = itemView.findViewById(R.id.layout);
-            llSrc = itemView.findViewById(R.id.ll_src);
-            llDst = itemView.findViewById(R.id.ll_dst);
+            LinearLayout llSrc = itemView.findViewById(R.id.ll_src);
+            LinearLayout llDst = itemView.findViewById(R.id.ll_dst);
             llSrc.setVisibility(View.VISIBLE);
             llDst.setVisibility(View.VISIBLE);
             rentTxt2 = itemView.findViewById(R.id.delText2);

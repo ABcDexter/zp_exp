@@ -30,11 +30,8 @@ import com.clientzp.ActivityDrawer;
 import com.clientzp.R;
 import com.clientzp.UtilityApiRequestPost;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.snackbar.Snackbar;
@@ -83,13 +80,13 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     RelativeLayout rl_pick, rl_drop, rl_v, rl_r;
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
-        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
 
         //response on hitting user-is-driver-av API
         if (id == 2) {
             String count = response.getString("count");
             if (count.equals("0")) {
-                Log.d(TAG, "111count" + count);
+                //Log.d(TAG, "111count" + count);
                 ShowPopup();
             } else {
                 Intent rideIntent = new Intent(ActivityRideHome.this, ActivityRideRequest.class);
@@ -101,8 +98,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -153,7 +150,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         etPlace = (EditText) srcAutocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
         //etPlace.setHint("PICK UP POINT");
         if (!stringPick.equals("")) {
-            Log.d(TAG, "stringPick=" + stringPick);
+            //Log.d(TAG, "stringPick=" + stringPick);
             etPlace.setText(stringPick);
             srcName = stringPick;
             etPlace.setTextColor(Color.parseColor("#FFFFFF"));
@@ -172,7 +169,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         etDst = (EditText) dstAutocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input);
         //etDst.setHint("DROP POINT");
         if (!stringDrop.equals("")) {
-            Log.d(TAG, "stringDrop=" + stringDrop);
+            //Log.d(TAG, "stringDrop=" + stringDrop);
             etDst.setText(stringDrop);
             dstName = stringDrop;
             etDst.setTextColor(Color.parseColor("#FFFFFF"));
@@ -184,7 +181,6 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         }
         etDst.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         etDst.setPadding(0, 0, 150, 0);
-
 
         // Specify the types of place data to return.
         srcAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
@@ -205,8 +201,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 srcLat = srcLatLng.substring(0, srcLatLng.indexOf(",")).replaceAll("[^0-9.]", "");
                 srcLng = srcLatLng.substring(srcLatLng.indexOf(",") + 1).replaceAll("[^0-9.]", "");
 
-                Log.d(TAG, "src lat: " + srcLat);
-                Log.d(TAG, "src lng: " + srcLng);
+                /*Log.d(TAG, "src lat: " + srcLat);
+                Log.d(TAG, "src lng: " + srcLng);*/
 
                 SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
@@ -236,8 +232,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 dstLat = dstLatLng.substring(0, dstLatLng.indexOf(",")).replaceAll("[^0-9.]", "");
                 dstLng = dstLatLng.substring(dstLatLng.indexOf(",") + 1).replaceAll("[^0-9.]", "");
 
-                Log.d(TAG, "dst lat: " + dstLat);
-                Log.d(TAG, "dst lng: " + dstLng);
+                /*Log.d(TAG, "dst lat: " + dstLat);
+                Log.d(TAG, "dst lng: " + dstLng);*/
                 //storeData();
                 SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
@@ -245,7 +241,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
                 editor.putString(DST_LAT, dstLat);
                 editor.putString(DST_LNG, dstLng);
                 editor.apply();
-                Log.d(TAG, dstName + dstLat + dstLng);
+                //Log.d(TAG, dstName + dstLat + dstLng);
 
             }
 
@@ -257,7 +253,7 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
     }
 
     private void ShowPopup() {
-        Log.d(TAG, "ShowPopup() called");
+        //Log.d(TAG, "ShowPopup() called");
         myDialog.setContentView(R.layout.popup_new_request);
         dialog_txt = myDialog.findViewById(R.id.info_text);
         LinearLayout ln = myDialog.findViewById(R.id.layout_btn);
@@ -347,8 +343,8 @@ public class ActivityRideHome extends ActivityDrawer implements View.OnClickList
         params.put("vtype", VehicleType);
         JSONObject parameters = new JSONObject(params);
 
-        Log.d(TAG, "Values: auth=" + auth + " srclat" + srcLat + " srclng" + srcLng + " vtype=" + VehicleType);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-is-driver-av");
+        /*Log.d(TAG, "Values: auth=" + auth + " srclat" + srcLat + " srclng" + srcLng + " vtype=" + VehicleType);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-is-driver-av");*/
         UtilityApiRequestPost.doPOST(a, "user-is-driver-av", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response, 2);

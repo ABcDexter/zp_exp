@@ -11,7 +11,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -107,8 +106,8 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
         params.put("tid", tid);
         JSONObject parameters = new JSONObject(params);
 
-        Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");
+        /*Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");*/
         UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
@@ -119,7 +118,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
-        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
 
         //response on hitting auth-trip-get-info API
         if (id == 1) {
@@ -134,25 +133,20 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
                 if (active.equals("false")) {
                     String tid = response.getString("tid");
 
-                    Log.d(TAG, "active=" + active + " tid="+tid);
+                    //Log.d(TAG, "active=" + active + " tid="+tid);
 
-                    if (!tid.equals("-1")){
+                    if (!tid.equals("-1")) {
                         getInfo();
                     }
                 } else if (active.equals("true")) {
                     String status = response.getString("st");
                     if (status.equals("TR") || status.equals("FN")) {
                         String price = response.getString("price");
-                        cost.setText("₹ " + price);
+                        cost.setText(getString(R.string.message_rs, price));
                         CostOnly = price;
 
                     }
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            checkStatus();
-                        }
-                    }, 30000);
+                    new Handler().postDelayed(this::checkStatus, 30000);
 
                 }
             } catch (JSONException e) {
@@ -166,13 +160,13 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
             startActivity(rate);
             finish();
             //TODO remove later
-            Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+            //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         }
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -224,8 +218,8 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
         params.put("auth", auth);
         params.put("price", cost.getText().toString());
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth + " price=" + cost.getText().toString());
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-give-otp");
+        /*Log.d(TAG, "Values: auth=" + auth + " price=" + cost.getText().toString());
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-give-otp");*/
         UtilityApiRequestPost.doPOST(a, "user-give-otp", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
@@ -243,8 +237,8 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
         //params.put("otp", OTP.getText().toString());
         JSONObject parameters = new JSONObject(params);
         ActivityRentEnded a = ActivityRentEnded.this;
-        Log.d(TAG, "Values: auth=" + auth /*+ " otp=" + OTP.getText().toString()*/);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-pay");
+        /*Log.d(TAG, "Values: auth=" + auth *//*+ " otp=" + OTP.getText().toString()*//*);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-pay");*/
         UtilityApiRequestPost.doPOST(a, "user-rent-pay", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 6);
@@ -261,8 +255,8 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
 
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
+        /*Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -298,42 +292,40 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case UPI_PAYMENT:
-                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
-                    if (data != null) {
-                        String trxt = data.getStringExtra("response");
-                        Log.d("UPI", "onActivityResult: " + trxt);
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add(trxt);
-                        upiPaymentDataOperation(dataList);
-                    } else {
-                        Log.d("UPI", "onActivityResult: " + "Return data is null");
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add("nothing");
-                        upiPaymentDataOperation(dataList);
-                    }
+        if (requestCode == UPI_PAYMENT) {
+            if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                if (data != null) {
+                    String trxt = data.getStringExtra("response");
+                    //Log.d("UPI", "onActivityResult: " + trxt);
+                    ArrayList<String> dataList = new ArrayList<>();
+                    dataList.add(trxt);
+                    upiPaymentDataOperation(dataList);
                 } else {
-                    Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                    //Log.d("UPI", "onActivityResult: " + "Return data is null");
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add("nothing");
                     upiPaymentDataOperation(dataList);
                 }
-                break;
+            } else {
+                //Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                ArrayList<String> dataList = new ArrayList<>();
+                dataList.add("nothing");
+                upiPaymentDataOperation(dataList);
+            }
         }
     }
 
     private void upiPaymentDataOperation(ArrayList<String> data) {
         if (isConnectionAvailable(this)) {
             String str = data.get(0);
-            Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
+            //Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
             String paymentCancel = "";
             if (str == null) str = "discard";
             String status = "";
             String approvalRefNo = "";
             String[] response = str.split("&");
-            for (int i = 0; i < response.length; i++) {
-                String[] equalStr = response[i].split("=");
+            for (String s : response) {
+                String[] equalStr = s.split("=");
                 if (equalStr.length >= 2) {
                     if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
                         status = equalStr[1].toLowerCase();
@@ -349,7 +341,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
                 //Code to handle successful transaction here.
                 Toast.makeText(ActivityRentEnded.this, R.string.transaction_successful, Toast.LENGTH_SHORT).show();
                 rentPay();
-                Log.d("UPI", "responseStr: " + approvalRefNo);
+                //Log.d("UPI", "responseStr: " + approvalRefNo);
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(ActivityRentEnded.this, R.string.payment_cancelled_by_user, Toast.LENGTH_SHORT).show();
             } else {

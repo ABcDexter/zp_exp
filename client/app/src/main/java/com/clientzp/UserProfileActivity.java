@@ -16,7 +16,6 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -75,6 +74,7 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
     ImageButton btnSave;
     Bitmap bitmap;
     String pImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,9 +137,13 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
         try {
             Glide.with(this).load(imageURL).into(profileImage);
         } catch (Exception e) {
-            Log.d(TAG, "imageURL=" + imageURL);
+            /*Log.d(TAG, "imageURL=" + imageURL);
             Log.d(TAG, "Display Picture Error:" + e.toString());
-            e.printStackTrace();
+            e.printStackTrace();*/
+            Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(UserProfileActivity.this, ActivityWelcome.class);
+            startActivity(intent);
+            finish();
         }
 
         profileImage.setOnClickListener(this);
@@ -148,14 +152,14 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
             mobiletxt.setText("");
         else {
             mobiletxt.setText(stringPhone);
-            Log.d(TAG, "phone no:" + stringPhone);
+            //Log.d(TAG, "phone no:" + stringPhone);
         }
 
         if (stringName.isEmpty())
             nameText.setText("");
         else {
             nameText.setText(stringName);
-            Log.d(TAG, "name:" + stringName);
+            //Log.d(TAG, "name:" + stringName);
 
         }
 
@@ -282,15 +286,15 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
             @Override
             public void onClick(View v) {
 
-                Log.d(TAG, "Control came to nextActivity()");
+                //Log.d(TAG, "Control came to nextActivity()");
                 Map<String, String> params = new HashMap();
                 String auth = stringAuth;
                 params.put("auth", auth);
                 params.put("profilePhoto", picture);
                 JSONObject parameters = new JSONObject(params);
                 UserProfileActivity a = UserProfileActivity.this;
-                Log.d(TAG, "Values: profilePhoto=" + picture + " auth=" + auth);
-                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-photo-save");
+                /*Log.d(TAG, "Values: profilePhoto=" + picture + " auth=" + auth);
+                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-photo-save");*/
                 UtilityApiRequestPost.doPOST(a, "auth-profile-photo-save", parameters, 30000, 0, response -> {
                     try {
                         a.onSuccess(response);
@@ -313,8 +317,8 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
             pImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            Log.d(TAG, "Profile Image converted to Base64" + pImage);
-            Log.d(TAG, "Control moved to nextActivity()");
+            /*Log.d(TAG, "Profile Image converted to Base64" + pImage);
+            Log.d(TAG, "Control moved to nextActivity()");*/
         }
 
         nextActivity(pImage);
@@ -365,8 +369,8 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
 
         JSONObject parameters = new JSONObject(params);
         UserProfileActivity a = UserProfileActivity.this;
-        Log.d(TAG, "Values: auth=" + auth + " email=" + email);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-update");
+        /*Log.d(TAG, "Values: auth=" + auth + " email=" + email);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-update");*/
         UtilityApiRequestPost.doPOST(a, "auth-profile-update", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response);
@@ -377,13 +381,13 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
     }
 
     public void onSuccess(JSONObject response) throws JSONException {
-        Log.d(TAG, "RESPONSE:" + response);
+        //Log.d(TAG, "RESPONSE:" + response);
         rlEmail.setVisibility(View.GONE);
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 }

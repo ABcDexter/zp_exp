@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -24,8 +23,6 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.clientzp.ActivityDrawer;
-import com.clientzp.ActivityRateZippe;
-import com.clientzp.ActivityWelcome;
 import com.clientzp.R;
 import com.clientzp.UtilityApiRequestPost;
 import com.clientzp.UtilityPollingService;
@@ -51,7 +48,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     public static final String COST_DROP = "";
     // public static final String SPEED_DROP = "00";
     //public static final String OTP_PICK = "OTPPick";
-    public static final String VAN_PICK = "VanPick";
+    //public static final String VAN_PICK = "VanPick";
 
     public static final String LOCATION_PICK_ID = "PickLocationID";
     public static final String LOCATION_DROP_ID = "DropLocationID";
@@ -73,14 +70,14 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     SharedPreferences prefAuth;
     ActivityRentRequest a = ActivityRentRequest.this;
     Dialog myDialog;
-    String rideInfo, vTypeInfo, pModeInfo, dropInfo, pickInfo, speedDrop, costDrop, hrs, schDate, schMonth, schYr, schHours, schMins;
+    String rideInfo, vTypeInfo, pModeInfo, dropInfo, pickInfo, costDrop, hrs, schDate, schMonth, schYr, schHours, schMins;
     Map<String, String> params = new HashMap();
     Animation animMoveL2R, animMoveR2L;
 
     private static ActivityRentRequest instance;
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
-        Log.d(TAG, "RESPONSE:" + response);
+        //Log.d(TAG, "RESPONSE:" + response);
 
         //response on hitting user-trip-estimate API
         if (id == 1) {
@@ -90,9 +87,10 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                 String price = response.getString("price");
                 String speed = response.getString("speed");
 
-                vSpeed.setText(speed + " km/hr");
-                advPay.setText("₹ " + price);
-                Log.d(TAG, "price:" + price + " speed:" + speed);
+                //vSpeed.setText(speed + " km/hr");
+                vSpeed.setText(getString(R.string.message_km_hr, speed));
+                advPay.setText(getString(R.string.message_rs, price));
+                //Log.d(TAG, "price:" + price + " speed:" + speed);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -100,7 +98,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         }
         //response on hitting user-rent-schedule API
         if (id == 2) {
-            Log.d(TAG, "RESPONSE on hitting user-rent-schedule API:" + response);
+            //Log.d(TAG, "RESPONSE on hitting user-rent-schedule API:" + response);
             /*String tid = response.getString("tid");
             SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
             sp_cookie.edit().putString(TRIP_ID, tid).apply();*/
@@ -121,12 +119,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                         if (status.equals("RQ")) {
                             Snackbar snackbar = Snackbar
                                     .make(scrollView, R.string.checking_veh_av, Snackbar.LENGTH_INDEFINITE)
-                                    .setAction(R.string.cancel, new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            cancelRequest();
-                                        }
-                                    });
+                                    .setAction(R.string.cancel, view -> cancelRequest());
                             snackbar.setActionTextColor(Color.RED);
                             View sbView = snackbar.getView();
                             TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
@@ -162,8 +155,8 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -241,7 +234,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
         rideEstimate();
         if (!costDrop.equals("")) {
-            advPay.setText("₹ " + costDrop);
+            advPay.setText(getString(R.string.message_rs, costDrop));
         }
 
     }
@@ -250,8 +243,8 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         String auth = stringAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");
+        /*Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-cancel", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 4);
@@ -266,8 +259,8 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         String auth = stringAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
+        /*Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
@@ -326,15 +319,12 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
             myDialog.setCanceledOnTouchOutside(false);
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    myDialog.dismiss();
-                    Intent homePage = new Intent(ActivityRentRequest.this, ActivityRentHome.class);
-                    homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(homePage);
-                    finish();
-                }
+            new Handler().postDelayed(() -> {
+                myDialog.dismiss();
+                Intent homePage = new Intent(ActivityRentRequest.this, ActivityRentHome.class);
+                homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(homePage);
+                finish();
             }, 8000);
 
 
@@ -415,9 +405,9 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         params.put("hrs", hrs);
 
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth + " srcid= " + pickInfo + " dstid= " + dropInfo
+        /*Log.d(TAG, "Values: auth=" + auth + " srcid= " + pickInfo + " dstid= " + dropInfo
                 + " rtype= " + rideInfo + " vtype=" + vTypeInfo + " pmode=" + pModeInfo + " hrs= " + hrs);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-trip-estimate");
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-trip-estimate");*/
 
         UtilityApiRequestPost.doPOST(a, "user-trip-estimate", parameters, 2000, 0, response -> {
             try {
@@ -444,11 +434,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         params.put("min", schMins);
 
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth + " srcid = " + pickInfo + " dstid = " + dropInfo + " hrs = " + hrs +
+        /*Log.d(TAG, "Values: auth=" + auth + " srcid = " + pickInfo + " dstid = " + dropInfo + " hrs = " + hrs +
                 " rtype = " + rideInfo + " vtype = " + vTypeInfo + " pmode = " + pModeInfo +
                 " date = " + schDate + " month = " + schMonth + " year = " + schYr +
                 " hour = " + schHours + " min = " + schMins);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-rent-schedule");
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-rent-schedule");*/
 
         UtilityApiRequestPost.doPOST(a, "user-rent-schedule", parameters, 2000, 0, response -> {
             try {

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,15 @@ import com.android.volley.VolleyError;
 import com.clientzp.ActivityDrawer;
 import com.clientzp.R;
 import com.clientzp.UtilityApiRequestPost;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,17 +35,22 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivityRentSummery extends ActivityDrawer {
+public class ActivityRentSummery extends ActivityDrawer implements OnMapReadyCallback/*, TaskLoadedCallback*/ {
     private static final String TAG = "ActivityRideSummery";
     String stringAuthKey, stringSCID;
-    TextView dialog_txt;
+    //TextView dialog_txt;
     SwipeRefreshLayout swipeRefresh;
     ScrollView scrollView;
     ActivityRentSummery a = ActivityRentSummery.this;
     Map<String, String> params = new HashMap();
     public static final String AUTH_KEY = "AuthKey";
     TextView rideRate, ridePrice, rideTax, rideTotal, rideVehicle, rideTime, rideDate, txtSummery;
-
+    private GoogleMap mMap;
+    private MarkerOptions src, dst;
+    private Polyline currentPolyline;
+    double srcLat, srcLng, dstLat, dstLng;
+    String rate, price, tax, total, vtype, time, date, sLat, sLng, dLat, dLng, srcname, dstname, sc, canl;
+    ImageButton cancelButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +64,7 @@ public class ActivityRentSummery extends ActivityDrawer {
         stringAuthKey = prefCookie.getString(AUTH_KEY, "");
         Intent intent = getIntent();
         stringSCID = intent.getStringExtra("TID");
-        Log.d(TAG, "TID" + stringSCID);
+        //Log.d(TAG, "TID" + stringSCID);
         //initializing views
         scrollView = findViewById(R.id.scrollViewReview);
         rideRate = findViewById(R.id.ride_rate);
@@ -60,18 +75,17 @@ public class ActivityRentSummery extends ActivityDrawer {
         rideTime = findViewById(R.id.ride_time);
         rideDate = findViewById(R.id.ride_date);
         txtSummery = findViewById(R.id.txtSummery);
+        cancelButton = findViewById(R.id.btnCancel);
+        cancelButton.setVisibility(View.GONE);
         txtSummery.setText(R.string.rent_summary);
         authTripData();
 
         swipeRefresh = findViewById(R.id.swipeRefresh);
 
         //getInfo();
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                recreate();//this will recreate or reload the activity when swiped down
-                swipeRefresh.setRefreshing(false);
-            }
+        swipeRefresh.setOnRefreshListener(() -> {
+            recreate();//this will recreate or reload the activity when swiped down
+            swipeRefresh.setRefreshing(false);
         });
     }
 
@@ -82,8 +96,8 @@ public class ActivityRentSummery extends ActivityDrawer {
         params.put("tid", scid);
 
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-trip-data");
-        Log.d(TAG, "Values: auth=" + auth + " scid=" + scid);
+        /*Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-trip-data");
+        Log.d(TAG, "Values: auth=" + auth + " scid=" + scid);*/
 
         UtilityApiRequestPost.doPOST(a, "auth-trip-data", parameters, 2000, 0, response -> {
             try {
@@ -94,11 +108,31 @@ public class ActivityRentSummery extends ActivityDrawer {
         }, a::onFailure);
     }
 
-    String rate, price, tax, total, vtype, time, date;
+    protected void cancelRequest() {
+        String auth = stringAuthKey;
+        String scid = stringSCID;
+        params.put("auth", auth);
+        params.put("tid", scid);
+
+        JSONObject parameters = new JSONObject(params);
+        /*Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-trip-data");
+        Log.d(TAG, "Values: auth=" + auth + " scid=" + scid);*/
+
+        UtilityApiRequestPost.doPOST(a, "user-rent-cancel", parameters, 2000, 0, response -> {
+            try {
+                a.onSuccess(response, 1);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, a::onFailure);
+    }
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
-        Log.d(TAG, "RESPONSE:" + response);
+        Log.d(TAG, "RESPONSE`1:" + response);
+        //response on hitting user-rent-cancel API
+        if (id == 1) {
 
+        }
         //response on hitting auth-trip-data API
         if (id == 2) {
 
@@ -109,16 +143,34 @@ public class ActivityRentSummery extends ActivityDrawer {
             total = response.getString("total");
             time = response.getString("time");
             date = response.getString("sdate");
+            sLat = response.getString("srclat");
+            sLng = response.getString("srclng");
+            dLat = response.getString("dstlat");
+            dLng = response.getString("dstlng");
+            srcname = response.getString("srchub");
+            dstname = response.getString("dsthub");
+            sc = response.getString("st");
+            canl = response.getString("cancel");
 
-            rideRate.setText(getString(R.string.message_rs,rate));
-            ridePrice.setText(getString(R.string.message_rs,price));
-            rideTax.setText(getString(R.string.message_rs,tax));
-            rideTotal.setText(getString(R.string.message_rs,total));
+            rideRate.setText(getString(R.string.message_rs, rate));
+            ridePrice.setText(getString(R.string.message_rs, price));
+            rideTax.setText(getString(R.string.message_rs, tax));
+            rideTotal.setText(getString(R.string.message_rs, total));
             rideVehicle.setText(vtype);
             rideTime.setText(getString(R.string.message_min, time));
             //rideTime.setText(time + R.string.mins);
             rideDate.setText(date);
-
+            if (canl.equals("1")) {
+                cancelButton.setVisibility(View.VISIBLE);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        cancelRequest();
+                    }
+                });
+            } else if (canl.equals("0")) {
+                cancelButton.setVisibility(View.GONE);
+            }
             switch (vtype) {
                 case "0":
                     rideVehicle.setText(R.string.e_cycle);
@@ -136,59 +188,25 @@ public class ActivityRentSummery extends ActivityDrawer {
                     rideVehicle.setText(vtype);
                     break;
             }
+            MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapsHistory);
+            mapFragment.getMapAsync(this);
 
+            srcLat = Double.parseDouble(sLat);
+            srcLng = Double.parseDouble(sLng);
+            dstLat = Double.parseDouble(dLat);
+            dstLng = Double.parseDouble(dLng);
 
+            src = new MarkerOptions().position(new LatLng(srcLat, srcLng)).title(srcname);
+            dst = new MarkerOptions().position(new LatLng(dstLat, dstLng)).title(dstname);
+
+            //new FetchURL(ActivityRentSummery.this).execute(getUrl(src.getPosition(), dst.getPosition(), "driving"), "driving")
         }
-
-        //response on hitting user-delivery-get-info API
-        /*if (id == 1) {
-            try {
-
-                String st = response.getString("st");
-
-                if (st.equals("RQ") || st.equals("PD") || st.equals("SC")) {
-
-                    ShowPopup(0, "");
-
-                }
-                if (st.equals("AS")) {
-                    String otp = response.getString("otp");
-                    ShowPopup(2, otp);
-                }
-                if (st.equals("ST")) {
-                    ShowPopup(1, "");
-                    *//*trackDelivery.setVisibility(View.VISIBLE);*//*
-                }
-                if (st.equals("RC")) {
-                    String otp = response.getString("otp");
-                    ShowPopup(8, otp);
-                }
-                if (st.equals("FL")) {
-                    ShowPopup(3, "");
-                }
-                if (st.equals("DN")) {
-                    ShowPopup(4, "");
-                }
-                if (st.equals("CN")) {
-                    ShowPopup(5, "");
-                }
-                if (st.equals("TO")) {
-                    ShowPopup(6, "");
-                }
-                if (st.equals("FN")) {
-                    ShowPopup(7, "");
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }*/
 
     }
 
     public void onFailure(VolleyError error) {
-        Log.d("TAG", "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d("TAG", "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -199,52 +217,20 @@ public class ActivityRentSummery extends ActivityDrawer {
         finish();
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        //Log.d(TAG, "Added Markers");
+        mMap.addMarker(src).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        mMap.addMarker(dst).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
-    /*private void ShowPopup(int id, String info) {
+        CameraPosition googlePlex = CameraPosition.builder()
+                .target(new LatLng(srcLat, srcLng))
+                .zoom(12)//zoom level
+                .bearing(0)
+                .tilt(45)
+                .build();
 
-        //myDialog.setContentView(R.layout.popup_new_request);
-        dialog_txt = findViewById(R.id.txtInfo);
-        //RQ or PD
-        if (id == 0) {
-            dialog_txt.setText(R.string.your_agent_will_be_assigned_shortly);
-        }
-        //ST
-        if (id == 1) {
-            dialog_txt.setText(R.string.the_package_is_en_route);
-        }
-        //AS
-        if (id == 2) {
-            //dialog_txt.setText(R.string.your_delivery_agent_will_arrive_shortly + info);
-            dialog_txt.setText(String.format("OTP : %s", info));
-            Log.d(TAG, "AS OTP = " + info);
-        }
-        //FL
-        if (id == 3) {
-            dialog_txt.setText(R.string.we_are_sorry);
-        }
-        //DN
-        if (id == 4) {
-            dialog_txt.setText(R.string.delivery_denied_by_your_agent);
-        }
-        //CN
-        if (id == 5) {
-            dialog_txt.setText(R.string.delivery_was_cancelled_by_you);
-        }
-        //TO
-        if (id == 6) {
-            dialog_txt.setText(R.string.delivery_timed_out);
-        }
-        //FN
-        if (id == 7) {
-            dialog_txt.setText(R.string.delivery_was_completed_successfully);
-        }
-        //RC
-        if (id == 8) {
-            //dialog_txt.setText(R.string.agent_has_arrived + INFO);
-            dialog_txt.setText(String.format("OTP : %s", info));
-            Log.d(TAG, "RC OTP = " + info);
-        }
-
-    }*/
-
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 5000, null);
+    }
 }

@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -61,7 +60,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     ActivityRideInProgress a = ActivityRideInProgress.this;
     Map<String, String> params = new HashMap();
     Dialog imageDialog;
-    String stringAuthCookie,tid;
+    String stringAuthCookie, tid;
     private static final String PUBLISHABLE_KEY = "shXqLCv6GJVJ9QFgdHb6VL0JzE_7X96YoAX3ZxA919DLWOA1fayXhLg_NguIvRNypeaSpLu4U6JlYiwJahN8pA";
     String deviceId;
     String locationUrl;
@@ -71,7 +70,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     }
 
     public void onSuccess(JSONObject response, int id) {
-        Log.d(TAG, "RESPONSE:" + response);
+        //Log.d(TAG, "RESPONSE:" + response);
         //response on hitting user-trip-track API
         if (id == 1) {
             try {
@@ -127,8 +126,8 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -180,7 +179,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     private void getDeviceID() {
         HyperTrack sdkInstance = HyperTrack
                 .getInstance(PUBLISHABLE_KEY);
-        Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
+        //Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
         deviceId = sdkInstance.getDeviceID();
     }
 
@@ -189,8 +188,8 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         params.put("auth", stringAuth);
         params.put("devid", deviceId);
         JSONObject param = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + stringAuth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-track");
+        /*Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-track");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-track", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
@@ -212,8 +211,8 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         String stringAuth = stringAuthCookie;
         params.put("auth", stringAuth);
         JSONObject param = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + stringAuth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");
+        /*Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-cancel", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -225,7 +224,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
     }
 
     private void alertDialog() {
-        Log.d(TAG, " alert Dialog opened");
+        //Log.d(TAG, " alert Dialog opened");
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
         dialog.setMessage(R.string.ride_not_complete);
@@ -237,7 +236,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
                                         int which) {
                         showProgressIndication();
                         userCancelTrip();
-                        Log.d(TAG, "userCancelTrip() invoked");
+                        //Log.d(TAG, "userCancelTrip() invoked");
                     }
                 });
         dialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -251,6 +250,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#EC7721")));
 
     }
+
     private void showProgressIndication() {
         SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
         squareProgressBar.setImage(R.drawable.btn_bkg);
@@ -260,12 +260,13 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         squareProgressBar.setIndeterminate(true);
         squareProgressBar.setColor("#EC7721");
     }
+
     public void checkStatus() {
         String auth = stringAuthCookie;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
+        /*Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
@@ -300,7 +301,7 @@ public class ActivityRideInProgress extends ActivityDrawer implements View.OnCli
         } else if (id == R.id.end_ride) {
             alertDialog();
         } else if (id == R.id.track_your_location) {
-            Log.d(TAG, "tid="+tid);
+            //Log.d(TAG, "tid=" + tid);
             trackLocation();
 
         }

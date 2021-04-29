@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,8 +16,6 @@ import com.android.volley.VolleyError;
 import com.clientzp.ActivityWelcome;
 import com.clientzp.R;
 import com.clientzp.UtilityApiRequestPost;
-import com.clientzp.rent.ActivityRentHistory;
-import com.clientzp.rent.ActivityRentHome;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class ActivityRideHistory extends AppCompatActivity {
     private static final String TAG = "ActivityRideHistory.class";
@@ -49,7 +45,7 @@ public class ActivityRideHistory extends AppCompatActivity {
             for (int i = 0; i < array.length(); i++) {
                 JSONObject ob = array.getJSONObject(i);
                 RideListData ld = new RideListData(ob.getString("tid"), ob.getString("st"),
-                        ob.getString("sdate"),ob.getString("vtype"), ob.getString("srcname"), ob.getString("dstname"));
+                        ob.getString("sdate"), ob.getString("vtype"), ob.getString("srcname"), ob.getString("dstname"));
                 list_data.add(ld);
             }
             rv.setAdapter(adapter);
@@ -70,10 +66,8 @@ public class ActivityRideHistory extends AppCompatActivity {
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, Objects.requireNonNull(error.getMessage()));
-
+        //Log.d(TAG, Objects.requireNonNull(error.getMessage()));
         Toast.makeText(this, R.string.check_internet, Toast.LENGTH_LONG).show();
-
     }
 
     @Override
@@ -84,7 +78,7 @@ public class ActivityRideHistory extends AppCompatActivity {
         SharedPreferences prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuth = prefAuth.getString(AUTH_KEY, "");
 
-        Log.d(TAG, "control in ActivityRideHistory");
+        //Log.d(TAG, "control in ActivityRideHistory");
         //loading list view item with this function
 
         rv = findViewById(R.id.recycler_view);
@@ -105,8 +99,8 @@ public class ActivityRideHistory extends AppCompatActivity {
 
         JSONObject parameters = new JSONObject(params);
         ActivityRideHistory a = ActivityRideHistory.this;
-        Log.d(TAG, "auth = " + auth);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost auth-ride-history");
+        /*Log.d(TAG, "auth = " + auth);
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost auth-ride-history");*/
         UtilityApiRequestPost.doPOST(a, "auth-ride-history", parameters, 30000, 0,
                 a::onSuccess, a::onFailure);
 

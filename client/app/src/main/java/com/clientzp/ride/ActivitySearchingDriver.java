@@ -9,7 +9,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -67,7 +66,7 @@ public class ActivitySearchingDriver extends ActivityDrawer implements View.OnCl
     Animation animMoveL2R, animMoveR2L;
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
-        Log.d(TAG, "RESPONSE:" + response);
+        //Log.d(TAG, "RESPONSE:" + response);
 
         //response on hitting user-trip-get-status API
         if (id == 1) {
@@ -126,8 +125,8 @@ public class ActivitySearchingDriver extends ActivityDrawer implements View.OnCl
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -214,8 +213,8 @@ public class ActivitySearchingDriver extends ActivityDrawer implements View.OnCl
         String auth = stringAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");
+        /*Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-cancel", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -230,8 +229,8 @@ public class ActivitySearchingDriver extends ActivityDrawer implements View.OnCl
         String auth = stringAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
+        /*Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");*/
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);

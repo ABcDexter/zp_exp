@@ -289,7 +289,7 @@
 
     <string name="pick_point_contact">पिक-अप स्थल का सम्पर्क</string>
 
-    <string name="vehicle">गाड़ी :</string>
+    <string name="vehicle">गाड़ी</string>
 
     <string name="otp">ओ.टी.पी. :</string>
 
@@ -773,7 +773,7 @@
 
     <string name="rent_history">रेंट हिस्टरि</string>
 
-    <string name="ride_rate">दर</string>
+    <string name="ride_rate">दर / मिनट</string>
 
     <string name="ride_summary">राइड विवरण</string>
 
@@ -785,6 +785,7 @@
 
     <string name="message_km">%1$s किलोमीटर</string>
 
+    <string name="message_km_hr">%1$s किलोमीटर/hr</string>
     <string name="add_email">ईमेल जोड़ें</string>
 
     <string name="something_wrong">कुछ गड़बड़ी हो गयी। बाद में पुन: प्रयास करें।</string>

@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -53,7 +52,7 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
     SharedPreferences prefAuth;
 
     public void onSuccess(JSONObject response) throws JSONException {
-        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         //response on hitting auth-aadhaar-save API
         Intent home = new Intent(AadharCardUpload.this, UserProfileActivity.class);
         startActivity(home);
@@ -61,8 +60,8 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
         simpleProgressBar.setVisibility(View.GONE);
     }
@@ -156,7 +155,7 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
             public void onClick(View v) {
                 simpleProgressBar = (ProgressBar) findViewById(R.id.simpleProgressBar);
 
-                Log.d(TAG, "Control came to nextActivity()");
+                //Log.d(TAG, "Control came to nextActivity()");
                 simpleProgressBar.setVisibility(View.VISIBLE);
                 Map<String, String> params = new HashMap();
                 String auth = stringAuth;
@@ -165,8 +164,8 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
                 params.put("aadhaarBack", aadharB);
                 JSONObject parameters = new JSONObject(params);
                 AadharCardUpload a = AadharCardUpload.this;
-                Log.d(TAG, "Values: aadhaarFront=" + aadharF + " aadhaarBack=" + aadharB+ " auth="+auth);
-                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-aadhaar-save");
+                /*Log.d(TAG, "Values: aadhaarFront=" + aadharF + " aadhaarBack=" + aadharB+ " auth="+auth);
+                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-aadhaar-save");*/
                 UtilityApiRequestPost.doPOST(a, "auth-aadhaar-save", parameters, 30000, 0, response -> {
                     try {
                         a.onSuccess(response);
@@ -189,8 +188,8 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
             aadhar_f = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            Log.d(TAG, "aadhar front converted to Base64" + aadhar_f);
-            Log.d(TAG, "Control moved to nextActivity()");
+            /*Log.d(TAG, "aadhar front converted to Base64" + aadhar_f);
+            Log.d(TAG, "Control moved to nextActivity()");*/
         }
         if (identify == 3 || identify == 4) {
             imgAadharBack.buildDrawingCache();
@@ -200,8 +199,8 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
             aadhar_b = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            Log.d(TAG, "aadhar back converted to Base64");
-            Log.d(TAG, "Control moved to nextActivity()");
+            /*Log.d(TAG, "aadhar back converted to Base64");
+            Log.d(TAG, "Control moved to nextActivity()");*/
         }
         nextActivity(aadhar_f, aadhar_b);
     }
@@ -257,7 +256,7 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
                                 cursor.moveToFirst();
                                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                                 String picturePath = cursor.getString(columnIndex);
-                                Log.d(TAG, "image set");
+                                //Log.d(TAG, "image set");
                                 imgAadharBack.setImageBitmap(BitmapFactory.decodeFile(picturePath));
                                 convertAndUpload(4);
                                 cursor.close();

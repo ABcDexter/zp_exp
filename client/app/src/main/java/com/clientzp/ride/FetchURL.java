@@ -2,7 +2,6 @@ package com.clientzp.ride;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,9 +27,9 @@ public class FetchURL extends AsyncTask<String, Void, String> {
         try {
             // Fetching the data from web service
             data = downloadUrl(strings[0]);
-            Log.d("mylog", "Background task data " + data);
+            //Log.d("mylog", "Background task data " + data);
         } catch (Exception e) {
-            Log.d("Background Task", e.toString());
+            //Log.d("Background Task", e.toString());
         }
         return data;
     }
@@ -62,10 +61,10 @@ public class FetchURL extends AsyncTask<String, Void, String> {
                 sb.append(line);
             }
             data = sb.toString();
-            Log.d("mylog", "Downloaded URL: " + data);
+            //Log.d("mylog", "Downloaded URL: " + data);
             br.close();
         } catch (Exception e) {
-            Log.d("mylog", "Exception downloading URL: " + e.toString());
+            //Log.d("mylog", "Exception downloading URL: " + e.toString());
         } finally {
             iStream.close();
             urlConnection.disconnect();

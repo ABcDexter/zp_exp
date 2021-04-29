@@ -51,8 +51,8 @@ public class ActivityLoginKey extends AppCompatActivity implements View.OnClickL
     String newToken;
 
     public void onSuccess(JSONObject response) throws JSONException {
-        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
-//response on hitting register-user-no-aadhaar API
+        //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+        //response on hitting register-user-no-aadhaar API
         String auth = response.getString("auth");
         String name = response.getString("name");
         String an = response.getString("an");
@@ -71,8 +71,8 @@ public class ActivityLoginKey extends AppCompatActivity implements View.OnClickL
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
         simpleProgressBar.setVisibility(View.GONE);
     }
@@ -143,8 +143,8 @@ public class ActivityLoginKey extends AppCompatActivity implements View.OnClickL
                 params.put("fcm", newToken);
                 JSONObject parameters = new JSONObject(params);
                 ActivityLoginKey a = ActivityLoginKey.this;
-                Log.d(TAG, "Values: key=" + strUserKey + " mobile=" + strUserMobile + " fcm token=" + newToken);
-                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME login-user");
+                /*Log.d(TAG, "Values: key=" + strUserKey + " mobile=" + strUserMobile + " fcm token=" + newToken);
+                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME login-user");*/
                 UtilityApiRequestPost.doPOST(a, "login-user", parameters, 30000, 0, response -> {
                     try {
                         a.onSuccess(response);

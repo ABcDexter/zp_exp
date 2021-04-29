@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,9 +54,7 @@ public class MapsHubLocation extends AppCompatActivity implements OnMapReadyCall
         lat = intent.getStringExtra("lat");
         lng = intent.getStringExtra("lng");
         name = intent.getStringExtra("name");
-        Log.d(TAG, "lat=" + lat + " lng=" + lng + " name=" + name);
-
-
+        //Log.d(TAG, "lat=" + lat + " lng=" + lng + " name=" + name);
     }
 
     @Override

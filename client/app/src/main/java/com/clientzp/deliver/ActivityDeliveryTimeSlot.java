@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -120,7 +119,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         assert layoutInflater != null;
         View activityView = layoutInflater.inflate(R.layout.activity_delivery_time_slot, null, false);
         frameLayout.addView(activityView);
-        init();
+        //init();
         SharedPreferences pref = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
         addDrop = pref.getString(ADDRESS_DROP, "");
         dropLat = pref.getString(DROP_LAT, "");
@@ -171,7 +170,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
 
     }
 
-    private void init() {
+   /* private void init() {
         for (int i = 0; i < IMAGES.length; i++)
             ImagesArray.add(IMAGES[i]);
 
@@ -225,7 +224,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
             }
         });
 
-    }
+    }*/
 
     @Override
     public void onClick(View v) {
@@ -261,8 +260,8 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
 
         if (id == R.id.confirm_standard) {
             int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); //Current hour
-            Log.d(TAG, "time=" + currentHour);
-            Log.d(TAG, "exp_date=" + stnd_day);
+            /*Log.d(TAG, "time=" + currentHour);
+            Log.d(TAG, "exp_date=" + stnd_day);*/
             if (stnd_day == 1) {
                 TodayDate();
                 switch (timeSlot) {
@@ -360,7 +359,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 } else {
                     vibrator.vibrate(1000);
                 }
-                Log.d(TAG, "express=" + delType);
+               // Log.d(TAG, "express=" + delType);
                 Toast.makeText(a, R.string.make_selection, Toast.LENGTH_SHORT).show();
             } else {
                 if (delType.equals("1")) {
@@ -370,7 +369,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                     editor.putString(PICK_MINUTE, StringMinute);
                     editor.putString(DEL_TYPE, "1");// 1 means express delivery
                     editor.apply();
-                    Log.d(TAG, "hour" + StringHours + " min=" + StringMinute);
+                    //Log.d(TAG, "hour" + StringHours + " min=" + StringMinute);
 
                     //expressDelv.getText();
                     if (stnd_day == 1) {
@@ -395,13 +394,13 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
                 //PopupTime();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                 String str = sdf.format(new Date());
-                Log.d(TAG, "SimpleDateFormat=" + str);
+                //Log.d(TAG, "SimpleDateFormat=" + str);
                 String[] splitArray = str.split(":");
                 String HH = splitArray[0];
                 String MM = splitArray[1];
-                Log.d(TAG, "HH=" + HH + " MM=" + MM);
+                //Log.d(TAG, "HH=" + HH + " MM=" + MM);
                 int intHH = Integer.parseInt(HH);
-                Log.d(TAG, "intHH=" + intHH);
+                //Log.d(TAG, "intHH=" + intHH);
 
                 if (/*HH.equals("7")|| HH.equals("20")*/intHH < 8 || intHH > 19) {
                     expDelAlert();
@@ -546,7 +545,7 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         //editor.putString(EXPRESS, "0");
         editor.putString(DEL_TYPE, "0"); // 2 means standard delivery
         editor.apply();
-        Log.d(TAG, "hour" + tmSlot + " min=" + "00");
+        //Log.d(TAG, "hour" + tmSlot + " min=" + "00");
 
         /*SharedPreferences review = getSharedPreferences(REVIEW, Context.MODE_PRIVATE);
         SharedPreferences.Editor reditor = review.edit();
@@ -661,14 +660,14 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
     private void TodayDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
         String currentDateandTime = sdf.format(new Date());
-        Log.d(TAG, "current date" + currentDateandTime);
+        //Log.d(TAG, "current date" + currentDateandTime);
 
 
         String first = currentDateandTime.split("\\.")[0];
         String second = currentDateandTime.split("\\.")[1];
         String third = currentDateandTime.split("\\.")[2];
 
-        Log.d(TAG, "first :" + first + "second :" + second + "third :" + third);
+        //Log.d(TAG, "first :" + first + "second :" + second + "third :" + third);
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(PICK_YEAR, first);
@@ -690,13 +689,13 @@ public class ActivityDeliveryTimeSlot extends ActivityDrawer implements View.OnC
         //String todayAsString = dateFormat.format(today);
         String tomorrowAsString = dateFormat.format(tomorrow);
 
-        Log.d("####", "tomorrow " + tomorrowAsString);
+        //Log.d("####", "tomorrow " + tomorrowAsString);
 
         String first = tomorrowAsString.split("\\.")[0];
         String second = tomorrowAsString.split("\\.")[1];
         String third = tomorrowAsString.split("\\.")[2];
 
-        Log.d(TAG, first + second + third);
+        //Log.d(TAG, first + second + third);
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_ADDRESS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(PICK_YEAR, first);

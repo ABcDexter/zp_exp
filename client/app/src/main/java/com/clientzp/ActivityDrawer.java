@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -70,14 +69,14 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         }*/
 
         String firstWord = stringName;
-        if(firstWord.contains(" ")){
-            firstWord= firstWord.substring(0, firstWord.indexOf(" "));
+        if (firstWord.contains(" ")) {
+            firstWord = firstWord.substring(0, firstWord.indexOf(" "));
             System.out.println(firstWord);
             nameText.setText(getString(R.string.hi, firstWord));
-            Log.d("USER_NAME", "name:" + firstWord);
-        }else {
+            //Log.d("USER_NAME", "name:" + firstWord);
+        } else {
             nameText.setText(getString(R.string.hi, firstWord));
-            Log.d("USER_NAME", "name:" + firstWord);
+            //Log.d("USER_NAME", "name:" + firstWord);
         }
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -104,12 +103,12 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ACTION", "menuButton clicked");
+                //Log.d("ACTION", "menuButton clicked");
                 if (!mDrawerLayout.isDrawerOpen(Gravity.RIGHT))
                     mDrawerLayout.openDrawer(Gravity.RIGHT);
                 else mDrawerLayout.closeDrawer(Gravity.LEFT);
                 //setNavigationDrawer();
-                Log.d("ACTION", "setNavigationDrawer() method called");
+                //Log.d("ACTION", "setNavigationDrawer() method called");
 
             }
         });
@@ -130,14 +129,14 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
                 .getInstance(PUBLISHABLE_KEY)
                 .addTrackingListener(this);
 
-        Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
+        //Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
+        //Log.d(TAG, "onResume");
         if (sdkInstance.isRunning()) {
             onTrackingStart();
         } else {
@@ -150,26 +149,26 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
     // TrackingStateObserver.OnTrackingStateChangeListener interface methods
     @Override
     public void onError(TrackingError trackingError) {
-        Log.d(TAG, "onError: " + trackingError.message);
+        //Log.d(TAG, "onError: " + trackingError.message);
         if (trackingError.code == TrackingError.INVALID_PUBLISHABLE_KEY_ERROR || trackingError.code == TrackingError.AUTHORIZATION_ERROR) {
-            Log.d(TAG, "check your publishable key");
+            //Log.d(TAG, "check your publishable key");
         } else if (trackingError.code == TrackingError.GPS_PROVIDER_DISABLED_ERROR) {
-            Log.d(TAG, "Enable location data access");
+            //Log.d(TAG, "Enable location data access");
         } else if (trackingError.code == TrackingError.PERMISSION_DENIED_ERROR) {
-            Log.d(TAG, "data access permissions were not granted");
+            //Log.d(TAG, "data access permissions were not granted");
         } else {
-            Log.d(TAG, "can't start tracking");
+            //Log.d(TAG, "can't start tracking");
         }
     }
 
     @Override
     public void onTrackingStart() {
-        Log.d(TAG, "tracking");
+        //Log.d(TAG, "tracking");
     }
 
     @Override
     public void onTrackingStop() {
-        Log.d(TAG, "not tracking");
+        //Log.d(TAG, "not tracking");
     }
 
     @Override

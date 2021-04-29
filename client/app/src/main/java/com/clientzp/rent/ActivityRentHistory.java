@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class ActivityRentHistory extends AppCompatActivity {
     private static final String TAG = "ActivityRentHistory.class";
@@ -42,7 +40,7 @@ public class ActivityRentHistory extends AppCompatActivity {
 
     public void onSuccess(JSONObject response) {
         String responseS = response.toString();
-        Log.d(TAG, "RESPONSE:" + responseS);
+        //Log.d(TAG, "RESPONSE:" + responseS);
         try {
             JSONObject jsonObject = new JSONObject(responseS);
             JSONArray array = jsonObject.getJSONArray("trips");
@@ -56,20 +54,17 @@ public class ActivityRentHistory extends AppCompatActivity {
         } catch (JSONException e) {
             txt.setVisibility(View.VISIBLE);
             txt.setText(R.string.try_zippe);
-            txt.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(ActivityRentHistory.this, ActivityRentHome.class);
-                    startActivity(intent);
-                    finish();
-                }
+            txt.setOnClickListener(view -> {
+                Intent intent = new Intent(ActivityRentHistory.this, ActivityRentHome.class);
+                startActivity(intent);
+                finish();
             });
             e.printStackTrace();
         }
     }
 
     public void onFailure(VolleyError error) {
-        Log.d(TAG, Objects.requireNonNull(error.getMessage()));
+        //Log.d(TAG, Objects.requireNonNull(error.getMessage()));
         Toast.makeText(this, R.string.check_internet, Toast.LENGTH_LONG).show();
 
     }
@@ -82,7 +77,7 @@ public class ActivityRentHistory extends AppCompatActivity {
         SharedPreferences prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuth = prefAuth.getString(AUTH_KEY, "");
 
-        Log.d(TAG, "control in ActivityRentHistory");
+        //Log.d(TAG, "control in ActivityRentHistory");
         //loading list view item with this function
 
         rv = findViewById(R.id.recycler_view);
@@ -103,8 +98,8 @@ public class ActivityRentHistory extends AppCompatActivity {
 
         JSONObject parameters = new JSONObject(params);
         ActivityRentHistory a = ActivityRentHistory.this;
-        Log.d(TAG, "auth = " + auth);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost user-rent-history");
+        //Log.d(TAG, "auth = " + auth);
+        //Log.d(TAG, "Control moved to to UtilityApiRequestPost user-rent-history");
         UtilityApiRequestPost.doPOST(a, "user-rent-history", parameters, 30000, 0,
                 a::onSuccess, a::onFailure);
 

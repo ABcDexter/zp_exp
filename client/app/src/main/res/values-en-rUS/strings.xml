@@ -114,7 +114,7 @@
     <string name="delivery_summary">Delivery Summary</string>
     <string name="price_breakup">Price Breakup</string>
     <string name="ride_price">Price</string>
-    <string name="ride_rate">Rate</string>
+    <string name="ride_rate">Rate / Min</string>
     <string name="ride_tax">Tax</string>
     <string name="trip">Trip</string>
     <string name="date">Date</string>
@@ -164,7 +164,7 @@
     <string name="extend_no_of_hours">Extend no. of Hours</string>
     <string name="your_rental_is_nconfirmed">your rental is \nconfirmed</string>
     <string name="pick_point_contact">Pick-up point details</string>
-    <string name="vehicle">Vehicle :</string>
+    <string name="vehicle">Vehicle</string>
     <string name="otp">OTP :</string>
     <string name="pick_point">Pick-up  point</string>
     <string name="drop_point">Drop point</string>
@@ -414,6 +414,7 @@ In case you fail to do so, you may collect your package from our nearest hub / o
     <string name="message_min">%1$s mins</string>
     <string name="message_rs">₹ %1$s </string>
     <string name="message_km">%1$s km</string>
+    <string name="message_km_hr">%1$s km/hr</string>
     <string name="add_email">Add Email</string>
     <string name="notifications_admin_channel_name">101</string>
     <string name="notifications_admin_channel_description">Game Notifications</string>

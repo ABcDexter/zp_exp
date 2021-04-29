@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -83,7 +82,7 @@ public class ActivityDeliverySummery extends ActivityDrawer {
         stringAuthKey = prefCookie.getString(AUTH_KEY, "");
         Intent intent = getIntent();
         stringSCID = intent.getStringExtra("SCID");
-        Log.d(TAG, "SCID" + stringSCID);
+        //Log.d(TAG, "SCID" + stringSCID);
         //initializing views
         scrollView = findViewById(R.id.scrollViewReview);
         pName = findViewById(R.id.pick_name);
@@ -117,8 +116,8 @@ public class ActivityDeliverySummery extends ActivityDrawer {
         params.put("scid", scid);
 
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-delivery-data");
-        Log.d(TAG, "Values: auth=" + auth + " scid=" + scid);
+        /*Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-delivery-data");
+        Log.d(TAG, "Values: auth=" + auth + " scid=" + scid);*/
 
         UtilityApiRequestPost.doPOST(a, "auth-delivery-data", parameters, 2000, 0, response -> {
             try {
@@ -132,7 +131,7 @@ public class ActivityDeliverySummery extends ActivityDrawer {
     String srcName, srcPhn, dstName, dstPhn, fr, li, pe, kw, kc, express, st, itype, idim, srcAdd, dstAdd, det, ptime, pDate;
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
-        Log.d(TAG, "RESPONSE:" + response);
+        //Log.d(TAG, "RESPONSE:" + response);
 
         //response on hitting auth-delivery-data API
         if (id == 2) {
@@ -298,8 +297,8 @@ public class ActivityDeliverySummery extends ActivityDrawer {
     }
 
     public void onFailure(VolleyError error) {
-        Log.d("TAG", "onErrorResponse: " + error.toString());
-        Log.d(TAG, "Error:" + error.toString());
+        /*Log.d("TAG", "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());*/
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -316,8 +315,8 @@ public class ActivityDeliverySummery extends ActivityDrawer {
         params.put("auth", auth);
         params.put("scid", scid);
         JSONObject parameters = new JSONObject(params);
-        Log.d(TAG, "Values: auth=" + auth + " scid=" + scid);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-delivery-get-info");
+        /*Log.d(TAG, "Values: auth=" + auth + " scid=" + scid);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-delivery-get-info");*/
         UtilityApiRequestPost.doPOST(a, "auth-delivery-get-info", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
@@ -345,7 +344,7 @@ public class ActivityDeliverySummery extends ActivityDrawer {
         if (id == 2) {
             //dialog_txt.setText(R.string.your_delivery_agent_will_arrive_shortly + info);
             dialog_txt.setText(String.format("OTP : %s", info));
-            Log.d(TAG, "AS OTP = " + info);
+            //Log.d(TAG, "AS OTP = " + info);
         }
         //FL
         if (id == 3) {
@@ -371,7 +370,7 @@ public class ActivityDeliverySummery extends ActivityDrawer {
         if (id == 8) {
             //dialog_txt.setText(R.string.agent_has_arrived + INFO);
             dialog_txt.setText(String.format("OTP : %s", info));
-            Log.d(TAG, "RC OTP = " + info);
+            //Log.d(TAG, "RC OTP = " + info);
         }
 
     }
