@@ -374,10 +374,14 @@ def userDeliverySchedule(dct, user):
     pMinute = int(dct['pMinute'])
     # 30, 31, 32, 33, 34
 
-    if pMinute < 30:
-        pDinaank = datetime(pYear, pMonth, pDate, pHour - 6 , (pMinute + 35) % 60, 00)
-    else:
-        pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , (pMinute - 25) % 60, 00)
+    #if pMinute < 30:
+    #    pDinaank = datetime(pYear, pMonth, pDate, pHour - 6 , (pMinute + 35) % 60, 00)
+    #else:
+    #    pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , (pMinute - 25) % 60, 00)
+
+    date = datetime(pYear, pMonth, pDate, pHour , pMinute, 00) #actual req date
+
+    pDinaank = date - timedelta(minutes=355)  # 5*60 +30 for UTC then 25 minutes ago
 
     print("DATETIME for RQ is : ", pDinaank)
 
