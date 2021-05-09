@@ -140,6 +140,12 @@ def userRentSchedule(dct, user):
 
     dinaank = date - timedelta(minutes=340)  # 5*60 +30 for UTC then 10 minutes ago
 
+    delta = dinaank - datetime.now()
+    print(delta)
+
+    if delta.total_seconds() < 0:
+        dinaank = date - timedelta(minutes=330)  # if the difference of delta crosses this, then 5 hours 30 mins
+
     print(dinaank)
     abhi = datetime.now()
     #abhi.replace(tzinfo=None)
