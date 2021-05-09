@@ -144,7 +144,7 @@ def userRentSchedule(dct, user):
     print(delta)
 
     if delta.total_seconds() < 0:
-        dinaank = date - timedelta(minutes=330)  # if the difference of delta crosses this, then 5 hours 30 mins
+        dinaank = date - timedelta(minutes=329)  # if the difference of delta crosses this, then 5 hours 30 mins - 1 for the next minute
 
     print(dinaank)
     abhi = datetime.now()
