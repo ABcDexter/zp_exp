@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.clientzp"
-    android:versionCode="4"
-    android:versionName="1.0.3">
+    android:versionCode="6"
+    android:versionName="1.0.5">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -116,19 +116,18 @@
             android:value="fcm_default_channel" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/zippe_logo__" />
+            android:resource="@drawable/z" />
 
         <activity android:name=".UserProfileActivity" />
         <activity android:name=".ActivityWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ActivityRegistration"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".ActivityDrawer" />
         <activity
             android:name=".ride.ActivityRideHome"
@@ -141,7 +140,8 @@
         <activity android:name=".rent.ActivityRentHistory" />
         <activity android:name=".rent.ActivityRentSummery" />
         <activity android:name=".ride.ActivityRideSummery" />
-        <activity android:name=".ActivityLoginKey" />
+        <activity android:name=".ActivityLoginKey"
+            android:windowSoftInputMode="adjustNothing"/>
 
         <uses-library
             android:name="org.apache.http.legacy"

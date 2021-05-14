@@ -204,7 +204,8 @@
                 android:text="@string/terms_amp_conditions"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_marginTop="6dp"/>
+                android:layout_marginTop="6dp"
+                android:layout_marginStart="5dp"/>
         </RelativeLayout>
     </RelativeLayout>
 </ScrollView>

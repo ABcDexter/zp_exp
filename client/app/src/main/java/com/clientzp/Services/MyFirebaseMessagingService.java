@@ -77,13 +77,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         int notificationId = new Random().nextInt(60000);
         //Bitmap bitmap = getBitmapfromUrl(remoteMessage.getData().get("imageUrl")); //obtain the image
-        Bitmap icon = BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.zippe_logo__);
+        Bitmap icon = BitmapFactory.decodeResource(this.getResources(), R.drawable.z);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                 .setLargeIcon(icon) //set it in the notification
-                .setSmallIcon(R.drawable.zippe_logo__)  //a resource for your custom small icon
+                .setSmallIcon(R.drawable.z)  //a resource for your custom small icon
                 .setContentTitle(remoteMessage.getData().get("title")) //the "title" value you sent in your notification
                 .setContentText(remoteMessage.getData().get("message")) //ditto
                 .setAutoCancel(true)  //dismisses the notification on click

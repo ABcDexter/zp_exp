@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -77,7 +78,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     private static ActivityRentRequest instance;
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
-        //Log.d(TAG, "RESPONSE:" + response);
+        Log.d(TAG, "RESPONSE:" + response);
 
         //response on hitting user-trip-estimate API
         if (id == 1) {
@@ -98,7 +99,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         }
         //response on hitting user-rent-schedule API
         if (id == 2) {
-            //Log.d(TAG, "RESPONSE on hitting user-rent-schedule API:" + response);
+            Log.d(TAG, "RESPONSE on hitting user-rent-schedule API:" + response);
             /*String tid = response.getString("tid");
             SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
             sp_cookie.edit().putString(TRIP_ID, tid).apply();*/
@@ -211,7 +212,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
             String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 20));
             pickPlaceInfo.setText(upToNCharacters);
-            //Log.d(TAG, "qwertyuiop"+upToNCharacters);
+            Log.d(TAG, "qwertyuiop"+upToNCharacters);
         } catch (Exception e) {
             pickPlaceInfo.setText(stringPick);
             e.printStackTrace();
@@ -243,8 +244,8 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         String auth = stringAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        /*Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");*/
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");
         UtilityApiRequestPost.doPOST(a, "user-trip-cancel", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 4);
@@ -259,8 +260,8 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         String auth = stringAuth;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
-        /*Log.d(TAG, "Values: auth=" + auth);
-        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");*/
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
@@ -405,9 +406,9 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         params.put("hrs", hrs);
 
         JSONObject parameters = new JSONObject(params);
-        /*Log.d(TAG, "Values: auth=" + auth + " srcid= " + pickInfo + " dstid= " + dropInfo
+        Log.d(TAG, "Values: auth=" + auth + " srcid= " + pickInfo + " dstid= " + dropInfo
                 + " rtype= " + rideInfo + " vtype=" + vTypeInfo + " pmode=" + pModeInfo + " hrs= " + hrs);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-trip-estimate");*/
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-trip-estimate");
 
         UtilityApiRequestPost.doPOST(a, "user-trip-estimate", parameters, 2000, 0, response -> {
             try {
@@ -434,11 +435,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
         params.put("min", schMins);
 
         JSONObject parameters = new JSONObject(params);
-        /*Log.d(TAG, "Values: auth=" + auth + " srcid = " + pickInfo + " dstid = " + dropInfo + " hrs = " + hrs +
+        Log.d(TAG, "Values: auth=" + auth + " srcid = " + pickInfo + " dstid = " + dropInfo + " hrs = " + hrs +
                 " rtype = " + rideInfo + " vtype = " + vTypeInfo + " pmode = " + pModeInfo +
                 " date = " + schDate + " month = " + schMonth + " year = " + schYr +
                 " hour = " + schHours + " min = " + schMins);
-        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-rent-schedule");*/
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-rent-schedule");
 
         UtilityApiRequestPost.doPOST(a, "user-rent-schedule", parameters, 2000, 0, response -> {
             try {
