@@ -800,12 +800,12 @@ def authRideHistory(dct, entity):
         trips = []
         for i in qsTrip:
             #print("Trip state : ", str(i['st']))
-            if i['stime'] is None : 
+            if i['rtime'] is None : #rtime matter more
                 sTime = 'notSTARTED'
             else:
                 # strip the stime and find the date
-                strSTime = str(i['stime'])[:19]
-                sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date()
+                strSTime = str(i['rtime'])[:19] #rtime matters more
+                sTime = datetime.strptime(strSTime, '%Y-%m-%d %H:%M:%S').date().strftime('%d-%m-%Y')
                     
                     
             retJson = {  'tid': str(i['id']),

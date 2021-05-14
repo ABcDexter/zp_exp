@@ -542,7 +542,7 @@ def userRideGetDriver(_dct, _entity, trip):
 @extractParams
 @transaction.atomic
 @checkAuth()
-@checkTripStatus(['RQ', 'AS', 'ST'])
+@checkTripStatus(['SC','RQ', 'AS', 'ST'])
 def userTripCancel(_dct, user, trip):
     '''
     Cancel the ride for a user if requested, assigned or started
@@ -1534,16 +1534,17 @@ def authTripData(dct, _entity):
     -----------------------------------------
     HTTP args :
         auth : auth key
-        tid: trip id
+        tid : trip id
     -----------------------------------------
     Response:
         returns:
       # for user
       
-      #  for driver
-          # date 
-          # pickup point #can be dine
-          # pickup time (stime) #sdate and rdate are same 
+      # for driver
+      # date
+      # pickup point #can be dine
+      # pickup time (stime) #sdate and rdate are same
+      # cancel 0 or 1 whether SC state is there
     -----------------------------------------
 
     '''
@@ -1555,17 +1556,30 @@ def authTripData(dct, _entity):
     #    dctRet.update({str(key): str(val)})
     
     strRTime = str(dctTrip['rtime'])[:19]
-    rDate = datetime.strptime(strRTime, '%Y-%m-%d %H:%M:%S').date()
+    rDate = datetime.strptime(strRTime, '%Y-%m-%d %H:%M:%S').date().strftime('%d-%m-%Y')
     sTime = 'None'
 
     srchub = dctTrip['srcname'] #Place.objects.filter(id=dctTrip['srcid'])[0].pn
     dsthub = dctTrip['dstname'] #Place.objects.filter(id=dctTrip['dstid'])[0].pn
 
 
-    if dctTrip['rtype'] == '1':
+    if dctTrip['rtype'] == '1' :
             # rental
-            time = float(dctTrip['hrs']*60) 
-            
+            time = float(dctTrip['hrs']*60)
+
+            idxNext = [0, 60, 120, 180, 240, 300, 300, 420, 480, 540, 600, 660, 720]
+            #             780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440]  # for next hours charges
+
+            idxPrice = [0.00, 1.00, 0.90, 0.80, 0.75, 0.70, 0.65, 0.60, 0.55, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50]
+            iTimeActualMins = int(time)
+
+            try:
+                idxMul = next(x[0] for x in enumerate(idxNext) if x[1] >= iTimeActualMins)  # Find the correct value from idx
+            except StopIteration:
+                idxMul = 12
+
+            rate = idxPrice[idxMul]
+
     else:
             #ride
             if dctTrip['stime'] is None:
@@ -1587,16 +1601,19 @@ def authTripData(dct, _entity):
                     strETime = str(dctTrip['etime'])[:19]
                     eTime = datetime.strptime(strETime, '%Y-%m-%d %H:%M:%S').date()
                     time = int(((dctTrip['etime'] - dctTrip['stime']).seconds)/60)
-                    
-    
+
+            rate = settings.RIDE_PER_MIN_COST * Vehicle.TIME_FARE[int(dctTrip['rvtype'])]
+
     time = float(time)
-    rate = settings.RIDE_PER_MIN_COST * Vehicle.TIME_FARE[int(dctTrip['rvtype'])]
     print(time, rate, rate*time)
     price = rate*time  # 2 chars
     tax = price*0.05   # tax of 5%
-    total = price + tax
+    cost = price - tax
+    total = cost + tax
     print(tax, total)
+    sc = 1 if dctTrip['st'] == 'SC' else 0
     dctRet = {
+            'cancel' : sc,
             'id': str(dctTrip['id']),
             'st':str(dctTrip['st']),
             #'uan': str(dctTrip['uan']),
@@ -1617,9 +1634,9 @@ def authTripData(dct, _entity):
             
             'time': str(time),
             'rate': str(rate),
-            'price': str(round(float('%.2f' % price),0))+'0',
-            'tax':  str(round(float('%.2f' % tax),0))+'0',
-            'total': str(round(float('%.2f' % total),0))+'0',
+            'price': str(round(float('%.2f' % cost), 0))+'0',
+            'tax':  str(round(float('%.2f' % tax), 0))+'0',
+            'total': str(round(float('%.2f' % total), 0))+'0',
             
              }
     

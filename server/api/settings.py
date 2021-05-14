@@ -27,7 +27,7 @@ SECRET_KEY = '+8^8@0w0p1)6yr-g)!3l04&qp-ggjwz@9f_-fvpm_qta0g&36r'
 DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "api.villageapps.in", "media.villageapps.in", "159.65.144.72",
-                 "api.zippe.in",
+                 "api.zippe.in", "api.zippe.in:8090",
                  "86d9a981a121.ngrok.io"]  # ngrok http http://127.0.0.1:9999 on the server
 
 PROFILE_PHOTO_DIR = '/srv/data/static/dp'

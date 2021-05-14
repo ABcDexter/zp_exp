@@ -238,6 +238,8 @@ class Trip(models.Model):
     -----------------------------------------
     """
     STATUSES = [
+        ('SC', 'scheduled'),  # scheduled for future RQ
+
         ('RQ', 'requested'),  # requested from the user via app
         ('AS', 'assigned'),   # accepted by the driver, waiting for the user to either come to driver or CN
         ('ST', 'started'),  # started by the driver
@@ -278,8 +280,8 @@ class Trip(models.Model):
     atime = models.DateTimeField(db_index=True, null=True)
     stime = models.DateTimeField(db_index=True, null=True)
     etime = models.DateTimeField(db_index=True, null=True)
-    srcid = models.IntegerField(db_index=True, default=1) #dummy values
-    dstid = models.IntegerField(db_index=True, default=2) #dummy values
+    srcid = models.IntegerField(db_index=True, default=1)  # dummy values
+    dstid = models.IntegerField(db_index=True, default=2)  # dummy values
     srclat = models.FloatField(db_index=True, default=-1)
     srclng = models.FloatField(db_index=True, default=-1)
     dstlat = models.FloatField(db_index=True, default=-1)
