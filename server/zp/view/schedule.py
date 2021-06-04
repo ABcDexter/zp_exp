@@ -140,6 +140,12 @@ def userRentSchedule(dct, user):
 
     dinaank = date - timedelta(minutes=340)  # 5*60 +30 for UTC then 10 minutes ago
 
+    delta = dinaank - datetime.now()
+    print(delta)
+
+    if delta.total_seconds() < 0:
+        dinaank = date - timedelta(minutes=329)  # if the difference of delta crosses this, then 5 hours 30 mins - 1 for the next minute
+
     print(dinaank)
     abhi = datetime.now()
     #abhi.replace(tzinfo=None)
@@ -374,10 +380,14 @@ def userDeliverySchedule(dct, user):
     pMinute = int(dct['pMinute'])
     # 30, 31, 32, 33, 34
 
-    if pMinute < 30:
-        pDinaank = datetime(pYear, pMonth, pDate, pHour - 6 , (pMinute + 35) % 60, 00)
-    else:
-        pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , (pMinute - 25) % 60, 00)
+    #if pMinute < 30:
+    #    pDinaank = datetime(pYear, pMonth, pDate, pHour - 6 , (pMinute + 35) % 60, 00)
+    #else:
+    #    pDinaank = datetime(pYear, pMonth, pDate, pHour - 5 , (pMinute - 25) % 60, 00)
+
+    date = datetime(pYear, pMonth, pDate, pHour , pMinute, 00) #actual req date
+
+    pDinaank = date - timedelta(minutes=355)  # 5*60 +30 for UTC then 25 minutes ago
 
     print("DATETIME for RQ is : ", pDinaank)
 
