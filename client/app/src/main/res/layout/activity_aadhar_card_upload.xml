@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".AadharCardUpload">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!--<ImageView
+            android:id="@+id/zippe_logo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/zippe_logo" />-->
+        <include
+            android:id="@+id/zippe_logo"
+            layout="@layout/zippe_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp" />
+
+        <ImageView
+            android:id="@+id/line_divide"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/containerAadhar"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/line"
+            android:contentDescription="TODO" />
+
+        <RelativeLayout
+            android:id="@+id/containerAadhar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/zippe_logo"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:id="@+id/aadharFrontImg"
+                android:layout_width="350dp"
+                android:layout_height="250dp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/aadhar_container"
+                android:contentDescription="TODO" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="#A90E0E0E"
+                android:padding="5dp"
+                android:text="@string/upload_aadhar_front"
+                android:textAllCaps="true"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerAadharBack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/line_divide">
+
+            <ImageView
+                android:id="@+id/aadharBackImg"
+                android:layout_width="350dp"
+                android:layout_height="250dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/aadhar_container"
+                android:contentDescription="TODO" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="#A90E0E0E"
+                android:padding="5dp"
+                android:text="@string/upload_aadhar_back"
+                android:textAllCaps="true"
+                android:textSize="20sp" />
+        </RelativeLayout>
+
+
+        <ImageButton
+            android:id="@+id/uploadImages"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/containerAadharBack"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/orange_button_bkg"
+            android:padding="15dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/next"
+            android:text="@string/next"
+            android:textAllCaps="true"
+            android:contentDescription="TODO" />
+
+        <ProgressBar
+            android:id="@+id/simpleProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
+
+</ScrollView>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    tools:context="com.zp_driver.ActivityUserProfile">
+
+    <RelativeLayout
+        android:id="@+id/containerProfilePic"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@color/colorAccent"
+            android:src="@drawable/ic_account_circle" />
+
+        <TextView
+            android:id="@+id/txt_profile_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="#A90E0E0E"
+            android:padding="5dp"
+            android:text="@string/click_choose_picture"
+            android:textAllCaps="true"
+            android:textSize="20sp" />
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/upload_file_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/containerProfilePic"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp"
+        android:background="@drawable/btn_bkg"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/upload"
+        android:textSize="23sp" />
+
+    <TextView
+        android:id="@+id/txt_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/upload_file_txt"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/driver_name"
+        android:textAllCaps="true"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/upload_file_txt"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp"
+        android:layout_toEndOf="@id/txt_mobile"
+        android:gravity="end"
+        android:text="qwertyuuio"
+        android:textAllCaps="true"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/txt_mobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_name"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/mobile"
+        android:textAllCaps="true"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/mobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_name"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="25dp"
+        android:layout_toEndOf="@id/txt_mobile"
+        android:gravity="end"
+        android:text="1234567890"
+        android:textAllCaps="true"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/textCngLng"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_mobile"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/change_language"
+        android:textAllCaps="true"
+        android:textSize="22sp" />
+
+    <RelativeLayout
+        android:id="@+id/layout_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mobile"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginRight="25dp"
+        android:layout_toEndOf="@id/textCngLng"
+        android:background="@drawable/spinner_bg"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:popupBackground="@color/colorPrimaryDark"
+            android:spinnerMode="dropdown" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_arrow_drop_down" />
+
+    </RelativeLayout>
+
+    <!--<Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mobile"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/textCngLng"
+        android:textAllCaps="true"
+        android:layout_marginTop="20dp"/>-->
+
+    <TextView
+        android:id="@+id/txtNightMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textCngLng"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:paddingRight="8dp"
+        android:text="@string/dark_mode"
+        android:textAllCaps="true"
+        android:textSize="22sp" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchCompat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_spinner"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="@android:dimen/app_icon_size"
+        android:layout_toEndOf="@+id/txtNightMode"
+        android:checked="false"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:theme="@style/SCBSwitch" />
+
+    <TextView
+        android:id="@+id/textHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtNightMode"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:paddingRight="8dp"
+        android:text="@string/history"
+        android:textAllCaps="true"
+        android:textSize="22sp" />
+    <ProgressBar
+        android:id="@+id/simpleProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible" />
+</RelativeLayout>

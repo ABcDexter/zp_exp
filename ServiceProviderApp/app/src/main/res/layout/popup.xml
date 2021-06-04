@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rect_box_outline"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="30dp">
+
+    <TextView
+        android:id="@+id/pop_title"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:gravity="center"
+        android:text="@string/gender"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        android:background="#605D5D"/>
+
+    <TextView
+        android:id="@+id/pop_txt1"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/female"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:background="@drawable/rect_blue"/>
+
+    <TextView
+        android:id="@+id/pop_txt2"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/male"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:background="@drawable/rect_blue"/>
+
+    <TextView
+        android:id="@+id/pop_txt3"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:background="@drawable/rect_blue"/>
+
+    <TextView
+        android:id="@+id/pop_txt4"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"
+        android:background="@drawable/rect_blue"/>
+
+    <TextView
+        android:id="@+id/pop_txt5"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:gravity="center"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"
+        android:background="@drawable/rect_blue"/>
+
+    <TextView
+        android:id="@+id/pop_txt6"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/pop_txt7"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/pop_txt8"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/pop_txt9"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/pop_txt10"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/pop_txt11"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/pop_txt12"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/pop_txt13"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/pop_txt14"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/pop_txt15"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:text="@string/non_binary"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:visibility="gone"/>
+
+</LinearLayout>

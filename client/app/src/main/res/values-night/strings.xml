@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="disclaimer">I accept that this package does not contain any illegal / restricted items (as per The Indian Court of Law). ZIPP-E partner may ask to verify the contents of the package and has the liberty to refuse the delivery if the items are not verified.
+    </string>
+    <string name="qwerty">THIS IS AN APPROXIMATE COST. MAY CHANGE DEPENDING ON RIDE TIME.</string>
+    <string name="notifications_admin_channel_name">101</string>
+    <string name="notifications_admin_channel_description">Game Notifications</string>
+</resources>

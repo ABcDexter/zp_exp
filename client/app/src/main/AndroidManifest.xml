@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.clientzp"
+    android:versionCode="6"
+    android:versionName="1.0.5">
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the "MyLocation" functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.CALL_PHONE" /> -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- <uses-permission android:name="android.permission.SEND_SMS" /> -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- <uses-permission android:name="android.permission.CALL_PHONE" /> -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
+        android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
+        tools:node="remove" />
+
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+
+    <application
+        android:name=".UtilityInitApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher_zippe_"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_zippe__round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity android:name=".Service.ActivityServiceSummery" />
+        <activity android:name=".Shop.ActivityShopSummery" />
+        <activity android:name=".Shop.ActivityShopHistoryList" />
+        <activity android:name=".Service.ActivityServiceHistoryList" />
+        <activity android:name=".Service.ActivityServicesHome" />
+        <activity android:name=".Shop.ActivityShopHome" />
+        <activity android:name=".ride.ActivitySearchingDriver" />
+        <activity android:name=".IntroActivity" />
+        <activity android:name=".AadharCardUpload" />
+        <activity android:name=".deliver.ActivityDeliverySummery" />
+        <activity android:name=".rent.ActivityUpdateHours" />
+        <activity android:name=".deliver.ActivitySlidingFullPage" />
+        <activity
+            android:name=".deliver.ActivityDeliveryReview"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".deliver.ActivityDeliveryTimeSlot" />
+        <activity
+            android:name=".deliver.ActivityPackageDetails"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".deliver.ActivityDeliveryHistoryList" />
+        <activity android:name=".ActivitySearching" />
+        <activity android:name=".ride.ActivityRideHistory" />
+        <activity android:name=".rent.ActivityNearestHub" />
+        <activity android:name=".rent.ActivityUpdateInfo" />
+        <activity android:name=".deliver.ActivityDeliverThankYou" />
+        <activity
+            android:name=".deliver.ActivityDeliverConfirm"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".ride.MapsActivity2"
+            android:label="@string/title_activity_maps2" />
+        <activity
+            android:name=".deliver.ActivityFillDropAddress"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".rent.ActivityRentEnded" />
+        <activity android:name=".rent.ActivityRentInProgress" />
+        <activity android:name=".rent.ActivityRentOTP" />
+        <activity android:name=".rent.ActivityRentRequest" />
+        <activity android:name=".rent.ActivityRentHome" />
+        <activity android:name=".ride.ActivityRideRequest" />
+        <activity android:name=".ActivityRateZippe" />
+        <activity android:name=".ride.ActivityRideEnded" />
+        <activity android:name=".ride.ActivityRideInProgress" />
+        <activity android:name=".ride.ActivityRideOTP" />
+        <activity android:name=".HubList" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="fcm_default_channel" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/z" />
+
+        <activity android:name=".UserProfileActivity" />
+        <activity android:name=".ActivityWelcome">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ActivityRegistration"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".ActivityDrawer" />
+        <activity
+            android:name=".ride.ActivityRideHome"
+            android:launchMode="singleTop" />
+        <activity android:name=".rent.ActivityRateRent" />
+        <activity android:name=".rent.MapsHubLocation" />
+        <activity
+            android:name=".deliver.ActivityFillPickDetails"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".rent.ActivityRentHistory" />
+        <activity android:name=".rent.ActivityRentSummery" />
+        <activity android:name=".ride.ActivityRideSummery" />
+        <activity android:name=".ActivityLoginKey"
+            android:windowSoftInputMode="adjustNothing"/>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <service android:name=".UtilityPollingService" />
+        <service
+            android:name=".Services.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+    </application>
+
+</manifest>

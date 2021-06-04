@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "980170623977",
+    "project_id": "delivery-agent-843ff",
+    "storage_bucket": "delivery-agent-843ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:980170623977:android:81440d37dc97232961d978",
+        "android_client_info": {
+          "package_name": "com.zpdeliveryagent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "980170623977-e8h8pi844a70cua1587gn6q6jv6kummu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zpdeliveryagent",
+            "certificate_hash": "d4cfbc8b3939c12527d91f01f68e73ae8ff91f15"
+          }
+        },
+        {
+          "client_id": "980170623977-a77eg3t3qpp4237k357hctl9ittm2uju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC69nSbpclYWrqTq6Y_I4heC0l_j-vqf8Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "980170623977-a77eg3t3qpp4237k357hctl9ittm2uju.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

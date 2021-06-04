@@ -1,0 +1,14 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.ServiceProviderApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#D7FB05</item>
+        <item name="colorPrimaryDark">#EC7721</item>
+        <item name="colorAccent">#1EB4D4</item>
+        <item name="android:textColorHint">#C6BFBF</item>
+        <item name="android:textColor">#F1EAEA</item>
+        <item name="android:windowBackground">@drawable/black_background</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+</resources>

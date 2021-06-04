@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "809709679558",
+    "firebase_url": "https://purchase-dept-2a671.firebaseio.com",
+    "project_id": "purchase-dept-2a671",
+    "storage_bucket": "purchase-dept-2a671.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:809709679558:android:4c31a070de803583edf8c7",
+        "android_client_info": {
+          "package_name": "com.e.purchasedeptapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "809709679558-espcjkgjmhspq2h4g81kcspmjojngge1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDc4itaIHw5Wsq9xUVyimFPe48ApcVapmc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "809709679558-espcjkgjmhspq2h4g81kcspmjojngge1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

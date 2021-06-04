@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorRipple">#11A194</color>
+    <color name="colorWindowBackground">#F2F5FC</color>
+    <color name="txtColor">#FFFFFF</color>
+    <color name="navItemText">#FFFFFF</color>
+    <color name="colorSpinnerBck">#B74A4545</color>
+</resources>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/black_background1"
+    tools:context=".ActivityWelcome">
+
+    <!--<TextView
+        android:id="@+id/tx_hi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="HI!"
+        android:textColor="@android:color/white"
+        android:textSize="50sp"/>-->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/tx_hi"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="100dp"
+                android:src="@drawable/hi"
+                android:contentDescription="TODO" />
+
+            <ImageView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tx_hi"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:src="@drawable/iam"
+                android:contentDescription="TODO" />
+
+
+            <ImageView
+                android:id="@+id/iv_zippee"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_above="@id/zippe_logo"
+                android:src="@drawable/zbee_right"
+                android:contentDescription="TODO" />
+
+            <ImageView
+                android:id="@+id/scooty_up"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_above="@id/zippe_logo"
+                android:src="@drawable/scooty_left"
+                android:visibility="gone"
+                android:contentDescription="TODO" />
+
+            <ImageView
+                android:id="@+id/zippe_logo"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/zippe_logo__"
+                android:contentDescription="TODO" />
+
+            <ImageView
+                android:id="@+id/iv_zippee_bottom"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/zippe_logo"
+                android:src="@drawable/zbee_left"
+                android:visibility="gone"
+                android:contentDescription="TODO" />
+
+            <ImageView
+                android:id="@+id/scooty_down"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/zippe_logo"
+                android:src="@drawable/scooty_right"
+                android:contentDescription="TODO" />
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

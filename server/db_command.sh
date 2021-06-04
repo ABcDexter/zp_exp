@@ -1,0 +1,2 @@
+find . -path "*/migrations/*.pyc"  -delete && find . -path "*/migrations/*.py" -not -name "__init__.py" -delete && python3 manage.py makemigrations && rm /srv/data/db/zp.sqlite3 && python manage.py migrate && sqlite3 /srv/data/db/zp.sqlite3
+#makes migrations

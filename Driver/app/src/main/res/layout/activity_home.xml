@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        tools:context="com.zp_driver.ActivityHome">
+
+        <RelativeLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Switch
+                android:id="@+id/dutyStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="124dp"
+                android:layout_marginTop="12dp"
+                android:checked="false"
+                android:text="@string/off_duty"
+                android:textColor="@color/txtColor"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="14dp"
+                android:layout_toEndOf="@id/dutyStatus"
+                android:text="@string/on_duty"
+                android:textColor="@color/txtColor"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <include
+                android:id="@+id/layoutZippeee"
+                layout="@layout/zippe_logo"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_above="@id/rl_ride"
+                android:layout_marginBottom="100dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_ride"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_centerInParent="true">
+
+                <TextView
+                    android:id="@+id/notifNo"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignTop="@+id/new_ride"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/circle"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="0"
+                    android:textSize="14sp"
+                    android:translationZ="5dp"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/new_ride"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:background="@drawable/btn_bkg"
+                    android:text="@string/new_rides" />
+
+            </RelativeLayout>
+
+            <!--<Button
+                android:id="@+id/ride_in_progress"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/rl_ride"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/rect_box_solid"
+                android:text="@string/ride_in_process" />-->
+
+            <Button
+                android:id="@+id/completed_rides"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/rl_ride"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/completed_rides" />
+
+            <!--<Button
+                android:id="@+id/earnings"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/completed_rides"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/btn_bkg"
+                android:text="@string/total_earnings" />-->
+
+        </RelativeLayout>
+    </ScrollView>
+</androidx.drawerlayout.widget.DrawerLayout>

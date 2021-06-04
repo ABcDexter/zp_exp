@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <!--<item
+        android:id="@+id/nav_partner"
+        android:icon="@drawable/ic_logo"
+        android:title="Become Partner" />-->
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_account_circle"
+        android:title="@string/profile" />
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home_black"
+        android:title="@string/home" />
+
+    <item
+        android:id="@+id/nav_ride_history"
+        android:icon="@drawable/ic_time"
+        android:title="@string/ride_history" />
+    <item
+        android:id="@+id/nav_rent_history"
+        android:icon="@drawable/ic_time"
+        android:title="@string/rent_history" />
+    <item
+        android:id="@+id/nav_delivery_orders"
+        android:icon="@drawable/ic_time"
+        android:title="@string/delivery_orders" />
+    <!--<item
+        android:id="@+id/nav_shop_history"
+        android:icon="@drawable/ic_time"
+        android:title="@string/shop_history" />
+    <item
+        android:id="@+id/nav_service_history"
+        android:icon="@drawable/ic_time"
+        android:title="@string/service_history" />-->
+    <item
+        android:id="@+id/nav_customer_support"
+        android:icon="@drawable/ic_insert_comment"
+        android:title="@string/customer_support" />
+
+    <item
+        android:id="@+id/nav_tnc"
+        android:icon="@drawable/ic_insert_comment"
+        android:title="@string/terms_and_conditions" />
+    <item
+        android:id="@+id/nav_about"
+        android:icon="@drawable/ic_group"
+        android:title="@string/crew" />
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_logout"
+        android:title="@string/log_out" />
+</menu>
