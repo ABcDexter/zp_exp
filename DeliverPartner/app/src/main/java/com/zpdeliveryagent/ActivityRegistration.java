@@ -49,6 +49,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -261,17 +264,17 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
 
     private void selectImage(Context context, int fromRID) {
 
-        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+        final CharSequence[] options = {/*"Take Photo", */"Choose from Gallery", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (fromRID == 1) {
-                    if (options[item].equals("Take Photo")) {
+                   /* if (options[item].equals("Take Photo")) {
                         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(takePicture, 1);
 
-                    } else if (options[item].equals("Choose from Gallery")) {
+                    } else */if (options[item].equals("Choose from Gallery")) {
                         Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         startActivityForResult(pickPhoto, 2);
 
@@ -280,11 +283,11 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
                     }
                 }
                 if (fromRID == 2) {
-                    if (options[item].equals("Take Photo")) {
+                    /*if (options[item].equals("Take Photo")) {
                         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(takePicture, 3);
 
-                    } else if (options[item].equals("Choose from Gallery")) {
+                    } else*/ if (options[item].equals("Choose from Gallery")) {
                         Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         startActivityForResult(pickPhoto, 4);//one can be replaced with any action code
 
@@ -293,11 +296,12 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
                     }
                 }
                 if (fromRID == 3) {
-                    if (options[item].equals("Take Photo")) {
+                    Log.d(TAG,"fromRID  3");
+                    /*if (options[item].equals("Take Photo")) {
                         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(takePicture, 5);
 
-                    } else if (options[item].equals("Choose from Gallery")) {
+                    } else*/ if (options[item].equals("Choose from Gallery")) {
                         Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         startActivityForResult(pickPhoto, 6);//one can be replaced with any action code
 
@@ -383,6 +387,8 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
             byte[] imageBytes = baos.toByteArray();
             profilePic = Base64.encodeToString(imageBytes, Base64.DEFAULT);
             Log.d(TAG, "profile picture converted to Base64");
+            Log.d(TAG, "request code 5");
+
             Log.d(TAG, "Control moved to nextActivity()");
         }
         nextActivity(dl_f, dl_b, profilePic);
@@ -395,15 +401,31 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_CANCELED) {
             switch (requestCode) {
-                case 1:
+                /*case 1:
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         ivDLF.setImageBitmap(selectedImage);
                         convertAndUpload(1);
                     }
-                    break;
+                    break;*/
                 case 2:
-                    if (resultCode == RESULT_OK && data != null) {
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            final Uri imageUri = data.getData();
+                            final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                            ivDLF.setImageBitmap(selectedImage);
+                            convertAndUpload(2);
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ActivityRegistration.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                        }
+
+                    }else {
+                        Toast.makeText(ActivityRegistration.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+                    }
+                    /*if (resultCode == RESULT_OK && data != null) {
                         Uri selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         if (selectedImage != null) {
@@ -418,18 +440,34 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
                                 convertAndUpload(2);
                             }
                         }
-                    }
+                    }*/
                     break;
-                case 3:
+               /* case 3:
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         ivDLB.setImageBitmap(selectedImage);
                         convertAndUpload(3);
                     }
 
-                    break;
+                    break;*/
                 case 4:
-                    if (resultCode == RESULT_OK && data != null) {
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            final Uri imageUri = data.getData();
+                            final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                            ivDLB.setImageBitmap(selectedImage);
+                            convertAndUpload(4);
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ActivityRegistration.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                        }
+
+                    }else {
+                        Toast.makeText(ActivityRegistration.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+                    }
+                    /*if (resultCode == RESULT_OK && data != null) {
                         Uri selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         if (selectedImage != null) {
@@ -445,17 +483,37 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
                                 cursor.close();
                             }
                         }
-                    }
+                    }*/
                     break;
-                case 5:
+               /* case 5:
                     if (resultCode == RESULT_OK && data != null) {
+                        final Uri uri = data.getData();
+                        useImage(uri);
+
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         ivProfile.setImageBitmap(selectedImage);
                         convertAndUpload(5);
                     }
-                    break;
+                    break;*/
                 case 6:
-                    if (resultCode == RESULT_OK && data != null) {
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            final Uri imageUri = data.getData();
+                            final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                            ivProfile.setImageBitmap(selectedImage);
+                            convertAndUpload(6);
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ActivityRegistration.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                        }
+
+                    }else {
+                        Toast.makeText(ActivityRegistration.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+                    }
+                    /*if (resultCode == RESULT_OK && data != null) {
+
                         Uri selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         if (selectedImage != null) {
@@ -470,13 +528,24 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
                                 convertAndUpload(6);
                             }
                         }
-                    }
+                    }*/
                     break;
             }
         }
 
     }
-
+    void useImage(Uri uri)
+    {
+        Log.d(TAG, "inside useImage(Uri uri)");
+        Bitmap bitmap = null;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //use the bitmap as you like
+        ivProfile.setImageBitmap(bitmap);
+    }
     public void onSuccess(JSONObject response) throws JSONException {
         Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
         //response on hitting register-agent API

@@ -108,12 +108,12 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                         Intent st = new Intent(ActivityRentOTP.this, ActivityRentInProgress.class);
                         startActivity(st);
                     }
-                } else {
+                } /*else {
                     Intent homePage = new Intent(ActivityRentOTP.this, ActivityRentHome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
-                }
+                }*/
 
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,6 +44,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -238,7 +241,7 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
         }
         if (id == R.id.profilePic) {
             selectImage(UserProfileActivity.this);
-
+            Log.d(TAG, "profilePic clicked");
         }
     }
 
@@ -254,9 +257,11 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
     }
 
     private void selectImage(Context context) {
+        Log.d(TAG, "inside selectImage");
         if (!hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
+            Log.d(TAG, "inside selectImage else");
             final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -339,7 +344,23 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
                     }
                     break;
                 case 2:
-                    if (resultCode == RESULT_OK && data != null) {
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            final Uri imageUri = data.getData();
+                            final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                            profileImage.setImageBitmap(selectedImage);
+                            convertAndUpload(2);
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            Toast.makeText(UserProfileActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                        }
+
+                    }else {
+                        Toast.makeText(UserProfileActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+                    }
+                    /*if (resultCode == RESULT_OK && data != null) {
                         Uri selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         if (selectedImage != null) {
@@ -354,7 +375,7 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
                                 convertAndUpload(2);
                             }
                         }
-                    }
+                    }*/
                     break;
             }
         }

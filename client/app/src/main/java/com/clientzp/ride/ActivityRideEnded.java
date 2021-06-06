@@ -166,7 +166,7 @@ public class ActivityRideEnded extends ActivityDrawer implements View.OnClickLis
             String amount = onlyPrice;
             String note = "Payment for ride service";
             String name = "Zipp-E";
-            String upiId = "rajnilakshmi@ybl";
+            String upiId = "9897783967@ybl";
             payUsingUpi(amount, upiId, name, note);
 
         } else if (id == R.id.cash) {

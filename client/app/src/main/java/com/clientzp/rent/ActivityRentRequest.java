@@ -126,9 +126,9 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                             TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
                             textView.setTextColor(Color.YELLOW);
                             snackbar.show();
-                            Intent intent = new Intent(this, UtilityPollingService.class);
+                            /*Intent intent = new Intent(this, UtilityPollingService.class);
                             intent.setAction("12");
-                            startService(intent);
+                            startService(intent);*/
                         }
                         if (status.equals("AS")) {
                             Intent as = new Intent(ActivityRentRequest.this, ActivityRentOTP.class);
@@ -136,7 +136,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                         }
                     }
                 } else {
-                    ShowPopup(4);
+                    //ShowPopup(4);
+                    Intent homePage = new Intent(ActivityRentRequest.this, InBetweenActivity.class);
+                    homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(homePage);
+                    finish();
                     /*Intent homePage = new Intent(ActivityRentRequest.this, ActivityRentHome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
@@ -322,11 +326,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
             new Handler().postDelayed(() -> {
                 myDialog.dismiss();
-                Intent homePage = new Intent(ActivityRentRequest.this, ActivityRentHome.class);
+                Intent homePage = new Intent(ActivityRentRequest.this, InBetweenActivity.class);
                 homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(homePage);
                 finish();
-            }, 8000);
+            }, 10000);
 
 
         }

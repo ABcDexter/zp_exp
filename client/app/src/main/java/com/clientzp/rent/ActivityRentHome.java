@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -109,9 +110,17 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                     String rtype = response.getString("rtype");
                     String status = response.getString("st");
                     String tid = response.getString("tid");
+                    Log.d(TAG,"status = "+status);
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (rtype.equals("1")) {
+                       /* if (status.equals("SC")){
+                           *//* Intent intent = new Intent(this, UtilityPollingService.class);
+                            intent.setAction("16");
+                            startService(intent);*//*
+                            new Handler().postDelayed(this::checkStatus, 45000);
+                            Log.d(TAG, "Handler initiated");
+                        }*/
                         if (status.equals("RQ")) {
                             Intent rq = new Intent(ActivityRentHome.this, ActivityRentRequest.class);
                             startActivity(rq);
@@ -139,7 +148,7 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                         }
 
                         if (status.equals("TO")) {
-                            ShowPopup(7);
+                            ShowPopup(2);
                         }
 
                     }
@@ -153,6 +162,11 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                         } /*else {
                             tripInfo(tid);
                         }*/
+                        /*new Handler().postDelayed(() -> {
+                            //ShowPopup(3);
+                            checkStatus();
+                        }, 45000);
+                        Log.d(TAG, "Handler initiated");*/
                     } catch (Exception e) {
                         Log.d(TAG, " tid does not exist");
                         e.printStackTrace();
@@ -194,9 +208,9 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
                     editor1.apply();
                     Toast.makeText(this, R.string.no_vehicle_av, Toast.LENGTH_LONG).show();
                 } else if (stringBuss.equals("BussMe")) {
-                    Intent intent = new Intent(this, UtilityPollingService.class);
+                    /*Intent intent = new Intent(this, UtilityPollingService.class);
                     intent.setAction("11");
-                    startService(intent);
+                    startService(intent);*/
                 } else
                     ShowPopup(1);
             } else if (array.length() > 0) {
@@ -448,9 +462,13 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
             myDialog.setCanceledOnTouchOutside(false);
         }
         if (id == 2) {
-            //TODO send push notification
-            //dialog_txt.setText("Rides are available.");
 
+            dialog_txt.setText("Rent timed out");
+
+        }
+        if (id==3){
+            dialog_txt.setText(R.string.schedule_rent_popup);
+            myDialog.setCanceledOnTouchOutside(false);
         }
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
@@ -630,6 +648,8 @@ public class ActivityRentHome extends ActivityDrawer implements View.OnClickList
     }
 
     public void checkStatus() {
+        Log.d(TAG,"inside checkStatus");
+
         //String auth = stringAuth;
         params.put("auth", stringAuth);
         JSONObject parameters = new JSONObject(params);

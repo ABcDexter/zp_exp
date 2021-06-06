@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -30,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,7 +93,9 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.aadharFrontImg) {
+            Log.d(TAG, "aadharFrontImg clicked");
             selectImage(AadharCardUpload.this, 1);
+
         } else if (id == R.id.aadharBackImg) {
             selectImage(AadharCardUpload.this, 2);
         }
@@ -108,9 +113,11 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
     }
 
     private void selectImage(Context context, int fromRID) {
+        Log.d(TAG, " inside selectImage");
         if (!hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
+            Log.d(TAG, " inside else statement of selectImage");
             final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -220,7 +227,23 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
                     }
                     break;
                 case 2:
-                    if (resultCode == RESULT_OK && data != null) {
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            final Uri imageUri = data.getData();
+                            final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                            imgAadharFront.setImageBitmap(selectedImage);
+                            convertAndUpload(2);
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            Toast.makeText(AadharCardUpload.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                        }
+
+                    }else {
+                        Toast.makeText(AadharCardUpload.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+                    }
+                    /*if (resultCode == RESULT_OK && data != null) {
                         Uri selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         if (selectedImage != null) {
@@ -235,7 +258,7 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
                                 convertAndUpload(2);
                             }
                         }
-                    }
+                    }*/
                     break;
                 case 3:
                     if (resultCode == RESULT_OK && data != null) {
@@ -246,7 +269,23 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
 
                     break;
                 case 4:
-                    if (resultCode == RESULT_OK && data != null) {
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            final Uri imageUri = data.getData();
+                            final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                            imgAadharBack.setImageBitmap(selectedImage);
+                            convertAndUpload(4);
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            Toast.makeText(AadharCardUpload.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                        }
+
+                    }else {
+                        Toast.makeText(AadharCardUpload.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+                    }
+                    /*if (resultCode == RESULT_OK && data != null) {
                         Uri selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         if (selectedImage != null) {
@@ -262,7 +301,7 @@ public class AadharCardUpload extends ActivityDrawer implements View.OnClickList
                                 cursor.close();
                             }
                         }
-                    }
+                    }*/
                     break;
             }
         }

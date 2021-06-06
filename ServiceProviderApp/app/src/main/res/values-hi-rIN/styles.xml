@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ServiceProviderApp</string>
+    <string name="app_name">Zipp-e Service Provider</string>
     <string name="title_activity_maps">Map</string>
     <string name="Open" />
     <string name="Close" />

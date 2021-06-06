@@ -271,7 +271,7 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
             String amount = costOnly;
             String note = "Payment for rental service";
             String name = "Zipp-E";
-            String upiId = "rajnilakshmi@ybl";
+            String upiId = "9897783967@ybl";
             payUsingUpi(amount, upiId, name, note);
         } else if (id == R.id.dummy) {
             pMode = "1";

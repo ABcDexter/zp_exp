@@ -179,7 +179,7 @@ public class ActivityRentEnded extends ActivityDrawer implements View.OnClickLis
             String amount = CostOnly;
             String note = "Payment for rental service";
             String name = "Zipp-E";
-            String upiId = "9084083967@ybl";
+            String upiId = "9897783967@ybl";
             payUsingUpi(amount, upiId, name, note);
 
         } else if (id == R.id.pay_now) {

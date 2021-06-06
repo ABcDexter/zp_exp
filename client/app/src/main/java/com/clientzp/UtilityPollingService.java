@@ -354,6 +354,40 @@ public class UtilityPollingService extends Service {
                 }
             });
         }
+//polling for user-trip-get-status API in rent section
+        if (intent != null && intent.getAction() != null && intent.getAction().equals("16")) {
+            final int fixedTimeUpdateLoc = 45;
+            //final boolean stopTimerFlag2 = false;
+            secondsActLocSel = fixedTimeUpdateLoc;
+            //stopTimer2 = stopTimerFlag2;
+/*
+            if (stop) {
+*/
+            final Handler handler = new Handler();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    secondsActLocSel--;
+                    if (secondsActLocSel < 0) {
+                        //Log.d(" ActivityRentRequest.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+
+                        stopTimerActLocSel = true;
+                        ActivityRentHome.getInstance().checkStatus();
+
+                    } else {
+                        stopTimerActLocSel = false;
+                    }
+
+                    if (stopTimerActLocSel == false) {
+                        //Log.d(" ActivityRentRequest.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+
+                        handler.postDelayed(this, 1000);
+                    } else {
+                        stopSelf();
+                    }
+                }
+            });
+        }
 
         if (intent != null && intent.getAction() != null && intent.getAction().equals("13")) {
             final int fixedTimeUpdateLoc = 45;
