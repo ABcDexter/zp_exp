@@ -111,10 +111,17 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
         info_name.setOnClickListener(this);
         info_mobile.setOnClickListener(this);
 
+<<<<<<< HEAD
         /*if (imgBtnConfirm.equals("false")) {
             Log.d(TAG, "confirm.setEnabled(false)");
         } else
             Log.d(TAG, "confirm.setEnabled(true)");*/
+=======
+        if (imgBtnConfirm.equals("false")) {
+            Log.d(TAG, "confirm.setEnabled(false)");
+        } else
+            Log.d(TAG, "confirm.setEnabled(true)");
+>>>>>>> dev
 
         myDialog = new Dialog(this);
 
@@ -147,8 +154,13 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
                 lat = latlng.substring(0, latlng.indexOf(",")).replaceAll("[^0-9.]", "");
                 remainder = latlng.substring(latlng.indexOf(",") + 1).replaceAll("[^0-9.]", "");
 
+<<<<<<< HEAD
                 /*Log.d(TAG, "lat: " + lat);
                 Log.d(TAG, "lng: " + remainder);*/
+=======
+                Log.d(TAG, "lat: " + lat);
+                Log.d(TAG, "lng: " + remainder);
+>>>>>>> dev
             }
 
             @Override
@@ -196,7 +208,11 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
                 editor.putString(DROP_MOBILE, mobile.getText().toString());
                 editor.putString(DROP_NAME, name.getText().toString());
                 editor.apply();
+<<<<<<< HEAD
                 //Log.d(TAG, "DROP_LANDMARK: " + placeName + " ADDRESS_DROP:" + edDropAddress.getText().toString());
+=======
+                Log.d(TAG, "DROP_LANDMARK: " + placeName + " ADDRESS_DROP:" + edDropAddress.getText().toString());
+>>>>>>> dev
                 Intent addIntent = new Intent(ActivityFillDropAddress.this, ActivityDeliveryTimeSlot.class);
                 startActivity(addIntent);
             }
@@ -252,8 +268,13 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
 
         JSONObject parameters = new JSONObject(params);
 
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + params);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-location-name-from-pin");*/
+=======
+        Log.d(TAG, "Values: auth=" + params);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-location-name-from-pin");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "auth-location-name-from-pin", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -268,7 +289,11 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
+<<<<<<< HEAD
         //Log.d(TAG + "jsArrayRequest", "RESPONSE:" + response.toString());
+=======
+        Log.d(TAG + "jsArrayRequest", "RESPONSE:" + response.toString());
+>>>>>>> dev
 
         if (id == 2) {
             String name = response.getString("name");
@@ -285,8 +310,13 @@ public class ActivityFillDropAddress extends ActivityDrawer implements View.OnCl
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 

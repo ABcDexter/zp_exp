@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,6 +73,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         }*/
 
         String firstWord = stringName;
+<<<<<<< HEAD
         if (firstWord.contains(" ")) {
             firstWord = firstWord.substring(0, firstWord.indexOf(" "));
             System.out.println(firstWord);
@@ -77,6 +82,16 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         } else {
             nameText.setText(getString(R.string.hi, firstWord));
             //Log.d("USER_NAME", "name:" + firstWord);
+=======
+        if(firstWord.contains(" ")){
+            firstWord= firstWord.substring(0, firstWord.indexOf(" "));
+            System.out.println(firstWord);
+            nameText.setText(getString(R.string.hi, firstWord));
+            Log.d("USER_NAME", "name:" + firstWord);
+        }else {
+            nameText.setText(getString(R.string.hi, firstWord));
+            Log.d("USER_NAME", "name:" + firstWord);
+>>>>>>> dev
         }
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -103,12 +118,20 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+<<<<<<< HEAD
                 //Log.d("ACTION", "menuButton clicked");
+=======
+                Log.d("ACTION", "menuButton clicked");
+>>>>>>> dev
                 if (!mDrawerLayout.isDrawerOpen(Gravity.RIGHT))
                     mDrawerLayout.openDrawer(Gravity.RIGHT);
                 else mDrawerLayout.closeDrawer(Gravity.LEFT);
                 //setNavigationDrawer();
+<<<<<<< HEAD
                 //Log.d("ACTION", "setNavigationDrawer() method called");
+=======
+                Log.d("ACTION", "setNavigationDrawer() method called");
+>>>>>>> dev
 
             }
         });
@@ -129,14 +152,22 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
                 .getInstance(PUBLISHABLE_KEY)
                 .addTrackingListener(this);
 
+<<<<<<< HEAD
         //Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
+=======
+        Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
+>>>>>>> dev
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+<<<<<<< HEAD
         //Log.d(TAG, "onResume");
+=======
+        Log.d(TAG, "onResume");
+>>>>>>> dev
         if (sdkInstance.isRunning()) {
             onTrackingStart();
         } else {
@@ -149,6 +180,7 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
     // TrackingStateObserver.OnTrackingStateChangeListener interface methods
     @Override
     public void onError(TrackingError trackingError) {
+<<<<<<< HEAD
         //Log.d(TAG, "onError: " + trackingError.message);
         if (trackingError.code == TrackingError.INVALID_PUBLISHABLE_KEY_ERROR || trackingError.code == TrackingError.AUTHORIZATION_ERROR) {
             //Log.d(TAG, "check your publishable key");
@@ -158,17 +190,36 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
             //Log.d(TAG, "data access permissions were not granted");
         } else {
             //Log.d(TAG, "can't start tracking");
+=======
+        Log.d(TAG, "onError: " + trackingError.message);
+        if (trackingError.code == TrackingError.INVALID_PUBLISHABLE_KEY_ERROR || trackingError.code == TrackingError.AUTHORIZATION_ERROR) {
+            Log.d(TAG, "check your publishable key");
+        } else if (trackingError.code == TrackingError.GPS_PROVIDER_DISABLED_ERROR) {
+            Log.d(TAG, "Enable location data access");
+        } else if (trackingError.code == TrackingError.PERMISSION_DENIED_ERROR) {
+            Log.d(TAG, "data access permissions were not granted");
+        } else {
+            Log.d(TAG, "can't start tracking");
+>>>>>>> dev
         }
     }
 
     @Override
     public void onTrackingStart() {
+<<<<<<< HEAD
         //Log.d(TAG, "tracking");
+=======
+        Log.d(TAG, "tracking");
+>>>>>>> dev
     }
 
     @Override
     public void onTrackingStop() {
+<<<<<<< HEAD
         //Log.d(TAG, "not tracking");
+=======
+        Log.d(TAG, "not tracking");
+>>>>>>> dev
     }
 
     @Override
@@ -247,7 +298,11 @@ public class ActivityDrawer extends AppCompatActivity implements NavigationView.
         if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
 
+<<<<<<< HEAD
             Intent intent = new Intent(ActivityDrawer.this, ActivityRegistration.class);
+=======
+            Intent intent = new Intent(ActivityDrawer.this, ActivityLoginKey.class);
+>>>>>>> dev
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         } else if (id == R.id.nav_profile) {

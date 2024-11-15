@@ -8,6 +8,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -146,7 +150,11 @@ public class ActivityDeliveryReview extends ActivityDrawer implements View.OnCli
         String warm = review.getString(R_C_WARM, "");
         /*String expressDelv = review.getString(R_EXP_DELVY, "");
         String stndDelv = review.getString(R_STND_DELVY, "");*/
+<<<<<<< HEAD
         //Log.d("DeliverReview", "expHour=" + expHour);
+=======
+        Log.d("DeliverReview", "expHour=" + expHour);
+>>>>>>> dev
         //initializing views
         scrollView = findViewById(R.id.scrollViewReview);
         pName = findViewById(R.id.pick_name);

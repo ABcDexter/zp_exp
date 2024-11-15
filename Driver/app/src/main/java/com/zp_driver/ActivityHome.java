@@ -601,7 +601,10 @@ public class ActivityHome extends ActivityDrawer implements View.OnClickListener
             sendLocation();
             notify.setVisibility(View.VISIBLE);
             notify.setText("0");
+<<<<<<< HEAD
             getStatus();
+=======
+>>>>>>> dev
         }
         //response on hitting driver-vehicle-retire API
         if (id == 8) {

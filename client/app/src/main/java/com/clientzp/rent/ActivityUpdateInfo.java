@@ -5,10 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+<<<<<<< HEAD
+=======
+import android.widget.PopupWindow;
+>>>>>>> dev
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +43,11 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
     TextView destination;
     ImageButton update;
     ScrollView scrollView;
+<<<<<<< HEAD
     // PopupWindow popupWindow;
+=======
+    PopupWindow popupWindow;
+>>>>>>> dev
     String dropID;
     String stringDrop, stringDropID;
     public static final String AUTH_KEY = "AuthKey";
@@ -57,7 +69,11 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
+<<<<<<< HEAD
         //Log.d(TAG, "RESPONSE:" + response);
+=======
+        Log.d(TAG, "RESPONSE:" + response);
+>>>>>>> dev
 
         //response on hitting user-rental-update API
         if (id == 2) {
@@ -76,8 +92,13 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -100,10 +121,17 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
         stringHrs = pref.getString(NO_HOURS, "");
 
+<<<<<<< HEAD
         //Log.d(TAG, "######stringHrs = " + stringHrs);
         stringDrop = pref.getString(LOCATION_DROP, "");
         stringDropID = pref.getString(LOCATION_DROP_ID, "");
         //SharedPreferences tripPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+=======
+        Log.d(TAG, "######stringHrs = " + stringHrs);
+        stringDrop = pref.getString(LOCATION_DROP, "");
+        stringDropID = pref.getString(LOCATION_DROP_ID, "");
+        SharedPreferences tripPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+>>>>>>> dev
         destination = findViewById(R.id.drop_hub);
         update = findViewById(R.id.update_data);
         scrollView = findViewById(R.id.scrollView_rent_progress);
@@ -117,7 +145,11 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
             destination.setText(upToNCharacters);
 
             dropID = stringDropID;
+<<<<<<< HEAD
             //Log.d(TAG, "Drop Location  is " + stringDrop + " ID is " + stringDropID);
+=======
+            Log.d(TAG, "Drop Location  is " + stringDrop + " ID is " + stringDropID);
+>>>>>>> dev
         }
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(ActivityUpdateInfo.this);
         imageDialog2 = new Dialog(this);
@@ -134,7 +166,11 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         } else if (id == R.id.drop_hub) {
             Intent drop = new Intent(ActivityUpdateInfo.this, HubList.class);
             drop.putExtra("Request", "destination_rental_in_progress");
+<<<<<<< HEAD
             //Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
+=======
+            Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
+>>>>>>> dev
             startActivity(drop);
         }
     }
@@ -158,8 +194,13 @@ public class ActivityUpdateInfo extends ActivityDrawer implements View.OnClickLi
         params.put("hrs", hour);
         JSONObject param = new JSONObject(params);
         ActivityUpdateInfo a = ActivityUpdateInfo.this;
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + stringAuth + " dstid=" + dropID + " hrs=" + hour);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rental-update");*/
+=======
+        Log.d(TAG, "Values: auth=" + stringAuth + " dstid=" + dropID + " hrs=" + hour);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rental-update");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-rental-update", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);

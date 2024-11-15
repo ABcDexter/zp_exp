@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +28,13 @@ import java.util.Map;
 
 public class ActivityDeliverThankYou extends AppCompatActivity {
 
+<<<<<<< HEAD
     private static final String TAG = "ActivityDeliverThankYou";
+=======
+
+    private static final String TAG = "ActivityDeliverThankYou";
+
+>>>>>>> dev
     public static final String AUTH_KEY = "AuthKey";
     public static final String SESSION_COOKIE = "com.clientzp.ride.Cookie";
 
@@ -58,8 +68,13 @@ public class ActivityDeliverThankYou extends AppCompatActivity {
         params.put("auth", auth);
         // params.put("scid", did);
         JSONObject parameters = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-delivery-retire");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-delivery-retire");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-delivery-retire", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response);
@@ -71,12 +86,21 @@ public class ActivityDeliverThankYou extends AppCompatActivity {
     }
 
     public void onSuccess(JSONObject response) throws JSONException, NegativeArraySizeException {
+<<<<<<< HEAD
         //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
     }
 
     public void onFailure(VolleyError error) {
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+    }
+
+    public void onFailure(VolleyError error) {
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 

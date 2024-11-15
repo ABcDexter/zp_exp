@@ -44,8 +44,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+<<<<<<< HEAD
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+=======
+>>>>>>> dev
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +80,10 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
     ImageButton btnSave;
     Bitmap bitmap;
     String pImage;
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +146,7 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
         try {
             Glide.with(this).load(imageURL).into(profileImage);
         } catch (Exception e) {
+<<<<<<< HEAD
             /*Log.d(TAG, "imageURL=" + imageURL);
             Log.d(TAG, "Display Picture Error:" + e.toString());
             e.printStackTrace();*/
@@ -147,6 +154,11 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
             Intent intent = new Intent(UserProfileActivity.this, ActivityWelcome.class);
             startActivity(intent);
             finish();
+=======
+            Log.d(TAG, "imageURL=" + imageURL);
+            Log.d(TAG, "Display Picture Error:" + e.toString());
+            e.printStackTrace();
+>>>>>>> dev
         }
 
         profileImage.setOnClickListener(this);
@@ -155,14 +167,22 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
             mobiletxt.setText("");
         else {
             mobiletxt.setText(stringPhone);
+<<<<<<< HEAD
             //Log.d(TAG, "phone no:" + stringPhone);
+=======
+            Log.d(TAG, "phone no:" + stringPhone);
+>>>>>>> dev
         }
 
         if (stringName.isEmpty())
             nameText.setText("");
         else {
             nameText.setText(stringName);
+<<<<<<< HEAD
             //Log.d(TAG, "name:" + stringName);
+=======
+            Log.d(TAG, "name:" + stringName);
+>>>>>>> dev
 
         }
 
@@ -241,7 +261,11 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
         }
         if (id == R.id.profilePic) {
             selectImage(UserProfileActivity.this);
+<<<<<<< HEAD
             Log.d(TAG, "profilePic clicked");
+=======
+
+>>>>>>> dev
         }
     }
 
@@ -257,11 +281,17 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
     }
 
     private void selectImage(Context context) {
+<<<<<<< HEAD
         Log.d(TAG, "inside selectImage");
         if (!hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
             Log.d(TAG, "inside selectImage else");
+=======
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        } else {
+>>>>>>> dev
             final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -291,15 +321,24 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
             @Override
             public void onClick(View v) {
 
+<<<<<<< HEAD
                 //Log.d(TAG, "Control came to nextActivity()");
+=======
+                Log.d(TAG, "Control came to nextActivity()");
+>>>>>>> dev
                 Map<String, String> params = new HashMap();
                 String auth = stringAuth;
                 params.put("auth", auth);
                 params.put("profilePhoto", picture);
                 JSONObject parameters = new JSONObject(params);
                 UserProfileActivity a = UserProfileActivity.this;
+<<<<<<< HEAD
                 /*Log.d(TAG, "Values: profilePhoto=" + picture + " auth=" + auth);
                 Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-photo-save");*/
+=======
+                Log.d(TAG, "Values: profilePhoto=" + picture + " auth=" + auth);
+                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-photo-save");
+>>>>>>> dev
                 UtilityApiRequestPost.doPOST(a, "auth-profile-photo-save", parameters, 30000, 0, response -> {
                     try {
                         a.onSuccess(response);
@@ -322,8 +361,13 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
             pImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+<<<<<<< HEAD
             /*Log.d(TAG, "Profile Image converted to Base64" + pImage);
             Log.d(TAG, "Control moved to nextActivity()");*/
+=======
+            Log.d(TAG, "Profile Image converted to Base64" + pImage);
+            Log.d(TAG, "Control moved to nextActivity()");
+>>>>>>> dev
         }
 
         nextActivity(pImage);
@@ -344,6 +388,7 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
                     }
                     break;
                 case 2:
+<<<<<<< HEAD
                     if (resultCode == RESULT_OK) {
                         try {
                             final Uri imageUri = data.getData();
@@ -361,6 +406,9 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
                         Toast.makeText(UserProfileActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
                     }
                     /*if (resultCode == RESULT_OK && data != null) {
+=======
+                    if (resultCode == RESULT_OK && data != null) {
+>>>>>>> dev
                         Uri selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         if (selectedImage != null) {
@@ -375,7 +423,11 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
                                 convertAndUpload(2);
                             }
                         }
+<<<<<<< HEAD
                     }*/
+=======
+                    }
+>>>>>>> dev
                     break;
             }
         }
@@ -390,8 +442,13 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
 
         JSONObject parameters = new JSONObject(params);
         UserProfileActivity a = UserProfileActivity.this;
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth + " email=" + email);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-update");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth + " email=" + email);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-profile-update");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "auth-profile-update", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response);
@@ -402,13 +459,22 @@ public class UserProfileActivity extends ActivityDrawer implements View.OnClickL
     }
 
     public void onSuccess(JSONObject response) throws JSONException {
+<<<<<<< HEAD
         //Log.d(TAG, "RESPONSE:" + response);
+=======
+        Log.d(TAG, "RESPONSE:" + response);
+>>>>>>> dev
         rlEmail.setVisibility(View.GONE);
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 }

@@ -2,6 +2,10 @@ package com.clientzp.deliver;
 
 import android.content.Context;
 import android.content.Intent;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +51,11 @@ public class DeliveryListAdapter extends RecyclerView.Adapter<DeliveryListAdapte
             @Override
             public void onClick(View v) {
                 String valueScid = listData.getDeliveryID();
+<<<<<<< HEAD
                 //Log.d("DeliveryListAdapter", "itype" + valueScid);
+=======
+                Log.d("DeliveryListAdapter", "itype" + valueScid);
+>>>>>>> dev
                 Intent details = new Intent(context, ActivityDeliverySummery.class);
                 details.putExtra("SCID", valueScid);
                 context.startActivity(details);

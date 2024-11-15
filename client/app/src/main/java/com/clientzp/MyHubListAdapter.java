@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,12 +77,20 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
                     directoryLocation.edit().putString(LOCATION_PICK_ID, strID).apply();
                     directoryLocation.edit().putString(LOCATION_PICK_LAT, strLat).apply();
                     directoryLocation.edit().putString(LOCATION_PICK_LNG, strLng).apply();
+<<<<<<< HEAD
                     //Log.d("MyHubListAdapter", "Pick Location Saved" + directoryLocation);
+=======
+                    Log.d("MyHubListAdapter", "Pick Location Saved" + directoryLocation);
+>>>>>>> dev
 
                     Intent intent = new Intent(context, ActivityRideHome.class);
                     context.startActivity(intent);
 
+<<<<<<< HEAD
                     //Log.d("MyHubListAdapter", "Pick Location  " + strValue + "  Send from  MyHubListAdapter");
+=======
+                    Log.d("MyHubListAdapter", "Pick Location  " + strValue + "  Send from  MyHubListAdapter");
+>>>>>>> dev
                     ((Activity) context).finish();
                 }
                 if (intentValue == 2) {
@@ -86,11 +98,19 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
                     directoryLocation.edit().putString(LOCATION_DROP_ID, strID).apply();
                     directoryLocation.edit().putString(LOCATION_DROP_LAT, strLat).apply();
                     directoryLocation.edit().putString(LOCATION_DROP_LNG, strLng).apply();
+<<<<<<< HEAD
                     //Log.d("MyHubListAdapter", "Drop Location Saved" + directoryLocation);
 
                     Intent intent = new Intent(context, ActivityRideHome.class);
                     context.startActivity(intent);
                     //Log.d("MyHubListAdapter", "Drop Location " + strValue + " Send from  MyHubListAdapter");
+=======
+                    Log.d("MyHubListAdapter", "Drop Location Saved" + directoryLocation);
+
+                    Intent intent = new Intent(context, ActivityRideHome.class);
+                    context.startActivity(intent);
+                    Log.d("MyHubListAdapter", "Drop Location " + strValue + " Send from  MyHubListAdapter");
+>>>>>>> dev
                     ((Activity) context).finish();
                 }
                 if (intentValue == 3) {
@@ -98,12 +118,20 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
                     directoryLocation.edit().putString(LOCATION_PICK_ID, strID).apply();
                     directoryLocation.edit().putString(LOCATION_PICK_LAT, strLat).apply();
                     directoryLocation.edit().putString(LOCATION_PICK_LNG, strLng).apply();
+<<<<<<< HEAD
                     //Log.d("MyHubListAdapter", "Rental Pick Location Saved" + directoryLocation);
+=======
+                    Log.d("MyHubListAdapter", "Rental Pick Location Saved" + directoryLocation);
+>>>>>>> dev
 
                     Intent intent = new Intent(context, ActivityRentHome.class);
                     context.startActivity(intent);
 
+<<<<<<< HEAD
                     //Log.d("MyHubListAdapter", "Rental Pick Location  " + strValue + "  Send from  MyHubListAdapter");
+=======
+                    Log.d("MyHubListAdapter", "Rental Pick Location  " + strValue + "  Send from  MyHubListAdapter");
+>>>>>>> dev
                     ((Activity) context).finish();
                 }
                 if (intentValue == 4) {
@@ -111,11 +139,19 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
                     directoryLocation.edit().putString(LOCATION_DROP_ID, strID).apply();
                     directoryLocation.edit().putString(LOCATION_DROP_LAT, strLat).apply();
                     directoryLocation.edit().putString(LOCATION_DROP_LNG, strLng).apply();
+<<<<<<< HEAD
                     //Log.d("MyHubListAdapter", "Rental Drop Location Saved" + directoryLocation);
 
                     Intent intent = new Intent(context, ActivityRentHome.class);
                     context.startActivity(intent);
                     //Log.d("MyHubListAdapter", "Rental Drop Location " + strValue + " Send from  MyHubListAdapter");
+=======
+                    Log.d("MyHubListAdapter", "Rental Drop Location Saved" + directoryLocation);
+
+                    Intent intent = new Intent(context, ActivityRentHome.class);
+                    context.startActivity(intent);
+                    Log.d("MyHubListAdapter", "Rental Drop Location " + strValue + " Send from  MyHubListAdapter");
+>>>>>>> dev
                     ((Activity) context).finish();
                 }
                 if (intentValue == 5) {
@@ -123,11 +159,19 @@ public class MyHubListAdapter extends RecyclerView.Adapter<MyHubListAdapter.View
                     directoryLocation.edit().putString(LOCATION_DROP_ID, strID).apply();
                     directoryLocation.edit().putString(LOCATION_DROP_LAT, strLat).apply();
                     directoryLocation.edit().putString(LOCATION_DROP_LNG, strLng).apply();
+<<<<<<< HEAD
                     //Log.d("MyHubListAdapter", "Rental Drop Location Saved" + directoryLocation);
 
                     Intent intent = new Intent(context, ActivityUpdateInfo.class);
                     context.startActivity(intent);
                     //Log.d("MyHubListAdapter", "Rental Drop Location " + strValue + " Send from  MyHubListAdapter");
+=======
+                    Log.d("MyHubListAdapter", "Rental Drop Location Saved" + directoryLocation);
+
+                    Intent intent = new Intent(context, ActivityUpdateInfo.class);
+                    context.startActivity(intent);
+                    Log.d("MyHubListAdapter", "Rental Drop Location " + strValue + " Send from  MyHubListAdapter");
+>>>>>>> dev
                     ((Activity) context).finish();
                 }
             }

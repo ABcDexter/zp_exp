@@ -8,6 +8,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -115,8 +119,13 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
 
         params.put("auth", stringAuthCookie);
         JSONObject parameters = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + stringAuthCookie);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-retire");*/
+=======
+        Log.d(TAG, "Values: auth=" + stringAuthCookie);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-retire");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-trip-retire", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
@@ -213,8 +222,13 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
         params.put("rev", rev);
         JSONObject parameters = new JSONObject(params);
         ActivityRateZippe a = ActivityRateZippe.this;
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth + " rate=" + i + " rev=" + rev);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-rate");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth + " rate=" + i + " rev=" + rev);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-rate");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "auth-trip-rate", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
@@ -226,7 +240,11 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
+<<<<<<< HEAD
         //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+=======
+        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+>>>>>>> dev
 
         //response on hitting auth-trip-get-info API
         if (id == 1) {
@@ -250,6 +268,10 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
 
             SharedPreferences prefLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editorLoc = prefLoc.edit();
+<<<<<<< HEAD
+=======
+            //editorLoc.remove(VAN_PICK);
+>>>>>>> dev
             editorLoc.remove(DST_NAME);
             editorLoc.remove(SRC_NAME);
             //editorLoc.remove(OTP_PICK);
@@ -260,8 +282,13 @@ public class ActivityRateZippe extends ActivityDrawer implements View.OnClickLis
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 

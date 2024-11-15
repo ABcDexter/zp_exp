@@ -3,6 +3,7 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
+<<<<<<< HEAD
         <item name="colorPrimary">#D7FB05</item>
         <item name="colorPrimaryDark">#EC7721</item>
         <item name="colorAccent">#1EB4D4</item>
@@ -12,6 +13,15 @@
         <item name="android:windowBackground">@drawable/black_background1</item>
         <item name="windowActionBar">false</item>
         <item name="android:textColorPrimary">#F4F3F3</item>
+=======
+
+        <item name="colorPrimary">#D7FB05</item>
+        <item name="colorPrimaryDark">#EC7721</item>
+        <item name="colorAccent">#1EB4D4</item>
+        <item name="android:windowBackground">@android:color/darker_gray</item>
+        <item name="android:textColorHint">#DFDDDD</item>
+        <item name="android:textColor">@color/txtColor</item>
+>>>>>>> dev
     </style>
 
 </resources>

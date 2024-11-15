@@ -8,6 +8,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -45,10 +49,17 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
     RelativeLayout rlPhone;
     public static final String AUTH_KEY = "AuthKey";
     public static final String PREFS_LOCATIONS = "com.clientzp.ride.Locations";
+<<<<<<< HEAD
     //public static final String VAN_PICK = "VanPick";
     //public static final String NO_HOURS = "NoHours";
     public static final String DRIVER_NAME = "DriverName";
     public static final String DRIVER_PHN = "DriverPhn";
+=======
+    public static final String VAN_PICK = "VanPick";
+    public static final String DRIVER_PHN = "DriverPhn";
+    public static final String DRIVER_NAME = "DriverName";
+    public static final String NO_HOURS = "NoHours";
+>>>>>>> dev
 
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.clientzp.ride.TripDetails";
@@ -63,13 +74,20 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
 
     ActivityRentInProgress a = ActivityRentInProgress.this;
     Map<String, String> params = new HashMap();
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
     public static ActivityRentInProgress getInstance() {
         return instance;
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
+<<<<<<< HEAD
         //Log.d(TAG, "RESPONSE:" + response);
+=======
+        Log.d(TAG, "RESPONSE:" + response);
+>>>>>>> dev
 
        /* //response on hitting auth-time-remaining API
         if (id == 1) {
@@ -209,8 +227,13 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -232,9 +255,15 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         //retrieve locally stored data
         SharedPreferences prefPLoc = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuthCookie = prefPLoc.getString(AUTH_KEY, "");
+<<<<<<< HEAD
         //SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
         /*String stringHrs = pref.getString(NO_HOURS, "");
         String stringVan = pref.getString(VAN_PICK, "");*/
+=======
+        SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+        String stringHrs = pref.getString(NO_HOURS, "");
+        String stringVan = pref.getString(VAN_PICK, "");
+>>>>>>> dev
         SharedPreferences tripPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
         String stringDName = tripPref.getString(DRIVER_NAME, "");
         String stringDPhn = tripPref.getString(DRIVER_PHN, "");
@@ -270,23 +299,37 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         getDropSup();
         getDeviceID();
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
     private void getDeviceID() {
         HyperTrack sdkInstance = HyperTrack
                 .getInstance(PUBLISHABLE_KEY);
 
         //deviceId.setText(sdkInstance.getDeviceID());
+<<<<<<< HEAD
         //Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
         deviceId = sdkInstance.getDeviceID();
     }
 
+=======
+        Log.d(TAG, "device id is " + sdkInstance.getDeviceID());
+        deviceId = sdkInstance.getDeviceID();
+    }
+>>>>>>> dev
     private void getLocationUrl() {
         String stringAuth = stringAuthCookie;
         params.put("auth", stringAuth);
         params.put("devid", deviceId);
         JSONObject param = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + stringAuth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-track");*/
+=======
+        Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-track");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-trip-track", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 4);
@@ -356,7 +399,11 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         int id = v.getId();
         if (id == R.id.rl_p) {
             callSuper();
+<<<<<<< HEAD
         } else if (id == R.id.supervisor_phone) {
+=======
+        } else if(id==R.id.supervisor_phone){
+>>>>>>> dev
             callSuper();
         } else if (id == R.id.emergency) {
             btnSetOnEmergency();
@@ -378,8 +425,13 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         String stringAuth = stringAuthCookie;
         params.put("auth", stringAuth);
         JSONObject param = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + stringAuth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-get-sup");*/
+=======
+        Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-get-sup");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-rent-get-sup", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -394,8 +446,13 @@ public class ActivityRentInProgress extends ActivityDrawer implements View.OnCli
         String auth = stringAuthCookie;
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);

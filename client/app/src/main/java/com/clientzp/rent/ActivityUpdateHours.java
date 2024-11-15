@@ -11,6 +11,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -18,6 +22,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+<<<<<<< HEAD
+=======
+import android.widget.PopupWindow;
+>>>>>>> dev
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +49,7 @@ import java.util.Map;
 public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickListener {
 
     private static final String TAG = "ActivityUpdateHours";
+<<<<<<< HEAD
     TextView hours;
     ImageButton infoCost, pay;
     ScrollView scrollView;
@@ -52,12 +61,29 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
     public static final String NO_HOURS = "NoHours";
     public static final String LOCATION_DROP_ID = "DropLocationID";
     String stringDropID;
+=======
+    TextView  hours;
+    ImageButton infoCost, pay;
+    ScrollView scrollView;
+    PopupWindow popupWindow;
+    String dropID;
+    public static final String AUTH_KEY = "AuthKey";
+    public static final String PREFS_LOCATIONS = "com.clientzp.ride.Locations";
+    public static final String LOCATION_DROP = "DropLocation";
+    public static final String NO_HOURS = "NoHours";
+    public static final String LOCATION_DROP_ID = "DropLocationID";
+String stringDropID;
+>>>>>>> dev
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.clientzp.ride.TripDetails";
     private static ActivityUpdateHours instance;
     FusedLocationProviderClient mFusedLocationClient;
     Dialog imageDialog2;
+<<<<<<< HEAD
     String stringAuthCookie, stringHrs, PriceOnly;
+=======
+    String stringAuthCookie, NoHours, stringHrs, PriceOnly;
+>>>>>>> dev
     TextView updateCost;
     TextView upi;
     final int UPI_PAYMENT = 0;
@@ -71,7 +97,11 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
+<<<<<<< HEAD
         //Log.d(TAG, "RESPONSE:" + response);
+=======
+        Log.d(TAG, "RESPONSE:" + response);
+>>>>>>> dev
 
         //response on hitting user-rental-update API
         if (id == 2) {
@@ -88,16 +118,25 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
         }
         if (id == 3) {
             String cost = response.getString("price");
+<<<<<<< HEAD
             //updateCost.setText("₹ " + cost);
             updateCost.setText(getString(R.string.message_rs, cost));
 
+=======
+            updateCost.setText("₹ " + cost);
+>>>>>>> dev
             PriceOnly = cost;
         }
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -120,10 +159,17 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
         SharedPreferences pref = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
         stringHrs = pref.getString(NO_HOURS, "");
 
+<<<<<<< HEAD
         //Log.d(TAG, "######stringHrs = " + stringHrs);
         //String stringDrop = pref.getString(LOCATION_DROP, "");
         stringDropID = pref.getString(LOCATION_DROP_ID, "");
         //SharedPreferences tripPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+=======
+        Log.d(TAG, "######stringHrs = " + stringHrs);
+        String stringDrop = pref.getString(LOCATION_DROP, "");
+        stringDropID = pref.getString(LOCATION_DROP_ID, "");
+        SharedPreferences tripPref = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
+>>>>>>> dev
         hours = findViewById(R.id.hours);
 
         scrollView = findViewById(R.id.scrollView_rent_progress);
@@ -144,13 +190,23 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
         myDialog = new Dialog(this);
     }
 
+<<<<<<< HEAD
     private void ShowPopup() {
+=======
+    private void ShowPopup(int id) {
+>>>>>>> dev
 
         myDialog.setContentView(R.layout.popup_new_request);
         TextView infoText = myDialog.findViewById(R.id.info_text);
 
+<<<<<<< HEAD
         infoText.setText(R.string.pay_to_begin);
 
+=======
+        if (id == 1) {
+            infoText.setText(R.string.pay_to_begin);
+        }
+>>>>>>> dev
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams wmlp = myDialog.getWindow().getAttributes();
 
@@ -168,7 +224,11 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.infoCost) {
+<<<<<<< HEAD
             ShowPopup();
+=======
+            ShowPopup(1);
+>>>>>>> dev
         } else if (id == R.id.dummy) {
             userUpdateTrip();
         } else if (id == R.id.pay_now) {
@@ -187,7 +247,11 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
         } else if (id == R.id.drop_hub) {
             Intent drop = new Intent(ActivityUpdateHours.this, HubList.class);
             drop.putExtra("Request", "destination_rental_in_progress");
+<<<<<<< HEAD
             //Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
+=======
+            Log.d(TAG, "control moved to HUBLIST activity with key destination_rental");
+>>>>>>> dev
             startActivity(drop);
         } else if (id == R.id.hours) {
             ImagePopup2();
@@ -248,6 +312,7 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+<<<<<<< HEAD
         if (requestCode == UPI_PAYMENT) {
             if ((RESULT_OK == resultCode) || (resultCode == 11)) {
                 if (data != null) {
@@ -258,23 +323,50 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
                     upiPaymentDataOperation(dataList);
                 } else {
                     //Log.d("UPI", "onActivityResult: " + "Return data is null");
+=======
+        switch (requestCode) {
+            case UPI_PAYMENT:
+                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                    if (data != null) {
+                        String trxt = data.getStringExtra("response");
+                        Log.d("UPI", "onActivityResult: " + trxt);
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add(trxt);
+                        upiPaymentDataOperation(dataList);
+                    } else {
+                        Log.d("UPI", "onActivityResult: " + "Return data is null");
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add("nothing");
+                        upiPaymentDataOperation(dataList);
+                    }
+                } else {
+                    Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+>>>>>>> dev
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add("nothing");
                     upiPaymentDataOperation(dataList);
                 }
+<<<<<<< HEAD
             } else {
                 //Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
                 ArrayList<String> dataList = new ArrayList<>();
                 dataList.add("nothing");
                 upiPaymentDataOperation(dataList);
             }
+=======
+                break;
+>>>>>>> dev
         }
     }
 
     private void upiPaymentDataOperation(ArrayList<String> data) {
         if (isConnectionAvailable(this)) {
             String str = data.get(0);
+<<<<<<< HEAD
             //Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
+=======
+            Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
+>>>>>>> dev
             String paymentCancel = "";
             if (str == null) str = "discard";
             String status = "";
@@ -297,7 +389,11 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
                 //Code to handle successful transaction here.
                 Toast.makeText(ActivityUpdateHours.this, R.string.transaction_successful, Toast.LENGTH_SHORT).show();
                 userUpdateTrip();
+<<<<<<< HEAD
                 //Log.d("UPI", "responseStr: " + approvalRefNo);
+=======
+                Log.d("UPI", "responseStr: " + approvalRefNo);
+>>>>>>> dev
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(ActivityUpdateHours.this, R.string.payment_cancelled_by_user, Toast.LENGTH_SHORT).show();
             } else {
@@ -324,7 +420,11 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
 
         imageDialog2.setContentView(R.layout.popup_hours_edit);
         String hrs = stringHrs;
+<<<<<<< HEAD
         //Log.d(TAG, "@@@@@@@hrs " + hrs + "stringHrs " + stringHrs);
+=======
+        Log.d(TAG, "@@@@@@@hrs " + hrs + "stringHrs " + stringHrs);
+>>>>>>> dev
         TextView head = (TextView) imageDialog2.findViewById(R.id.txt_head);
 
         TextView txt1 = (TextView) imageDialog2.findViewById(R.id.txt1);
@@ -531,8 +631,13 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
         params.put("hrs", hour);
         JSONObject param = new JSONObject(params);
         ActivityUpdateHours a = ActivityUpdateHours.this;
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + stringAuth + " dstid=" + dropID + " hrs=" + hour);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rental-update");*/
+=======
+        Log.d(TAG, "Values: auth=" + stringAuth + " dstid=" + dropID + " hrs=" + hour);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rental-update");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-rental-update", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -550,8 +655,13 @@ public class ActivityUpdateHours extends ActivityDrawer implements View.OnClickL
         params.put("updatedtime", time);
         JSONObject param = new JSONObject(params);
         ActivityUpdateHours a = ActivityUpdateHours.this;
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + stringAuth + " updatedtime=" + time);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rental-update");*/
+=======
+        Log.d(TAG, "Values: auth=" + stringAuth + " updatedtime=" + time);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rental-update");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-time-update", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);

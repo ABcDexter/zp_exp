@@ -3,6 +3,10 @@ package com.clientzp.ride;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -65,7 +69,11 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+<<<<<<< HEAD
         //Log.d("mylog", "Added Markers");
+=======
+        Log.d("mylog", "Added Markers");
+>>>>>>> dev
         mMap.addMarker(src);
         mMap.addMarker(dst);
 
@@ -109,8 +117,13 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
         params.put("tid", tid);
 
         JSONObject parameters = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-delivery-data");
         Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);*/
+=======
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-delivery-data");
+        Log.d(TAG, "Values: auth=" + auth + " tid=" + tid);
+>>>>>>> dev
 
         UtilityApiRequestPost.doPOST(a, "auth-trip-data", parameters, 2000, 0, response -> {
             try {
@@ -122,7 +135,11 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
+<<<<<<< HEAD
         //Log.d(TAG, "RESPONSE:" + response);
+=======
+        Log.d(TAG, "RESPONSE:" + response);
+>>>>>>> dev
 
         //response on hitting auth-trip-data API
         if (id == 2) {
@@ -152,8 +169,13 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
 
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d("TAG", "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d("TAG", "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 }

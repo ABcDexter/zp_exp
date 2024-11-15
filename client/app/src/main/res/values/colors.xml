@@ -3,13 +3,21 @@
     <color name="colorPrimary">#D7FB05</color>
     <color name="colorPrimaryDark">#EC7721</color>
     <color name="colorAccent">#1EB4D4</color>
+<<<<<<< HEAD
     <color name="txtColor">#FFFFFF</color>
+=======
+    <color name="txtColor">#DFDDDD</color>
+>>>>>>> dev
     <color name="navItemText">#FFFFFF</color>
     <color name="colorSpinnerBck">#B74A4545</color>
     <color name="colorTransparentBlack">#654A4545</color>
     <color name="Black">#000000</color>
     <color name="design_snackbar_background_color" tools:override="true">@color/colorAccent</color>
+<<<<<<< HEAD
     <color name="rectBoxOutline">#FAF9F9</color>
+=======
+
+>>>>>>> dev
     <color name="colorLabelStopped">#242213</color>
     <color name="colorLabelError">#EF1709</color>
     <color name="colorLabelActive">#00CE5B</color>

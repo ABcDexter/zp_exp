@@ -7,13 +7,18 @@
   "client": [
     {
       "client_info": {
+<<<<<<< HEAD
         "mobilesdk_app_id": "1:1055072321699:android:e90393307f427df853bf16",
+=======
+        "mobilesdk_app_id": "1:1055072321699:android:43549ac42495071353bf16",
+>>>>>>> dev
         "android_client_info": {
           "package_name": "com.clientzp"
         }
       },
       "oauth_client": [
         {
+<<<<<<< HEAD
           "client_id": "1055072321699-k8s0tv18k38npr9dosusdfosenca450a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -22,6 +27,8 @@
           }
         },
         {
+=======
+>>>>>>> dev
           "client_id": "1055072321699-6mo1r8fc5ajm73hegbhqeh3rio5rksg4.apps.googleusercontent.com",
           "client_type": 3
         }

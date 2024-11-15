@@ -15,7 +15,12 @@
             <RelativeLayout
                 android:id="@+id/rlTopLayout"
                 android:layout_width="match_parent"
+<<<<<<< HEAD
                 android:layout_height="match_parent">
+=======
+                android:layout_height="match_parent"
+                android:background="@drawable/black_background1">
+>>>>>>> dev
 
                 <!--<ImageView
                     android:id="@+id/tx_hi"

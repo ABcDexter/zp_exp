@@ -123,7 +123,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="dummy"
+<<<<<<< HEAD
                 android:visibility="gone"
+=======
+>>>>>>> dev
                 android:layout_alignParentBottom="true"/>
         </RelativeLayout>
 

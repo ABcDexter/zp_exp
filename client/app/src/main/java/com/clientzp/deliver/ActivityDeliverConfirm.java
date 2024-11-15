@@ -10,6 +10,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -42,8 +46,13 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     final int UPI_PAYMENT = 0;
     ScrollView scrollView;
     ImageButton infoPayment; //infoTip;
+<<<<<<< HEAD
 
     private static final String TAG = "ActivityDeliverConfirm";
+=======
+    private static final String TAG = "ActivityDeliverConfirm";
+
+>>>>>>> dev
     public static final String AUTH_KEY = "AuthKey";
     public static final String DELIVERY_DETAILS = "com.clientzp.delivery.details";
     public static final String DELIVERY_ID = "DeliveryID";
@@ -120,7 +129,11 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     Animation animMoveL2R, animMoveR2L;
     String standtime;
     String pMode = "00";
+<<<<<<< HEAD
     String costOnly;
+=======
+    String  costOnly;
+>>>>>>> dev
     Button dummy;
 
     @Override
@@ -177,7 +190,11 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         if (express.equals("0")) {
             String[] splitArray = pHour.split(":");
             standtime = splitArray[0];
+<<<<<<< HEAD
             //Log.d(TAG, "time slot = " + standtime);
+=======
+            Log.d(TAG, "time slot = " + standtime);
+>>>>>>> dev
             //pHour=standtime;
         }
         cost = findViewById(R.id.payment);
@@ -230,10 +247,17 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         params.put("pmode", "1");
 
         JSONObject parameters = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth + " srclat= " + pLat
                 + " srclng= " + pLng + " dstlat=" + dLat + " dstlng=" + dLng
                 + " itype= " + conType + " idim= " + conSize + " express= " + express + " pmode= " + "1");
         Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-delivery-estimate");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth + " srclat= " + pLat
+                + " srclng= " + pLng + " dstlat=" + dLat + " dstlng=" + dLng
+                + " itype= " + conType + " idim= " + conSize + " express= " + express + " pmode= " + "1");
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-delivery-estimate");
+>>>>>>> dev
 
         UtilityApiRequestPost.doPOST(a, "user-delivery-estimate", parameters, 2000, 0, response -> {
             try {
@@ -243,7 +267,10 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
             }
         }, a::onFailure);
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
     private void showProgressIndication() {
         SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
         squareProgressBar.setImage(R.drawable.btn_bkg);
@@ -253,7 +280,10 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         squareProgressBar.setIndeterminate(true);
         squareProgressBar.setColor("#D7FB05");
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -271,7 +301,11 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
             String amount = costOnly;
             String note = "Payment for rental service";
             String name = "Zipp-E";
+<<<<<<< HEAD
             String upiId = "9897783967@ybl";
+=======
+            String upiId = "rajnilakshmi@ybl";
+>>>>>>> dev
             payUsingUpi(amount, upiId, name, note);
         } else if (id == R.id.dummy) {
             pMode = "1";
@@ -321,18 +355,30 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
             if ((RESULT_OK == resultCode) || (resultCode == 11)) {
                 if (data != null) {
                     String trxt = data.getStringExtra("response");
+<<<<<<< HEAD
                     //Log.d("UPI", "onActivityResult: " + trxt);
+=======
+                    Log.d("UPI", "onActivityResult: " + trxt);
+>>>>>>> dev
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add(trxt);
                     upiPaymentDataOperation(dataList);
                 } else {
+<<<<<<< HEAD
                     //Log.d("UPI", "onActivityResult: " + "Return data is null");
+=======
+                    Log.d("UPI", "onActivityResult: " + "Return data is null");
+>>>>>>> dev
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add("nothing");
                     upiPaymentDataOperation(dataList);
                 }
             } else {
+<<<<<<< HEAD
                 //Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+=======
+                Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+>>>>>>> dev
                 ArrayList<String> dataList = new ArrayList<>();
                 dataList.add("nothing");
                 upiPaymentDataOperation(dataList);
@@ -343,7 +389,11 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     private void upiPaymentDataOperation(ArrayList<String> data) {
         if (isConnectionAvailable(this)) {
             String str = data.get(0);
+<<<<<<< HEAD
             //Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
+=======
+            Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
+>>>>>>> dev
             String paymentCancel = "";
             if (str == null) str = "discard";
             String status = "";
@@ -365,7 +415,11 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
                 Toast.makeText(ActivityDeliverConfirm.this, R.string.transaction_successful, Toast.LENGTH_SHORT).show();
+<<<<<<< HEAD
                 //Log.d("UPI", "responseStr: " + approvalRefNo);
+=======
+                Log.d("UPI", "responseStr: " + approvalRefNo);
+>>>>>>> dev
                 pMode = "1";
                 userDeliverySchedule();
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
@@ -443,7 +497,11 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
 
         JSONObject parameters = new JSONObject(params);
 
+<<<<<<< HEAD
        /* Log.d(TAG, "Values: auth=" + auth + " srclat= " + pLat
+=======
+        Log.d(TAG, "Values: auth=" + auth + " srclat= " + pLat
+>>>>>>> dev
                 + " srclng= " + pLng + " dstlat=" + dLat + " dstlng=" + dLng + " srcphone=" + pMobile
                 + " dstphone=" + dMobile + " srcper=" + pName + " dstper=" + dName + " srcadd=" + pAddress
                 + " dstadd=" + dAddress + " srcpin=" + pPin + " dstpin=" + dPin + " srcland=" + pLand
@@ -452,7 +510,11 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
                 + " pHour=" + pHour + " pMinute=" + pMinute + " itype= " + conType + " idim= "
                 + conSize + " fr= " + fr + " br= " + br + " li= " + li + " pe= " + pe + " kc= "
                 + kc + " kw= " + kw + " no= " + no + " pmode=" + pMode);
+<<<<<<< HEAD
         Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-delivery-schedule");*/
+=======
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: user-delivery-schedule");
+>>>>>>> dev
 
         UtilityApiRequestPost.doPOST(a, "user-delivery-schedule", parameters, 2000, 0, response -> {
             try {
@@ -469,8 +531,13 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         params.put("scid", did);
 
         JSONObject parameters = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-delivery-get-status");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-delivery-get-status");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-delivery-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
@@ -486,8 +553,13 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
         params.put("auth", auth);
         params.put("scid", did);
         JSONObject parameters = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-delivery-cancel");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-delivery-cancel");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-delivery-cancel", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 4);
@@ -519,12 +591,20 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
+<<<<<<< HEAD
         //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+=======
+        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+>>>>>>> dev
         if (id == 1) {
             String price = response.getString("price");
             distance = response.getString("dist");
             //cost.setText("₹ " + price);
+<<<<<<< HEAD
             cost.setText(getString(R.string.message_rs, price));
+=======
+            cost.setText(getString(R.string.message_rs,price));
+>>>>>>> dev
             costOnly = price;
         }
         //response on hitting user-delivery-schedule API
@@ -545,7 +625,11 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
                     String status = response.getString("st");
                     if (status.equals("SC")) {
                         String price = response.getString("price");
+<<<<<<< HEAD
                         cost.setText(getString(R.string.message_rs, price));
+=======
+                        cost.setText(getString(R.string.message_rs,price));
+>>>>>>> dev
                         costOnly = price;
                         /*Intent as = new Intent(ActivityDeliverConfirm.this, ActivityDeliverPayment.class);
                         startActivity(as);*/
@@ -624,8 +708,13 @@ public class ActivityDeliverConfirm extends ActivityDrawer implements View.OnCli
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 

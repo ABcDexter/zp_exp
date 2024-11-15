@@ -9,8 +9,13 @@ android {
         applicationId "com.zp_driver"
         minSdkVersion 24
         targetSdkVersion 29
+<<<<<<< HEAD
         versionCode 3
         versionName "1.0.2"
+=======
+        versionCode 1
+        versionName "1.0"
+>>>>>>> dev
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

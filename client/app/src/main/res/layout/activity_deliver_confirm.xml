@@ -308,7 +308,11 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:text="dummy"
+<<<<<<< HEAD
                 android:visibility="gone" />
+=======
+                android:visibility="visible" />
+>>>>>>> dev
         </RelativeLayout>
     </ScrollView>
 

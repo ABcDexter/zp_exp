@@ -66,7 +66,11 @@
                     android:translationZ="5dp"
                     android:layout_marginTop="10dp"
                     android:id="@+id/notifNo"
+<<<<<<< HEAD
                     android:visibility="visible"/>
+=======
+                    android:visibility="gone"/>
+>>>>>>> dev
                 <Button
                     android:id="@+id/new_order"
                     android:layout_width="match_parent"

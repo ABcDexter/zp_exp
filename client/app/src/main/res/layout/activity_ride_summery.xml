@@ -65,6 +65,206 @@
                     android:layout_marginStart="2dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginEnd="2dp"
+<<<<<<< HEAD
+=======
+                    android:background="@color/colorPrimary"
+                    android:gravity="center"
+                    android:text="@string/price_breakup"
+                    android:textAllCaps="true"
+                    android:textColor="#000"
+                    android:textSize="23sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#ffffff" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="@string/ride_rate"
+                        android:textAllCaps="true"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/colon"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/ride_rate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:paddingStart="35dp"
+                        android:paddingEnd="10dp"
+                        android:textAllCaps="true"
+                        android:textSize="22sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#ffffff" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="@string/ride_price"
+                        android:textAllCaps="true"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/colon"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/ride_price"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:paddingStart="35dp"
+                        android:paddingEnd="10dp"
+                        android:textAllCaps="true"
+                        android:textSize="22sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#ffffff" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="@string/ride_tax"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/colon"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/ride_tax"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:paddingStart="35dp"
+                        android:paddingEnd="10dp"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="22sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#ffffff" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="@string/ride_total"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/colon"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/ride_total"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:paddingStart="35dp"
+                        android:paddingEnd="10dp"
+                        android:text=""
+                        android:textSize="22sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#ffffff" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/rect_grey"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="2dp"
+>>>>>>> dev
                     android:background="@color/colorAccent"
                     android:gravity="center"
                     android:text="@string/trip"
@@ -209,6 +409,7 @@
                     android:background="#ffffff" />
             </LinearLayout>
 
+<<<<<<< HEAD
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -409,12 +610,15 @@
             </LinearLayout>
 
 
+=======
+>>>>>>> dev
             <fragment
                 android:id="@+id/mapsHistory"
                 android:name="com.google.android.gms.maps.MapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginTop="20dp"
+<<<<<<< HEAD
                 android:layout_marginBottom="20dp" />
 
             <ImageButton
@@ -429,6 +633,9 @@
                 android:src="@drawable/cancel"
                 android:contentDescription="@string/cancel"
                 android:visibility="gone"/>
+=======
+                android:layout_marginBottom="20dp"/>
+>>>>>>> dev
         </LinearLayout>
 
     </ScrollView>

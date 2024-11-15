@@ -2,8 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.zp_driver"
+<<<<<<< HEAD
     android:versionCode="3"
     android:versionName="1.0.2">
+=======
+    android:versionCode="1"
+    android:versionName="1">
+>>>>>>> dev
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine

@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +20,11 @@ import com.android.volley.VolleyError;
 import com.clientzp.ActivityWelcome;
 import com.clientzp.R;
 import com.clientzp.UtilityApiRequestPost;
+<<<<<<< HEAD
+=======
+import com.clientzp.rent.ActivityRentHistory;
+import com.clientzp.rent.ActivityRentHome;
+>>>>>>> dev
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +34,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
+=======
+import java.util.Objects;
+>>>>>>> dev
 
 public class ActivityRideHistory extends AppCompatActivity {
     private static final String TAG = "ActivityRideHistory.class";
@@ -45,7 +58,11 @@ public class ActivityRideHistory extends AppCompatActivity {
             for (int i = 0; i < array.length(); i++) {
                 JSONObject ob = array.getJSONObject(i);
                 RideListData ld = new RideListData(ob.getString("tid"), ob.getString("st"),
+<<<<<<< HEAD
                         ob.getString("sdate"), ob.getString("vtype"), ob.getString("srcname"), ob.getString("dstname"));
+=======
+                        ob.getString("sdate"),ob.getString("vtype"), ob.getString("srcname"), ob.getString("dstname"));
+>>>>>>> dev
                 list_data.add(ld);
             }
             rv.setAdapter(adapter);
@@ -66,8 +83,15 @@ public class ActivityRideHistory extends AppCompatActivity {
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         //Log.d(TAG, Objects.requireNonNull(error.getMessage()));
         Toast.makeText(this, R.string.check_internet, Toast.LENGTH_LONG).show();
+=======
+        Log.d(TAG, Objects.requireNonNull(error.getMessage()));
+
+        Toast.makeText(this, R.string.check_internet, Toast.LENGTH_LONG).show();
+
+>>>>>>> dev
     }
 
     @Override
@@ -78,7 +102,11 @@ public class ActivityRideHistory extends AppCompatActivity {
         SharedPreferences prefAuth = getSharedPreferences(SESSION_COOKIE, Context.MODE_PRIVATE);
         stringAuth = prefAuth.getString(AUTH_KEY, "");
 
+<<<<<<< HEAD
         //Log.d(TAG, "control in ActivityRideHistory");
+=======
+        Log.d(TAG, "control in ActivityRideHistory");
+>>>>>>> dev
         //loading list view item with this function
 
         rv = findViewById(R.id.recycler_view);
@@ -99,8 +127,13 @@ public class ActivityRideHistory extends AppCompatActivity {
 
         JSONObject parameters = new JSONObject(params);
         ActivityRideHistory a = ActivityRideHistory.this;
+<<<<<<< HEAD
         /*Log.d(TAG, "auth = " + auth);
         Log.d(TAG, "Control moved to to UtilityApiRequestPost auth-ride-history");*/
+=======
+        Log.d(TAG, "auth = " + auth);
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost auth-ride-history");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "auth-ride-history", parameters, 30000, 0,
                 a::onSuccess, a::onFailure);
 

@@ -9,6 +9,7 @@
     <!-- Top Sliding Banners -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
+<<<<<<< HEAD
         android:layout_height="180dp"
         app:cardCornerRadius="5dp">
 
@@ -109,5 +110,28 @@
             </LinearLayout>
 
         </RelativeLayout>
+=======
+        android:layout_height="150dp"
+        app:cardCornerRadius="5dp">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" />
+
+        <com.viewpagerindicator.CirclePageIndicator
+            android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="125dp"
+            android:gravity="bottom"
+            android:padding="10dp"
+            app:centered="true"
+            app:fillColor="#03A9F4"
+            app:pageColor="#2A2A2B"
+            app:snap="false" />
+
+>>>>>>> dev
     </androidx.cardview.widget.CardView>
 </LinearLayout>

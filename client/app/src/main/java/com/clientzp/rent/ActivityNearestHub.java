@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -64,8 +68,13 @@ public class ActivityNearestHub extends ActivityDrawer implements View.OnClickLi
         params.put("auth", stringAuth);
         JSONObject param = new JSONObject(params);
 
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + stringAuth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-end");*/
+=======
+        Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-end");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-rent-end", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
@@ -77,7 +86,11 @@ public class ActivityNearestHub extends ActivityDrawer implements View.OnClickLi
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
+<<<<<<< HEAD
         //Log.d(TAG, "RESPONSE:" + response);
+=======
+        Log.d(TAG, "RESPONSE:" + response);
+>>>>>>> dev
 
         //response on hitting user-rent-end API
         if (id == 1) {
@@ -110,8 +123,13 @@ public class ActivityNearestHub extends ActivityDrawer implements View.OnClickLi
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 

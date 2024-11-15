@@ -11,6 +11,10 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -34,7 +38,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
+<<<<<<< HEAD
         //Log.d("NEW_TOKEN", s);
+=======
+        Log.d("NEW_TOKEN", s);
+>>>>>>> dev
     }
 
    /* Target target = new Target() {
@@ -77,12 +85,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         int notificationId = new Random().nextInt(60000);
         //Bitmap bitmap = getBitmapfromUrl(remoteMessage.getData().get("imageUrl")); //obtain the image
+<<<<<<< HEAD
         Bitmap icon = BitmapFactory.decodeResource(this.getResources(), R.drawable.z);
+=======
+        Bitmap icon = BitmapFactory.decodeResource(this.getResources(),
+                R.drawable.zippe_logo__);
+>>>>>>> dev
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                 .setLargeIcon(icon) //set it in the notification
+<<<<<<< HEAD
                 .setSmallIcon(R.drawable.z)  //a resource for your custom small icon
+=======
+                .setSmallIcon(R.drawable.zippe_logo__)  //a resource for your custom small icon
+>>>>>>> dev
                 .setContentTitle(remoteMessage.getData().get("title")) //the "title" value you sent in your notification
                 .setContentText(remoteMessage.getData().get("message")) //ditto
                 .setAutoCancel(true)  //dismisses the notification on click

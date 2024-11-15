@@ -30,7 +30,11 @@
                     android:id="@+id/slidingImage"
                     layout="@layout/sliding_image_layout"
                     android:layout_width="match_parent"
+<<<<<<< HEAD
                     android:layout_height="180dp" />
+=======
+                    android:layout_height="150dp" />
+>>>>>>> dev
             </RelativeLayout>
 
             <TextView
@@ -72,8 +76,13 @@
                 layout="@layout/zippe_logo"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
+<<<<<<< HEAD
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="50dp" />
+=======
+                android:layout_marginTop="70dp"
+                android:layout_marginBottom="70dp" />
+>>>>>>> dev
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -127,7 +136,11 @@
                 android:id="@+id/next_deliver"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+<<<<<<< HEAD
                 android:layout_marginTop="30dp"
+=======
+                android:layout_marginTop="70dp"
+>>>>>>> dev
                 android:background="@drawable/orange_button_bkg"
                 android:padding="15dp"
                 android:scaleType="centerInside"

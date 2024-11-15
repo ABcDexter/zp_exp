@@ -561,7 +561,11 @@ def userIsDriverAv(dct, user):
 
             #print(srcCoOrds, dstCoOrds)
 
+<<<<<<< HEAD
             gMapsRet = {'dist':5100, 'time':14}  # HARDCODING it cuz of APIError #googleDistAndTime(srcCoOrds, dstCoOrds)
+=======
+            gMapsRet = googleDistAndTime(srcCoOrds, dstCoOrds)
+>>>>>>> dev
             nDist, nTime = gMapsRet['dist'], gMapsRet['time']
 
             #if nTime or nDist:

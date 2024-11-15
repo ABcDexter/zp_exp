@@ -4,6 +4,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 
 import androidx.annotation.Nullable;
 
@@ -55,7 +59,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d("ActivityWelcome.getInstance().sendLocation() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityWelcome.getInstance().sendLocation() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityWelcome.getInstance().sendLocation();
@@ -65,7 +73,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d("ActivityWelcome.getInstance().sendLocation() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityWelcome.getInstance().sendLocation() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -90,7 +102,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d("ActivityRideHome.getInstance().isDriverAv() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRideHome.getInstance().isDriverAv() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityRideHome.getInstance().isDriverAv();
@@ -100,7 +116,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d("ActivityRideHome.getInstance().isDriverAv() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRideHome.getInstance().isDriverAv() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -126,7 +146,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d(" ActivityRideRequest.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+=======
+                        Log.d(" ActivityRideRequest.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityRideRequest.getInstance().checkStatus();
@@ -136,7 +160,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d(" ActivityRideRequest.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+=======
+                        Log.d(" ActivityRideRequest.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -145,7 +173,11 @@ public class UtilityPollingService extends Service {
                 }
             });
         }
+<<<<<<< HEAD
         if (intent != null && intent.getAction() != null && intent.getAction().equals("002")) {
+=======
+if (intent != null && intent.getAction() != null && intent.getAction().equals("002")) {
+>>>>>>> dev
             final int fixedTimeUpdateLoc = 30;
             //final boolean stopTimerFlag2 = false;
             secondsActLocSel = fixedTimeUpdateLoc;
@@ -161,7 +193,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d(" ActivitySearchingDriver.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+=======
+                        Log.d(" ActivitySearchingDriver.getInstance().checkStatus() in secondsUpdateLoc < 0", "Value of secondsActLocSel: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivitySearchingDriver.getInstance().checkStatus();
@@ -171,7 +207,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d(" ActivitySearchingDriver.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+=======
+                        Log.d(" ActivitySearchingDriver.getInstance().checkStatus() in secondsUpdateLoc == false ", "Value of secondsActLocSel: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -195,7 +235,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d("ActivityRideOTP.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRideOTP.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityRideOTP.getInstance().checkStatus();
@@ -205,7 +249,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d("ActivityRideOTP.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRideOTP.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -229,7 +277,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d("ActivityRideInProgress.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRideInProgress.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityRideInProgress.getInstance().checkStatus();
@@ -239,7 +291,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d("ActivityRideInProgress.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRideInProgress.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -263,7 +319,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d("ActivityRideEnded.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRideEnded.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityRideEnded.getInstance().checkStatus();
@@ -273,7 +333,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d("ActivityRideEnded.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRideEnded.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -300,7 +364,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d("ActivityRentHome.getInstance().getAvailableVehicle(); in seconds < 0", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRentHome.getInstance().getAvailableVehicle(); in seconds < 0", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityRentHome.getInstance().getAvailableVehicle();
@@ -310,7 +378,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d("ActivityRentHome.getInstance().getAvailableVehicle(); in seconds == false ", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRentHome.getInstance().getAvailableVehicle(); in seconds == false ", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -335,7 +407,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d(" ActivityRentRequest.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d(" ActivityRentRequest.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityRentRequest.getInstance().checkStatus();
@@ -345,6 +421,7 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d(" ActivityRentRequest.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
 
                         handler.postDelayed(this, 1000);
@@ -380,6 +457,9 @@ public class UtilityPollingService extends Service {
 
                     if (stopTimerActLocSel == false) {
                         //Log.d(" ActivityRentRequest.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d(" ActivityRentRequest.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -403,7 +483,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d("ActivityRentOTP.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRentOTP.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityRentOTP.getInstance().checkStatus();
@@ -413,7 +497,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d("ActivityRentOTP.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRentOTP.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -437,7 +525,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d("ActivityRentInProgress.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRentInProgress.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityRentInProgress.getInstance().checkStatus();
@@ -447,7 +539,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d("ActivityRentInProgress.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRentInProgress.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -471,7 +567,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d("ActivityRentEnded.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRentEnded.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityRentEnded.getInstance().checkStatus();
@@ -481,7 +581,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d("ActivityRentEnded.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityRentEnded.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {
@@ -506,7 +610,11 @@ public class UtilityPollingService extends Service {
                 public void run() {
                     secondsActLocSel--;
                     if (secondsActLocSel < 0) {
+<<<<<<< HEAD
                         //Log.d("ActivityDeliverConfirm.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityDeliverConfirm.getInstance().checkStatus() in seconds < 0", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         stopTimerActLocSel = true;
                         ActivityDeliverConfirm.getInstance().checkStatus();
@@ -516,7 +624,11 @@ public class UtilityPollingService extends Service {
                     }
 
                     if (stopTimerActLocSel == false) {
+<<<<<<< HEAD
                         //Log.d("ActivityDeliverConfirm.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+=======
+                        Log.d("ActivityDeliverConfirm.getInstance().checkStatus() in seconds == false ", "Value of seconds: " + secondsActLocSel);
+>>>>>>> dev
 
                         handler.postDelayed(this, 1000);
                     } else {

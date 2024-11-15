@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+<<<<<<< HEAD
 import com.clientzp.deliver.ActivityPackageDetails;
 import com.clientzp.rent.ActivityRateRent;
 import com.clientzp.rent.ActivityRentEnded;
@@ -38,6 +39,9 @@ import com.clientzp.ride.ActivityRideHome;
 import com.clientzp.ride.ActivityRideInProgress;
 import com.clientzp.ride.ActivityRideOTP;
 import com.clientzp.ride.ActivitySearchingDriver;
+=======
+import com.clientzp.rent.ActivityRentOTP;
+>>>>>>> dev
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -48,6 +52,18 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+<<<<<<< HEAD
+=======
+import com.clientzp.deliver.ActivityPackageDetails;
+import com.clientzp.rent.ActivityRateRent;
+import com.clientzp.rent.ActivityRentEnded;
+import com.clientzp.rent.ActivityRentHome;
+import com.clientzp.ride.ActivityRideEnded;
+import com.clientzp.ride.ActivityRideHome;
+import com.clientzp.ride.ActivityRideInProgress;
+import com.clientzp.ride.ActivityRideOTP;
+import com.clientzp.ride.ActivitySearchingDriver;
+>>>>>>> dev
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -153,6 +169,7 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
 
         auth = stringAuth;
         //checking if auth is stored locally or not
+<<<<<<< HEAD
         /*if (auth.equals("")) {
             Intent registerUser = new Intent(ActivityWelcome.this, ActivityLoginKey.class);
             startActivity(registerUser);
@@ -162,16 +179,35 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
             startActivity(registerUser);
             finish();
         }
+=======
+        if (auth.equals("")) {
+            Intent registerUser = new Intent( ActivityWelcome.this, ActivityLoginKey.class);
+            startActivity(registerUser);
+            finish();
+        }/*if (auth.equals("")) {
+            Intent registerUser = new Intent(ActivityWelcome.this, ActivityRegistration.class);
+            startActivity(registerUser);
+            finish();
+        }*/
+>>>>>>> dev
         sharedPreferences1 = getPreferences(Context.MODE_PRIVATE);
         sharedEditor1 = sharedPreferences1.edit();
         //checking if app is being run for the 1st time or not
         if (isItFirstTime()) {
+<<<<<<< HEAD
             //Log.d(TAG, "First Time");
+=======
+            Log.d(TAG, "First Time");
+>>>>>>> dev
             rlOverlay.setVisibility(View.VISIBLE);
 
         } else {
             rlOverlay.setVisibility(View.GONE);
+<<<<<<< HEAD
             //Log.d(TAG, "Not a First Time");
+=======
+            Log.d(TAG, "Not a First Time");
+>>>>>>> dev
         }
 
 
@@ -225,15 +261,24 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
      * It receives empty string {} as response.
      */
     public void sendLocation() {
+<<<<<<< HEAD
         //Log.d(TAG, "inside sendLocation()");
+=======
+        Log.d(TAG, "inside sendLocation()");
+>>>>>>> dev
         params.put("an", stringAN);
         params.put("auth", stringAuth);
         params.put("lat", lat);
         params.put("lng", lng);
         JSONObject parameters = new JSONObject(params);
 
+<<<<<<< HEAD
         /*Log.d(TAG, "auth = " + stringAuth + " lat =" + lat + " lng = " + lng + " an=" + stringAN);
         Log.d(TAG, "UtilityApiRequestPost.doPOST auth-location-update");*/
+=======
+        Log.d(TAG, "auth = " + stringAuth + " lat =" + lat + " lng = " + lng + " an=" + stringAN);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST auth-location-update");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "auth-location-update", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response, 4);
@@ -263,8 +308,13 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
 
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
@@ -350,11 +400,19 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
      * if there is no change in location then sendLocation() is called else requestNewLocationData() is called
      */
     public void getLastLocation() {
+<<<<<<< HEAD
         //Log.d(TAG, "Inside getLastLocation()");
         if (hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
             //Log.d(TAG, "inside else of getLastLocation()");
+=======
+        Log.d(TAG, "Inside getLastLocation()");
+        if (hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        } else {
+            Log.d(TAG, "inside else of getLastLocation()");
+>>>>>>> dev
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -373,10 +431,17 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                             if (location == null) {
                                 requestNewLocationData();
                             } else {
+<<<<<<< HEAD
                                 //Log.d(TAG, "inside else of addOnCompleteListener()");
                                 lat = location.getLatitude() + "";
                                 lng = location.getLongitude() + "";
                                 //Log.d(TAG, "lat = " + lat + " lng = " + lng);
+=======
+                                Log.d(TAG, "inside else of addOnCompleteListener()");
+                                lat = location.getLatitude() + "";
+                                lng = location.getLongitude() + "";
+                                Log.d(TAG, "lat = " + lat + " lng = " + lng);
+>>>>>>> dev
                                 sendLocation();
                             }
                         }
@@ -390,7 +455,11 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
      * 2) Phone Call have be granted by user or not
      */
     public static boolean hasPermissions(Context context, String... permissions) {
+<<<<<<< HEAD
         //Log.d(TAG, "inside hasPermission()");
+=======
+        Log.d(TAG, "inside hasPermission()");
+>>>>>>> dev
         if (context != null && permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -406,7 +475,11 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
      * calls LocationRequest()
      */
     private void requestNewLocationData() {
+<<<<<<< HEAD
         //Log.d(TAG, "inside requestNewLocationData()");
+=======
+        Log.d(TAG, "inside requestNewLocationData()");
+>>>>>>> dev
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(0);
@@ -443,7 +516,11 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
     private final LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
+<<<<<<< HEAD
             //Log.d(TAG, "inside LocationResult() call");
+=======
+            Log.d(TAG, "inside LocationResult() call");
+>>>>>>> dev
             Location mLastLocation = locationResult.getLastLocation();
             lat = mLastLocation.getLatitude() + "";
             lng = mLastLocation.getLongitude() + "";
@@ -454,7 +531,11 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
      * Receives the response from the server
      */
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
+<<<<<<< HEAD
         //Log.d(TAG, "RESPONSE:" + response);
+=======
+        Log.d(TAG, "RESPONSE:" + response);
+>>>>>>> dev
         //response on hitting user-trip-get-status API
         if (id == 1) {
             try {
@@ -487,10 +568,17 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
                             startActivity(fntr);
                         }
                         if (status.equals("CN")) {
+<<<<<<< HEAD
                             //Log.d(TAG, "trip cancelled");
                         }
                         if (status.equals("TO") || status.equals("DN") || status.equals("FL")) {
                             //Log.d(TAG, "error");
+=======
+                            Log.d(TAG, "trip cancelled");
+                        }
+                        if (status.equals("TO") || status.equals("DN") || status.equals("FL")) {
+                            Log.d(TAG, "error");
+>>>>>>> dev
                             //retireTrip();
                         }
                     }
@@ -518,7 +606,11 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
 
                 } else if (active.equals("false")) {
                     String tid = response.getString("tid");
+<<<<<<< HEAD
                     //Log.d(TAG, "active=" + active + " tid=" + tid);
+=======
+                    Log.d(TAG, "active=" + active + " tid=" + tid);
+>>>>>>> dev
 
 
                     if (!tid.equals("-1")) {
@@ -597,10 +689,18 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
             editor.clear();
             editor.apply();
 
+<<<<<<< HEAD
             //Log.d(TAG, "tripID= " + TRIP_ID + DRIVER_NAME + DRIVER_PHN);
 
             SharedPreferences prefLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editorLoc = prefLoc.edit();
+=======
+            Log.d(TAG, "tripID= " + TRIP_ID + DRIVER_NAME + DRIVER_PHN);
+
+            SharedPreferences prefLoc = getSharedPreferences(PREFS_LOCATIONS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editorLoc = prefLoc.edit();
+            //editorLoc.remove(VAN_PICK);
+>>>>>>> dev
             editorLoc.remove(DST_NAME);
             editorLoc.remove(SRC_NAME);
             //editorLoc.remove(OTP_PICK);
@@ -619,8 +719,13 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
      * Called when there is error in response from server
      */
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -639,8 +744,13 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
 
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-retire");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-retire");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-trip-retire", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
@@ -662,8 +772,13 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
         params.put("auth", auth);
         params.put("tid", tripID);
         JSONObject parameters = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth + " tid=" + tripID);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth + " tid=" + tripID);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-trip-get-info");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "auth-trip-get-info", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -712,7 +827,11 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
             startActivity(service);
         }*/ else if (id == R.id.textHelp) {
             //this displays the instructions for fist time users.
+<<<<<<< HEAD
             //Log.d(TAG, "counter = " + counter);
+=======
+            Log.d(TAG, "counter = " + counter);
+>>>>>>> dev
             //counter++;
             if (counter == 1) {
                 llRide.setVisibility(View.INVISIBLE);
@@ -725,7 +844,11 @@ public class ActivityWelcome extends ActivityDrawer implements View.OnClickListe
 
                 textHelp.setText(R.string.next);
                 counter = counter + 1;
+<<<<<<< HEAD
                 //Log.d(TAG, "counter = " + counter);
+=======
+                Log.d(TAG, "counter = " + counter);
+>>>>>>> dev
 
             } else if (counter == 2) {
                 llRide.setVisibility(View.INVISIBLE);

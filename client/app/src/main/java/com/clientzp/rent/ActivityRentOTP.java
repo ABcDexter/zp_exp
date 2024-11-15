@@ -10,6 +10,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -51,7 +55,11 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     public static final String TRIP_ID = "TripID";
     public static final String TRIP_DETAILS = "com.clientzp.ride.TripDetails";
     public static final String COST_DROP = "CostDrop";
+<<<<<<< HEAD
     //public static final String VAN_PICK = "VanPick";
+=======
+    public static final String VAN_PICK = "VanPick";
+>>>>>>> dev
     public static final String DRIVER_PHN = "DriverPhn";
     public static final String DRIVER_NAME = "DriverName";
     public static final String AUTH_KEY = "AuthKey";
@@ -74,7 +82,11 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     ImageView supPhoto;
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
+<<<<<<< HEAD
         //Log.d(TAG, "RESPONSE:" + response);
+=======
+        Log.d(TAG, "RESPONSE:" + response);
+>>>>>>> dev
 
         //response on hitting user-trip-cancel API
         if (id == 1) {
@@ -94,10 +106,17 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                     SharedPreferences sp_cookie = getSharedPreferences(TRIP_DETAILS, Context.MODE_PRIVATE);
                     sp_cookie.edit().putString(TRIP_ID, tid).apply();
                     if (status.equals("AS")) {
+<<<<<<< HEAD
                         //String timeRem = response.getString("time");
                         String price = response.getString("price");
                         Glide.with(this).load(photo).into(supPhoto);
                         costEst.setText(getString(R.string.message_rs, price));
+=======
+                        String timeRem = response.getString("time");
+                        String price = response.getString("price");
+                        Glide.with(this).load(photo).into(supPhoto);
+                        costEst.setText("₹ " + price);
+>>>>>>> dev
                         PriceOnly = price;
 
                         Intent intent = new Intent(this, UtilityPollingService.class);
@@ -108,12 +127,20 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                         Intent st = new Intent(ActivityRentOTP.this, ActivityRentInProgress.class);
                         startActivity(st);
                     }
+<<<<<<< HEAD
                 } /*else {
+=======
+                } else {
+>>>>>>> dev
                     Intent homePage = new Intent(ActivityRentOTP.this, ActivityRentHome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
+<<<<<<< HEAD
                 }*/
+=======
+                }
+>>>>>>> dev
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -133,11 +160,19 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         // response on hitting user-give-otp API
         if (id == 4) {
             //TODO remove later
+<<<<<<< HEAD
             //Log.d(TAG, "RESPONSE:" + response);
         }
         // response on hitting user-vehicle-hold API
         if (id == 5) {
             //Log.d(TAG, "RESPONSE:" + response);
+=======
+            Log.d(TAG, "RESPONSE:" + response);
+        }
+        // response on hitting user-vehicle-hold API
+        if (id == 5) {
+            Log.d(TAG, "RESPONSE:" + response);
+>>>>>>> dev
         }
         //response on hitting user-rent-pay API
         if (id == 6) {
@@ -151,8 +186,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -253,8 +293,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         Map<String, String> params = new HashMap();
         params.put("auth", stringAuth);
         JSONObject param = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + stringAuth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-get-sup");*/
+=======
+        Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-get-sup");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-rent-get-sup", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 3);
@@ -314,8 +359,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         Map<String, String> params = new HashMap();
         params.put("auth", stringAuth);
         JSONObject param = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + stringAuth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");*/
+=======
+        Log.d(TAG, "Values: auth=" + stringAuth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-cancel");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-trip-cancel", param, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 1);
@@ -325,7 +375,10 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
             }
         }, a::onFailure);
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
     private void showProgressIndication() {
         SquareProgressBar squareProgressBar = findViewById(R.id.sprogressbar);
         squareProgressBar.setImage(R.drawable.btn_bkg);
@@ -424,6 +477,7 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+<<<<<<< HEAD
         if (requestCode == UPI_PAYMENT) {
             if ((RESULT_OK == resultCode) || (resultCode == 11)) {
                 if (data != null) {
@@ -434,30 +488,62 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                     upiPaymentDataOperation(dataList);
                 } else {
                     //Log.d("UPI", "onActivityResult: " + "Return data is null");
+=======
+        switch (requestCode) {
+            case UPI_PAYMENT:
+                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                    if (data != null) {
+                        String trxt = data.getStringExtra("response");
+                        Log.d("UPI", "onActivityResult: " + trxt);
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add(trxt);
+                        upiPaymentDataOperation(dataList);
+                    } else {
+                        Log.d("UPI", "onActivityResult: " + "Return data is null");
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add("nothing");
+                        upiPaymentDataOperation(dataList);
+                    }
+                } else {
+                    Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+>>>>>>> dev
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add("nothing");
                     upiPaymentDataOperation(dataList);
                 }
+<<<<<<< HEAD
             } else {
                 //Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
                 ArrayList<String> dataList = new ArrayList<>();
                 dataList.add("nothing");
                 upiPaymentDataOperation(dataList);
             }
+=======
+                break;
+>>>>>>> dev
         }
     }
 
     private void upiPaymentDataOperation(ArrayList<String> data) {
         if (isConnectionAvailable(this)) {
             String str = data.get(0);
+<<<<<<< HEAD
             //Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
+=======
+            Log.d("UPIPAY", "upiPaymentDataOperation: " + str);
+>>>>>>> dev
             String paymentCancel = "";
             if (str == null) str = "discard";
             String status = "";
             String approvalRefNo = "";
             String[] response = str.split("&");
+<<<<<<< HEAD
             for (String s : response) {
                 String[] equalStr = s.split("=");
+=======
+            for (int i = 0; i < response.length; i++) {
+                String[] equalStr = response[i].split("=");
+>>>>>>> dev
                 if (equalStr.length >= 2) {
                     if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
                         status = equalStr[1].toLowerCase();
@@ -473,7 +559,11 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
                 //Code to handle successful transaction here.
                 Toast.makeText(ActivityRentOTP.this, R.string.transaction_successful, Toast.LENGTH_SHORT).show();
                 rentPay();
+<<<<<<< HEAD
                 //Log.d("UPI", "responseStr: " + approvalRefNo);
+=======
+                Log.d("UPI", "responseStr: " + approvalRefNo);
+>>>>>>> dev
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(ActivityRentOTP.this, R.string.payment_cancelled_by_user, Toast.LENGTH_SHORT).show();
             } else {
@@ -501,8 +591,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         ActivityRentOTP a = ActivityRentOTP.this;
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth );
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-pay");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth );
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-rent-pay");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-rent-pay", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 6);
@@ -519,8 +614,13 @@ public class ActivityRentOTP extends ActivityDrawer implements View.OnClickListe
         params.put("auth", auth);
         JSONObject parameters = new JSONObject(params);
         ActivityRentOTP a = ActivityRentOTP.this;
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + auth);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");*/
+=======
+        Log.d(TAG, "Values: auth=" + auth);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME user-trip-get-status");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "user-trip-get-status", parameters, 20000, 0, response -> {
             try {
                 a.onSuccess(response, 2);

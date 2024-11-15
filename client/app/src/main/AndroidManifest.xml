@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.clientzp"
+<<<<<<< HEAD
     android:versionCode="7"
     android:versionName="1.0.6">
     <!--
@@ -10,6 +11,10 @@
          location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+=======
+    android:versionCode="3"
+    android:versionName="1.0.2">
+>>>>>>> dev
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -21,6 +26,10 @@
          location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<<<<<<< HEAD
+=======
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+>>>>>>> dev
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -47,6 +56,7 @@
         android:roundIcon="@mipmap/ic_launcher_zippe__round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<<<<<<< HEAD
         <activity android:name=".rent.InBetweenActivity"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -60,6 +70,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+=======
+>>>>>>> dev
         <activity android:name=".Service.ActivityServiceSummery" />
         <activity android:name=".Shop.ActivityShopSummery" />
         <activity android:name=".Shop.ActivityShopHistoryList" />
@@ -80,6 +92,21 @@
             android:name=".deliver.ActivityPackageDetails"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".deliver.ActivityDeliveryHistoryList" />
+<<<<<<< HEAD
+=======
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+>>>>>>> dev
         <activity android:name=".ActivitySearching" />
         <activity android:name=".ride.ActivityRideHistory" />
         <activity android:name=".rent.ActivityNearestHub" />
@@ -114,7 +141,11 @@
             android:value="fcm_default_channel" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
+<<<<<<< HEAD
             android:resource="@drawable/z" />
+=======
+            android:resource="@drawable/zippe_logo__" />
+>>>>>>> dev
 
         <activity android:name=".UserProfileActivity" />
         <activity android:name=".ActivityWelcome">
@@ -126,7 +157,11 @@
         </activity>
         <activity
             android:name=".ActivityRegistration"
+<<<<<<< HEAD
             android:windowSoftInputMode="adjustNothing" />
+=======
+            android:windowSoftInputMode="stateHidden" />
+>>>>>>> dev
         <activity android:name=".ActivityDrawer" />
         <activity
             android:name=".ride.ActivityRideHome"
@@ -139,9 +174,13 @@
         <activity android:name=".rent.ActivityRentHistory" />
         <activity android:name=".rent.ActivityRentSummery" />
         <activity android:name=".ride.ActivityRideSummery" />
+<<<<<<< HEAD
         <activity
             android:name=".ActivityLoginKey"
             android:windowSoftInputMode="adjustNothing" />
+=======
+        <activity android:name=".ActivityLoginKey" />
+>>>>>>> dev
 
         <uses-library
             android:name="org.apache.http.legacy"

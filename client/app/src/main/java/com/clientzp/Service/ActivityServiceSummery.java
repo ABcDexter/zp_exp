@@ -1,9 +1,18 @@
 package com.clientzp.Service;
 
+<<<<<<< HEAD
+=======
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+>>>>>>> dev
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> dev
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -11,8 +20,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+<<<<<<< HEAD
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+=======
+>>>>>>> dev
 import com.android.volley.VolleyError;
 import com.clientzp.ActivityDrawer;
 import com.clientzp.R;
@@ -48,7 +60,11 @@ public class ActivityServiceSummery extends ActivityDrawer {
         stringAuthKey = prefCookie.getString(AUTH_KEY, "");
         Intent intent = getIntent();
         stringSCID = intent.getStringExtra("TID");
+<<<<<<< HEAD
         //Log.d(TAG, "TID" + stringSCID);
+=======
+        Log.d(TAG, "TID" + stringSCID);
+>>>>>>> dev
         //initializing views
         scrollView = findViewById(R.id.scrollViewReview);
         rideRate = findViewById(R.id.ride_rate);
@@ -81,8 +97,13 @@ public class ActivityServiceSummery extends ActivityDrawer {
         params.put("tid", scid);
 
         JSONObject parameters = new JSONObject(params);
+<<<<<<< HEAD
         /*Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-trip-data");
         Log.d(TAG, "Values: auth=" + auth + " scid=" + scid);*/
+=======
+        Log.d(TAG, "Control moved to to UtilityApiRequestPost.doPOST API NAME: auth-trip-data");
+        Log.d(TAG, "Values: auth=" + auth + " scid=" + scid);
+>>>>>>> dev
 
         UtilityApiRequestPost.doPOST(a, "auth-trip-data", parameters, 2000, 0, response -> {
             try {
@@ -96,7 +117,11 @@ public class ActivityServiceSummery extends ActivityDrawer {
     String rate, price, tax, total, vtype, time, date;
 
     public void onSuccess(JSONObject response, int id) throws JSONException, NegativeArraySizeException {
+<<<<<<< HEAD
         //Log.d(TAG, "RESPONSE:" + response);
+=======
+        Log.d(TAG, "RESPONSE:" + response);
+>>>>>>> dev
 
         //response on hitting auth-trip-data API
         if (id == 2) {
@@ -109,10 +134,17 @@ public class ActivityServiceSummery extends ActivityDrawer {
             time = response.getString("time");
             date = response.getString("sdate");
 
+<<<<<<< HEAD
             rideRate.setText(getString(R.string.message_rs, rate));
             ridePrice.setText(getString(R.string.message_rs, price));
             rideTax.setText(getString(R.string.message_rs, tax));
             rideTotal.setText(getString(R.string.message_rs, total));
+=======
+            rideRate.setText(getString(R.string.message_rs,rate));
+            ridePrice.setText(getString(R.string.message_rs,price));
+            rideTax.setText(getString(R.string.message_rs,tax));
+            rideTotal.setText(getString(R.string.message_rs,total));
+>>>>>>> dev
             rideVehicle.setText(vtype);
             rideTime.setText(getString(R.string.message_min, time));
             //rideTime.setText(time + R.string.mins);
@@ -186,8 +218,13 @@ public class ActivityServiceSummery extends ActivityDrawer {
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d("TAG", "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d("TAG", "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -214,7 +251,11 @@ public class ActivityServiceSummery extends ActivityDrawer {
         if (id == 2) {
             //dialog_txt.setText(R.string.your_delivery_agent_will_arrive_shortly + info);
             dialog_txt.setText(String.format("OTP : %s", info));
+<<<<<<< HEAD
             //Log.d(TAG, "AS OTP = " + info);
+=======
+            Log.d(TAG, "AS OTP = " + info);
+>>>>>>> dev
         }
         //FL
         if (id == 3) {
@@ -240,7 +281,11 @@ public class ActivityServiceSummery extends ActivityDrawer {
         if (id == 8) {
             //dialog_txt.setText(R.string.agent_has_arrived + INFO);
             dialog_txt.setText(String.format("OTP : %s", info));
+<<<<<<< HEAD
             //Log.d(TAG, "RC OTP = " + info);
+=======
+            Log.d(TAG, "RC OTP = " + info);
+>>>>>>> dev
         }
 
     }

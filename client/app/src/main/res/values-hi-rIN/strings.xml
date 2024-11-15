@@ -289,7 +289,11 @@
 
     <string name="pick_point_contact">पिक-अप स्थल का सम्पर्क</string>
 
+<<<<<<< HEAD
     <string name="vehicle">गाड़ी</string>
+=======
+    <string name="vehicle">गाड़ी :</string>
+>>>>>>> dev
 
     <string name="otp">ओ.टी.पी. :</string>
 
@@ -773,7 +777,11 @@
 
     <string name="rent_history">रेंट हिस्टरि</string>
 
+<<<<<<< HEAD
     <string name="ride_rate">दर / मिनट</string>
+=======
+    <string name="ride_rate">दर</string>
+>>>>>>> dev
 
     <string name="ride_summary">राइड विवरण</string>
 
@@ -785,7 +793,10 @@
 
     <string name="message_km">%1$s किलोमीटर</string>
 
+<<<<<<< HEAD
     <string name="message_km_hr">%1$s किलोमीटर/hr</string>
+=======
+>>>>>>> dev
     <string name="add_email">ईमेल जोड़ें</string>
 
     <string name="something_wrong">कुछ गड़बड़ी हो गयी। बाद में पुन: प्रयास करें।</string>
@@ -827,7 +838,11 @@
     <string name="enter_login_key">Enter Login Key</string>
     <string name="privacy_policies"><![CDATA[  प्राइवेसी पॉलिसीज़]]></string>
     <string name="and_i_agree_to_the">को पढ़ लिया है और मैं </string>
+<<<<<<< HEAD
     <string name="schedule_rent_popup">हम आपके रेंटल अनुरोध को संसाधित कर रहे हैं। आपको एक इन-ऐप ओटीपी प्राप्त होगा। स्टेटस चेक करने के लिए कृपया रेंट हिस्ट्री पर जाएं |</string>
+=======
+    <string name="schedule_rent_popup">We are processing your rental request. You will receive an OTP, half an hour prior to the scheduled rental time. After which you will be asked to make a payment using UPI</string>
+>>>>>>> dev
     <string name="try_zippe">You haven\'t tried ZIPP-E Rent yet. Click here to try</string>
     <string name="try_zippe_ride">You haven\'t tried ZIPP-E Ride yet. Click here to try</string>
     <string name="try_zippe_delivery">You haven\'t tried ZIPP-E Delivery yet. Click here to try</string>

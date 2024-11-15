@@ -24,6 +24,11 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.clientzp.ActivityDrawer;
+<<<<<<< HEAD
+=======
+import com.clientzp.ActivityRateZippe;
+import com.clientzp.ActivityWelcome;
+>>>>>>> dev
 import com.clientzp.R;
 import com.clientzp.UtilityApiRequestPost;
 import com.clientzp.UtilityPollingService;
@@ -49,7 +54,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     public static final String COST_DROP = "";
     // public static final String SPEED_DROP = "00";
     //public static final String OTP_PICK = "OTPPick";
+<<<<<<< HEAD
     //public static final String VAN_PICK = "VanPick";
+=======
+    public static final String VAN_PICK = "VanPick";
+>>>>>>> dev
 
     public static final String LOCATION_PICK_ID = "PickLocationID";
     public static final String LOCATION_DROP_ID = "DropLocationID";
@@ -71,7 +80,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     SharedPreferences prefAuth;
     ActivityRentRequest a = ActivityRentRequest.this;
     Dialog myDialog;
+<<<<<<< HEAD
     String rideInfo, vTypeInfo, pModeInfo, dropInfo, pickInfo, costDrop, hrs, schDate, schMonth, schYr, schHours, schMins;
+=======
+    String rideInfo, vTypeInfo, pModeInfo, dropInfo, pickInfo, speedDrop, costDrop, hrs, schDate, schMonth, schYr, schHours, schMins;
+>>>>>>> dev
     Map<String, String> params = new HashMap();
     Animation animMoveL2R, animMoveR2L;
 
@@ -88,10 +101,16 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                 String price = response.getString("price");
                 String speed = response.getString("speed");
 
+<<<<<<< HEAD
                 //vSpeed.setText(speed + " km/hr");
                 vSpeed.setText(getString(R.string.message_km_hr, speed));
                 advPay.setText(getString(R.string.message_rs, price));
                 //Log.d(TAG, "price:" + price + " speed:" + speed);
+=======
+                vSpeed.setText(speed + " km/hr");
+                advPay.setText("₹ " + price);
+                Log.d(TAG, "price:" + price + " speed:" + speed);
+>>>>>>> dev
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -120,15 +139,30 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                         if (status.equals("RQ")) {
                             Snackbar snackbar = Snackbar
                                     .make(scrollView, R.string.checking_veh_av, Snackbar.LENGTH_INDEFINITE)
+<<<<<<< HEAD
                                     .setAction(R.string.cancel, view -> cancelRequest());
+=======
+                                    .setAction(R.string.cancel, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            cancelRequest();
+                                        }
+                                    });
+>>>>>>> dev
                             snackbar.setActionTextColor(Color.RED);
                             View sbView = snackbar.getView();
                             TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
                             textView.setTextColor(Color.YELLOW);
                             snackbar.show();
+<<<<<<< HEAD
                             /*Intent intent = new Intent(this, UtilityPollingService.class);
                             intent.setAction("12");
                             startService(intent);*/
+=======
+                            Intent intent = new Intent(this, UtilityPollingService.class);
+                            intent.setAction("12");
+                            startService(intent);
+>>>>>>> dev
                         }
                         if (status.equals("AS")) {
                             Intent as = new Intent(ActivityRentRequest.this, ActivityRentOTP.class);
@@ -136,11 +170,15 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                         }
                     }
                 } else {
+<<<<<<< HEAD
                     //ShowPopup(4);
                     Intent homePage = new Intent(ActivityRentRequest.this, InBetweenActivity.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
                     finish();
+=======
+                    ShowPopup(4);
+>>>>>>> dev
                     /*Intent homePage = new Intent(ActivityRentRequest.this, ActivityRentHome.class);
                     homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(homePage);
@@ -160,8 +198,13 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 
@@ -216,7 +259,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
             String upToNCharacters = stringPick.substring(0, Math.min(stringPick.length(), 20));
             pickPlaceInfo.setText(upToNCharacters);
+<<<<<<< HEAD
             Log.d(TAG, "qwertyuiop"+upToNCharacters);
+=======
+            //Log.d(TAG, "qwertyuiop"+upToNCharacters);
+>>>>>>> dev
         } catch (Exception e) {
             pickPlaceInfo.setText(stringPick);
             e.printStackTrace();
@@ -239,7 +286,11 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
 
         rideEstimate();
         if (!costDrop.equals("")) {
+<<<<<<< HEAD
             advPay.setText(getString(R.string.message_rs, costDrop));
+=======
+            advPay.setText("₹ " + costDrop);
+>>>>>>> dev
         }
 
     }
@@ -324,6 +375,7 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
             myDialog.setCanceledOnTouchOutside(false);
 
+<<<<<<< HEAD
             new Handler().postDelayed(() -> {
                 myDialog.dismiss();
                 Intent homePage = new Intent(ActivityRentRequest.this, InBetweenActivity.class);
@@ -331,6 +383,18 @@ public class ActivityRentRequest extends ActivityDrawer implements View.OnClickL
                 startActivity(homePage);
                 finish();
             }, 10000);
+=======
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    myDialog.dismiss();
+                    Intent homePage = new Intent(ActivityRentRequest.this, ActivityRentHome.class);
+                    homePage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(homePage);
+                    finish();
+                }
+            }, 8000);
+>>>>>>> dev
 
 
         }

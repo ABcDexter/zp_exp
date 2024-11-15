@@ -121,10 +121,17 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
         stringAN = prefAuth.getString(AN_KEY, "");
         prefBuss = getSharedPreferences(BUSS_FLAG, Context.MODE_PRIVATE);
 
+<<<<<<< HEAD
         /*if (imgBtnConfirm.equals("false")) {
             Log.d(TAG, "confirm.setEnabled(false)");
         } else
             Log.d(TAG, "confirm.setEnabled(true)");*/
+=======
+        if (imgBtnConfirm.equals("false")) {
+            Log.d(TAG, "confirm.setEnabled(false)");
+        } else
+            Log.d(TAG, "confirm.setEnabled(true)");
+>>>>>>> dev
 
         myDialog = new Dialog(this);
 
@@ -159,8 +166,13 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
                 lat = latlng.substring(0, latlng.indexOf(",")).replaceAll("[^0-9.]", "");
                 remainder = latlng.substring(latlng.indexOf(",") + 1).replaceAll("[^0-9.]", "");
 
+<<<<<<< HEAD
                 /*Log.d(TAG, "lat: " + lat);
                 Log.d(TAG, "lng: " + remainder);*/
+=======
+                Log.d(TAG, "lat: " + lat);
+                Log.d(TAG, "lng: " + remainder);
+>>>>>>> dev
             }
 
             @Override
@@ -207,7 +219,11 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
                 editor.putString(PICK_LANDMARK, placeName);
                 editor.putString(PICK_MOBILE, mobile.getText().toString());
                 editor.putString(PICK_NAME, name.getText().toString());
+<<<<<<< HEAD
                 //Log.d(TAG, "&&&&&&&" + "PICK_LANDMARK: " + placeName + " ADDRESS_PICK:" + edPickAddress.getText().toString());
+=======
+                Log.d(TAG, "&&&&&&&" + "PICK_LANDMARK: " + placeName + " ADDRESS_PICK:" + edPickAddress.getText().toString());
+>>>>>>> dev
                 editor.apply();
                 Intent intent = new Intent(ActivityFillPickDetails.this, ActivityFillDropAddress.class);
                 startActivity(intent);
@@ -317,8 +333,13 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
 
         JSONObject parameters = new JSONObject(params);
 
+<<<<<<< HEAD
         /*Log.d(TAG, "Values: auth=" + params);
         Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-location-name-from-pin");*/
+=======
+        Log.d(TAG, "Values: auth=" + params);
+        Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME auth-location-name-from-pin");
+>>>>>>> dev
         UtilityApiRequestPost.doPOST(a, "auth-location-name-from-pin", parameters, 30000, 0, response -> {
             try {
                 a.onSuccess(response, 2);
@@ -333,7 +354,11 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
     }
 
     public void onSuccess(JSONObject response, int id) throws JSONException {
+<<<<<<< HEAD
         //Log.d(TAG + "jsArrayRequest", "RESPONSE:" + response.toString());
+=======
+        Log.d(TAG + "jsArrayRequest", "RESPONSE:" + response.toString());
+>>>>>>> dev
 
         if (id == 2) {
             String name = response.getString("name");
@@ -350,8 +375,13 @@ public class ActivityFillPickDetails extends ActivityDrawer implements View.OnCl
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
     }
 

@@ -67,7 +67,11 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
     String newToken;
 
     public void onSuccess(JSONObject response) throws JSONException {
+<<<<<<< HEAD
         //Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+=======
+        Log.d(TAG + "jsObjRequest", "RESPONSE:" + response);
+>>>>>>> dev
 //response on hitting register-user-no-aadhaar API
         String auth = response.getString("auth");
         String name = response.getString("name");
@@ -87,8 +91,13 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
     }
 
     public void onFailure(VolleyError error) {
+<<<<<<< HEAD
         /*Log.d(TAG, "onErrorResponse: " + error.toString());
         Log.d(TAG, "Error:" + error.toString());*/
+=======
+        Log.d(TAG, "onErrorResponse: " + error.toString());
+        Log.d(TAG, "Error:" + error.toString());
+>>>>>>> dev
         Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
         simpleProgressBar.setVisibility(View.GONE);
     }
@@ -220,7 +229,11 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
 
             String code = otpEdit.getText().toString().trim();
             if (code.isEmpty() || code.length() < 6) {
+<<<<<<< HEAD
                 //Log.d(TAG, "Error in OTP");
+=======
+                Log.d(TAG, "Error in OTP");
+>>>>>>> dev
                 otpEdit.setError("Enter valid code");
                 otpEdit.requestFocus();
                 return;
@@ -239,9 +252,15 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
                 params.put("fcm", newToken);
                 JSONObject parameters = new JSONObject(params);
                 ActivityRegistration a = ActivityRegistration.this;
+<<<<<<< HEAD
                 /*Log.d(TAG, "Values: name=" + strUserName + " mobile=" + strUserMobile +
                         " home state=" + strUserState + " gender=" + strUserGender + " fcm token=" + newToken);
                 Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME register-user-no-aadhaar");*/
+=======
+                Log.d(TAG, "Values: name=" + strUserName + " mobile=" + strUserMobile +
+                        " home state=" + strUserState + " gender=" + strUserGender + " fcm token=" + newToken);
+                Log.d(TAG, "UtilityApiRequestPost.doPOST API NAME register-user-no-aadhaar");
+>>>>>>> dev
                 UtilityApiRequestPost.doPOST(a, "register-user-no-aadhaar", parameters, 30000, 0, response -> {
                     try {
                         a.onSuccess(response);
@@ -294,7 +313,10 @@ public class ActivityRegistration extends AppCompatActivity implements View.OnCl
             Snackbar snackbar = Snackbar
                     .make(scrollView, "Verification Failed: " + e.getMessage(), Snackbar.LENGTH_LONG);
             snackbar.show();
+<<<<<<< HEAD
             Log.d(TAG, "error"+ e.getMessage());
+=======
+>>>>>>> dev
 
         }
 
